@@ -1,0 +1,49 @@
+@CHARSET "ISO-8859-1";
+
+/**
+ * Diese CSS beinhaltet lediglich die zusätzlichen Layoutinformationen für den IE.
+ * Diese Version ist speziell für den IE gedacht, da ein Rahmen um ein DIV Container auf diesen gelegt wird.
+ * Beispiel:
+ * Ein Container soll 100px Breit sein und einen Rahmen mit 1px Dicke besitzen. Der insgesamt benötigte Platz beträgt
+ * dann 100px in der Breite, wobei der Inhalt nur noch 98px breit ist.
+ * 
+ * Dieses CSS ist getestet mit:
+ * - IE 8.0
+ * - IE 9.0
+ *
+ * @autor Thomas Gattinger
+ * @since 12.08.2011 
+ * @Version 1.1
+ */
+
+#root {
+	width: 1000px; /* Die Tabelle einschließlich Rahmen ist extakt 1000px breit */
+	height: 274px;
+}
+
+#kopf {
+	width: 994px;   /* 1px für den root Rahmen und 2px für den Abstand zu diesem Rahmen wurden abgezogen von 1000px */
+	height: 119px;  /* Das Bild ist 117px hoch */
+	padding-top: 40px;
+}
+
+#links {
+	width: 200px;  /* 20% von 1000px */
+	height: 120px;
+}
+
+#inhalt {
+	width: 590px;  /* 1000px abzuüglich der 2 mal 20% und der Rahmenbreiten und den Borderpixel der äußeren Box */ 
+	height: 120px;
+	padding-top: 40px;
+}
+
+#rechts {
+	width: 200px;  /* 20% von 1000px */ 
+	height: 120px;
+}
+
+#fuss {
+	width: 994px;   /* 1px für den root Rahmen und 2px für den Abstand zu diesem Rahmen wurden abgezogen von 1000px */ 
+	height: 25px;
+}

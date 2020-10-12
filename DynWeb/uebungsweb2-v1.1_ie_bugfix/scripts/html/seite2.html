@@ -1,0 +1,66 @@
+<!-- 
+  Seite 2 von 3
+
+  - Diese Seite zeigt oben einen klassischen Headerbereich, in dem der Seitentittel steht.
+  - Auf der linken Seite ist eine kleine Navigation, die auf zwei weitere Seiten verweist. 
+  - Auf der rechten Seite befindet sich ein Infobereich
+    mit einem Mail-Icon, über dass direkt der Standard Mailclient mit der Empfänger-Adresse test@server.com
+    gestartet wird.
+  - In der Mitte ist ein großer Bereich für den eigentlichen Inhalt dieser Seite.
+  - Der Untere Teil ist für einen kleinen Footer reserviert.
+  
+  Für das Design wird eine CSS Datei verwendet.
+  Außerdem wird komplett auf Tabellen verzichtet und das Layout mit div Containern gestaltet.
+  
+  @since 12.08.2011
+  @author Thomas Gattinger
+-->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Aufgabe Übungsweb2</title>
+<link rel="stylesheet" type="text/css" href="../css/standard-style.css">
+<!--[if IE]>
+<link rel="stylesheet" type="text/css" href="../css/standard-style_ie.css">
+<![endif]-->
+
+</head>
+<body>
+
+<div id="root">
+
+	<!-- Headerbereich -->
+	<div id="kopf">
+		<h1>Banner Übungsweb: Seite2</h1>
+	</div>
+
+	<!-- Navigation -->
+	<div id="links"><span class="textUeberschriften">Navigation</span>
+		<ul>
+			<li><a href="seite1.html">Seite 1</a></li>
+			<li><a href="seite2.html">Seite 2</a></li>
+			<li><a href="seite3.html">Seite 3</a></li>
+		</ul>
+	</div>
+
+	<!-- Hauptseiteninhalt -->
+	<div id="inhalt">
+		<span class="textUeberschriften">Master-Bereich</span>
+		<br>
+		Seite 2
+	</div>
+		
+	<!-- Informationsbereich -->
+	<div id="rechts"><span class="textUeberschriften">Rechter Infobereich</span><br>
+		<a href="mailto:test@server.com"><img class="bildLink" alt="Mail" src="../../resources/graphics/e-mail_icon.jpg"></a>
+	</div>
+
+	<!-- Footerbereich -->
+	<div id="fuss"><span class="textUeberschriften">Footer</span></div>
+
+</div>
+
+</body>
+</html>

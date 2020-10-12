@@ -1,0 +1,96 @@
+@CHARSET "ISO-8859-1";
+
+/**
+ * Diese CSS beinhaltet die Standard Layoutinformationen für alle HTML Seiten dieses Projekts.
+ * 
+ * @autor Thomas Gattinger
+ * @since 12.08.2011 
+ */
+body {
+	font: 16px arial, sans-serif;
+}
+
+#root {
+	width: 998px;
+	border: 1px solid;
+	border-color: #afafaf;
+	border-bottom-color: #444444;
+	border-right-color: #444444;
+}
+
+#kopf {
+	border: 1px solid;
+	border-color: #444444;
+	border-bottom-color: #afafaf;
+	border-right-color: #afafaf;
+	height: 94px;
+	margin: 2px;
+	padding: 1px;
+	padding-top: 20px;
+	background-image: url('../../resources/graphics/panorama.jpg');
+	background-repeat: no-repeat;
+}
+
+#fuss {
+	border: 1px solid;
+	border-color: #444444;
+	border-bottom-color: #afafaf;
+	border-right-color: #afafaf;
+	height: 20px;
+	margin: 2px;
+	padding: 1px;
+}
+
+#mitte {
+	width: 100%;
+	height: 114px;
+}
+
+#inhalt {
+	float: left;
+	border: 1px solid;
+	border-color: #444444;
+	border-bottom-color: #afafaf;
+	border-right-color: #afafaf;
+	height: 76px;
+	width: 578px;
+	margin-left: 2px;
+	margin-right: 2px;
+	padding: 1px;
+	padding-top: 35px;
+}
+
+#links {
+	float: left;
+	border: 1px solid;
+	border-color: #444444;
+	border-bottom-color: #afafaf;
+	border-right-color: #afafaf;
+	margin-left: 2px;
+	width: 20%;
+	height: 110px;
+	padding: 1px;
+}
+
+#rechts {
+	float: right;
+	border: 1px solid;
+	border-color: #444444;
+	border-bottom-color: #afafaf;
+	border-right-color: #afafaf;
+	margin-right: 2px;
+	width: 20%;
+	height: 95px;
+	padding: 1px;
+	padding-top: 16px;
+}
+
+.textUeberschriften {
+	font-weight: bold;	
+}
+
+.bildLink {
+	width: 100px;
+	height: 57px;
+	border: 0px;	
+}
