@@ -381,7 +381,7 @@ begin
     FillRect(Core);
     if(ShowBorder) then
     begin
-      // Äußerer heller Rahmen
+      // Ã„uÃŸerer heller Rahmen
       Pen.Color := ColorAdjustLuma(colortorgb(Color), 60, false);
       MoveTo(0, 0);
       LineTo(PART_WIDTH, 0);
@@ -397,7 +397,7 @@ begin
       MoveTo(PART_WIDTH - 2, 2);
       LineTo(PART_WIDTH - 2, PART_WIDTH - 2);
 
-      // Äußerer dunkler Rahmen
+      // Ã„uÃŸerer dunkler Rahmen
       Pen.Color := ColorAdjustLuma(colortorgb(Color), -50, false);
       MoveTo(0, 1);
       LineTo(0, PART_WIDTH - 1);

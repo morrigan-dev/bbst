@@ -1,0 +1,144 @@
+@CHARSET "UTF-8";
+
+/**
+ * Diese CSS beinhaltet die Standard Layoutinformationen für alle HTML Seiten dieses Projekts.
+ * 
+ * @autor Thomas Gattinger
+ * @since 13.08.2011 
+ */
+body {
+	background-color: #022555;
+	background-image: url('../../resources/graphics/bg.png');
+	background-repeat: repeat-x;
+	font-family: Arial;
+	font-size: 16px;
+	font-weight: bold;
+	color: #a1b7db;
+	text-align: center;
+	font-family: Arial;
+}
+
+a {
+	font-weight: normal;
+	color: #11f719;
+}
+
+#root {
+	width: 900px;
+	height: 950px;
+	background-image: url('../../resources/graphics/super_digital_cube.png');
+	background-repeat: none;
+	-moz-border-radius: 10px; /* Firefox */
+	-webkit-border-radius: 10px; /* Safari, Chrome */
+	-khtml-border-radius: 10px; /* Konqueror */
+	border-radius: 10px; /* CSS3 */
+	margin-top: 20px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 20px;
+	-moz-border-radius: 10px;
+}
+
+#content { /*	background-color: #0000ff;*/
+	padding-top: 10px;
+}
+
+#header {
+	color: #d2ebef;
+	font-size: 40px;
+	font-weight: bold;
+	padding-top: 30px;
+	height: 120px;
+	background-image: url('../../resources/graphics/header.png');
+	/*	background-color: #0000ff;*/
+}
+
+#left-side {
+	padding-left: 20px;
+	text-align: left;
+	/*	background-color: #ff0000;*/
+}
+
+.label {
+	text-align: left;
+	width: 150px;
+	height: 6px;
+	margin: 5px;
+	height: 6px;
+}
+
+.textfield {
+	height: 20px;
+	width: 250px;
+	margin: 5px;
+	padding-left: 3px;
+	border-color: #044c02;
+	border-style: solid;
+	background-color: #000000;
+	-moz-border-radius: 5px; /* Firefox */
+	-webkit-border-radius: 5px; /* Safari, Chrome */
+	-khtml-border-radius: 5px; /* Konqueror */
+	border-radius: 5px; /* CSS3 */
+	color: #a1b7db;
+}
+
+.textarea {
+	height: 100px;
+	width: 412px;
+	margin-top: 5px;
+	padding-left: 3px;
+	border-color: #044c02;
+	border-style: solid;
+	background-color: #000000;
+	-moz-border-radius: 5px; /* Firefox */
+	-webkit-border-radius: 5px; /* Safari, Chrome */
+	-khtml-border-radius: 5px; /* Konqueror */
+	border-radius: 5px; /* CSS3 */
+	color: #a1b7db;
+}
+
+.button {
+	height: 30px;
+	width: 150px;
+	border-color: #044c02;
+	border-style: solid;
+	background-color: #000000;
+	-moz-border-radius: 5px; /* Firefox */
+	-webkit-border-radius: 5px; /* Safari, Chrome */
+	-khtml-border-radius: 5px; /* Konqueror */
+	border-radius: 5px; /* CSS3 */
+	color: #a1b7db;
+}
+
+.combobox {
+	height: 26px;
+	width: 256px;
+	margin: 5px;
+	padding-top: 2px;
+	border-color: #044c02;
+	border-style: solid;
+	background-color: #000000;
+	-moz-border-radius: 5px; /* Firefox */
+	-webkit-border-radius: 5px; /* Safari, Chrome */
+	-khtml-border-radius: 5px; /* Konqueror */
+	border-radius: 5px; /* CSS3 */
+	color: #a1b7db;
+	background-color: #000000;
+}
+
+.checkbox {
+	margin-left: 50px;
+}
+
+.textfield:FOCUS {
+	border-style: ridge;
+}
+
+.combobox:FOCUS {
+	border-style: ridge;
+}
+
+.review {
+	font-weight: normal;
+	color: #11f719;
+}

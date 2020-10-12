@@ -1,0 +1,114 @@
+@CHARSET "ISO-8859-1";
+
+/**
+ * Diese CSS beinhaltet die Standard Layoutinformationen für alle HTML Seiten dieses Projekts.
+ * Diese Version ist für alle Browser gedacht, die die Border um ein DIV Container legen und nicht wie der IE auf
+ * das Element.
+ * Beispiel:
+ * Ein Container soll 100px Breit sein und einen Rahmen mit 1px Dicke besitzen. Der insgesamt benötigte Platz beträgt
+ * dann 102px in der Breite. Der Inhalt behällt seine 100px Breite.
+ * 
+ * Dieses CSS ist getestet mit:
+ * - Firefox 3.6.10
+ * - Firefox 5.0
+ * - Firefox 6.0
+ *
+ * @autor Thomas Gattinger
+ * @since 12.08.2011 
+ * @Version 1.1
+ */
+body {
+	font: 16px arial, sans-serif;
+}
+
+#root {
+	position: absolute;
+	left: 10px;
+	top: 10px;
+	width: 998px; /* Der Inhalt hat 988px plus jeweils 1px Rahmendicke ergeben 1000px */
+	height: 272px;
+	border: 1px solid;
+	border-color: #afafaf;
+	border-bottom-color: #444444;
+	border-right-color: #444444;
+}
+
+#kopf {
+	position: absolute;
+	left: 2px;
+	top: 2px;
+	width: 990px; /* Padding und Rahmendicke muss abgezogen werden von 994px */  
+	height: 96px; /* Padding muss abgezogen werden von 117px */
+	border: 1px solid;
+	border-color: #444444;
+	border-bottom-color: #afafaf;
+	border-right-color: #afafaf;
+	background-image: url('../../resources/graphics/panorama.jpg');
+	background-repeat: no-repeat;
+	padding: 1px;
+	padding-top: 20px;
+}
+
+#links {
+	position: absolute;
+	left: 2px;
+	top: 123px;
+	width: 196px; /* 20% von 1000px abzüglich Rahmen und Padding */
+	height: 116px;
+	border: 1px solid;
+	border-color: #444444;
+	border-bottom-color: #afafaf;
+	border-right-color: #afafaf;
+	padding: 1px;
+}
+
+#inhalt {
+	position: absolute;
+	left: 204px;
+	top: 123px;
+	width: 586px;
+	height: 77px; /* Padding muss abgezogen werden */
+	border: 1px solid;
+	border-color: #444444;
+	border-bottom-color: #afafaf;
+	border-right-color: #afafaf;
+	padding: 1px;
+	padding-top: 40px;
+}
+
+#rechts {
+	position: absolute;
+	left: 796px;
+	top: 123px;
+	width: 196px; /* 20% von 1000px abzüglich Rahmen und Padding */
+	height: 97px; /* Padding muss abgezogen werden */
+	border: 1px solid;
+	border-color: #444444;
+	border-bottom-color: #afafaf;
+	border-right-color: #afafaf;
+	padding: 1px;
+	padding-top: 20px;
+}
+
+#fuss {
+	position: absolute;
+	left: 2px;
+	top: 245px;
+	width: 990px; /* Padding und Rahmendicke muss abgezogen werden von 994px */  
+	height: 21px;
+	border: 1px solid;
+	border-color: #444444;
+	border-bottom-color: #afafaf;
+	border-right-color: #afafaf;
+	padding: 1px;
+}
+
+.textUeberschriften {
+	font-weight: bold;	
+}
+
+.bildLink {
+	width: 100px;
+	height: 57px;
+	border: 0px;	
+}
