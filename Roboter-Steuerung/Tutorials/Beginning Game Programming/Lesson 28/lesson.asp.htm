@@ -1,0 +1,590 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+<title>NeHe Productions: OpenGL Lesson #28</title>
+<meta name="author" content="Jeff Molofee">
+<meta name="description" content="OpenGL Tutorials, Demos, Games and More...">
+<meta name="keywords" content="opengl, tutorial, article, demo, game, blend, texturemap, lighting, contest, 3D">
+<link rel="stylesheet" type="text/css" href="lesson.asp-Dateien/rgb.css">
+</head><body bgcolor="black" link="#aaccff" text="white" vlink="#aaccff">
+
+<table border="0" width="100%"><tbody><tr><td align="center">
+<!-- Begin -  Site: GameDev.net Zone: NeHe 728x90 -->
+<script language="javascript" type="text/javascript">
+<!--
+var browName = navigator.appName;
+var SiteID = 1;
+var ZoneID = 4;
+var browDateTime = (new Date()).getTime();
+if (browName=='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;Browser=NETSCAPE4&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+if (browName!='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+// --> 
+</script><script language="javascript" src="lesson.asp-Dateien/a.js"></script><a href="http://www.gamedev.net/banman/a.aspx?Task=Click&amp;ZoneID=4&amp;CampaignID=609&amp;AdvertiserID=11&amp;BannerID=677&amp;SiteID=1&amp;RandomNumber=107129249&amp;Keywords=" target="_Blank"><img src="lesson.asp-Dateien/BPleader.png" alt="" align="Center" border="0" height="90" width="728"></a><br>
+<noscript> <a
+href="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Click&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+target="_blank"> <img
+src="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Get&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+width="728" height="90" border="0" alt=""></a>
+</noscript>
+<!-- End -  Site: GameDev.net Zone: NeHe 728x90 --></td></tr></tbody></table><br>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tinylogo" height="130" width="326"><img src="lesson.asp-Dateien/blank.gif" alt="NeHe Productions" height="130" width="326"></td><td class="indexheading" align="center" valign="middle"><font class="text"><font class="theme" size="+3"><b><i>Lesson: 28</i></b></font></font></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text"><b><u>Bezier Patches</u></b>
+<br><br>
+<b><u>Written by: David Nikdel ( <a href="mailto:ogapo@ithink.net">ogapo@ithink.net</a> )</u></b>
+<br><br>
+This tutorial is intended to introduce you to Bezier Surfaces in the hopes that someone more artistic than myself will do
+something really cool with them and show all of us. This is not intended as a complete Bezier patch library, but more as
+proof of concept code to get you familiar with how these curved surfaces actually work. Also, as this is a very informal
+piece, I may have occasional lapses in correct terminology in favor of comprehensability; I hope this sits well with
+everyone. Finally, to those of you already familiar with Beziers who are just reading this to see if I screw up, shame on
+you ;-), but if you find anything wrong by all means let me or NeHe know, after all no one's perfect, eh? Oh, and one more
+thing, none of this code is optimized beyond my normal programming technique, this is by design. I want everyone to be
+able to see exactly what is going on. Well, I guess that's enough of an intro. On with the show!
+<br><br>
+<b><u>The Math - ::evil music:: (warning, kinda long section)</u></b>
+<br><br>
+Ok, it will be very hard to understand Beziers without at least a basic understanding of the math behind it, however, if
+you just don't feel like reading this section or already know the math, you can skip it. First I will start out by
+describing the Bezier curve itself then move on to how to create a Bezier Patch.
+<br><br>
+Odds are, if you've ever used a graphics program you are already familiar with Bezier curves, perhaps not by that name
+though. They are the primary method of drawing curved lines and are commonly represented as a series of points each with
+2 points representing the tangent at that point from the left and right. Here's what one looks like:
+<br><br>
+<img src="lesson.asp-Dateien/extraslesson28curve1.jpg">
+<br><br>
+This is the most basic Bezier curve possible (longer ones are made by attaching many of these together (many times without
+the user realizing it)).  This curve is actually defined by only 4 points, those would be the 2 ending control points and
+the 2 middle control points. To the computer, all the points are the same, but to aid in design we often connect the first
+and the last two, respectively, because those lines will always be tangent to the endpoint. The curve is a parametric
+curve and is drawn by finding any number of points evenly spaced along the curve and connecting them with straight lines.
+In this way you can control the resolution of the patch (and the amount of computation). The most common way to use this
+is to tesselate it less at a farther distance and more at a closer distance so that, to the viewer, it always appears to
+be a perfectly curved surface with the lowest possible speed hit.
+<br><br>
+Bezier curves are based on a basis function from which more complicated versions are derived. Here's the function:
+<br><br>
+t + (1 - t) = 1
+<br><br>
+Sounds simple enough huh? Well it really is, this is the Bezier most basic Bezier curve, a 1st degree curve. As you may
+have guessed from the terminology, the Bezier curves are polynomials, and as we remember from algebra, a 1st degree
+polynomial is just a straight line; not very interesting. Well, since the basis function is true for all numbers t,
+we can square, cube, whatever, each side and it will still be true right? Well, lets try cubing it.
+<br><br>
+(t + (1-t))^3 = 1^3
+<br><br>
+t^3 + 3*t^2*(1-t) + 3*t*(1-t)^2 + (1-t)^3 = 1
+<br><br>
+This is the equation we use to calculate the most common Bezier, the 3rd degree Bezier curve. This is most common
+for two reasons, a) it's the lowest degree polynomial that need not necesarily lie in a plane (there are 4 control
+points) and b) the tangent lines on the sides are not dependant on one another (with a 2nd degree there would be only 3
+control points). So do you see the Bezier curve yet? Hehe, me neither, that's because I still need to add one thing.
+<br><br>
+Ok, since the entire left side is equal to 1, it's safe to assume that if you add all the components they should still
+equal one. Does this sound like it could be used to decide how much of each control point to use in calculating a 
+point on the curve? (hint: just say yes ;-) ) Well you're right! When we want to calculate the value of a point some
+percent along the curve we simply multiply each part by a control point (as a vector) and find the sum. Generally, we'll
+work with 0 &lt;= t &lt;= 1, but it's not technically necessary. Confused yet? Here's the function:
+<br><br>
+P1*t^3 + P2*3*t^2*(1-t) + P3*3*t*(1-t)^2 + P4*(1-t)^3 = P<sub>new</sub>
+<br><br>
+Because polynomials are always continuous, this makes for a good way to morp between the 4 points. The only points it
+actually reaches though are P1 and P4, when t = 1 and 0 respectively.
+<br><br>
+Now, that's all well and good, but how can I use these in 3D you ask? Well it's actually quite simple, in order to form a
+Bezier patch, you need 16 control points (4*4), and 2 variables t and v. What you do from there is calculate
+a point at v along 4 of the parallel curves then use those 4 points to make a new curve and calculate t
+along that curve. By calculating enough of these points, we can draw triangle strips to connect them, thus drawing the
+Bezier patch.
+<br><br>
+<img src="lesson.asp-Dateien/extraslesson28curve2.jpg">&nbsp;&nbsp;&nbsp;<img src="lesson.asp-Dateien/extraslesson28curve3.jpg">
+<br><br>
+Well, I suppose that's enough math for now, on to the code!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>#include &lt;windows.h&gt;							<font class="theme">// Header File For Windows</font>
+#include &lt;math.h&gt;							<font class="theme">// Header File For Math Library Routines</font>
+#include &lt;stdio.h&gt;							<font class="theme">// Header File For Standard I/O Routines</font>
+#include &lt;stdlib.h&gt;							<font class="theme">// Header File For Standard Library</font>
+#include &lt;gl\gl.h&gt;							<font class="theme">// Header File For The OpenGL32 Library</font>
+#include &lt;gl\glu.h&gt;							<font class="theme">// Header File For The GLu32 Library</font>
+#include &lt;gl\glaux.h&gt;							<font class="theme">// Header File For The Glaux Library</font>
+
+typedef struct point_3d {						<font class="theme">// Structure For A 3-Dimensional Point ( NEW )</font>
+	double x, y, z;
+} POINT_3D;
+
+typedef struct bpatch {							<font class="theme">// Structure For A 3rd Degree Bezier Patch ( NEW )</font>
+	POINT_3D	anchors[4][4];					<font class="theme">// 4x4 Grid Of Anchor Points</font>
+	GLuint		dlBPatch;					<font class="theme">// Display List For Bezier Patch</font>
+	GLuint		texture;					<font class="theme">// Texture For The Patch</font>
+} BEZIER_PATCH;
+
+HDC			hDC=NULL;					<font class="theme">// Private GDI Device Context</font>
+HGLRC			hRC=NULL;					<font class="theme">// Permanent Rendering Context</font>
+HWND			hWnd=NULL;					<font class="theme">// Holds Our Window Handle</font>
+HINSTANCE		hInstance;					<font class="theme">// Holds The Instance Of The Application</font>
+
+DEVMODE			DMsaved;					<font class="theme">// Saves The Previous Screen Settings ( NEW )</font>
+
+bool			keys[256];					<font class="theme">// Array Used For The Keyboard Routine</font>
+bool			active=TRUE;					<font class="theme">// Window Active Flag Set To TRUE By Default</font>
+bool			fullscreen=TRUE;				<font class="theme">// Fullscreen Flag Set To Fullscreen Mode By Default</font>
+
+GLfloat			rotz = 0.0f;					<font class="theme">// Rotation About The Z Axis</font>
+BEZIER_PATCH		mybezier;					<font class="theme">// The Bezier Patch We're Going To Use ( NEW )</font>
+BOOL			showCPoints=TRUE;				<font class="theme">// Toggles Displaying The Control Point Grid ( NEW )</font>
+int			divs = 7;					<font class="theme">// Number Of Intrapolations (Controls Poly Resolution) ( NEW )</font>
+
+LRESULT	CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);			<font class="theme">// Declaration For WndProc</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The following are just a few quick functions for some simple vector math. If you're a fan of C++ you might consider using
+a point class (just make sure it's 3d).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// Adds 2 Points. Don't Just Use '+' ;)</font>
+POINT_3D pointAdd(POINT_3D p, POINT_3D q) {
+	p.x += q.x;		p.y += q.y;		p.z += q.z;
+	return p;
+}
+
+<font class="theme">// Multiplies A Point And A Constant. Don't Just Use '*'</font>
+POINT_3D pointTimes(double c, POINT_3D p) {
+	p.x *= c;	p.y *= c;	p.z *= c;
+	return p;
+}
+
+<font class="theme">// Function For Quick Point Creation</font>
+POINT_3D makePoint(double a, double b, double c) {
+	POINT_3D p;
+	p.x = a;	p.y = b;	p.z = c;
+	return p;
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+This is basically just the 3rd degree basis function written in C, it takes a variable u and an array of 4 points
+and computes a point on the curve. By stepping u in equal increments between 0 and 1, we'll get a nice
+approximation of the curve.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// Calculates 3rd Degree Polynomial Based On Array Of 4 Points</font>
+<font class="theme">// And A Single Variable (u) Which Is Generally Between 0 And 1</font>
+POINT_3D Bernstein(float u, POINT_3D *p) {
+	POINT_3D	a, b, c, d, r;
+
+	a = pointTimes(pow(u,3), p[0]);
+	b = pointTimes(3*pow(u,2)*(1-u), p[1]);
+	c = pointTimes(3*u*pow((1-u),2), p[2]);
+	d = pointTimes(pow((1-u),3), p[3]);
+
+	r = pointAdd(pointAdd(a, b), pointAdd(c, d));
+
+	return r;
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+This function does the lion's share of the work by generating all the triangle strips and storing them in a display 
+list. We do this so that we don't have to recalculate the patch each frame, only when it changes. By the way, a cool 
+effect you might want to try might be to use the morphing tutorial to morph the patch's control points. This would 
+yield a very cool smooth, organic, morphing effect for relatively little overhead (you only morph 16 points, but you 
+have to recalculate). The "last" array is used to keep the previous line of points (since a triangle strip needs both 
+rows). Also, texture coordinates are calculated by using the u and v values as the percentages (planar mapping).
+<br><br>
+One thing we don't do is calculate the normals for lighting. When it comes to this, you basically have two options. 
+The first is to find the center of each triangle, then use a bit of calculus and calculate the tangent on both the 
+x and y axes, then do the cross product to get a vector perpendicular to both, THEN normalize the vector and use that 
+as the normal. OR (yes, there is a faster way) you can cheat and just use the normal of the triangle (calculated your 
+favorite way) to get a pretty good approximation. I prefer the latter; the speed hit, in my opinion, isn't worth the 
+extra little bit of realism.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// Generates A Display List Based On The Data In The Patch</font>
+<font class="theme">// And The Number Of Divisions</font>
+GLuint genBezier(BEZIER_PATCH patch, int divs) {
+	int		u = 0, v;
+	float		py, px, pyold; 
+	GLuint		drawlist = glGenLists(1);			<font class="theme">// Make The Display List</font>
+	POINT_3D	temp[4];
+	POINT_3D	*last = (POINT_3D*)malloc(sizeof(POINT_3D)*(divs+1));
+				<font class="theme">// Array Of Points To Mark The First Line Of Polys</font>
+
+	if (patch.dlBPatch != NULL)					<font class="theme">// Get Rid Of Any Old Display Lists</font>
+		glDeleteLists(patch.dlBPatch, 1);
+
+	temp[0] = patch.anchors[0][3];					<font class="theme">// The First Derived Curve (Along X-Axis)</font>
+	temp[1] = patch.anchors[1][3];
+	temp[2] = patch.anchors[2][3];
+	temp[3] = patch.anchors[3][3];
+
+	for (v=0;v&lt;=divs;v++) {						<font class="theme">// Create The First Line Of Points</font>
+		px = ((float)v)/((float)divs);				<font class="theme">// Percent Along Y-Axis</font>
+	<font class="theme">// Use The 4 Points From The Derived Curve To Calculate The Points Along That Curve</font>
+		last[v] = Bernstein(px, temp);
+	}
+
+	glNewList(drawlist, GL_COMPILE);				<font class="theme">// Start A New Display List</font>
+	glBindTexture(GL_TEXTURE_2D, patch.texture);			<font class="theme">// Bind The Texture</font>
+
+	for (u=1;u&lt;=divs;u++) {
+		py    = ((float)u)/((float)divs);			<font class="theme">// Percent Along Y-Axis</font>
+		pyold = ((float)u-1.0f)/((float)divs);			<font class="theme">// Percent Along Old Y Axis</font>
+
+		temp[0] = Bernstein(py, patch.anchors[0]);		<font class="theme">// Calculate New Bezier Points</font>
+		temp[1] = Bernstein(py, patch.anchors[1]);
+		temp[2] = Bernstein(py, patch.anchors[2]);
+		temp[3] = Bernstein(py, patch.anchors[3]);
+
+		glBegin(GL_TRIANGLE_STRIP);				<font class="theme">// Begin A New Triangle Strip</font>
+
+		for (v=0;v&lt;=divs;v++) {
+			px = ((float)v)/((float)divs);			<font class="theme">// Percent Along The X-Axis</font>
+
+			glTexCoord2f(pyold, px);			<font class="theme">// Apply The Old Texture Coords</font>
+			glVertex3d(last[v].x, last[v].y, last[v].z);	<font class="theme">// Old Point</font>
+
+			last[v] = Bernstein(px, temp);			<font class="theme">// Generate New Point</font>
+			glTexCoord2f(py, px);				<font class="theme">// Apply The New Texture Coords</font>
+			glVertex3d(last[v].x, last[v].y, last[v].z);	<font class="theme">// New Point</font>
+		}
+
+		glEnd();						<font class="theme">// END The Triangle Strip</font>
+	}
+	
+	glEndList();							<font class="theme">// END The List</font>
+
+	free(last);							<font class="theme">// Free The Old Vertices Array</font>
+	return drawlist;						<font class="theme">// Return The Display List</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Here we're just loading the matrix with some values I've picked that I think look cool.  Feel free to screw around with
+these and see what it looks like. :-)
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void initBezier(void) {	
+	mybezier.anchors[0][0] = makePoint(-0.75,	-0.75,	-0.50);	<font class="theme">// Set The Bezier Vertices</font>
+	mybezier.anchors[0][1] = makePoint(-0.25,	-0.75,	 0.00);
+	mybezier.anchors[0][2] = makePoint( 0.25,	-0.75,	 0.00);
+	mybezier.anchors[0][3] = makePoint( 0.75,	-0.75,	-0.50);
+	mybezier.anchors[1][0] = makePoint(-0.75,	-0.25,	-0.75);
+	mybezier.anchors[1][1] = makePoint(-0.25,	-0.25,	 0.50);
+	mybezier.anchors[1][2] = makePoint( 0.25,	-0.25,	 0.50);
+	mybezier.anchors[1][3] = makePoint( 0.75,	-0.25,	-0.75);
+	mybezier.anchors[2][0] = makePoint(-0.75,	 0.25,	 0.00);
+	mybezier.anchors[2][1] = makePoint(-0.25,	 0.25,	-0.50);
+	mybezier.anchors[2][2] = makePoint( 0.25,	 0.25,	-0.50);
+	mybezier.anchors[2][3] = makePoint( 0.75,	 0.25,	 0.00);
+	mybezier.anchors[3][0] = makePoint(-0.75,	 0.75,	-0.50);
+	mybezier.anchors[3][1] = makePoint(-0.25,	 0.75,	-1.00);
+	mybezier.anchors[3][2] = makePoint( 0.25,	 0.75,	-1.00);
+	mybezier.anchors[3][3] = makePoint( 0.75,	 0.75,	-0.50);
+	mybezier.dlBPatch = NULL;					<font class="theme">// Go Ahead And Initialize This To NULL</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+This is basically just an optimized routine to load a single bitmap. It can easily be used to load an array of em just
+by putting it in a simple loop.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// Load Bitmaps And Convert To Textures</font>
+
+BOOL LoadGLTexture(GLuint *texPntr, char* name)
+{
+	BOOL success = FALSE;
+	AUX_RGBImageRec *TextureImage = NULL;
+
+	glGenTextures(1, texPntr);					<font class="theme">// Generate 1 Texture</font>
+
+	FILE* test=NULL;
+	TextureImage = NULL;
+
+	test = fopen(name, "r");					<font class="theme">// Test To See If The File Exists</font>
+	if (test != NULL) {						<font class="theme">// If It Does</font>
+		fclose(test);						<font class="theme">// Close The File</font>
+		TextureImage = auxDIBImageLoad(name);			<font class="theme">// And Load The Texture</font>
+	}
+
+	if (TextureImage != NULL) {					<font class="theme">// If It Loaded</font>
+		success = TRUE;
+
+		<font class="theme">// Typical Texture Generation Using Data From The Bitmap</font>
+		glBindTexture(GL_TEXTURE_2D, *texPntr);
+		glTexImage2D(GL_TEXTURE_2D, 0, 3, TextureImage-&gt;sizeX, TextureImage-&gt;sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, TextureImage-&gt;data);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	}
+
+	if (TextureImage-&gt;data)
+		free(TextureImage-&gt;data);
+
+	return success;
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Just adding the patch initialization here. You would do this whenever you create a patch.  Again, this might be a cool
+place to use C++ (bezier class?).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int InitGL(GLvoid)							<font class="theme">// All Setup For OpenGL Goes Here</font>
+{
+	glEnable(GL_TEXTURE_2D);					<font class="theme">// Enable Texture Mapping</font>
+	glShadeModel(GL_SMOOTH);					<font class="theme">// Enable Smooth Shading</font>
+	glClearColor(0.05f, 0.05f, 0.05f, 0.5f);			<font class="theme">// Black Background</font>
+	glClearDepth(1.0f);						<font class="theme">// Depth Buffer Setup</font>
+	glEnable(GL_DEPTH_TEST);					<font class="theme">// Enables Depth Testing</font>
+	glDepthFunc(GL_LEQUAL);						<font class="theme">// The Type Of Depth Testing To Do</font>
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);		<font class="theme">// Really Nice Perspective Calculations</font>
+
+	initBezier();							<font class="theme">// Initialize the Bezier's Control Grid ( NEW )</font>
+	LoadGLTexture(&amp;(mybezier.texture), "./Data/NeHe.bmp");		<font class="theme">// Load The Texture ( NEW )</font>
+	mybezier.dlBPatch = genBezier(mybezier, divs);			<font class="theme">// Generate The Patch ( NEW )</font>
+
+	return TRUE;							<font class="theme">// Initialization Went OK</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+First call the bezier's display list. Then (if the outlines are on) draw the lines connecting the control points. You can
+toggle these by pressing SPACE.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int DrawGLScene(GLvoid)	{						<font class="theme">// Here's Where We Do All The Drawing</font>
+	int i, j;
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		<font class="theme">// Clear Screen And Depth Buffer</font>
+	glLoadIdentity();						<font class="theme">// Reset The Current Modelview Matrix</font>
+	glTranslatef(0.0f,0.0f,-4.0f);					<font class="theme">// Move Left 1.5 Units And Into The Screen 6.0</font>
+	glRotatef(-75.0f,1.0f,0.0f,0.0f);
+	glRotatef(rotz,0.0f,0.0f,1.0f);					<font class="theme">// Rotate The Triangle On The Z-Axis</font>
+		
+	glCallList(mybezier.dlBPatch);					<font class="theme">// Call The Bezier's Display List</font>
+									<font class="theme">// This Need Only Be Updated When The Patch Changes</font>
+
+	if (showCPoints) {						<font class="theme">// If Drawing The Grid Is Toggled On</font>
+		glDisable(GL_TEXTURE_2D);
+		glColor3f(1.0f,0.0f,0.0f);
+		for(i=0;i&lt;4;i++) {					<font class="theme">// Draw The Horizontal Lines</font>
+			glBegin(GL_LINE_STRIP);
+			for(j=0;j&lt;4;j++)
+				glVertex3d(mybezier.anchors[i][j].x, mybezier.anchors[i][j].y, mybezier.anchors[i][j].z);
+			glEnd();
+		}
+		for(i=0;i&lt;4;i++) {					<font class="theme">// Draw The Vertical Lines</font>
+			glBegin(GL_LINE_STRIP);
+			for(j=0;j&lt;4;j++)
+				glVertex3d(mybezier.anchors[j][i].x, mybezier.anchors[j][i].y, mybezier.anchors[j][i].z);
+			glEnd();
+		}
+		glColor3f(1.0f,1.0f,1.0f);
+		glEnable(GL_TEXTURE_2D);
+	}
+
+	return TRUE;							<font class="theme">// Keep Going</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+This function contains some modified code to make your projects more compatable. It doesn't have anything to 
+do with Bezier curves, but it does fix a problem with switching back the resolution after fullscreen mode 
+with some video cards (including mine, a crappy old ATI Rage PRO, and a few others). I hope, you'll use this 
+from now on so me and others with similar cards can view your cool examples GL code properly. To make these 
+modifications make the changes in KillGLWindow(), make sure and define DMsaved, and make the one line change 
+in CreateGLWindow() (it's marked).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>GLvoid KillGLWindow(GLvoid)						<font class="theme">// Properly Kill The Window</font>
+{
+	if (fullscreen)							<font class="theme">// Are We In Fullscreen Mode?</font>
+	{
+		if (!ChangeDisplaySettings(NULL,CDS_TEST)) { 		<font class="theme">// If The Shortcut Doesn't Work ( NEW )</font>
+			ChangeDisplaySettings(NULL,CDS_RESET);		<font class="theme">// Do It Anyway (To Get The Values Out Of The Registry) ( NEW )</font>
+			ChangeDisplaySettings(&amp;DMsaved,CDS_RESET);	<font class="theme">// Change It To The Saved Settings ( NEW )</font>
+		} else {
+			ChangeDisplaySettings(NULL,CDS_RESET);		<font class="theme">// If It Works, Go Right Ahead ( NEW )</font>
+		}
+			
+		ShowCursor(TRUE);					<font class="theme">// Show Mouse Pointer</font>
+	}
+
+	if (hRC)							<font class="theme">// Do We Have A Rendering Context?</font>
+	{
+		if (!wglMakeCurrent(NULL,NULL))				<font class="theme">// Are We Able To Release The DC And RC Contexts?</font>
+		{
+			MessageBox(NULL,"Release Of DC And RC Failed.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
+		}
+
+		if (!wglDeleteContext(hRC))				<font class="theme">// Are We Able To Delete The RC?</font>
+		{
+			MessageBox(NULL,"Release Rendering Context Failed.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
+		}
+		hRC=NULL;						<font class="theme">// Set RC To NULL</font>
+	}
+
+	if (hDC &amp;&amp; !ReleaseDC(hWnd,hDC))				<font class="theme">// Are We Able To Release The DC</font>
+	{
+		MessageBox(NULL,"Release Device Context Failed.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
+		hDC=NULL;						<font class="theme">// Set DC To NULL</font>
+	}
+
+	if (hWnd &amp;&amp; !DestroyWindow(hWnd))				<font class="theme">// Are We Able To Destroy The Window?</font>
+	{
+		MessageBox(NULL,"Could Not Release hWnd.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
+		hWnd=NULL;						<font class="theme">// Set hWnd To NULL</font>
+	}
+
+	if (!UnregisterClass("OpenGL",hInstance))			<font class="theme">// Are We Able To Unregister Class</font>
+	{
+		MessageBox(NULL,"Could Not Unregister Class.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
+		hInstance=NULL;						<font class="theme">// Set hInstance To NULL</font>
+	}
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Just added the EnumDisplaySettings() command here to save the old display settings. (part of the old graphics card fix).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// This Code Creates Our OpenGL Window.  Parameters Are:			*</font>
+<font class="theme">// title		- Title To Appear At The Top Of The Window		*</font>
+<font class="theme">// width		- Width Of The GL Window Or Fullscreen Mode		*</font>
+<font class="theme">// height		- Height Of The GL Window Or Fullscreen Mode		*</font>
+<font class="theme">// bits			- Number Of Bits To Use For Color (8/16/24/32)		*</font>
+<font class="theme">// fullscreenflag	- Use Fullscreen Mode (TRUE) Or Windowed Mode (FALSE)	*/</font>
+ 
+BOOL CreateGLWindow(char* title, int width, int height, int bits, bool fullscreenflag)
+{
+	GLuint		PixelFormat;					<font class="theme">// Holds The Results After Searching For A Match</font>
+	WNDCLASS	wc;						<font class="theme">// Windows Class Structure</font>
+	DWORD		dwExStyle;					<font class="theme">// Window Extended Style</font>
+	DWORD		dwStyle;					<font class="theme">// Window Style</font>
+	RECT		WindowRect;					<font class="theme">// Grabs Rectangle Upper Left / Lower Right Values</font>
+	WindowRect.left=(long)0;					<font class="theme">// Set Left Value To 0</font>
+	WindowRect.right=(long)width;					<font class="theme">// Set Right Value To Requested Width</font>
+	WindowRect.top=(long)0;						<font class="theme">// Set Top Value To 0</font>
+	WindowRect.bottom=(long)height;					<font class="theme">// Set Bottom Value To Requested Height</font>
+
+	fullscreen=fullscreenflag;					<font class="theme">// Set The Global Fullscreen Flag</font>
+
+	hInstance		= GetModuleHandle(NULL);		<font class="theme">// Grab An Instance For Our Window</font>
+	wc.style		= CS_HREDRAW | CS_VREDRAW | CS_OWNDC;	<font class="theme">// Redraw On Size, And Own DC For Window</font>
+	wc.lpfnWndProc		= (WNDPROC) WndProc;			<font class="theme">// WndProc Handles Messages</font>
+	wc.cbClsExtra		= 0;					<font class="theme">// No Extra Window Data</font>
+	wc.cbWndExtra		= 0;					<font class="theme">// No Extra Window Data</font>
+	wc.hInstance		= hInstance;				<font class="theme">// Set The Instance</font>
+	wc.hIcon		= LoadIcon(NULL, IDI_WINLOGO);		<font class="theme">// Load The Default Icon</font>
+	wc.hCursor		= LoadCursor(NULL, IDC_ARROW);		<font class="theme">// Load The Arrow Pointer</font>
+	wc.hbrBackground	= NULL;					<font class="theme">// No Background Required For GL</font>
+	wc.lpszMenuName		= NULL;					<font class="theme">// We Don't Want A Menu</font>
+	wc.lpszClassName	= "OpenGL";				<font class="theme">// Set The Class Name</font>
+	
+	EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &amp;DMsaved);	<font class="theme">// Save The Current Display State ( NEW )</font>
+
+	if (fullscreen)							<font class="theme">// Attempt Fullscreen Mode?</font>
+	{
+		DEVMODE dmScreenSettings;				<font class="theme">// Device Mode</font>
+		memset(&amp;dmScreenSettings,0,sizeof(dmScreenSettings));	<font class="theme">// Makes Sure Memory's Cleared</font>
+		dmScreenSettings.dmSize=sizeof(dmScreenSettings);	<font class="theme">// Size Of The Devmode Structure</font>
+		dmScreenSettings.dmPelsWidth	= width;		<font class="theme">// Selected Screen Width</font>
+		dmScreenSettings.dmPelsHeight	= height;		<font class="theme">// Selected Screen Height</font>
+		dmScreenSettings.dmBitsPerPel	= bits;			<font class="theme">// Selected Bits Per Pixel</font>
+		dmScreenSettings.dmFields=DM_BITSPERPEL|DM_PELSWIDTH|DM_PELSHEIGHT;
+
+	... Code Cut To Save Space (No Further Changes To This Function) ...
+
+	return TRUE;							<font class="theme">// Success</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+All I did here was add commands to rotate the patch, raise/lower the resolution, and toggle the control lines.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int WINAPI WinMain(	HINSTANCE	hInstance,			<font class="theme">// Instance</font>
+					HINSTANCE	hPrevInstance,  <font class="theme">// Previous Instance</font>
+					LPSTR		lpCmdLine,	<font class="theme">// Command Line Parameters</font>
+					int		nCmdShow)	<font class="theme">// Window Show State</font>
+{
+	MSG		msg;						<font class="theme">// Windows Message Structure</font>
+	BOOL	done=FALSE;						<font class="theme">// Bool Variable To Exit Loop</font>
+
+	<font class="theme">// Ask The User Which Screen Mode They Prefer</font>
+	if (MessageBox(NULL,"Would You Like To Run In Fullscreen Mode?", "Start FullScreen?",MB_YESNO|MB_ICONQUESTION)==IDNO)
+	{
+		fullscreen=FALSE;					<font class="theme">// Windowed Mode</font>
+	}
+
+	<font class="theme">// Create Our OpenGL Window</font>
+	if (!CreateGLWindow("NeHe's Solid Object Tutorial",640,480,16,fullscreen))
+	{
+		return 0;						<font class="theme">// Quit If Window Was Not Created</font>
+	}
+
+	while(!done)							<font class="theme">// Loop That Runs While done=FALSE</font>
+	{
+		if (PeekMessage(&amp;msg,NULL,0,0,PM_REMOVE))		<font class="theme">// Is There A Message Waiting?</font>
+		{
+			if (msg.message==WM_QUIT)			<font class="theme">// Have We Received A Quit Message?</font>
+			{
+				done=TRUE;				<font class="theme">// If So done=TRUE</font>
+			}
+			else						<font class="theme">// If Not, Deal With Window Messages</font>
+			{
+				TranslateMessage(&amp;msg);			<font class="theme">// Translate The Message</font>
+				DispatchMessage(&amp;msg);			<font class="theme">// Dispatch The Message</font>
+			}
+		}
+		else							<font class="theme">// If There Are No Messages</font>
+		{
+			<font class="theme">// Draw The Scene.  Watch For ESC Key And Quit Messages From DrawGLScene()</font>
+			if ((active &amp;&amp; !DrawGLScene()) || keys[VK_ESCAPE])	<font class="theme">// Active?  Was There A Quit Received?</font>
+			{
+				done=TRUE;				<font class="theme">// ESC or DrawGLScene Signalled A Quit</font>
+			}
+			else						<font class="theme">// Not Time To Quit, Update Screen</font>
+			{
+				SwapBuffers(hDC);			<font class="theme">// Swap Buffers (Double Buffering)</font>
+			}
+
+
+			if (keys[VK_LEFT])	rotz -= 0.8f;		<font class="theme">// Rotate Left ( NEW )</font>
+			if (keys[VK_RIGHT])	rotz += 0.8f;		<font class="theme">// Rotate Right ( NEW )</font>
+			if (keys[VK_UP]) {				<font class="theme">// Resolution Up ( NEW )</font>
+				divs++;
+				mybezier.dlBPatch = genBezier(mybezier, divs);	<font class="theme">// Update The Patch</font>
+				keys[VK_UP] = FALSE;
+			}
+			if (keys[VK_DOWN] &amp;&amp; divs &gt; 1) {		<font class="theme">// Resolution Down ( NEW )</font>
+				divs--;
+				mybezier.dlBPatch = genBezier(mybezier, divs);	<font class="theme">// Update The Patch</font>
+				keys[VK_DOWN] = FALSE;
+			}
+			if (keys[VK_SPACE]) {				<font class="theme">// SPACE Toggles showCPoints ( NEW )</font>
+				showCPoints = !showCPoints;
+				keys[VK_SPACE] = FALSE;
+			}
+
+
+			if (keys[VK_F1])				<font class="theme">// Is F1 Being Pressed?</font>
+			{
+				keys[VK_F1]=FALSE;			<font class="theme">// If So Make Key FALSE</font>
+				KillGLWindow();				<font class="theme">// Kill Our Current Window</font>
+				fullscreen=!fullscreen;			<font class="theme">// Toggle Fullscreen / Windowed Mode</font>
+				<font class="theme">// Recreate Our OpenGL Window</font>
+				if (!CreateGLWindow("NeHe's Solid Object Tutorial",640,480,16,fullscreen))
+				{
+					return 0;			<font class="theme">// Quit If Window Was Not Created</font>
+				}
+			}
+		}
+	}
+
+	<font class="theme">// Shutdown</font>
+	KillGLWindow();							<font class="theme">// Kill The Window</font>
+	return (msg.wParam);						<font class="theme">// Exit The Program</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Well, I hope this tutorial has been enlightening and you all now love Bezier curves as much as I do ;-). If you like 
+this tutorial I may write another one on NURBS curves if anyone's interested. Please e-mail me and let me know what you 
+thought of this tutorial.
+<br><br>
+<u>About The Author</u>: David Nikdel is currently 18 and a senior at Bartow Senior High School. His current projects 
+include a research paper on curved surfaces in 3D graphics, an OpenGL based game called Blazing Sands and being lazy. 
+His hobbies include programming, football, and paintballing. He will (hopefully) be a freshman at Georgia Tech next year.
+<br><br>
+<b>David Nikdel</b>
+<br><br>
+<b>Jeff Molofee</b> (<b>NeHe</b>)
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vc/lesson28.zip">Visual C++</a> Code For This Lesson.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/bcb6/lesson28_bcb6.zip">Borland C++ Builder 6</a> Code For This Lesson. ( Conversion by <a href="mailto:christian@tugzip.com">Christian Kindahl</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cwarrior/lesson28.zip">Code Warrior 5.3</a> Code For This Lesson. ( Conversion by <a href="mailto:DelusionalBeing@hotmail.com">Scott Lupton</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/delphi/lesson28.zip">Delphi</a> Code For This Lesson. ( Conversion by <a href="mailto:michal_praha@seznam.cz">Michal Tucek</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/devc/lesson28.zip">Dev C++</a> Code For This Lesson. ( Conversion by <a href="mailto:danprogram@hotmail.com">Dan</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/euphoria/lesson28.zip">Euphoria</a> Code For This Lesson. ( Conversion by <a href="mailto:1evan@sbcglobal.net">Evan Marshall</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/lccwin32/lccwin32_lesson28.zip">LCC Win32</a> Code For This Lesson. ( Conversion by <a href="mailto:rwishlaw@shaw.ca">Robert Wishlaw</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxglx/lesson28.tar.gz">Linux/GLX</a> Code For This Lesson. ( Conversion by <a href="mailto:rodolphe.suescun@wanadoo.fr">Rodolphe Suescun</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/lwjgl/lesson28.jar">LWJGL</a> Code For This Lesson. ( Conversion by <a href="mailto:mark.bernard@rogers.com">Mark Bernard</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/macosxcocoa/lesson28.zip">Mac OS X/Cocoa</a> Code For This Lesson. ( Conversion by <a href="mailto:blb@pobox.com">Bryan Blackburn</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vs_net/lesson28.zip">Visual Studio .NET</a> Code For This Lesson. ( Conversion by <a href="mailto:ultimatezeus@hotmail.com">Grant James</a> )<br>
+<br><br>
+<br><br>
+<table border="0" width="100%">
+<tbody><tr><td align="left" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=27">&lt; Lesson 27</a></font></b></td>
+<td align="right" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=29">Lesson 29 &gt;</a></font></b></td>
+</tr></tbody></table>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table>
+
+</body></html>

@@ -1,0 +1,44 @@
+Schiffstyp: Fregatte (Typ 24)
+Techlevel: 8
+Module: 12
+Kommandopunkte: 59
+Angriffswert: 1743
+Schilde: 350
+Panzerung: 819
+Struktur: 266
+Wendigkeit: 908
+Reaktor: 279
+Laderaum: 0
+Sensor: 7
+Tarnung: 6
+Min Crew: 93
+Max Crew: 94
+Sprung Sektor: 13
+Sprung-Zeit: 36
+Angriffs-Zeit: 40
+Angriffsenergie: 70
+
+Verwendete Forschungen: 
+1x Nanotechnik (Lvl 16)
+4x Antimaterie (Lvl 8)
+1x Nanotechnik (Lvl 24)
+1x Antimaterie (Lvl 13)
+1x Photovoltaik (Lvl 10)
+2x Photovoltaik (Lvl 24)
+2x Antimaterie (Lvl 18)
+
+Baukosten: 
+Iso: 0
+Eg: 127
+Es: 3
+Rad: 103
+Em: 603
+Sm: 213
+Lm: 875
+Fe: 655
+Syn: 0
+Org: 0
+Erz: 0
+Rek: 0
+Nrg: 3763
+Cr: 5744

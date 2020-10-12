@@ -1,0 +1,361 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html><head>
+
+
+   <title>AVL-Bäume</title>
+   <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+   <meta name="author" content="Freiherr-vom-Stein-Gymnasium Oberhausen">
+   <meta name="generator" content="Mozilla/3.01Gold [de] (WinNT; I) [Netscape]">
+<link rel="stylesheet" type="text/css" href="avlbaum-Dateien/font.css">
+</head><body>
+
+<p><b>Holger Bihr u. Björn Hockmann, Freiherr-vom-Stein-Gymnasium
+Oberhausen</b></p>
+
+<h2>Referat: <font color="#ff0000">AVL-Bäume</font><br>
+
+<hr noshade="noshade" width="100%"></h2>
+
+<h3>Inhalt</h3>
+
+<p>&nbsp;<a href="#avl-general">1. Eigenschaften von AVL-Bäumen</a>
+<br>
+<br>
+&nbsp;<a href="#avl-insert">2. Einfügen von Knoten in AVL-Bäumen</a>
+<br>
+<br>
+&nbsp;<a href="#avl-delete">3. Löschen von Knoten in AVL-Bäumen</a>
+</p>
+
+<p>&nbsp;<a href="#avl-demo">4. Demonstrationsprogramm (Delphi)</a><br>
+</p>
+
+<p>
+</p><hr noshade="noshade" width="100%"><br>
+<a name="avl-general"></a><b><font color="#ff0000">1. Eigenschaften von
+AVL-Bäumen</font></b><p></p>
+
+<p>Bei AVL-Bäumen (benannt nach Adelson,Velskii und Landis) handelt
+es sich um beinahe ausgeglichene Binärbäume. Dabei gilt für
+jeden Knoten eines AVL-Baumes die Bedingung, dass sich die Höhe der
+beiden untergeordneten Teilbäume höchstens um 1 unterscheiden
+darf. Diese Lösung stellt einen guten Kompromiss zwischen einer geringen
+Gesamthöhe des Baumes und einem relativ geringen Aufwand beim Einfügen
+sowie Löschen von Elementen dar. In der Praxis speichert man für
+jeden Knoten einen Grad der Ausgeglichenheit, dabei wird zwischen linkslastig,
+völlig ausgeglichen und rechtslastig unterschieden. Eine geringe Gesamthöhe
+des Baumes ist erwünscht, da sich die Laufzeit zum Suchen eines Knotens
+proportional zur Höhe des Baumes verhält. Ein völlig ausgeglichener
+Baum erreicht eine maximale Laufzeit von<tt> O(log n)</tt>, das bedeutet,
+die Laufzeit ist proportional zur Baumhöhe.<tt> n </tt>ist dabei die
+Anzahl der Knoten. Ein AVL-Baum weist prinzipiell etwas schlechtere Werte
+auf, seine Höhe liegt laut Adelson,Velskii und Landis maximal um 45%
+höher als die Höhe eines vollständig ausgeglichenen Baumes.
+Der am schlechtesten ausgeglichene AVL-Baum hat bei einer Höhe<tt>
+i L </tt>knoten, wobei für<tt> L(i) </tt>gilt:<tt> L(0)=0, L(1)=1,
+L(h)=L(h-1)+1+L(h-2)</tt>. Empirische Tests haben dabei gezeigt, dass die
+zu erwartende Höhe<tt> h </tt>eines AVL-Baumes mit<tt> n </tt>Knoten<tt>
+h=log(n)+c </tt>beträgt, wobei<tt> c~0,25</tt> gilt, so dass sich
+ein AVL-Baum praktisch genauso gut wie ein völlig ausgeglichener Baum
+verhält. Aufgrund des gegenüber &#8222;normalen&#8220; Binärbäumen
+aufwendigeren Einfügens und Löschens sind AVL-Bäume da besonders
+attraktiv, wo auf einen fest vorgegebenen Datenbestand viele Zugriffe erforderlich
+sind, insbesondere wenn auf alle Knoten im Mittel gleich oft zugegriffen
+wird. <br>
+<br>
+
+</p><hr noshade="noshade" width="100%"><p></p>
+
+<p><a name="avl-insert"></a><b><font color="#ff0000">2. Einfügen von
+Knoten in AVL-Bäume</font></b></p>
+
+<p>Der Einfügealgorithmus arbeitet folgendermaßen: Der Baum
+wird bis zum Astende durchlaufen; dabei wird, wenn der Knoten einen größeren
+Wert enthält, der rechte Teilbaum gewählt, sonst der linke. Dann
+wird der Knoten angehängt, danach der Suchpfad zurückgegangen
+und für jeden Knoten der Grad der Ausgeglichenheit aktualisiert, eventuell
+eine Rotation ausgeführt, wobei es 2 verschiedene Arten gibt. </p>
+
+<p><b>Der äußere Teilbaum ist zu lang:</b><br>
+<br>
+</p>
+
+<table border="1" cellpadding="0" cellspacing="0">
+<tbody><tr>
+<td><img src="avlbaum-Dateien/tree1.gif" height="110" width="300"></td>
+</tr>
+</tbody></table>
+
+<p><br>
+In diesem Fall wird das AVL-Kriterium für den Knoten 20 nach Einfügen
+des Elementes 3 nicht mehr erfüllt. Da der zu lange Teilbaum außen
+liegt, ist nur eine einfache Rotation erforderlich. Dabei muss der gesamte
+(Teil-)Baum neu angehängt werden, in diesem Fall am Knoten 10. Der
+Knoten 15 muss links an den Knoten 20 wieder angefügt werden, da es
+ja der nächstkleinere vorhandene Knoten ist. Hier der neu ausgeglichene
+Baum (nach einer einfachen Rotation):<br>
+<br>
+</p>
+
+<table border="1" cellpadding="0" cellspacing="0">
+<tbody><tr>
+<td><img src="avlbaum-Dateien/tree2.gif" height="66" width="197"></td>
+</tr>
+</tbody></table>
+
+<p><br>
+<b>Der innere Teilbaum ist zu lang:</b></p>
+
+<table border="1" cellpadding="0" cellspacing="0">
+<tbody><tr>
+<td><img src="avlbaum-Dateien/tree3.gif" height="117" width="202"></td>
+</tr>
+</tbody></table>
+
+<p><br>
+Durch Anfügen der 3 wäre das AVL-Kriterium für den Knoten
+5 nicht mehr erfüllt; die Höhe des linken Teilbaumes ist 3, die
+des rechten nur 1, was ein Ausgleichen erforderlich macht. Eine einfache
+Rotation &#8211; wie wenn der zu lange Ast außen liegen würde &#8211; hätte
+jedoch folgendes Ergebnis:</p>
+
+<table border="1" cellpadding="0" cellspacing="0">
+<tbody><tr>
+<td><img src="avlbaum-Dateien/treex1.gif" height="83" width="192"></td>
+</tr>
+</tbody></table>
+
+<p><br>
+Das Ungleichgewicht wurde lediglich auf die andere Seite verlagert, die
+Unausgeglichenheit bleibt erhalten. Daher sind in diesem Fall 2 Rotationen
+(Doppelrotation) erforderlich. Zuerst wird der zu lange Ast auf die Außenseite
+verlagert. </p>
+
+<table border="1" cellpadding="0" cellspacing="0">
+<tbody><tr>
+<td><img src="avlbaum-Dateien/tree4.gif" height="83" width="300"></td>
+</tr>
+</tbody></table>
+
+<p><br>
+Nun ist wiederum der äußere Ast zu lang, so dass der Teilbaum
+nun mit einer einfachen Rotation der (Teil-)Baum (am Knoten 4) neu aufgehängt
+werden kann.</p>
+
+<p>Der nach einer Doppelrotation neu ausgeglichene Baum:</p>
+
+<table border="1" cellpadding="0" cellspacing="0">
+<tbody><tr>
+<td><img src="avlbaum-Dateien/tree5.gif" height="65" width="202"></td>
+</tr>
+</tbody></table>
+
+<p><br>
+<b><font color="#000000">Aufwandsbetrachtungen beim Einfügen</font></b></p>
+
+<p>Dieses Beispiel zeigt, dass die Höhe des (Teil-)Baumes nach der
+Rotation mit der vor dem Einfügen identisch ist. Das garantiert, daß
+maximal eine (Doppel)rotation zum Ausgleichen des Baumes erforderlich ist.Die
+Laufzeit des Algorithmus zum Einfügen eines Knotens ist daher kaum
+länger als die Zeit, die zum Suchen höchstens benötigt wird,
+nämlich um das Ende eines Astes zu erreichen. Im Mittel kommt eine
+einfache oder doppelte Rotation auf 2 Eintragungen.</p>
+
+<p>
+</p><hr noshade="noshade" width="100%"><p></p>
+
+<p><a name="avl-delete"></a><b><font color="#ff0000">3. Löschen von
+Knoten in AVL-Bäumen</font></b></p>
+
+<p>Der Löschalgorithmus arbeitet ähnlich dem Einfüge-Algorithmus
+(Knoten suchen, löschen und nachher den Suchpfad zurückverfolgen,
+Balancefaktoren aktualisieren und eventuell Rotationen ausführen).
+<br>
+Wenn ein zu löschender Knoten 1 Nachfolger besitzt, wird er durch
+diesen ersetzt. Hat er jedoch 2 Nachfolger, wird er durch den am besten
+geeigneten ersetzt; das kann entweder der nächstkleinere oder nächstgrößere
+vorhandene Knoten sein, also entweder der am weitesten rechts liegende
+Knoten seines linken Teilbaumes oder der am weitesten links liegende Knoten
+seines rechten Teilbaumes. Dabei wird bei unterschiedlich langen Teilbäumen
+der zu löschende Knoten durch den entsprechenden seines höheren
+Teilbaumes ersetzt, um eine notwendige Rotation auf der Ebene des zu löschenden
+Knotens zu verhindern, da durch das Ersetzen ja die Höhe des Teilbaumes
+reduziert werden kann, etwa in folgendem Beispiel:<br>
+<br>
+</p>
+
+<table border="1" cellpadding="0" cellspacing="0">
+<tbody><tr>
+<td><img src="avlbaum-Dateien/treea1.gif" height="88" width="220"></td>
+</tr>
+</tbody></table>
+
+<p><br>
+Wenn der Knoten 10 gelöscht werden soll, könnte er durch die
+7 oder die 11 ersetzt werden; ein Ersetzen durch die 7 (Knoten des kürzeren
+Teilbaumes)&nbsp; würde eine Rotation erfordern, ein Ersetzen durch
+die 11 hingegen nicht.<br>
+Trotzdem kann es sein, dass &#8211; wie beim Einfügen &#8211; ein erneutes Ausgleichen
+erforderlich ist. Ebenfalls gibt es wieder 2 verschiedene Fälle: </p>
+
+<p><b>Der äußere Teilbaum ist zu lang:</b></p>
+
+<p>In diesem Fall genügt wieder eine einfache Rotation. </p>
+
+<table border="1" cellpadding="0" cellspacing="0">
+<tbody><tr>
+<td><img src="avlbaum-Dateien/tree6.gif" height="85" width="280"></td>
+</tr>
+</tbody></table>
+
+<p><br>
+Durch Löschen des Knotens 4 entsteht eine Unausgeglichenheit bei Knoten
+3; der Teilbaum wird dabei am Knoten 2 neu anfgehängt. Hier der neu
+ausgeglichene Baum nach der einfachen Rotation:</p>
+
+<table border="1" cellpadding="0" cellspacing="0">
+<tbody><tr>
+<td><img src="avlbaum-Dateien/tree7.gif" height="65" width="227"></td>
+</tr>
+</tbody></table>
+
+<p><br>
+<b>Der innere Teilbaum ist zu lang:</b></p>
+
+<p>In diesem Fall ist wieder eine Doppelrotation erforderlich. <br>
+</p>
+
+<table border="1" cellpadding="0" cellspacing="0">
+<tbody><tr>
+<td><img src="avlbaum-Dateien/tree8.gif" height="84" width="270"></td>
+</tr>
+</tbody></table>
+
+<p><br>
+Beim Löschen von Knoten 2 wird dieser durch den Knoten 1 ersetzt,
+so daß die Höhe des linken Teilbaumes des Knotens 3 reduziert
+wird. Da der rechte Teilbaum jedoch die Höhe 3 hat, ist ein Ausgleichen
+erforderlich.<br>
+</p>
+
+<table border="1" cellpadding="0" cellspacing="0">
+<tbody><tr>
+<td><img src="avlbaum-Dateien/tree9.gif" height="90" width="266"></td>
+</tr>
+</tbody></table>
+
+<p><br>
+Zuerst muss der innere zu lange Ast nach außen gehängt werden.<br>
+</p>
+
+<table border="1" cellpadding="0" cellspacing="0">
+<tbody><tr>
+<td><img src="avlbaum-Dateien/tree10.gif" height="92" width="337"></td>
+</tr>
+</tbody></table>
+
+<p><br>
+So ist der äußere Teilbaum des Knotens 7 zu lang, was durch
+eine weitere Rotation behoben werden kann. Dazu muss der (Teil-)Baum an
+Knoten 7 neu angehängt werden.<br>
+</p>
+
+<table border="1" cellpadding="0" cellspacing="0">
+<tbody><tr>
+<td><img src="avlbaum-Dateien/tree11.gif" height="68" width="215"></td>
+</tr>
+</tbody></table>
+
+<p><br>
+Wäre hingegen nur einmal eine einfache Rotation angewandt worden,
+wie es erforderlich ist, wenn der äußere Teilbaum zu lang ist,
+erhielte man folgendes Ergebnis: </p>
+
+<table border="1" cellpadding="0" cellspacing="0">
+<tbody><tr>
+<td><img src="avlbaum-Dateien/treex2.gif" height="89" width="200"></td>
+</tr>
+</tbody></table>
+
+<p><br>
+Dabei erkennt man, daß die Unausgeglichenheit wiederum nur auf den
+anderen Teilbaum verlagert wurde. </p>
+
+<p><b>Mehrere Rotationen durch Löschen eines Knotens</b></p>
+
+<p>Beim Löschen eines Knotens kann es &#8211; anders als beim Einfügen
+&#8211; sein, dass das Löschen eines Knotens mehr als eine einfache oder
+doppelte Rotation erfordert. Denn wenn durch die Rotation die Höhe
+eines Teilbaumes reduziert wird, ist es möglich, daß der übergeordnete
+Knoten dieses Teilbaums dadurch das AVL-Kriterium nicht mehr erfüllt.
+Dann ist eine weitere Rotation erforderlich:<br>
+</p>
+
+<table border="1" cellpadding="0" cellspacing="0">
+<tbody><tr>
+<td><img src="avlbaum-Dateien/tree12.gif" height="106" width="584"></td>
+</tr>
+</tbody></table>
+
+<p><br>
+Das Löschen von Knoten 4 erfordert zunächst eine einfache Rotation.
+Der Teilbaum 3-2-1 wird dabei am Knoten 2 neu aufgehängt. Der Baum
+sieht dann folgendermaßen aus: <br>
+</p>
+
+<table border="1" cellpadding="0" cellspacing="0">
+<tbody><tr>
+<td><img src="avlbaum-Dateien/tree13.gif" height="109" width="511"></td>
+</tr>
+</tbody></table>
+
+<p><br>
+Jetzt ist der Knoten 5 unausgeglichen. Die Höhe seines linken Teilbaumes
+beträgt 2, die des rechten hingegen 4, was ein erneutes Ausgleichen
+erfordert. </p>
+
+<table border="1" cellpadding="0" cellspacing="0">
+<tbody><tr>
+<td><img src="avlbaum-Dateien/tree14.gif" height="87" width="380"></td>
+</tr>
+</tbody></table>
+
+<p><br>
+Nun ist der (Teil-)Baum durch erneutes Rotieren ausgeglichen. </p>
+
+<p><b>Aufwandsbetrachtungen beim Löschen</b></p>
+
+<p>Dadurch, dass das Löschen eines einzelnen Knotens Rotationen auf
+jeder Ebene des Baumes hervorrufen kann, kann die Laufzeit möglicherweise
+länger sein als die beim Einfügen von neuen Knoten. Im Mittel
+ist sie jedoch identisch, da es seltener als beim Einfügen vorkommt,
+dass eine Rotation erforderlich ist.<br>
+<br>
+
+</p><hr noshade="noshade" width="100%"><p></p>
+
+<p><a name="avl-demo"></a><b><font color="#ff0000">4. Demonstrationsprogramm
+(Delphi)</font></b></p>
+
+<p>Das Delphi-Projekt <b>AVL1 </b>ist ein Programm zur Darstellung eines
+AVL-Baums. In den Baum werden beim Start zufällige Knoten eingefügt
+und angezeigt. Weitere Knoten können eingefügt, entfernt und
+gesucht werden. Eine Log-Datei beschreibt die Navigation durch den Baum
+und die Reorganisation, wenn das AVL-Kriterium nicht erfüllt ist.</p>
+
+<p><img src="avlbaum-Dateien/avl1.gif" height="264" width="641"></p>
+
+<p><b><font color="#ff0000">Download:<br>
+<br>
+</font></b>Die Datei <a href="http://www.informatiktreff.de/materialien/sek_ii/algorithmen/avl/avl1.zip">avl1.zip</a> enthält das Beispielprojekt
+als kompilierbares Programm (Delphi 1.0).<br>
+<br>
+
+</p><hr noshade="noshade" width="100%"><br>
+<a href="http://www.informatiktreff.de/materialien/sek_ii/algorithmen/main.htm">Zurück zur Übersicht</a> <p></p>
+
+<p>
+</p><hr noshade="noshade" width="100%"><i>(Holger Bihr, Björn Hockmann, 28.2.1999)<br>
+</i>&nbsp; <p></p>
+
+</body></html>

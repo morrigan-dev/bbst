@@ -1,0 +1,234 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+<title>NeHe Productions: OpenGL Lesson #08</title>
+<meta name="author" content="Jeff Molofee">
+<meta name="description" content="OpenGL Tutorials, Demos, Games and More...">
+<meta name="keywords" content="opengl, tutorial, article, demo, game, blend, texturemap, lighting, contest, 3D">
+<link rel="stylesheet" type="text/css" href="lesson.asp-Dateien/rgb.css">
+</head><body bgcolor="black" link="#aaccff" text="white" vlink="#aaccff">
+
+<table border="0" width="100%"><tbody><tr><td align="center">
+<!-- Begin -  Site: GameDev.net Zone: NeHe 728x90 -->
+<script language="javascript" type="text/javascript">
+<!--
+var browName = navigator.appName;
+var SiteID = 1;
+var ZoneID = 4;
+var browDateTime = (new Date()).getTime();
+if (browName=='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;Browser=NETSCAPE4&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+if (browName!='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+// --> 
+</script><script language="javascript" src="lesson.asp-Dateien/a.js"></script><iframe class=" uvzqlqxrluylsowwolzs" src="lesson.asp-Dateien/cm.htm" marginwidth="0" marginheight="0" border="0" style="border: medium none ;" frameborder="0" height="90" scrolling="no" width="728"></iframe>
+<noscript> <a
+href="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Click&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+target="_blank"> <img
+src="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Get&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+width="728" height="90" border="0" alt=""></a>
+</noscript>
+<!-- End -  Site: GameDev.net Zone: NeHe 728x90 --></td></tr></tbody></table><br>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tinylogo" height="130" width="326"><img src="lesson.asp-Dateien/blank.gif" alt="NeHe Productions" height="130" width="326"></td><td class="indexheading" align="center" valign="middle"><font class="text"><font class="theme" size="+3"><b><i>Lesson: 08</i></b></font></font></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text"><b><u>Simple Transparency</u></b>
+<br><br>
+Most special effects in OpenGL rely on some type of blending.  Blending is used to combine the color of a given pixel
+that is about to be drawn with the pixel that is already on the screen.  How the colors are combined is based on the
+alpha value of the colors, and/or the blending function that is being used.  Alpha is a 4th color component usually
+specified at the end.  In the past you have used GL_RGB to specify color with 3 components.  GL_RGBA can be used to
+specify alpha as well.  In addition, we can use glColor4f() instead of glColor3f().
+<br><br>
+Most people think of Alpha as how opaque a material is.  An alpha value of 0.0 would mean that the material is completely
+transparent.  A value of 1.0 would be totally opaque.
+<br><br>
+<b><u>The Blending Equation</u></b>
+<br><br>
+If you are uncomfortable with math, and just want to see how to do transparency, skip this section.  If you want to
+understand how blending works, this section is for you.
+<br><br>
+<i>(Rs Sr + Rd Dr, Gs Sg + Gd Dg, Bs Sb + Bd Db, As Sa + Ad Da)</i>
+<br><br>
+OpenGL will calculate the result of blending two pixels based on the above equation.  The s and d subscripts specify the
+source and destination pixels.  The S and D components are the blend factors.  These values indicate how you would like
+to blend the pixels.  The most common values for S and D are (As, As, As, As) (AKA source alpha) for S and (1, 1, 1, 1)
+- (As, As, As, As) (AKA one minus src alpha) for D.   This will yield a blending equation that looks like this:
+<br><br>
+<i>(Rs As + Rd (1 - As), Gs As + Gd (1 - As), Bs As + Bd (1 - As), As As + Ad (1 - As))</i>
+<br><br>
+This equation will yield transparent/translucent style effects.  
+<br><br>
+<b><u>Blending in OpenGL</u></b>
+<br><br>
+We enable blending just like everything else.  Then we set the equation, and turn off depth buffer writing
+when drawing transparent objects, since we still want objects behind the translucent shapes to be drawn.
+This isn't the proper way to blend, but most the time in simple projects it will work fine.
+<b>Rui Martins Adds:</b> The correct way is to draw all the transparent (with alpha &lt; 1.0) polys after you
+have drawn the entire scene, and to draw them in reverse depth order (farthest first).  This is due to the
+fact that blending two polygons (1 and 2) in different order gives different results, i.e. (assuming poly
+1 is nearest to the viewer, the correct way would be to draw poly 2 first and then poly 1.  If you look at
+it, like in reality, all the light comming from behind these two polys (which are transparent) has to pass
+poly 2 first and then poly 1 before it reaches the eye of the viewer.  You should SORT THE TRANSPARENT
+POLYGONS BY DEPTH and draw them AFTER THE ENTIRE SCENE HAS BEEN DRAWN, with the DEPTH BUFFER ENABLED, or
+you will get incorrect results.  I know this sometimes is a pain, but this is the correct way to do it.
+<br><br>
+We'll be using the code from the last tutorial.  We start off by adding two new variables to the top of the
+code.  I'll rewrite the entire section of code for clarity.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>#include &lt;windows.h&gt;					<font class="theme">// Header File For Windows</font>
+#include &lt;stdio.h&gt;					<font class="theme">// Header File For Standard Input/Output</font>
+#include &lt;gl\gl.h&gt;					<font class="theme">// Header File For The OpenGL32 Library</font>
+#include &lt;gl\glu.h&gt;					<font class="theme">// Header File For The GLu32 Library</font>
+#include &lt;gl\glaux.h&gt;					<font class="theme">// Header File For The GLaux Library</font>
+
+HDC		hDC=NULL;				<font class="theme">// Private GDI Device Context</font>
+HGLRC		hRC=NULL;				<font class="theme">// Permanent Rendering Context</font>
+HWND		hWnd=NULL;				<font class="theme">// Holds Our Window Handle</font>
+HINSTANCE	hInstance;				<font class="theme">// Holds The Instance Of The Application</font>
+
+bool	keys[256];					<font class="theme">// Array Used For The Keyboard Routine</font>
+bool	active=TRUE;					<font class="theme">// Window Active Flag Set To TRUE By Default</font>
+bool	fullscreen=TRUE;				<font class="theme">// Fullscreen Flag Set To Fullscreen Mode By Default</font>
+bool	light;						<font class="theme">// Lighting ON/OFF</font>
+bool    blend;						<font class="theme">// Blending OFF/ON? ( NEW )</font>
+bool	lp;						<font class="theme">// L Pressed?</font>
+bool	fp;						<font class="theme">// F Pressed?</font>
+bool	bp;						<font class="theme">// B Pressed? ( NEW )</font>
+
+GLfloat	xrot;						<font class="theme">// X Rotation</font>
+GLfloat	yrot;						<font class="theme">// Y Rotation</font>
+GLfloat xspeed;						<font class="theme">// X Rotation Speed</font>
+GLfloat yspeed;						<font class="theme">// Y Rotation Speed</font>
+
+GLfloat	z=-5.0f;					<font class="theme">// Depth Into The Screen</font>
+
+GLfloat LightAmbient[]=  { 0.5f, 0.5f, 0.5f, 1.0f };	<font class="theme">// Ambient Light Values</font>
+GLfloat LightDiffuse[]=	 { 1.0f, 1.0f, 1.0f, 1.0f };	<font class="theme">// Diffuse Light Values</font>
+GLfloat LightPosition[]= { 0.0f, 0.0f, 2.0f, 1.0f };	<font class="theme">// Light Position</font>
+
+GLuint	filter;						<font class="theme">// Which Filter To Use</font>
+GLuint	texture[3];					<font class="theme">// Storage for 3 textures</font>
+
+LRESULT	CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);	<font class="theme">// Declaration For WndProc</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Move down to LoadGLTextures().  Find the line that says:  if (TextureImage[0]=LoadBMP("Data/Crate.bmp")).  Change it to
+the line below.  We're using a stained glass type texture for this tutorial instead of the crate texture.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	if (TextureImage[0]=LoadBMP("Data/glass.bmp"))	<font class="theme">// Load The Glass Bitmap ( MODIFIED )</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Add
+the following two lines somewhere in the InitGL() section of code. What
+this line does is sets the drawing brightness
+of the object to full brightness with 50% alpha (opacity). This means
+when blending is enabled, the object will be 50% transparent.
+The second line sets the type of blending we're going to use.
+<br><br>
+<b>Rui Martins Adds:</b> An alpha value of 0.0 would mean that the material is completely transparent. A
+value of 1.0 would be totally opaque.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glColor4f(1.0f,1.0f,1.0f,0.5f);			<font class="theme">// Full Brightness, 50% Alpha ( NEW )</font>
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE);		<font class="theme">// Blending Function For Translucency Based On Source Alpha Value ( NEW )</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Look for the following section of code, it can be found at the very bottom of lesson seven.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	if (keys[VK_LEFT])				<font class="theme">// Is Left Arrow Being Pressed?</font>
+	{
+		yspeed-=0.01f;				<font class="theme">// If So, Decrease yspeed</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Right under the above code, we want to add the following lines.  The lines below watch to see if the 'B' key
+has been pressed.  If it has been pressed, the computer checks to see if blending is off or on.  If blending
+is on, the computer turns it off.  If blending was off, the computer will turn it on.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	if (keys['B'] &amp;&amp; !bp)				<font class="theme">// Is B Key Pressed And bp FALSE?</font>
+	{
+		bp=TRUE;				<font class="theme">// If So, bp Becomes TRUE</font>
+		blend = !blend;				<font class="theme">// Toggle blend TRUE / FALSE	</font>
+		if(blend)				<font class="theme">// Is blend TRUE?</font>
+		{
+			glEnable(GL_BLEND);		<font class="theme">// Turn Blending On</font>
+			glDisable(GL_DEPTH_TEST);	<font class="theme">// Turn Depth Testing Off</font>
+		}
+		else					<font class="theme">// Otherwise</font>
+		{
+			glDisable(GL_BLEND);		<font class="theme">// Turn Blending Off</font>
+			glEnable(GL_DEPTH_TEST);	<font class="theme">// Turn Depth Testing On</font>
+		}
+	}
+	if (!keys['B'])					<font class="theme">// Has B Key Been Released?</font>
+	{
+		bp=FALSE;				<font class="theme">// If So, bp Becomes FALSE</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+But how can we specify the color if we are using a texture map?  Simple, in modulated texture mode, each pixel that is
+texture mapped is multiplied by the current color.  So, if the color to be drawn is (0.5, 0.6, 0.4), we multiply it times
+the color and we get (0.5, 0.6, 0.4, 0.2) (alpha is assumed to be 1.0 if not specified).
+<br><br>
+Thats it!  Blending is actually quite simple to do in OpenGL.
+<br><br>
+<b><u>Note (11/13/99)</u></b>
+<br><br>
+I ( NeHe ) have modified the blending code so the output of the object looks more like it should.  Using Alpha values
+for the source and destination to do the blending will cause artifacting.  Causing back faces to appear darker, along
+with side faces.  Basically the object will look very screwy.  The way I do blending may not be the best way, but it works,
+and the object appears to look like it should when lighting is enabled.  Thanks to Tom for the initial code, the way he was
+blending was the proper way to blend with alpha values, but didn't look as attractive as people expected :)
+<br><br>
+The code was modified once again to address problems that some video cards had with glDepthMask().  It seems this command
+would not effectively enable and disable depth buffer testing on some cards, so I've changed back to the old fashioned
+glEnable and Disable of Depth Testing.
+<br><br>
+<b><u>Alpha From Texture Map.</u></b>
+<br><br>
+The alpha value that is used for transparency can be read from a texture map just like color,  to do this, you will need
+to get alpha into the image you want to load, and then use GL_RGBA for the color format in calls to glTexImage2D().
+<br><br>
+<b><u>Questions?</u></b>
+<br><br>
+If you have any questions, feel free to contact me at <a href="mailto:stanis@cs.wisc.edu">stanis@cs.wisc.edu</a>.
+<br><br>
+<b>Tom Stanis</b>
+<br><br>
+<b>Jeff Molofee</b> (<b>NeHe</b>)
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vc/lesson08.zip">Visual C++</a> Code For This Lesson.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/bcb6/lesson08_bcb6.zip">Borland C++ Builder 6</a> Code For This Lesson. ( Conversion by <a href="mailto:christian@tugzip.com">Christian Kindahl</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/c_sharp/lesson08.zip">C#</a> Code For This Lesson. ( Conversion by <a href="mailto:bholley@unlnotes.unl.edu">Brian Holley</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cwarrior/lesson08.zip">Code Warrior 5.3</a> Code For This Lesson. ( Conversion by <a href="mailto:DelusionalBeing@hotmail.com">Scott Lupton</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cygwin/lesson08.tar.gz">Cygwin</a> Code For This Lesson. ( Conversion by <a href="mailto:stephan@lazyfellow.com">Stephan Ferraro</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/d/lesson08.zip">D Language</a> Code For This Lesson. ( Conversion by <a href="mailto:gpineda2013@yahoo.com.mx">Familia Pineda Garcia</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/delphi/lesson08.zip">Delphi</a> Code For This Lesson. ( Conversion by <a href="mailto:michal_praha@seznam.cz">Michal Tucek</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/devc/lesson08.zip">Dev C++</a> Code For This Lesson. ( Conversion by <a href="mailto:danprogram@hotmail.com">Dan</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/euphoria/lesson08.zip">Euphoria</a> Code For This Lesson. ( Conversion by <a href="mailto:1evan@sbcglobal.net">Evan Marshall</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/gameglut/lesson08.zip">Game GLUT</a> Code For This Lesson. ( Conversion by <a href="mailto:milix_gr@hotmail.com">Milikas Anastasios</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/glut/lesson08.zip">GLUT</a> Code For This Lesson. ( Conversion by <a href="mailto:lordrustad@hotmail.com">Andy Restad</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/irix/lesson08.zip">Irix</a> Code For This Lesson. ( Conversion by <a href="mailto:lakmal@gunasekara.de">Lakmal Gunasekara</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/java/lesson08.zip">Java</a> Code For This Lesson. ( Conversion by <a href="mailto:jeff@consunet.com.au">Jeff Kirby</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/jedisdl/lesson08.zip">Jedi-SDL</a> Code For This Lesson. ( Conversion by <a href="mailto:Dominique@SavageSoftware.com.au">Dominique Louis</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/jogl/lesson08.jar">JoGL</a> Code For This Lesson. ( Conversion by <a href="mailto:pepijn.vaneeckhoudt@luciad.com">Pepijn Van Eeckhoudt</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/lccwin32/lccwin32_lesson08.zip">LCC Win32</a> Code For This Lesson. ( Conversion by <a href="mailto:rwishlaw@shaw.ca">Robert Wishlaw</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linux/lesson08.tar.gz">Linux</a> Code For This Lesson. ( Conversion by <a href="mailto:ulmont@bellsouth.net">Richard Campbell</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxglx/lesson08.tar.gz">Linux/GLX</a> Code For This Lesson. ( Conversion by <a href="mailto:Mihael.Vrbanec@stud.uni-karlsruhe.de">Mihael Vrbanec</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxsdl/lesson08.tar.gz">Linux/SDL</a> Code For This Lesson. ( Conversion by <a href="mailto:leggett@eecs.tulane.edu">Ti Leggett</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/lwjgl/lesson08.jar">LWJGL</a> Code For This Lesson. ( Conversion by <a href="mailto:mark.bernard@rogers.com">Mark Bernard</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/mac/lesson08.sit">Mac OS</a> Code For This Lesson. ( Conversion by <a href="mailto:asp@usc.edu">Anthony Parker</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/macosxcocoa/lesson08.zip">Mac OS X/Cocoa</a> Code For This Lesson. ( Conversion by <a href="mailto:blb@pobox.com">Bryan Blackburn</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/masm/lesson08.zip">MASM</a> Code For This Lesson. ( Conversion by <a href="mailto:scalp@bigfoot.com">Nico (Scalp)</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/openil/lesson08.zip">Visual C++ / OpenIL</a> Code For This Lesson. ( Conversion by <a href="mailto:doomwiz@ticnet.com">Denton Woods</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/pbasic/lesson08.zip">Power Basic</a> Code For This Lesson. ( Conversion by <a href="mailto:anguslaw@net.ntl.com">Angus Law</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/pelles_c/lesson08.zip">Pelles C</a> Code For This Lesson. ( Conversion by <a href="mailto:pelle@smorgasbordet.com">Pelle Orinius</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/python/lesson08.tar.gz">Python</a> Code For This Lesson. ( Conversion by <a href="mailto:tankcoder@warpmail.net">Ryan Showalter</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/scheme/lesson08.zip">Scheme</a> Code For This Lesson. ( Conversion by <a href="mailto:bburns@cs.umass.edu">Brendan Burns</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/solaris/lesson08.zip">Solaris</a> Code For This Lesson. ( Conversion by <a href="mailto:lakmal@gunasekara.de">Lakmal Gunasekara</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vb/lesson08.zip">Visual Basic</a> Code For This Lesson. ( Conversion by <a href="mailto:pdetagyos@cox.net">Peter De Tagyos</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vfortran/lesson08.zip">Visual Fortran</a> Code For This Lesson. ( Conversion by <a href="mailto:Jean-Philippe.Perois@wanadoo.fr">Jean-Philippe Perois</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vs_net/lesson08.zip">Visual Studio .NET</a> Code For This Lesson. ( Conversion by <a href="mailto:ultimatezeus@hotmail.com">Grant James</a> )<br>
+<br><br>
+<br><br>
+<table border="0" width="100%">
+<tbody><tr><td align="left" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=07">&lt; Lesson 07</a></font></b></td>
+<td align="right" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=09">Lesson 09 &gt;</a></font></b></td>
+</tr></tbody></table>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table>
+
+</body></html>

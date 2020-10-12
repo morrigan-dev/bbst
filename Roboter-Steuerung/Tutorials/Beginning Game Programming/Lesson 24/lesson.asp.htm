@@ -1,0 +1,823 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+<title>NeHe Productions: OpenGL Lesson #24</title>
+<meta name="author" content="Jeff Molofee">
+<meta name="description" content="OpenGL Tutorials, Demos, Games and More...">
+<meta name="keywords" content="opengl, tutorial, article, demo, game, blend, texturemap, lighting, contest, 3D">
+<link rel="stylesheet" type="text/css" href="lesson.asp-Dateien/rgb.css">
+</head><body bgcolor="black" link="#aaccff" text="white" vlink="#aaccff">
+
+<table border="0" width="100%"><tbody><tr><td align="center">
+<!-- Begin -  Site: GameDev.net Zone: NeHe 728x90 -->
+<script language="javascript" type="text/javascript">
+<!--
+var browName = navigator.appName;
+var SiteID = 1;
+var ZoneID = 4;
+var browDateTime = (new Date()).getTime();
+if (browName=='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;Browser=NETSCAPE4&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+if (browName!='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+// --> 
+</script><script language="javascript" src="lesson.asp-Dateien/a.js"></script><iframe class=" uvzqlqxrluylsowwolzs" src="lesson.asp-Dateien/B3794521.htm" marginwidth="0" marginheight="0" hspace="0" vspace="0" bordercolor="#000000" frameborder="0" height="90" scrolling="no" width="728">
+&lt;SCRIPT language='JavaScript1.1'
+SRC="http://ad.doubleclick.net/adj/N5621.gamedev.com/B3794521.5;abr=!ie;sz=728x90;ord=1669013635?"&gt;
+&lt;/SCRIPT&gt;
+&lt;NOSCRIPT&gt;
+&lt;A
+HREF="http://www.gamedev.net/banman/a.aspx?Task=Click&amp;ZoneID=4&amp;CampaignID=727&amp;AdvertiserID=123&amp;BannerID=783&amp;SiteID=1&amp;RandomNumber=1669013635&amp;Keywords="&gt;
+&lt;IMG
+SRC="http://ad.doubleclick.net/ad/N5621.gamedev.com/B3794521.5;abr=!ie4;abr=!ie5;sz=728x90;ord=1669013635?"
+BORDER=0 WIDTH=728 HEIGHT=90 ALT="Click Here"&gt;&lt;/A&gt;
+&lt;/NOSCRIPT&gt;
+</iframe>
+<noscript> <a
+href="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Click&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+target="_blank"> <img
+src="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Get&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+width="728" height="90" border="0" alt=""></a>
+</noscript>
+<!-- End -  Site: GameDev.net Zone: NeHe 728x90 --></td></tr></tbody></table><br>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tinylogo" height="130" width="326"><img src="lesson.asp-Dateien/blank.gif" alt="NeHe Productions" height="130" width="326"></td><td class="indexheading" align="center" valign="middle"><font class="text"><font class="theme" size="+3"><b><i>Lesson: 24</i></b></font></font></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">This tutorial is far from visually stunning, but you will definitely learn a few new things by reading through it.  I have
+had quite a few people ask me about extensions, and how to find out what extensions are supported on a particular brand of
+video card.  This tutorial will teach you how to find out what OpenGL extensions are supported on any type of 3D video card.
+<br><br>
+I will also teach you how to scroll a portion of the screen without affecting any of the graphics around it using
+scissor testing.  You will also learn how to draw line strips, and most importantly, in this tutorial we will drop the AUX
+library completely, along with Bitmap images.  I will show you how to use Targa (TGA) images as textures.  Not only are
+Targa files easy to work with and create, they support the ALPHA channel, which will allow you to create some pretty cool
+effects in future projects!
+<br><br>
+The first thing you should notice in the code below is that we no longer include the glaux header file (glaux.h).  It is
+also important to note that the glaux.lib file can also be left out!  We're not working with bitmaps anymore, so there's no
+need to include either of these files in our project.
+<br><br>
+Also, using glaux, I always received one warning message.  Without glaux there should be zero errors, zero warnings.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>#include	&lt;windows.h&gt;								<font class="theme">// Header File For Windows</font>
+#include	&lt;stdio.h&gt;								<font class="theme">// Header File For Standard Input / Output</font>
+#include	&lt;stdarg.h&gt;								<font class="theme">// Header File For Variable Argument Routines</font>
+#include	&lt;string.h&gt;								<font class="theme">// Header File For String Management</font>
+#include	&lt;gl\gl.h&gt;								<font class="theme">// Header File For The OpenGL32 Library</font>
+#include	&lt;gl\glu.h&gt;								<font class="theme">// Header File For The GLu32 Library</font>
+
+HDC		hDC=NULL;								<font class="theme">// Private GDI Device Context</font>
+HGLRC		hRC=NULL;								<font class="theme">// Permanent Rendering Context</font>
+HWND		hWnd=NULL;								<font class="theme">// Holds Our Window Handle</font>
+HINSTANCE	hInstance;								<font class="theme">// Holds The Instance Of The Application</font>
+
+bool		keys[256];								<font class="theme">// Array Used For The Keyboard Routine</font>
+bool		active=TRUE;								<font class="theme">// Window Active Flag Set To TRUE By Default</font>
+bool		fullscreen=TRUE;							<font class="theme">// Fullscreen Flag Set To Fullscreen Mode By Default</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The first thing we need to do is add some variables.  The first variable scroll will be used to scroll a portion of
+the screen up and down.  The second variable maxtokens will be used to keep track of how many tokens (extensions)
+are supported by the video card.
+<br><br>
+base is used to hold the font display list.
+<br><br>
+swidth and sheight are used to grab the current window size.  We use these two variable to help us calculate
+the scissor coordinates later in the code.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int		scroll;									<font class="theme">// Used For Scrolling The Screen</font>
+int		maxtokens;								<font class="theme">// Keeps Track Of The Number Of Extensions Supported</font>
+int		swidth;									<font class="theme">// Scissor Width</font>
+int		sheight;								<font class="theme">// Scissor Height</font>
+
+GLuint		base;									<font class="theme">// Base Display List For The Font</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we create a structure to hold the TGA information once we load it in.  The first variable imageData will hold
+a pointer to the data that makes up the image.  bpp will hold the bits per pixel used in the TGA file (this value
+should be 24 or 32 bits depending on whether or not there is an alpha channel).  The third variable width will hold
+the width of the TGA image.  height will hold the height of the image, and texID will be used to keep track
+of the textures once they are built.  The structure will be called TextureImage.
+<br><br>
+The line just after the structure (TextureImage textures[1]) sets aside storage for the one texture that we will be
+using in this program.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>typedef	struct										<font class="theme">// Create A Structure</font>
+{
+	GLubyte	*imageData;								<font class="theme">// Image Data (Up To 32 Bits)</font>
+	GLuint	bpp;									<font class="theme">// Image Color Depth In Bits Per Pixel</font>
+	GLuint	width;									<font class="theme">// Image Width</font>
+	GLuint	height;									<font class="theme">// Image Height</font>
+	GLuint	texID;									<font class="theme">// Texture ID Used To Select A Texture</font>
+} TextureImage;										<font class="theme">// Structure Name</font>
+
+TextureImage	textures[1];								<font class="theme">// Storage For One Texture</font>
+
+LRESULT	CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);					<font class="theme">// Declaration For WndProc</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now for the fun stuff!  This section of code will load in a TGA file and convert it into a texture for use in the program.
+One thing to note is that this code will only load 24 or 32 bit uncompressed TGA files.  I had a hard enough time making
+the code work with both 24 and 32 bit TGA's :)  I never said I was a genious.  I'd like to point out that I did not write
+all of this code on my own.  Alot of the really good ideas I got from reading through random sites on the net.  I just
+took all the good ideas and combined them into code that works well with OpenGL.  Not easy, not extremely difficult!
+<br><br>
+We pass two parameters to this section of code.  The first parameter points to memory that we can store the texture in
+(*texture).  The second parameter is the name of the file that we want to load (*filename).
+<br><br>
+The first variable TGAheader[ ] holds 12 bytes.  We'll compare these bytes with the first 12 bytes we read from the
+TGA file to make sure that the file is indeed a Targa file, and not some other type of image.
+<br><br>
+TGAcompare will be used to hold the first 12 bytes we read in from the TGA file.  The bytes in TGAcompare
+will then be compared with the bytes in TGAheader to make sure everything matches.
+<br><br>
+header[ ] will hold the first 6 IMPORTANT bytes from the header file (width, height, and bits per pixel).
+<br><br>
+The variable bytesPerPixel will store the result after we divide bits per pixel by 8, leaving us with the number
+of bytes used per pixel.
+<br><br>
+imageSize will store the number of bytes required to make up the image (width * height * bytes per pixel).
+<br><br>
+temp is a temporary variable that we will use to swap bytes later in the program.
+<br><br>
+The last variable type is a variable that I use to select the proper texture building params depending on whether
+or not the TGA is 24 or 32 bit.  If the texture is 24 bit we need to use GL_RGB mode when we build the texture.  If the
+TGA is 32 bit we need to add the Alpha component, meaning we have to use GL_RGBA (By default I assume the image is 32 bit
+by default that is why type is GL_RGBA).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>bool LoadTGA(TextureImage *texture, char *filename)					<font class="theme">// Loads A TGA File Into Memory</font>
+{    
+	GLubyte		TGAheader[12]={0,0,2,0,0,0,0,0,0,0,0,0};			<font class="theme">// Uncompressed TGA Header</font>
+	GLubyte		TGAcompare[12];							<font class="theme">// Used To Compare TGA Header</font>
+	GLubyte		header[6];							<font class="theme">// First 6 Useful Bytes From The Header</font>
+	GLuint		bytesPerPixel;							<font class="theme">// Holds Number Of Bytes Per Pixel Used In The TGA File</font>
+	GLuint		imageSize;							<font class="theme">// Used To Store The Image Size When Setting Aside Ram</font>
+	GLuint		temp;								<font class="theme">// Temporary Variable</font>
+	GLuint		type=GL_RGBA;							<font class="theme">// Set The Default GL Mode To RBGA (32 BPP)</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The first line below opens the TGA file for reading.  file is the handle we will use to point to the data within the
+file.  the command fopen(filename, "rb") will open the file filename, and "rb" tells our program to open it
+for [r]eading in [b]inary mode!
+<br><br>
+The if statement has a few jobs.  First off it checks to see if the file contains any data.  If there is no data, NULL will
+be returned, the file will be closed with fclose(file), and we return false.
+<br><br>
+If the file contains information, we attempt to read the first 12 bytes of the file into TGAcompare.  We break the
+line down like this:  fread will read sizeof(TGAcompare) (12 bytes) from file into TGAcompare.  Then we
+check to see if the number of bytes read is equal to sizeof(TGAcompare) which should be 12 bytes.  If we were unable
+to read the 12 bytes into TGAcompare the file will close and false will be returned.
+<br><br>
+If everything has gone good so far, we then compare the 12 bytes we read into TGAcompare with the 12 bytes we
+have stored in TGAheader.  If the bytes do not match, the file will close, and false will be returned.
+<br><br>
+Lastly, if everything has gone great, we attempt to read 6 more bytes into header (the important bytes).  If
+6 bytes are not available, again, the file will close and the program will return false.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	FILE *file = fopen(filename, "rb");						<font class="theme">// Open The TGA File</font>
+
+	if(	file==NULL ||								<font class="theme">// Does File Even Exist?</font>
+		fread(TGAcompare,1,sizeof(TGAcompare),file)!=sizeof(TGAcompare) ||	<font class="theme">// Are There 12 Bytes To Read?</font>
+		memcmp(TGAheader,TGAcompare,sizeof(TGAheader))!=0		||	<font class="theme">// Does The Header Match What We Want?</font>
+		fread(header,1,sizeof(header),file)!=sizeof(header))			<font class="theme">// If So Read Next 6 Header Bytes</font>
+	{
+		if (file == NULL)							<font class="theme">// Did The File Even Exist? *Added Jim Strong*</font>
+			return false;							<font class="theme">// Return False</font>
+		else
+		{
+			fclose(file);							<font class="theme">// If Anything Failed, Close The File</font>
+			return false;							<font class="theme">// Return False</font>
+		}
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+If everything went ok, we now have enough information to define some important variables.  The first variable we want to
+define is width.  We want width to equal the width of the TGA file.  We can find out the TGA width by
+multiplying the value stored in header[1] by 256.  We then add the lowbyte which is stored in header[0].
+<br><br>
+The height is calculated the same way but instead of using the values stored in header[0] and header[1] we
+use the values stored in header[2] and header[3].
+<br><br>
+After we have calculated the width and height we check to see if either the width or height is
+less than or equal to 0.  If either of the two variables is less than or equal to zero, the file will be closed, and false
+will be returned.
+<br><br>
+We also check to see if the TGA is a 24 or 32 bit image.  We do this by checking the value stored at header[4].
+If the value is not 24 or 32 (bit), the file will be closed, and false will be returned.
+<br><br>
+In case you have not realized.  A return of false will cause the program to fail with the message "Initialization Failed".
+Make sure your TGA is an uncompressed 24 or 32 bit image!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	texture-&gt;width  = header[1] * 256 + header[0];					<font class="theme">// Determine The TGA Width	(highbyte*256+lowbyte)</font>
+	texture-&gt;height = header[3] * 256 + header[2];					<font class="theme">// Determine The TGA Height	(highbyte*256+lowbyte)</font>
+    
+ 	if(	texture-&gt;width	&lt;=0	||						<font class="theme">// Is The Width Less Than Or Equal To Zero</font>
+		texture-&gt;height	&lt;=0	||						<font class="theme">// Is The Height Less Than Or Equal To Zero</font>
+		(header[4]!=24 &amp;&amp; header[4]!=32))					<font class="theme">// Is The TGA 24 or 32 Bit?</font>
+	{
+		fclose(file);								<font class="theme">// If Anything Failed, Close The File</font>
+		return false;								<font class="theme">// Return False</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now that we have calculated the image width and height we need to calculate the bits per pixel, bytes
+per pixel and image size.
+<br><br>
+The value in header[4] is the bits per pixel.  So we set bpp to equal header[4].
+<br><br>
+If you know anything about bits and bytes, you know that 8 bits makes a byte.  To figure out how many bytes per pixel the
+TGA uses, all we have to do is divide bits per pixel by 8.  If the image is 32 bit, bytesPerPixel will equal 4.
+If the image is 24 bit, bytesPerPixel will equal 3.
+<br><br>
+To calculate the image size, we multiply width * height * bytesPerPixel.  The result is stored in
+imageSize.  If the image was 100x100x32 bit our image size would be 100 * 100 * 32/8 which equals 10000 * 4
+or 40000 bytes!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	texture-&gt;bpp	= header[4];							<font class="theme">// Grab The TGA's Bits Per Pixel (24 or 32)</font>
+	bytesPerPixel	= texture-&gt;bpp/8;						<font class="theme">// Divide By 8 To Get The Bytes Per Pixel</font>
+	imageSize	= texture-&gt;width*texture-&gt;height*bytesPerPixel;			<font class="theme">// Calculate The Memory Required For The TGA Data</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now that we know how many bytes our image is going to take, we need to allocate some memory.  The first line below does
+the trick.  imageData will point to a section of ram big enough to hold our image.  malloc(imagesize)
+allocates the memory (sets memory aside for us to use) based on the amount of ram we request (imageSize).
+<br><br>
+The "if" statement has a few tasks.  First it checks to see if the memory was allocated properly.  If not, imageData
+will equal NULL, the file will be closed, and false will be returned.
+<br><br>
+If the memory was allocated, we attempt to read the image data from the file into the allocated memory.  The line
+fread(texture-&gt;imageData, 1, imageSize, file) does the trick.  fread means file read.
+imageData points to the memory we want to store the data in.  1 is the size of data we want to read in bytes
+(we want to read 1 byte at a time). imageSize is the total number of bytes we want to read.  Because
+imageSize is equal to the total amount of ram required to hold the image, we end up reading in the entire image.
+file is the handle for our open file.
+<br><br>
+After reading in the data, we check to see if the amount of data we read in is the same as the value stored in
+imageSize.  If the amount of data read and the value of imageSize is not the same, something went wrong.
+If any data was loaded, we will free it.  (release the memory we allocated). The file will be closed, and false will be
+returned.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	texture-&gt;imageData=(GLubyte *)malloc(imageSize);				<font class="theme">// Reserve Memory To Hold The TGA Data</font>
+
+	if(	texture-&gt;imageData==NULL ||						<font class="theme">// Does The Storage Memory Exist?</font>
+		fread(texture-&gt;imageData, 1, imageSize, file)!=imageSize)		<font class="theme">// Does The Image Size Match The Memory Reserved?</font>
+	{
+		if(texture-&gt;imageData!=NULL)						<font class="theme">// Was Image Data Loaded</font>
+			free(texture-&gt;imageData);					<font class="theme">// If So, Release The Image Data</font>
+
+		fclose(file);								<font class="theme">// Close The File</font>
+		return false;								<font class="theme">// Return False</font>
+	} 
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+If the data was loaded properly, things are going good :)  All we have to do now is swap the Red and Blue bytes.  In OpenGL
+we use RGB (red, green, blue).  The data in a TGA file is stored BGR (blue, green, red).  If we didn't swap the red and
+blue bytes, anything in the picture that should be red would be blue and anything that should be blue would be red.
+<br><br>
+The first thing we do is create a loop (i) that goes from 0 to imageSize.  By doing this, we can loop through
+all of the image data.  Our loop will increase by steps of 3 (0, 3, 6, 9, etc) if the TGA file is 24 bit, and 4
+(0, 4, 8, 12, etc) if the image is 32 bit.  The reason we increase by steps is so that the value at i is always
+going to be the first byte ([b]lue byte) in our group of 3 or 4 bytes.
+<br><br>
+Inside the loop, we store the [b]lue byte in our temp variable.  We then grab the red byte which is stored at
+texture-&gt;imageData[i+2] (Remember that TGAs store the colors as BGR[A].  B is i+0, G is i+1 and
+R is i+2) and store it where the [b]lue byte used to be.
+<br><br>
+Lastly we move the [b]lue byte that we stored in the temp variable to the location where the [r]ed byte used to be
+(i+2), and we close the file with fclose(file).
+<br><br>
+If everything went ok, the TGA should now be stored in memory as usable OpenGL texture data!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	for(GLuint i=0; i&lt;int(imageSize); i+=bytesPerPixel)				<font class="theme">// Loop Through The Image Data</font>
+	{										<font class="theme">// Swaps The 1st And 3rd Bytes ('R'ed and 'B'lue)</font>
+		temp=texture-&gt;imageData[i];						<font class="theme">// Temporarily Store The Value At Image Data 'i'</font>
+		texture-&gt;imageData[i] = texture-&gt;imageData[i + 2];			<font class="theme">// Set The 1st Byte To The Value Of The 3rd Byte</font>
+		texture-&gt;imageData[i + 2] = temp;					<font class="theme">// Set The 3rd Byte To The Value In 'temp' (1st Byte Value)</font>
+	}
+
+	fclose (file);									<font class="theme">// Close The File</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now that we have usable data, it's time to make a texture from it.  We start off by telling OpenGL we want to create a
+texture in the memory pointed to by &amp;texture[0].texID.
+<br><br>
+It's important that you understand a few things before we go on.  In the InitGL() code, when we call LoadTGA() we pass it
+two parameters.  The first parameter is &amp;textures[0].  In LoadTGA() we don't make reference to &amp;textures[0].
+We make reference to &amp;texture[0] (no 's' at the end).  When we modify &amp;texture[0] we are actually
+modifying textures[0].  texture[0] assumes the identity of textures[0].  I hope that makes sense.
+<br><br>
+So if we wanted to create a second texture, we would pass the parameter &amp;textures[1].  In LoadTGA() any time we
+modified texture[0] we would be modifying textures[1].  If we passed &amp;textures[2], texture[0]
+would assume the identity of &amp;textures[2], etc.
+<br><br>
+Hard to explain, easy to understand.  Of course I wont be happy until I make it really clear :)  Last example in english
+using an example.  Say I had a box.  I called it box #10.  I gave it to my friend and asked him to fill it up.  My friend
+could care less what number it is.  To him it's just a box.  So he fills what he calls "just a box".  He gives it back to
+me.  To me he just filled Box #10 for me.  To him he just filled a box.  If I give him another box called box #11 and say
+hey, can you fill this.  He'll again think of it as just "box".  He'll fill it and give it back to me full.  To me he's
+just filled box #11 for me.
+<br><br>
+When I give LoadTGA &amp;textures[1] it thinks of it as &amp;texture[0].  It fills it with texture information, and
+once it's done I am left with a working textures[1].  If I give LoadTGA &amp;textures[2] it again thinks of it
+as &amp;texture[0].  It fills it with data, and I'm left with a working textures[2].  Make sense :)
+<br><br>
+Anyways... On to the code!  We tell LoadTGA() to build our texture.  We bind the texture, and tell OpenGL we want it to be
+linear filtered.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Build A Texture From The Data</font>
+	glGenTextures(1, &amp;texture[0].texID);						<font class="theme">// Generate OpenGL texture IDs</font>
+
+	glBindTexture(GL_TEXTURE_2D, texture[0].texID);					<font class="theme">// Bind Our Texture</font>
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);		<font class="theme">// Linear Filtered</font>
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);		<font class="theme">// Linear Filtered</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we check to see if the TGA file was 24 or 32 bit.  If the TGA was 24 bit, we set the type to GL_RGB.  (no
+alpha channel).  If we didn't do this, OpenGL would try to build a texture with an alpha channel.  The alpha information
+wouldn't be there, and the program would probably crash or give an error message.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	if (texture[0].bpp==24)								<font class="theme">// Was The TGA 24 Bits</font>
+	{
+		type=GL_RGB;								<font class="theme">// If So Set The 'type' To GL_RGB</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we build our texture, the same way we've always done it.  But instead of putting the type in ourselves (GL_RGB or
+GL_RGBA), we substitute the variable type.  That way if the program detected that the TGA was 24 bit, the type will
+be GL_RGB.  If our program detected that the TGA was 32 bit, the type would be GL_RGBA.
+<br><br>
+After the texture has been built, we return true.  This lets the InitGL() code know that everything went ok.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glTexImage2D(GL_TEXTURE_2D, 0, type, texture[0].width, texture[0].height, 0, type, GL_UNSIGNED_BYTE, texture[0].imageData);
+
+	return true;									<font class="theme">// Texture Building Went Ok, Return True</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The code below is our standard build a font from a texture code.  You've all seen this code before if you've gone through
+all the tutorials up until now.  Nothing really new here, but I figured I'd include the code to make following through
+the program a little easier.
+<br><br>
+Only real difference is that I bind to textures[0].texID.  Which points to the font texture.  Only real difference
+is that .texID has been added.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>GLvoid BuildFont(GLvoid)								<font class="theme">// Build Our Font Display List</font>
+{
+	base=glGenLists(256);								<font class="theme">// Creating 256 Display Lists</font>
+	glBindTexture(GL_TEXTURE_2D, textures[0].texID);				<font class="theme">// Select Our Font Texture</font>
+	for (int loop1=0; loop1&lt;256; loop1++)						<font class="theme">// Loop Through All 256 Lists</font>
+	{
+		float cx=float(loop1%16)/16.0f;						<font class="theme">// X Position Of Current Character</font>
+		float cy=float(loop1/16)/16.0f;						<font class="theme">// Y Position Of Current Character</font>
+
+		glNewList(base+loop1,GL_COMPILE);					<font class="theme">// Start Building A List</font>
+			glBegin(GL_QUADS);						<font class="theme">// Use A Quad For Each Character</font>
+				glTexCoord2f(cx,1.0f-cy-0.0625f);			<font class="theme">// Texture Coord (Bottom Left)</font>
+				glVertex2d(0,16);					<font class="theme">// Vertex Coord (Bottom Left)</font>
+				glTexCoord2f(cx+0.0625f,1.0f-cy-0.0625f);		<font class="theme">// Texture Coord (Bottom Right)</font>
+				glVertex2i(16,16);					<font class="theme">// Vertex Coord (Bottom Right)</font>
+				glTexCoord2f(cx+0.0625f,1.0f-cy-0.001f);		<font class="theme">// Texture Coord (Top Right)</font>
+				glVertex2i(16,0);					<font class="theme">// Vertex Coord (Top Right)</font>
+				glTexCoord2f(cx,1.0f-cy-0.001f);			<font class="theme">// Texture Coord (Top Left)</font>
+				glVertex2i(0,0);					<font class="theme">// Vertex Coord (Top Left)</font>
+			glEnd();							<font class="theme">// Done Building Our Quad (Character)</font>
+			glTranslated(14,0,0);						<font class="theme">// Move To The Right Of The Character</font>
+		glEndList();								<font class="theme">// Done Building The Display List</font>
+	}										<font class="theme">// Loop Until All 256 Are Built</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+KillFont is still the same.  We created 256 display lists, so we need to destroy 256 display lists when the program closes.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>GLvoid KillFont(GLvoid)									<font class="theme">// Delete The Font From Memory</font>
+{
+	glDeleteLists(base,256);							<font class="theme">// Delete All 256 Display Lists</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The glPrint() code has only changed a bit.  The letters are all stretched on the y axis.  Making the letters very tall.
+I've explained the rest of the code in other tutorials.  The stretching is accomplished with the glScalef(x,y,z) command.
+We leave the ratio at 1.0 on the x axis, we double the size on the y axis (2.0), and we leave it at 1.0 on the z axis.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>GLvoid glPrint(GLint x, GLint y, int set, const char *fmt, ...)				<font class="theme">// Where The Printing Happens</font>
+{
+	char	text[1024];								<font class="theme">// Holds Our String</font>
+	va_list	ap;									<font class="theme">// Pointer To List Of Arguments</font>
+
+	if (fmt == NULL)								<font class="theme">// If There's No Text</font>
+		return;									<font class="theme">// Do Nothing</font>
+
+	va_start(ap, fmt);								<font class="theme">// Parses The String For Variables</font>
+	    vsprintf(text, fmt, ap);							<font class="theme">// And Converts Symbols To Actual Numbers</font>
+	va_end(ap);									<font class="theme">// Results Are Stored In Text</font>
+
+	if (set&gt;1)									<font class="theme">// Did User Choose An Invalid Character Set?</font>
+	{
+		set=1;									<font class="theme">// If So, Select Set 1 (Italic)</font>
+	}
+
+	glEnable(GL_TEXTURE_2D);							<font class="theme">// Enable Texture Mapping</font>
+	glLoadIdentity();								<font class="theme">// Reset The Modelview Matrix</font>
+	glTranslated(x,y,0);								<font class="theme">// Position The Text (0,0 - Top Left)</font>
+	glListBase(base-32+(128*set));							<font class="theme">// Choose The Font Set (0 or 1)</font>
+
+	glScalef(1.0f,2.0f,1.0f);							<font class="theme">// Make The Text 2X Taller</font>
+
+	glCallLists(strlen(text),GL_UNSIGNED_BYTE, text);				<font class="theme">// Write The Text To The Screen</font>
+	glDisable(GL_TEXTURE_2D);							<font class="theme">// Disable Texture Mapping</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+ReSizeGLScene() sets up an ortho view.  Nothing really new.  0,1 is the top left of the screen.  639,480 is the bottom
+right.  This gives us exact screen coordinates in 640 x 480 resolution.  Notice that we set the value of swidth
+to equal the windows current width, and we set the value of sheight to equal the windows current height.  Whenever
+the window is resized or moved, sheight and swidth will be updated.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>GLvoid ReSizeGLScene(GLsizei width, GLsizei height)					<font class="theme">// Resize And Initialize The GL Window</font>
+{
+	swidth=width;									<font class="theme">// Set Scissor Width To Window Width</font>
+	sheight=height;									<font class="theme">// Set Scissor Height To Window Height</font>
+	if (height==0)									<font class="theme">// Prevent A Divide By Zero By</font>
+	{
+		height=1;								<font class="theme">// Making Height Equal One</font>
+	}
+	glViewport(0,0,width,height);							<font class="theme">// Reset The Current Viewport</font>
+	glMatrixMode(GL_PROJECTION);							<font class="theme">// Select The Projection Matrix</font>
+	glLoadIdentity();								<font class="theme">// Reset The Projection Matrix</font>
+	glOrtho(0.0f,640,480,0.0f,-1.0f,1.0f);						<font class="theme">// Create Ortho 640x480 View (0,0 At Top Left)</font>
+	glMatrixMode(GL_MODELVIEW);							<font class="theme">// Select The Modelview Matrix</font>
+	glLoadIdentity();								<font class="theme">// Reset The Modelview Matrix</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The init code is very minimal.  We load our TGA file.  Notice that the first parameter passed is &amp;textures[0].
+The second parameter is the name of the file we want to load.  In this case, we want to load the Font.TGA file.  If
+LoadTGA() returns false for any reason, the if statement will also return false, causing the program to quit with an
+"initialization failed" message.
+<br><br>
+If you wanted to load a second texture you could use the following code:  if ((!LoadTGA(&amp;textures[0],"image1.tga")) ||
+(!LoadTGA(&amp;textures[1],"image2.tga"))) { }
+<br><br>
+After we load the TGA (creating our texture), we build our font, set shading to smooth, set the background color to black,
+enable clearing of the depth buffer, and select our font texture (bind to it).
+<br><br>
+Lastly we return true so that our program knows that initialization went ok.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int InitGL(GLvoid)									<font class="theme">// All Setup For OpenGL Goes Here</font>
+{
+	if (!LoadTGA(&amp;textures[0],"Data/Font.TGA"))					<font class="theme">// Load The Font Texture</font>
+	{
+		return false;								<font class="theme">// If Loading Failed, Return False</font>
+	}
+
+	BuildFont();									<font class="theme">// Build The Font</font>
+
+	glShadeModel(GL_SMOOTH);							<font class="theme">// Enable Smooth Shading</font>
+	glClearColor(0.0f, 0.0f, 0.0f, 0.5f);						<font class="theme">// Black Background</font>
+	glClearDepth(1.0f);								<font class="theme">// Depth Buffer Setup</font>
+	glBindTexture(GL_TEXTURE_2D, textures[0].texID);				<font class="theme">// Select Our Font Texture</font>
+
+	return TRUE;									<font class="theme">// Initialization Went OK</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The draw code is completely new :)  we start off by creating a variable of type char called token.  Token will hold
+parsed text later on in the code.
+<br><br>
+We have another variable called cnt.  I use this variable both for counting the number of extensions supported, and
+for positioning the text on the screen.  cnt is reset to zero every time we call DrawGLScene.
+<br><br>
+We clear the screen and depth buffer and then set the color to bright red (full red intensity, 50% green, 50% blue).
+at 50 on the x axis and 16 on the y axis we write teh word "Renderer".  We also write "Vendor" and "Version" at the top
+of the screen.  The reason each word does not start at 50 on the x axis is because I right justify the words (they all
+line up on the right side).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int DrawGLScene(GLvoid)									<font class="theme">// Here's Where We Do All The Drawing</font>
+{
+	char	*token;									<font class="theme">// Storage For Our Token</font>
+	int	cnt=0;									<font class="theme">// Local Counter Variable</font>
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);				<font class="theme">// Clear Screen And Depth Buffer</font>
+
+	glColor3f(1.0f,0.5f,0.5f);							<font class="theme">// Set Color To Bright Red</font>
+	glPrint(50,16,1,"Renderer");							<font class="theme">// Display Renderer</font>
+	glPrint(80,48,1,"Vendor");							<font class="theme">// Display Vendor Name</font>
+	glPrint(66,80,1,"Version");							<font class="theme">// Display Version</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now that we have text on the screen, we change the color to orange, and grab the renderer, vendor name and version number from
+the video card.  We do this by passing GL_RENDERER, GL_VENDOR &amp; GL_VERSION to glGetString().  glGetString will return the
+requested renderer name, vendor name and version number.  The information returned will be text so we need to cast the
+return information from glGetString as char.  All this means is that we tell the program we want the information returned
+to be characters (text).  If you don't include the (char *) you will get an error message.  We're printing text, so we need
+text returned.  We grab all three pieces of information and write the information we've grabbed to the right of the
+previous text.
+<br><br>
+The information we get from glGetString(GL_RENDERER) will be written beside the red text "Renderer", the information we
+get from glGetString(GL_VENDOR) will be written to the right of "Vendor", etc.
+<br><br>
+I'd like to explain casting in more detail, but I'm not really sure of a good way to explain it.  If anyone has a good
+explanation, send it in, and I'll modify my explanation.
+<br><br>
+After we have the renderer information, vendor information and version number written to the screen, we change the color
+to a bright blue, and write "NeHe Productions" at the bottom of the screen :)  Of course you can change this to anything
+you want.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glColor3f(1.0f,0.7f,0.4f);							<font class="theme">// Set Color To Orange</font>
+	glPrint(200,16,1,(char *)glGetString(GL_RENDERER));				<font class="theme">// Display Renderer</font>
+	glPrint(200,48,1,(char *)glGetString(GL_VENDOR));				<font class="theme">// Display Vendor Name</font>
+	glPrint(200,80,1,(char *)glGetString(GL_VERSION));				<font class="theme">// Display Version</font>
+
+	glColor3f(0.5f,0.5f,1.0f);							<font class="theme">// Set Color To Bright Blue</font>
+	glPrint(192,432,1,"NeHe Productions");						<font class="theme">// Write NeHe Productions At The Bottom Of The Screen</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we draw a nice white border around the screen, and around the text.  We start off by resetting the modelview matrix.
+Because we've been printing text to the screen, and we might not be at 0,0 on the screen, it's a safe thing to do.
+<br><br>
+We then set the color to white, and start drawing our borders.  A line strip is actually pretty easy to use.  You tell
+OpenGL you want to draw a line strip with glBegin(GL_LINE_STRIP).  Then we set the first vertex.  Our first vertex will
+be on the far right side of the screen, and about 63 pixels up from the bottom of the screen (639 on the x axis, 417 on
+the y axis).  Then we set the second vertex.  We stay at the same location on the y axis (417), but we move to the far
+left side of the screen on the x axis (0).  A line will be drawn from the right side of the screen (639,417) to the left
+side of the screen (0,417).
+<br><br>
+You need to have at least two vertices in order to draw a line (common sense).  From the left side of the screen, we move
+down, right, and then straight up (128 on the y axis).
+<br><br>
+We then start another line strip, and draw a second box at the top of the screen.  If you need to draw ALOT of connected
+lines, line strips can definitely cut down on the amount of code required as opposed to using regular lines (GL_LINES).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glLoadIdentity();								<font class="theme">// Reset The ModelView Matrix</font>
+	glColor3f(1.0f,1.0f,1.0f);							<font class="theme">// Set The Color To White</font>
+	glBegin(GL_LINE_STRIP);								<font class="theme">// Start Drawing Line Strips (Something New)</font>
+		glVertex2d(639,417);							<font class="theme">// Top Right Of Bottom Box</font>
+		glVertex2d(  0,417);							<font class="theme">// Top Left Of Bottom Box</font>
+		glVertex2d(  0,480);							<font class="theme">// Lower Left Of Bottom Box</font>
+		glVertex2d(639,480);							<font class="theme">// Lower Right Of Bottom Box</font>
+		glVertex2d(639,128);							<font class="theme">// Up To Bottom Right Of Top Box</font>
+	glEnd();									<font class="theme">// Done First Line Strip</font>
+	glBegin(GL_LINE_STRIP);								<font class="theme">// Start Drawing Another Line Strip</font>
+		glVertex2d(  0,128);							<font class="theme">// Bottom Left Of Top Box</font>
+		glVertex2d(639,128);							<font class="theme">// Bottom Right Of Top Box		</font>
+		glVertex2d(639,  1);							<font class="theme">// Top Right Of Top Box</font>
+		glVertex2d(  0,  1);							<font class="theme">// Top Left Of Top Box</font>
+		glVertex2d(  0,417);							<font class="theme">// Down To Top Left Of Bottom Box</font>
+	glEnd();									<font class="theme">// Done Second Line Strip</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now for something new.  A wonderful GL command called glScissor(x,y,w,h).  What this command does is creates almost what
+you would call a window.  When GL_SCISSOR_TEST is enabled, the only portion of the screen that you can alter is the portion
+inside the scissor window.  The first line below creates a scissor window starting at 1 on the x axis, and 13.5% (0.135...f)
+of the way from the bottom of the screen on the y axis.  The scissor window will be 638 pixels wide (swidth-2), and
+59.7% (0.597...f) of the screen tall.
+<br><br>
+In the next line we enable scissor testing.  Anything we draw OUTSIDE the scissor window will not show up.  You could draw
+a HUGE quad on the screen from 0,0 to 639,480, and you would only see the quad inside the scissor window, the rest of the
+screen would be unaffected.  Very nice command!
+<br><br>
+The third line of code creates a variable called text that will hold the characters returned by
+glGetString(GL_EXTENSIONS).  malloc(strlen((char *)glGetString(GL_EXTENSIONS))+1) allocates enough memory to hold the
+entire string returned +1 (so if the string was 50 characters, text would be able to hold all 50 characters).
+<br><br>
+The next line copies the GL_EXTENSIONS information to text.  If we modify the GL_EXTENSIONS information directly,
+big problems will occur, so instead we copy the information into text, and then manipulate the information
+stored in text.  Basically we're just taking a copy, and storing it in the variable text.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glScissor(1	,int(0.135416f*sheight),swidth-2,int(0.597916f*sheight));	<font class="theme">// Define Scissor Region</font>
+	glEnable(GL_SCISSOR_TEST);							<font class="theme">// Enable Scissor Testing</font>
+
+	char* text=(char*)malloc(strlen((char *)glGetString(GL_EXTENSIONS))+1);		<font class="theme">// Allocate Memory For Our Extension String</font>
+	strcpy (text,(char *)glGetString(GL_EXTENSIONS));				<font class="theme">// Grab The Extension List, Store In Text</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now for something new.  Lets pretend that after grabbing the extension information from the video card, the variable
+text had the following string of text stored in it... "GL_ARB_multitexture GL_EXT_abgr GL_EXT_bgra".
+strtok(TextToAnalyze,TextToFind) will scan through the variable text until it finds a " " (space).  Once it finds
+a space, it will copy the text UP TO the space into the variable token.  So in our little example, token
+would be equal to "GL_ARB_multitexture".  The space is then replaced with a <u>marker</u>.  More about this in a minute.
+<br><br>
+Next we create a loop that stops once there is no more information left in text.  If there is no information in
+text, token will be equal to nothing (NULL) and the loop will stop.
+<br><br>
+We increase the counter variable (cnt) by one, and then check to see if the value in cnt is higher than the
+value of maxtokens.  If cnt is higher than maxtokens we make maxtokens equal to cnt.
+That way if the counter hits 20, maxtokens will also equal 20.  It's an easy way to keep track of the maximum
+value of cnt.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	token=strtok(text," ");								<font class="theme">// Parse 'text' For Words, Seperated By " " (spaces)</font>
+	while(token!=NULL)								<font class="theme">// While The Token Isn't NULL</font>
+	{
+		cnt++;									<font class="theme">// Increase The Counter</font>
+		if (cnt&gt;maxtokens)							<font class="theme">// Is 'maxtokens' Less Than 'cnt'</font>
+		{
+			maxtokens=cnt;							<font class="theme">// If So, Set 'maxtokens' Equal To 'cnt'</font>
+		}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+So we have stored the first extension from our list of extensions in the variable token.  Next thing to do is set
+the color to bright green.  We then print the variable cnt on the left side of the screen.  Notice that we print
+at 0 on the x axis.  This should erase the left (white) border that we drew, but because scissor testing is on, pixels
+drawn at 0 on the x axis wont be modified.  The border can't be drawn over.
+<br><br>
+The variable is drawn on the far left side of the screen (0 on the x axis).  We start drawing at 96 on the y axis.  To
+keep all the text from drawing to the same spot on the screen, we add (cnt*32) to 96.  So if we are displaying the
+first extension, cnt will equal 1, and the text will be drawn at 96+(32*1) (128) on the y axis.  If we display the
+second extension, cnt will equal 2, and the text will be drawn at 96+(32*2) (160) on the y axis.
+<br><br>
+Notice I also subtract scroll.  When the program first runs, scroll will be equal to 0.  So our first line
+of text is drawn at 96+(32*1)-0.  If you press the DOWN ARROW, scroll is increased by 2.  If scroll was 4,
+the text would be drawn at 96+(32*1)-4.  That means the text would be drawn at 124 instead of 128 on the y axis because of
+scroll being equal to 4.  The top of our scissor window ends at 128 on the y axis.  Any part of the text drawn from
+lines 124-127 on the y axis will not appear on the screen.
+<br><br>
+Same thing with the bottom of the screen.  If cnt was equal to 11 and scroll was equal to 0, the text
+would be drawn at 96+(32*11)-0 which is 448 on the y axis.  Because the scissor window only allows us to draw as far as
+line 416 on the y axis, the text wouldn't show up at all.
+<br><br>
+The final result is that we end up with a scrollable window that only allows us to look at 288/32 (9) lines of text.  288
+is the height of our scissor window.  32 is the height of the text.  By changing the value of scroll we can move
+the text up or down (offset the text).
+<br><br>
+The effect is similar to a movie projector.  The film rolls by the lens, and all you see is the current frame.  You don't
+see the area above or below the frame.  The lens acts as a window similar to the window created by the scissor test.
+<br><br>
+After we have drawn the current count (cnt) to the screen, we change the color to yellow, move 50 pixels to the
+right on the x axis, and we write the text stored in the variable token to the screen.
+<br><br>
+Using our example above, the first line of text displayed on the screen should look like this:
+<br><br>
+1    GL_ARB_multitexture
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		glColor3f(0.5f,1.0f,0.5f);						<font class="theme">// Set Color To Bright Green</font>
+		glPrint(0,96+(cnt*32)-scroll,0,"%i",cnt);				<font class="theme">// Print Current Extension Number</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+After we have drawn the current count to the screen, we change the color to yellow, move 50 pixels to the right on the x
+axis, and we write the text stored in the variable token to the screen.
+<br><br>
+Using our example above, the first line of text displayed on the screen should look like this:
+<br><br>
+1&nbsp;&nbsp;&nbsp;GL_ARB_multitexture
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		glColor3f(1.0f,1.0f,0.5f);						<font class="theme">// Set Color To Yellow</font>
+		glPrint(50,96+(cnt*32)-scroll,0,token);					<font class="theme">// Print The Current Token (Parsed Extension Name)</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">After
+we have displayed the value of token on the screen, we need to check
+through the variable text tosee if any more extensions are supported.
+Instead of using token=strtok(text," ") like we did above, we
+replace text with NULL. This tells the command strtok to search from
+the last <u>marker</u> to the NEXT space in
+the string of text (text).
+<br><br>
+In our example above ("GL_ARB_multitexture<u>marker</u>GL_EXT_abgr GL_EXT_bgra") there will now be a marker after
+the text "GL_ARB_multitexture".  The line below will start search FROM the marker to the next space.  Everything from the
+marker to the next space will be stored in token.  token should end up being "GL_EXT_abgr", and text
+will end up being "GL_ARB_multitexture<u>marker</u>GL_EXT_abgr<u>marker</u>GL_EXT_bgra".
+<br><br>
+Once strtok() has run out of text to store in token, token will become NULL and the loop will stop.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		token=strtok(NULL," ");							<font class="theme">// Search For The Next Token</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+After all of the extensions have been parsed from the variable text we can disable scissor testing, and free the
+variable text.  This releases the ram we were using to hold the information we got from glGetString(GL_EXTENSIONS).
+<br><br>
+The next time DrawGLScene() is called, new memory will be allocated.  A fresh copy of the information returned by
+glGetStrings(GL_EXTENSIONS) will be copied into the variable text and the entire process will start over.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glDisable(GL_SCISSOR_TEST);							<font class="theme">// Disable Scissor Testing</font>
+
+	free (text);									<font class="theme">// Free Allocated Memory</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The first line below isn't necessary, but I thought it might be a good idea to talk about it, just so everyone knows that
+it exists.  The command glFlush() basically tells OpenGL to finish up what it's doing.  If you ever notice flickering in
+your program (quads disappearing, etc).  Try adding the flush command to the end of DrawGLScene.  It flushes out the
+rendering pipeline.  You may notice flickering if you're program doesn't have enough time to finish rendering the scene.
+<br><br>
+Last thing we do is return true to show that everything went ok.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glFlush();									<font class="theme">// Flush The Rendering Pipeline</font>
+	return TRUE;									<font class="theme">// Everything Went OK</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The only thing to note in KillGLWindow() is that I have added KillFont() at the end.  That way whenever the window is
+killed, the font is also killed.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>GLvoid KillGLWindow(GLvoid)								<font class="theme">// Properly Kill The Window</font>
+{
+	if (fullscreen)									<font class="theme">// Are We In Fullscreen Mode?</font>
+	{
+		ChangeDisplaySettings(NULL,0);						<font class="theme">// If So Switch Back To The Desktop</font>
+		ShowCursor(TRUE);							<font class="theme">// Show Mouse Pointer</font>
+	}
+
+	if (hRC)									<font class="theme">// Do We Have A Rendering Context?</font>
+	{
+		if (!wglMakeCurrent(NULL,NULL))						<font class="theme">// Are We Able To Release The DC And RC Contexts?</font>
+		{
+			MessageBox(NULL,"Release Of DC And RC Failed.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
+		}
+
+		if (!wglDeleteContext(hRC))						<font class="theme">// Are We Able To Delete The RC?</font>
+		{
+			MessageBox(NULL,"Release Rendering Context Failed.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
+		}
+		hRC=NULL;								<font class="theme">// Set RC To NULL</font>
+	}
+
+	if (hDC &amp;&amp; !ReleaseDC(hWnd,hDC))						<font class="theme">// Are We Able To Release The DC</font>
+	{
+		MessageBox(NULL,"Release Device Context Failed.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
+		hDC=NULL;								<font class="theme">// Set DC To NULL</font>
+	}
+
+	if (hWnd &amp;&amp; !DestroyWindow(hWnd))						<font class="theme">// Are We Able To Destroy The Window?</font>
+	{
+		MessageBox(NULL,"Could Not Release hWnd.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
+		hWnd=NULL;								<font class="theme">// Set hWnd To NULL</font>
+	}
+
+	if (!UnregisterClass("OpenGL",hInstance))					<font class="theme">// Are We Able To Unregister Class</font>
+	{
+		MessageBox(NULL,"Could Not Unregister Class.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
+		hInstance=NULL;								<font class="theme">// Set hInstance To NULL</font>
+	}
+
+	KillFont();									<font class="theme">// Kill The Font</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+CreateGLWindow(), and WndProc() are the same.
+<br><br>
+The first change in WinMain() is the title that appears at the top of the window.  It should now read "NeHe's Extensions,
+Scissoring, Token &amp; TGA Loading Tutorial"
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int WINAPI WinMain(	HINSTANCE	hInstance,					<font class="theme">// Instance</font>
+			HINSTANCE	hPrevInstance,					<font class="theme">// Previous Instance</font>
+			LPSTR		lpCmdLine,					<font class="theme">// Command Line Parameters</font>
+			int		nCmdShow)					<font class="theme">// Window Show State</font>
+{
+	MSG	msg;									<font class="theme">// Windows Message Structure</font>
+	BOOL	done=FALSE;								<font class="theme">// Bool Variable To Exit Loop</font>
+
+	<font class="theme">// Ask The User Which Screen Mode They Prefer</font>
+	if (MessageBox(NULL,"Would You Like To Run In Fullscreen Mode?", "Start FullScreen?",MB_YESNO|MB_ICONQUESTION)==IDNO)
+	{
+		fullscreen=FALSE;							<font class="theme">// Windowed Mode</font>
+	}
+
+	<font class="theme">// Create Our OpenGL Window</font>
+	if (!CreateGLWindow("NeHe's Token, Extensions, Scissoring &amp; TGA Loading Tutorial",640,480,16,fullscreen))
+	{
+		return 0;								<font class="theme">// Quit If Window Was Not Created</font>
+	}
+
+	while(!done)									<font class="theme">// Loop That Runs While done=FALSE</font>
+	{
+		if (PeekMessage(&amp;msg,NULL,0,0,PM_REMOVE))				<font class="theme">// Is There A Message Waiting?</font>
+		{
+			if (msg.message==WM_QUIT)					<font class="theme">// Have We Received A Quit Message?</font>
+			{
+				done=TRUE;						<font class="theme">// If So done=TRUE</font>
+			}
+			else								<font class="theme">// If Not, Deal With Window Messages</font>
+			{
+				DispatchMessage(&amp;msg);					<font class="theme">// Dispatch The Message</font>
+			}
+		}
+		else									<font class="theme">// If There Are No Messages</font>
+		{
+			<font class="theme">// Draw The Scene.  Watch For ESC Key And Quit Messages From DrawGLScene()</font>
+			if ((active &amp;&amp; !DrawGLScene()) || keys[VK_ESCAPE])		<font class="theme">// Active?  Was There A Quit Received?</font>
+			{
+				done=TRUE;						<font class="theme">// ESC or DrawGLScene Signalled A Quit</font>
+			}
+			else								<font class="theme">// Not Time To Quit, Update Screen</font>
+			{
+				SwapBuffers(hDC);					<font class="theme">// Swap Buffers (Double Buffering)</font>
+
+				if (keys[VK_F1])					<font class="theme">// Is F1 Being Pressed?</font>
+				{
+					keys[VK_F1]=FALSE;				<font class="theme">// If So Make Key FALSE</font>
+					KillGLWindow();					<font class="theme">// Kill Our Current Window</font>
+					fullscreen=!fullscreen;				<font class="theme">// Toggle Fullscreen / Windowed Mode</font>
+					<font class="theme">// Recreate Our OpenGL Window</font>
+					if (!CreateGLWindow("NeHe's Token, Extensions, Scissoring &amp; TGA Loading Tutorial",640,480,16,fullscreen))
+					{
+						return 0;				<font class="theme">// Quit If Window Was Not Created</font>
+					}
+				}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The code below checks to see if the up arrow is being pressed if it is, and scroll is greater than 0, we decrease
+scroll by 2.  This causes the text to move down the screen.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				if (keys[VK_UP] &amp;&amp; (scroll&gt;0))				<font class="theme">// Is Up Arrow Being Pressed?</font>
+				{
+					scroll-=2;					<font class="theme">// If So, Decrease 'scroll' Moving Screen Down</font>
+				}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+If the down arrow is being pressed and scroll is less than (32*(maxtokens-9)) scroll will be increased
+by 2, andd the text on the screen will scroll upwards.
+<br><br>
+32 is the number of lines that each letter takes up.  Maxtokens is the total amount of extensions that your video card
+supports.  We subtract 9, because 9 lines can be shown on the screen at once.  If we did not subtract 9, we could scroll
+past the end of the list, causing the list to scroll completely off the screen.  Try leaving the -9 out if you're not
+sure what I mean.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				if (keys[VK_DOWN] &amp;&amp; (scroll&lt;32*(maxtokens-9)))		<font class="theme">// Is Down Arrow Being Pressed?</font>
+				{
+					scroll+=2;					<font class="theme">// If So, Increase 'scroll' Moving Screen Up</font>
+				}
+			}
+		}
+	}
+
+	<font class="theme">// Shutdown</font>
+	KillGLWindow();									<font class="theme">// Kill The Window</font>
+	return (msg.wParam);								<font class="theme">// Exit The Program</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+I hope that you found this tutorial interesting.  By the end of this tutorial you should know how to read the vendor name,
+renderer and version number from your video card.  You should also know how to find out what extensions are supported on
+any video card that supports OpenGL.  You should know what scissor testing is, and how it can be used in OpenGL projects of
+your own, and lastly, you should know how to load TGA Images instead of Bitmap Images for use as textures.
+<br><br>
+If you find any problems with the tutorial, or you find the information to hard to understand, let me know.  I want the
+tutorials to be the best they can be.  Your feedback is important!
+<br><br>
+<b>Jeff Molofee</b> (<b>NeHe</b>)
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vc/lesson24.zip">Visual C++</a> Code For This Lesson.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/bcb6/lesson24_bcb6.zip">Borland C++ Builder 6</a> Code For This Lesson. ( Conversion by <a href="mailto:christian@tugzip.com">Christian Kindahl</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cwarrior/lesson24.zip">Code Warrior 5.3</a> Code For This Lesson. ( Conversion by <a href="mailto:DelusionalBeing@hotmail.com">Scott Lupton</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/delphi/lesson24.zip">Delphi</a> Code For This Lesson. ( Conversion by <a href="mailto:michal_praha@seznam.cz">Michal Tucek</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/devc/lesson24.zip">Dev C++</a> Code For This Lesson. ( Conversion by <a href="mailto:danprogram@hotmail.com">Dan</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/euphoria/lesson24.zip">Euphoria</a> Code For This Lesson. ( Conversion by <a href="mailto:1evan@sbcglobal.net">Evan Marshall</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/glut/lesson24.zip">GLut</a> Code For This Lesson. ( Conversion by <a href="mailto:harvey_a@shaw.ca">Ashley Harvey</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/jogl/lesson24.jar">JoGL</a> Code For This Lesson. ( Conversion by <a href="mailto:abezrati@hotmail.com">Abdul Bezrati</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/lccwin32/lccwin32_lesson24.zip">LCC Win32</a> Code For This Lesson. ( Conversion by <a href="mailto:rwishlaw@shaw.ca">Robert Wishlaw</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linux/lesson24.tar.gz">Linux</a> Code For This Lesson. ( Conversion by <a href="mailto:jay@remotepoint.com">Jay Groven</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxsdl/lesson24.tar.gz">Linux/SDL</a> Code For This Lesson. ( Conversion by <a href="mailto:scarab@egyptian.net">DarkAlloy</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/lwjgl/lesson24.jar">LWJGL</a> Code For This Lesson. ( Conversion by <a href="mailto:mark.bernard@rogers.com">Mark Bernard</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/macosxcocoa/lesson24.zip">Mac OS X/Cocoa</a> Code For This Lesson. ( Conversion by <a href="mailto:blb@pobox.com">Bryan Blackburn</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vs_net/lesson24.zip">Visual Studio .NET</a> Code For This Lesson. ( Conversion by <a href="mailto:ultimatezeus@hotmail.com">Grant James</a> )<br>
+<br><br>
+<br><br>
+<table border="0" width="100%">
+<tbody><tr><td align="left" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=23">&lt; Lesson 23</a></font></b></td>
+<td align="right" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=25">Lesson 25 &gt;</a></font></b></td>
+</tr></tbody></table>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table>
+
+</body></html>

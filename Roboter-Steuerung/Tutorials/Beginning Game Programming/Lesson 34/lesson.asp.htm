@@ -1,0 +1,537 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+<title>NeHe Productions: OpenGL Lesson #34</title>
+<meta name="author" content="Jeff Molofee">
+<meta name="description" content="OpenGL Tutorials, Demos, Games and More...">
+<meta name="keywords" content="opengl, tutorial, article, demo, game, blend, texturemap, lighting, contest, 3D">
+<link rel="stylesheet" type="text/css" href="lesson.asp-Dateien/rgb.css">
+</head><body bgcolor="black" link="#aaccff" text="white" vlink="#aaccff">
+
+<table border="0" width="100%"><tbody><tr><td align="center">
+<!-- Begin -  Site: GameDev.net Zone: NeHe 728x90 -->
+<script language="javascript" type="text/javascript">
+<!--
+var browName = navigator.appName;
+var SiteID = 1;
+var ZoneID = 4;
+var browDateTime = (new Date()).getTime();
+if (browName=='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;Browser=NETSCAPE4&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+if (browName!='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+// --> 
+</script><script language="javascript" src="lesson.asp-Dateien/a.js"></script><a href="http://www.gamedev.net/banman/a.aspx?Task=Click&amp;ZoneID=4&amp;CampaignID=297&amp;AdvertiserID=86&amp;BannerID=393&amp;SiteID=1&amp;RandomNumber=505552153&amp;Keywords=" target="_Blank"><img src="lesson.asp-Dateien/GTBanner_Long.jpg" alt="" align="Center" border="0" height="60" width="468"></a><br>
+<noscript> <a
+href="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Click&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+target="_blank"> <img
+src="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Get&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+width="728" height="90" border="0" alt=""></a>
+</noscript>
+<!-- End -  Site: GameDev.net Zone: NeHe 728x90 --></td></tr></tbody></table><br>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tinylogo" height="130" width="326"><img src="lesson.asp-Dateien/blank.gif" alt="NeHe Productions" height="130" width="326"></td><td class="indexheading" align="center" valign="middle"><font class="text"><font class="theme" size="+3"><b><i>Lesson: 34</i></b></font></font></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Welcome to another exciting tutorial!  The code for this tutorial was written by Ben Humphrey, and is based on
+the GL framework from lesson 1.  By now you should be a GL expert {grin}, and moving the code into your own
+base code should be a snap!
+<br><br>
+This tutorial will teach you how to create cool looking terrain from a height map.  For those of you that have
+no idea what a height map is, I will attempt a crude explanation.  A height map is simply... displacement from
+a surface.  For those of you that are still scratching your heads asking yourself "what the heck is this guy
+talking about!?!"... In english, our heightmap represents low and height points for our landscape.  It's
+completely up to you to decide which shades represent low points and which shades represent high points.  It's
+also important to note that height maps do not have to be images... you can create a height map from just about
+any type of data.  For instance, you could use an audio stream to create a visual height map representation.
+If you're still confused... keep reading... it will all start to make sense as you go through the tutorial :)
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>#include &lt;windows.h&gt;						<font class="theme">// Header File For Windows</font>
+#include &lt;stdio.h&gt;						<font class="theme">// Header file For Standard Input/Output ( NEW )</font>
+#include &lt;gl\gl.h&gt;						<font class="theme">// Header File For The OpenGL32 Library</font>
+#include &lt;gl\glu.h&gt;						<font class="theme">// Header File For The GLu32 Library</font>
+#include &lt;gl\glaux.h&gt;						<font class="theme">// Header File For The Glaux Library</font>
+
+#pragma comment(lib, "opengl32.lib")				<font class="theme">// Link OpenGL32.lib</font>
+#pragma comment(lib, "glu32.lib")				<font class="theme">// Link Glu32.lib</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We start off by defining a few important variables.  MAP_SIZE is the dimension of our map.  In this
+tutorial, the map is 1024x1024.  The STEP_SIZE is the size of each quad we use to draw the landscape.
+By reducing the step size, the landscape becomes smoother.  It's important to note that the smaller the step
+size, the more of a performance hit your program will take, especially when using large height maps.  The
+HEIGHT_RATIO is used to scale the landscape on the y-axis.  A low HEIGHT_RATIO produces flatter
+mountains.  A high HEIGHT_RATIO produces taller / more defined mountains.
+<br><br>
+Further down in the code you will notice bRender.  If bRender is set to true (which it is by
+default), we will draw solid polygons.  If bRender is set to false, we will draw the landscape in
+wire frame.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>#define		MAP_SIZE	1024				<font class="theme">// Size Of Our .RAW Height Map ( NEW )</font>
+#define		STEP_SIZE	16				<font class="theme">// Width And Height Of Each Quad ( NEW )</font>
+#define		HEIGHT_RATIO	1.5f				<font class="theme">// Ratio That The Y Is Scaled According To The X And Z ( NEW )</font>
+
+HDC		hDC=NULL;					<font class="theme">// Private GDI Device Context</font>
+HGLRC		hRC=NULL;					<font class="theme">// Permanent Rendering Context</font>
+HWND		hWnd=NULL;					<font class="theme">// Holds Our Window Handle</font>
+HINSTANCE	hInstance;					<font class="theme">// Holds The Instance Of The Application</font>
+
+bool		keys[256];					<font class="theme">// Array Used For The Keyboard Routine</font>
+bool		active=TRUE;					<font class="theme">// Window Active Flag Set To TRUE By Default</font>
+bool		fullscreen=TRUE;				<font class="theme">// Fullscreen Flag Set To TRUE By Default</font>
+bool		bRender = TRUE;					<font class="theme">// Polygon Flag Set To TRUE By Default ( NEW )</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Here we make an array (g_HeightMap[ ]) of bytes to hold our height map data.  Since we are reading in a
+.RAW file that just stores values from 0 to 255, we can use the values as height values, with 255 being the
+highest point, and 0 being the lowest point.  We also create a variable called scaleValue for scaling the
+entire scene.  This gives the user the ability to zoom in and out.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>BYTE g_HeightMap[MAP_SIZE*MAP_SIZE];				<font class="theme">// Holds The Height Map Data ( NEW )</font>
+
+float scaleValue = 0.15f;					<font class="theme">// Scale Value For The Terrain ( NEW )</font>
+
+LRESULT	CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);		<font class="theme">// Declaration For WndProc</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The ReSizeGLScene() code is the same as lesson 1 except the farthest distance has been changed from
+100.0f to 500.0f.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>GLvoid ReSizeGLScene(GLsizei width, GLsizei height)		<font class="theme">// Resize And Initialize The GL Window</font>
+{
+... CUT ...
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The following code loads in the .RAW file.  Not too complex!  We open the file in Read/Binary mode.  We then
+check to make sure the file was found and that it could be opened.  If there was a problem opening the file for
+whatever reason, an error message will be displayed.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// Loads The .RAW File And Stores It In pHeightMap</font>
+void LoadRawFile(LPSTR strName, int nSize, BYTE *pHeightMap)
+{
+	FILE *pFile = NULL;
+
+	<font class="theme">// Open The File In Read / Binary Mode.</font>
+	pFile = fopen( strName, "rb" );
+
+	<font class="theme">// Check To See If We Found The File And Could Open It</font>
+	if ( pFile == NULL )	
+	{
+		<font class="theme">// Display Error Message And Stop The Function</font>
+		MessageBox(NULL, "Can't Find The Height Map!", "Error", MB_OK);
+		return;
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+If we've gotten this far, then it's safe to assume there were no problems opening the file.  With the file open,
+we can now read in the data.  We do this with fread().  pHeightMap is the storage location for
+the data (pointer to our g_Heightmap array).  1 is the number of items to load (1 byte at a time), nSize
+is the maximum number of items to read (the image size in bytes - width of image * height of image).  Finally,
+pFile is a pointer to our file structure!
+<br><br>
+After reading in the data, we check to see if there were any errors.  We store the results in result and
+then check result.  If an error did occur, we pop up an error message.
+<br><br>
+The last thing we do is close the file with fclose(pFile).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Here We Load The .RAW File Into Our pHeightMap Data Array</font>
+	<font class="theme">// We Are Only Reading In '1', And The Size Is (Width * Height)</font>
+	fread( pHeightMap, 1, nSize, pFile );
+
+	<font class="theme">// After We Read The Data, It's A Good Idea To Check If Everything Read Fine</font>
+	int result = ferror( pFile );
+
+	<font class="theme">// Check If We Received An Error</font>
+	if (result)
+	{
+		MessageBox(NULL, "Failed To Get Data!", "Error", MB_OK);
+	}
+
+	<font class="theme">// Close The File</font>
+	fclose(pFile);
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The init code is pretty basic.  We set the background clear color to black, set up depth testing, polygon
+smoothing, etc.  After doing all that, we load in our .RAW file.  To do this, we pass the filename ("Data/Terrain.raw"),
+the dimensions of the .RAW file (MAP_SIZE * MAP_SIZE) and finally our HeightMap array (g_HeightMap)
+to LoadRawFile().  This will jump to the .RAW loading code above.  The .RAW file will be loaded, and the
+data will be stored in our Heightmap array (g_HeightMap).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int InitGL(GLvoid)						<font class="theme">// All Setup For OpenGL Goes Here</font>
+{
+	glShadeModel(GL_SMOOTH);				<font class="theme">// Enable Smooth Shading</font>
+	glClearColor(0.0f, 0.0f, 0.0f, 0.5f);			<font class="theme">// Black Background</font>
+	glClearDepth(1.0f);					<font class="theme">// Depth Buffer Setup</font>
+	glEnable(GL_DEPTH_TEST);				<font class="theme">// Enables Depth Testing</font>
+	glDepthFunc(GL_LEQUAL);					<font class="theme">// The Type Of Depth Testing To Do</font>
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);	<font class="theme">// Really Nice Perspective Calculations</font>
+
+	<font class="theme">// Here we read read in the height map from the .raw file and put it in our</font>
+	<font class="theme">// g_HeightMap array.  We also pass in the size of the .raw file (1024).</font>
+
+	LoadRawFile("Data/Terrain.raw", MAP_SIZE * MAP_SIZE, g_HeightMap);	<font class="theme">// ( NEW )</font>
+
+	return TRUE;						<font class="theme">// Initialization Went OK</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+This is used to index into our height map array.  When ever we are dealing with arrays, we want to make sure
+that we don't go outside of them.  To make sure that doesn't happen we use %.  % will prevent our x /
+y values from exceeding MAX_SIZE - 1.
+<br><br>
+We check to make sure pHeightMap points to valid data, if not, we return 0.
+<br><br>
+Otherwise, we return the value stored at x, y in our height map.  By now, you should know that we
+have to multiply y by the width of the image MAP_SIZE to move through the data.  More on this below!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int Height(BYTE *pHeightMap, int X, int Y)			<font class="theme">// This Returns The Height From A Height Map Index</font>
+{
+	int x = X % MAP_SIZE;					<font class="theme">// Error Check Our x Value</font>
+	int y = Y % MAP_SIZE;					<font class="theme">// Error Check Our y Value</font>
+
+	if(!pHeightMap) return 0;				<font class="theme">// Make Sure Our Data Is Valid</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We need to treat the single array like a 2D array.  We can use the equation: index = (x + (y
+* arrayWidth) ).  This is assuming we are visualizing it like: pHeightMap[x][y], otherwise it's
+the opposite: (y + (x * arrayWidth) ).
+<br><br>
+Now that we have the correct index, we will return the height at that index (data at x, y in our
+array).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	return pHeightMap[x + (y * MAP_SIZE)];			<font class="theme">// Index Into Our Height Array And Return The Height</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Here we set the color for a vertex based on the height index.  To make it darker, I start with -0.15f.  We also
+get a ratio of the color from 0.0f to 1.0f by dividing the height by 256.0f.  If there is no data this function
+returns without setting the color.  If everything goes ok, we set the color to a shade of blue using
+glColor3f(0.0f, fColor, 0.0f).  Try moving fColor to the red or green spots to change the color of the
+landscape.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void SetVertexColor(BYTE *pHeightMap, int x, int y)		<font class="theme">// This Sets The Color Value For A Particular Index</font>
+{								<font class="theme">// Depending On The Height Index</font>
+	if(!pHeightMap) return;					<font class="theme">// Make Sure Our Height Data Is Valid</font>
+
+	float fColor = -0.15f + (Height(pHeightMap, x, y ) / 256.0f);
+
+	<font class="theme">// Assign This Blue Shade To The Current Vertex</font>
+	glColor3f(0.0f, 0.0f, fColor );
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+This is the code that actually draws our landscape.  X and Y will be used to loop through the
+height map data.  x, y and z will be used to render the quads making up the landscape.
+<br><br>
+As always, we check to see if the height map (pHeightMap) contains data.  If not, we return without
+doing anything.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void RenderHeightMap(BYTE pHeightMap[])				<font class="theme">// This Renders The Height Map As Quads</font>
+{
+	int X = 0, Y = 0;					<font class="theme">// Create Some Variables To Walk The Array With.</font>
+	int x, y, z;						<font class="theme">// Create Some Variables For Readability</font>
+
+	if(!pHeightMap) return;					<font class="theme">// Make Sure Our Height Data Is Valid</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Since we can switch between lines and quads, we check our render state with the code below.  If bRender =
+True, then we want to render polygons, otherwise we render lines.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	if(bRender)						<font class="theme">// What We Want To Render</font>
+		glBegin( GL_QUADS );				<font class="theme">// Render Polygons</font>
+	else 
+		glBegin( GL_LINES );				<font class="theme">// Render Lines Instead</font>
+
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Next
+we actually need to draw the terrain from the height map. To do that,
+we just walk the array of height data and pluck out some heights to
+plot our points. If we could see this happening, it would draw the
+columns first (Y), then draw the rows. Notice that we have a STEP_SIZE.
+This
+determines how defined our height map is. The higher the STEP_SIZE, the
+more blocky the terrain looks, while the lower it gets, the more
+rounded
+(smooth) it becomes. If we set STEP_SIZE = 1 it would create a vertex
+for every pixel in the height map. I chose 16 as a decent size.
+Anything
+too much less gets to be insane and slow. Of course, you can increase
+the number when you get lighting in. Then vertex lighting would cover
+up
+the blocky shape. Instead of lighting, we just put a color value
+associated with every poly to simplify the tutorial. The higher the
+polygon,
+the brighter the color is.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	for ( X = 0; X &lt; (MAP_SIZE-STEP_SIZE); X += STEP_SIZE )
+		for ( Y = 0; Y &lt; (MAP_SIZE-STEP_SIZE); Y += STEP_SIZE )
+		{
+			<font class="theme">// Get The (X, Y, Z) Value For The Bottom Left Vertex</font>
+			x = X;							
+			y = Height(pHeightMap, X, Y );	
+			z = Y;							
+
+			<font class="theme">// Set The Color Value Of The Current Vertex</font>
+			SetVertexColor(pHeightMap, x, z);
+
+			glVertex3i(x, y, z);			<font class="theme">// Send This Vertex To OpenGL To Be Rendered</font>
+
+			<font class="theme">// Get The (X, Y, Z) Value For The Top Left Vertex</font>
+			x = X;										
+			y = Height(pHeightMap, X, Y + STEP_SIZE );  
+			z = Y + STEP_SIZE ;							
+			
+			<font class="theme">// Set The Color Value Of The Current Vertex</font>
+			SetVertexColor(pHeightMap, x, z);
+
+			glVertex3i(x, y, z);			<font class="theme">// Send This Vertex To OpenGL To Be Rendered</font>
+
+			<font class="theme">// Get The (X, Y, Z) Value For The Top Right Vertex</font>
+			x = X + STEP_SIZE; 
+			y = Height(pHeightMap, X + STEP_SIZE, Y + STEP_SIZE ); 
+			z = Y + STEP_SIZE ;
+
+			<font class="theme">// Set The Color Value Of The Current Vertex</font>
+			SetVertexColor(pHeightMap, x, z);
+			
+			glVertex3i(x, y, z);			<font class="theme">// Send This Vertex To OpenGL To Be Rendered</font>
+
+			<font class="theme">// Get The (X, Y, Z) Value For The Bottom Right Vertex</font>
+			x = X + STEP_SIZE; 
+			y = Height(pHeightMap, X + STEP_SIZE, Y ); 
+			z = Y;
+
+			<font class="theme">// Set The Color Value Of The Current Vertex</font>
+			SetVertexColor(pHeightMap, x, z);
+
+			glVertex3i(x, y, z);			<font class="theme">// Send This Vertex To OpenGL To Be Rendered</font>
+		}
+	glEnd();
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+After we are done, we set the color back to bright white with an alpha value of 1.0f.  If there were other
+objects on the screen, we wouldn't want them showing up BLUE :)
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);			<font class="theme">// Reset The Color</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+For those of you who haven't used gluLookAt(), what it does is position your camera position, your view, and
+your up vector.  Here we set the camera in a obscure position to get a good outside view of the terrain.  In
+order to avoid using such high numbers, we would divide the terrain's vertices by a scale constant, like we do
+in glScalef() below.
+<br><br>
+The values of gluLookAt() are as follows:  The first three numbers represent where the camera is
+positioned.  So the first three values move the camera 212 units on the x-axis, 60 units on the y-axis and
+194 units on the z-axis from our center point.  The next 3 values represent where we want the camera to look.
+In this tutorial, you will notice while running the demo that we are looking a little to the left.  We are also
+look down towards the landscape.  186 is to the left of 212 which gives us the look to the left, and 55 is lower
+than 60, which gives us the appearance that we are higher than the landscape looking at it with a slight tilt
+(seeing a bit of the top of it).  The value of 171 is how far away from the camera the object is.  The last
+three values tell OpenGL which direction represents up.  Our mountains travel upwards on the y-axis, so we set
+the value on the y-axis to 1.  The other two values are set at 0.
+<br><br>
+gluLookAt can be very intimidating when you first use it.  After reading the rough explanation above you may
+still be confused.  My best advise is to play around with the values.  Change the camera position.  If you were
+to change the y position of the camera to say 120, you would see more of the top of the landscape, because you
+would be looking all the way down to 55.
+<br><br>
+I'm not sure if this will help, but I'm going to break into one of my highly flamed real life "example"
+explanations :)  Lets say you are 6 feet and a bit tall.  Lets also assume your eyes are at the 6 foot mark
+(your eyes represent the camera - 6 foot is 6 units on the y-axis).  Now if you were standing in front of a
+wall that was only 2 feet tall (2 units on the y-axis), you would be looking DOWN at the wall and would be able
+to see the top of the wall.  If the wall was 8 feet tall, you would be looking UP at the wall and you would NOT
+see the top of the wall.  The view would change depending on if you were looking up or down (if you were higher
+than or lower than the object you are looking at).  Hope that makes a bit of sense!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int DrawGLScene(GLvoid)						<font class="theme">// Here's Where We Do All The Drawing</font>
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	<font class="theme">// Clear The Screen And The Depth Buffer</font>
+	glLoadIdentity();					<font class="theme">// Reset The Matrix</font>
+	
+	<font class="theme">// 	  Position	 View		Up Vector</font>
+	gluLookAt(212, 60, 194,  186, 55, 171,  0, 1, 0);	<font class="theme">// This Determines The Camera's Position And View</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+This will scale down our terrain so it's a bit easier to view and not so big.  We can change this
+scaleValue by using the UP and DOWN arrows on the keyboard.  You will notice that we mupltiply the Y
+scaleValue by a HEIGHT_RATIO as well.  This is so the terrain appears higher and gives it more
+definition.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glScalef(scaleValue, scaleValue * HEIGHT_RATIO, scaleValue);
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+If we pass the g_HeightMap data into our RenderHeightMap() function it will render the terrain
+in Quads.  If you are going to make any use of this function, it might be a good idea to put in an (X, Y)
+parameter to draw it at, or just use OpenGL's matrix operations (glTranslatef() glRotate(), etc) to position
+the land exactly where you want it.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	RenderHeightMap(g_HeightMap);				<font class="theme">// Render The Height Map</font>
+
+	return TRUE;						<font class="theme">// Keep Going</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The KillGLWindow() code is the same as lesson 1.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>GLvoid KillGLWindow(GLvoid)					<font class="theme">// Properly Kill The Window</font>
+{
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The CreateGLWindow() code is also the same as lesson 1.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>BOOL CreateGLWindow(char* title, int width, int height, int bits, bool fullscreenflag)
+{
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The only change in WndProc() is the addition of WM_LBUTTONDOWN.  What it does is checks to see if
+the left mouse button was pressed.  If it was, the rendering state is toggled from polygon mode to line mode, or
+from line mode to polygon mode.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>LRESULT CALLBACK WndProc(	HWND	hWnd,			<font class="theme">// Handle For This Window</font>
+				UINT	uMsg,			<font class="theme">// Message For This Window</font>
+				WPARAM	wParam,			<font class="theme">// Additional Message Information</font>
+				LPARAM	lParam)			<font class="theme">// Additional Message Information</font>
+{
+	switch (uMsg)						<font class="theme">// Check For Windows Messages</font>
+	{
+		case WM_ACTIVATE:				<font class="theme">// Watch For Window Activate Message</font>
+		{
+			if (!HIWORD(wParam))			<font class="theme">// Check Minimization State</font>
+			{
+				active=TRUE;			<font class="theme">// Program Is Active</font>
+			}
+			else
+			{
+				active=FALSE;			<font class="theme">// Program Is No Longer Active</font>
+			}
+
+			return 0;				<font class="theme">// Return To The Message Loop</font>
+		}
+
+		case WM_SYSCOMMAND:				<font class="theme">// Intercept System Commands</font>
+		{
+			switch (wParam)				<font class="theme">// Check System Calls</font>
+			{
+				case SC_SCREENSAVE:		<font class="theme">// Screensaver Trying To Start?</font>
+				case SC_MONITORPOWER:		<font class="theme">// Monitor Trying To Enter Powersave?</font>
+				return 0;			<font class="theme">// Prevent From Happening</font>
+			}
+			break;					<font class="theme">// Exit</font>
+		}
+
+		case WM_CLOSE:					<font class="theme">// Did We Receive A Close Message?</font>
+		{
+			PostQuitMessage(0);			<font class="theme">// Send A Quit Message</font>
+			return 0;				<font class="theme">// Jump Back</font>
+		}
+
+		case WM_LBUTTONDOWN:				<font class="theme">// Did We Receive A Left Mouse Click?</font>
+		{
+			bRender = !bRender;			<font class="theme">// Change Rendering State Between Fill/Wire Frame</font>
+			return 0;				<font class="theme">// Jump Back</font>
+		}
+
+		case WM_KEYDOWN:				<font class="theme">// Is A Key Being Held Down?</font>
+		{
+			keys[wParam] = TRUE;			<font class="theme">// If So, Mark It As TRUE</font>
+			return 0;				<font class="theme">// Jump Back</font>
+		}
+
+		case WM_KEYUP:					<font class="theme">// Has A Key Been Released?</font>
+		{
+			keys[wParam] = FALSE;			<font class="theme">// If So, Mark It As FALSE</font>
+			return 0;				<font class="theme">// Jump Back</font>
+		}
+
+		case WM_SIZE:					<font class="theme">// Resize The OpenGL Window</font>
+		{
+			ReSizeGLScene(LOWORD(lParam),HIWORD(lParam));	<font class="theme">// LoWord=Width, HiWord=Height</font>
+			return 0;				<font class="theme">// Jump Back</font>
+		}
+	}
+
+	<font class="theme">// Pass All Unhandled Messages To DefWindowProc</font>
+	return DefWindowProc(hWnd,uMsg,wParam,lParam);
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+No major changes in this section of code.  The only notable change is the title of the window.  Everything
+else is the same up until we check for key presses.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int WINAPI WinMain(	HINSTANCE	hInstance,		<font class="theme">// Instance</font>
+			HINSTANCE	hPrevInstance,		<font class="theme">// Previous Instance</font>
+			LPSTR		lpCmdLine,		<font class="theme">// Command Line Parameters</font>
+			int		nCmdShow)		<font class="theme">// Window Show State</font>
+{
+	MSG		msg;					<font class="theme">// Windows Message Structure</font>
+	BOOL	done=FALSE;					<font class="theme">// Bool Variable To Exit Loop</font>
+
+	<font class="theme">// Ask The User Which Screen Mode They Prefer</font>
+	if (MessageBox(NULL,"Would You Like To Run In Fullscreen Mode?", "Start FullScreen?",MB_YESNO|MB_ICONQUESTION)==IDNO)
+	{
+		fullscreen=FALSE;				<font class="theme">// Windowed Mode</font>
+	}
+
+	<font class="theme">// Create Our OpenGL Window</font>
+	if (!CreateGLWindow("NeHe &amp; Ben Humphrey's Height Map Tutorial", 640, 480, 16, fullscreen))
+	{
+		return 0;					<font class="theme">// Quit If Window Was Not Created</font>
+	}
+
+	while(!done)						<font class="theme">// Loop That Runs While done=FALSE</font>
+	{
+		if (PeekMessage(&amp;msg,NULL,0,0,PM_REMOVE))	<font class="theme">// Is There A Message Waiting?</font>
+		{
+			if (msg.message==WM_QUIT)		<font class="theme">// Have We Received A Quit Message?</font>
+			{
+				done=TRUE;			<font class="theme">// If So done=TRUE</font>
+			}
+			else					<font class="theme">// If Not, Deal With Window Messages</font>
+			{
+				TranslateMessage(&amp;msg);		<font class="theme">// Translate The Message</font>
+				DispatchMessage(&amp;msg);		<font class="theme">// Dispatch The Message</font>
+			}
+		}
+		else						<font class="theme">// If There Are No Messages</font>
+		{
+			<font class="theme">// Draw The Scene.  Watch For ESC Key And Quit Messages From DrawGLScene()</font>
+			if ((active &amp;&amp; !DrawGLScene()) || keys[VK_ESCAPE])	<font class="theme">// Active?  Was There A Quit Received?</font>
+			{
+				done=TRUE;			<font class="theme">// ESC or DrawGLScene Signalled A Quit</font>
+			}
+			else if (active)			<font class="theme">// Not Time To Quit, Update Screen</font>
+			{
+				SwapBuffers(hDC);		<font class="theme">// Swap Buffers (Double Buffering)</font>
+			}
+
+			if (keys[VK_F1])			<font class="theme">// Is F1 Being Pressed?</font>
+			{
+				keys[VK_F1]=FALSE;		<font class="theme">// If So Make Key FALSE</font>
+				KillGLWindow();			<font class="theme">// Kill Our Current Window</font>
+				fullscreen=!fullscreen;		<font class="theme">// Toggle Fullscreen / Windowed Mode</font>
+				<font class="theme">// Recreate Our OpenGL Window</font>
+				if (!CreateGLWindow("NeHe &amp; Ben Humphrey's Height Map Tutorial", 640, 480, 16, fullscreen))
+				{
+					return 0;		<font class="theme">// Quit If Window Was Not Created</font>
+				}
+			}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The code below lets you increase and decrease the scaleValue.  By pressing the up key, the scaleValue
+is increased, making the landscape larger.  By pressing the down key, the scaleValue is decreased making
+the landscape smaller.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>			if (keys[VK_UP])			<font class="theme">// Is The UP ARROW Being Pressed?</font>
+				scaleValue += 0.001f;		<font class="theme">// Increase The Scale Value To Zoom In</font>
+
+			if (keys[VK_DOWN])			<font class="theme">// Is The DOWN ARROW Being Pressed?</font>
+				scaleValue -= 0.001f;		<font class="theme">// Decrease The Scale Value To Zoom Out</font>
+		}
+	}
+
+	<font class="theme">// Shutdown</font>
+	KillGLWindow();						<font class="theme">// Kill The Window</font>
+	return (msg.wParam);					<font class="theme">// Exit The Program</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+That's all there is to creating a beautiful height mapped landscape.  I hope you appreciate Ben's work!  As
+always, if you find mistakes in the tutorial or the code, please email me, and I will attempt to correct the
+problem / revise the tutorial.
+<br><br>
+Once you understand how the code works, play around a little.  One thing you could try doing is adding a little
+ball that rolls across the surface.  You already know the height of each section of the landscape, so adding the
+ball should be no problem.  Other things to try:  Create the heightmap manually, make it a scrolling landscape,
+add colors to the landscape to represent snowy peaks / water / etc,  add textures, use a plasma effect to create
+a constantly changing landscape.  The possibilities are endless :)
+<br><br>
+Hope you enjoyed the tut!  You can visit Ben's site at: http://www.GameTutorials.com.
+<br><br>
+<b>Ben Humphrey</b> (<b>DigiBen</b>)
+<br><br>
+<b>Jeff Molofee</b> (<b>NeHe</b>)
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vc/lesson34.zip">Visual C++</a> Code For This Lesson.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/bcb6/lesson34_bcb6.zip">Borland C++ Builder 6</a> Code For This Lesson. ( Conversion by <a href="mailto:christian@tugzip.com">Christian Kindahl</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cwarrior/lesson34.zip">Code Warrior 5.3</a> Code For This Lesson. ( Conversion by <a href="mailto:DelusionalBeing@hotmail.com">Scott Lupton</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/delphi/lesson34.zip">Delphi</a> Code For This Lesson. ( Conversion by <a href="mailto:michal_praha@seznam.cz">Michal Tucek</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/devc/lesson34.zip">Dev C++</a> Code For This Lesson. ( Conversion by <a href="mailto:danprogram@hotmail.com">Dan</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/jogl/lesson34.jar">JoGL</a> Code For This Lesson. ( Conversion by <a href="mailto:abezrati@hotmail.com">Abdul Bezrati</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/lccwin32/lccwin32_lesson34.zip">LCC Win32</a> Code For This Lesson. ( Conversion by <a href="mailto:rwishlaw@shaw.ca">Robert Wishlaw</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxglx/lesson34.tar.gz">Linux/GLX</a> Code For This Lesson. ( Conversion by <a href="mailto:Schubert_P@Yahoo.de">Patrick Schubert</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/macosxcocoa/lesson34.zip">Mac OS X/Cocoa</a> Code For This Lesson. ( Conversion by <a href="mailto:blb@pobox.com">Bryan Blackburn</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vs_net/lesson34.zip">Visual Studio .NET</a> Code For This Lesson. ( Conversion by <a href="mailto:ultimatezeus@hotmail.com">Grant James</a> )<br>
+<br><br>
+<br><br>
+<table border="0" width="100%">
+<tbody><tr><td align="left" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=33">&lt; Lesson 33</a></font></b></td>
+<td align="right" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=35">Lesson 35 &gt;</a></font></b></td>
+</tr></tbody></table>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table>
+
+</body></html>

@@ -1,0 +1,594 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+<title>NeHe Productions: OpenGL Lesson #27</title>
+<meta name="author" content="Jeff Molofee">
+<meta name="description" content="OpenGL Tutorials, Demos, Games and More...">
+<meta name="keywords" content="opengl, tutorial, article, demo, game, blend, texturemap, lighting, contest, 3D">
+<link rel="stylesheet" type="text/css" href="lesson.asp-Dateien/rgb.css">
+</head><body bgcolor="black" link="#aaccff" text="white" vlink="#aaccff">
+
+<table border="0" width="100%"><tbody><tr><td align="center">
+<!-- Begin -  Site: GameDev.net Zone: NeHe 728x90 -->
+<script language="javascript" type="text/javascript">
+<!--
+var browName = navigator.appName;
+var SiteID = 1;
+var ZoneID = 4;
+var browDateTime = (new Date()).getTime();
+if (browName=='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;Browser=NETSCAPE4&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+if (browName!='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+// --> 
+</script><script language="javascript" src="lesson.asp-Dateien/a.js"></script><iframe class=" uvzqlqxrluylsowwolzs" src="lesson.asp-Dateien/cm.htm" marginwidth="0" marginheight="0" border="0" style="border: medium none ;" frameborder="0" height="90" scrolling="no" width="728"></iframe>
+<noscript> <a
+href="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Click&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+target="_blank"> <img
+src="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Get&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+width="728" height="90" border="0" alt=""></a>
+</noscript>
+<!-- End -  Site: GameDev.net Zone: NeHe 728x90 --></td></tr></tbody></table><br>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tinylogo" height="130" width="326"><img src="lesson.asp-Dateien/blank.gif" alt="NeHe Productions" height="130" width="326"></td><td class="indexheading" align="center" valign="middle"><font class="text"><font class="theme" size="+3"><b><i>Lesson: 27</i></b></font></font></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Welcome to a fairly complex tutorial on shadow casting.  The effect this demo creates is literally incredible. Shadows
+that stretch, bend and wrap around other objects and across walls.  Everything in the scene can be moved around in 3D
+space using keys on the keyboard.
+<br><br>
+This tutorial takes a fairly different approach - It assumes you have a lot of OpenGL knowledge. You should already
+understand the stencil buffer, and basic OpenGL setup. If you need to brush up, go back and read the earlier tutorials.
+Functions such as CreateGLWindow and WinMain will <u>NOT</u> be explained in this tutorial. Additionally,
+some fundamental 3D math is assumed, so keep a good textbook handy! (I used my 1st year maths lecture notes from
+University - I knew they'd come in handy later on! :)
+<br><br>
+First we have the definition of INFINITY, which represents how far to extend the shadow volume polygons (this will
+be explained more later on).  If you are using a larger or smaller coordinate system, adjust this value accordingly.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// Definition Of "INFINITY" For Calculating The Extension Vector For The Shadow Volume</font>
+#define INFINITY	100
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Next is the definition of the object structures.
+<br><br>
+The Point3f structure holds a coordinate in 3D space. This can be used for vertices or vectors.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// Structure Describing A Vertex In An Object</font>
+struct Point3f
+{
+	GLfloat x, y, z;
+};
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The Plane structure holds the 4 values that form the equation of a plane. These planes will represent the faces of
+the object.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// Structure Describing A Plane, In The Format: ax + by + cz + d = 0</font>
+struct Plane
+{
+	GLfloat a, b, c, d;
+};
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The Face structure contains all the information necessary about a triangle to cast a shadow.
+<ul>
+<li>The indices specified are from the object's array of vertices.</li>
+<li>The vertex normals are used to calculate the orientation of the face in 3D space, so you can determine which are
+facing the light source when casting the shadows.</li>
+<li>The plane equation describes the plane that this triangle lies in, in 3D space.</li>
+<li>The neighbour indices are indices into the array of faces in the object. This allows you to specify which face joins
+this face at each edge of the triangle.</li>
+<li>The visible parameter is used to specify whether the face is "visible" to the light source which is casting
+the shadows.</li>
+</ul>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// Structure Describing An Object's Face</font>
+struct Face
+{
+	int vertexIndices[3];			<font class="theme">// Index Of Each Vertex Within An Object That Makes Up The Triangle Of This Face</font>
+	Point3f normals[3];			<font class="theme">// Normals To Each Vertex</font>
+	Plane planeEquation;			<font class="theme">// Equation Of A Plane That Contains This Triangle</font>
+	int neighbourIndices[3];		<font class="theme">// Index Of Each Face That Neighbours This One Within The Object</font>
+	bool visible;				<font class="theme">// Is The Face Visible By The Light?</font>
+};
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Finally, the ShadowedObject structure contains all the vertices and faces in the object. The memory for each of the
+arrays is dynamically created when it is loaded.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>struct ShadowedObject
+{
+	int nVertices;
+	Point3f *pVertices;			<font class="theme">// Will Be Dynamically Allocated</font>
+
+	int nFaces;
+	Face *pFaces;				<font class="theme">// Will Be Dynamically Allocated</font>
+};
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The readObject function is fairly self explanatory. It will fill in the given object structure with the values read
+from the file, allocating memory for the vertices and faces. It also initializes the neighbours to -1, which means
+there isn't one (yet). They will be calculated later.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>bool readObject( const char *filename, ShadowedObject&amp; object )
+{
+	FILE *pInputFile;
+	int i;
+
+	pInputFile = fopen( filename, "r" );
+	if ( pInputFile == NULL )
+	{
+		cerr &lt;&lt; "Unable to open the object file: " &lt;&lt; filename &lt;&lt; endl;
+		return false;
+	}
+
+	<font class="theme">// Read Vertices</font>
+	fscanf( pInputFile, "%d", &amp;object.nVertices );
+	object.pVertices = new Point3f[object.nVertices];
+	for ( i = 0; i &lt; object.nVertices; i++ )
+	{
+		fscanf( pInputFile, "%f", &amp;object.pVertices[i].x );
+		fscanf( pInputFile, "%f", &amp;object.pVertices[i].y );
+		fscanf( pInputFile, "%f", &amp;object.pVertices[i].z );
+	}
+
+	<font class="theme">// Read Faces</font>
+	fscanf( pInputFile, "%d", &amp;object.nFaces );
+	object.pFaces = new Face[object.nFaces];
+	for ( i = 0; i &lt; object.nFaces; i++ )
+	{
+		int j;
+		Face *pFace = &amp;object.pFaces[i];
+
+		for ( j = 0; j &lt; 3; j++ )
+			pFace-&gt;neighbourIndices[j] = -1;	<font class="theme">// No Neigbours Set Up Yet</font>
+
+		for ( j = 0; j &lt; 3; j++ )
+		{
+			fscanf( pInputFile, "%d", &amp;pFace-&gt;vertexIndices[j] );
+			pFace-&gt;vertexIndices[j]--;		<font class="theme">// Files Specify Them With A 1 Array Base, But We Use A 0 Array Base</font>
+		}
+
+		for ( j = 0; j &lt; 3; j++ )
+		{
+			fscanf( pInputFile, "%f", &amp;pFace-&gt;normals[j].x );
+			fscanf( pInputFile, "%f", &amp;pFace-&gt;normals[j].y );
+			fscanf( pInputFile, "%f", &amp;pFace-&gt;normals[j].z );
+		}
+	}
+	return true;
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Likewise, killObject is self-explanatory - just delete all those dynamically allocated arrays inside the object when
+you are done with them. Note that a line was added to KillGLWindow to call this function for the object in question.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void killObject( ShadowedObject&amp; object )
+{
+	delete[] object.pFaces;
+	object.pFaces = NULL;
+	object.nFaces = 0;
+
+	delete[] object.pVertices;
+	object.pVertices = NULL;
+	object.nVertices = 0;
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now, with setConnectivity it starts to get interesting. This function is used to find out what neighbours there are
+to each face of the object given. Here's some pseudo code:
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>for each face (A) in the object
+	for each edge in A
+		if we don't know this edges neighbour yet
+			for each face (B) in the object (except A)
+				for each edge in B
+					if A's edge is the same as B's edge, then they are neighbouring each other on that edge
+						set the neighbour property for each face A and B, then move onto next edge in A
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The last two lines are accomplished with the following code. By finding the two vertices that mark the ends of an edge and
+comparing them, you can discover if it is the same edge. The part (edgeA+1)%3 gets a vertex next to the one you are
+considering. Then you check if the vertices match (the order may be different, hence the second case of the if
+statement).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	int vertA1 = pFaceA-&gt;vertexIndices[edgeA];
+	int vertA2 = pFaceA-&gt;vertexIndices[( edgeA+1 )%3];
+
+	int vertB1 = pFaceB-&gt;vertexIndices[edgeB];
+	int vertB2 = pFaceB-&gt;vertexIndices[( edgeB+1 )%3];
+
+	<font class="theme">// Check If They Are Neighbours - IE, The Edges Are The Same</font>
+	if (( vertA1 == vertB1 &amp;&amp; vertA2 == vertB2 ) || ( vertA1 == vertB2 &amp;&amp; vertA2 == vertB1 ))
+	{
+		pFaceA-&gt;neighbourIndices[edgeA] = faceB;
+		pFaceB-&gt;neighbourIndices[edgeB] = faceA;
+		edgeFound = true;
+		break;
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Luckily, another easy function while you take a breath. drawObject renders each face one by one.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// Draw An Object - Simply Draw Each Triangular Face.</font>
+void drawObject( const ShadowedObject&amp; object )
+{
+	glBegin( GL_TRIANGLES );
+	for ( int i = 0; i &lt; object.nFaces; i++ )
+	{
+		const Face&amp; face = object.pFaces[i];
+
+		for ( int j = 0; j &lt; 3; j++ )
+		{
+			const Point3f&amp; vertex = object.pVertices[face.vertexIndices[j]];
+
+			glNormal3f( face.normals[j].x, face.normals[j].y, face.normals[j].z );
+			glVertex3f( vertex.x, vertex.y, vertex.z );
+		}
+	}
+	glEnd();
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Calculating the equation of a plane looks ugly, but it is just a simple mathematical formula that you grab from a textbook
+when you need it.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void calculatePlane( const ShadowedObject&amp; object, Face&amp; face )
+{
+	<font class="theme">// Get Shortened Names For The Vertices Of The Face</font>
+	const Point3f&amp; v1 = object.pVertices[face.vertexIndices[0]];
+	const Point3f&amp; v2 = object.pVertices[face.vertexIndices[1]];
+	const Point3f&amp; v3 = object.pVertices[face.vertexIndices[2]];
+
+	face.planeEquation.a = v1.y*(v2.z-v3.z) + v2.y*(v3.z-v1.z) + v3.y*(v1.z-v2.z);
+	face.planeEquation.b = v1.z*(v2.x-v3.x) + v2.z*(v3.x-v1.x) + v3.z*(v1.x-v2.x);
+	face.planeEquation.c = v1.x*(v2.y-v3.y) + v2.x*(v3.y-v1.y) + v3.x*(v1.y-v2.y);
+	face.planeEquation.d = -( v1.x*( v2.y*v3.z - v3.y*v2.z ) +
+				v2.x*(v3.y*v1.z - v1.y*v3.z) +
+				v3.x*(v1.y*v2.z - v2.y*v1.z) );
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Have you caught your breath yet?  Good, because you are about to learn how to cast a shadow!  The castShadow
+function does all of the GL specifics, and passes it on to doShadowPass to render the shadow in two passes.
+<br><br>
+First up, we determine which surfaces are facing the light. We do this by seeing which side of the plane the light is on.
+This is done by substituting the light's position into the equation for the plane.  If this is larger than 0, then it is
+in the same direction as the normal to the plane and visible by the light. If not, then it is not visible by the light.
+(Again, refer to a good Math textbook for a better explanation of geometry in 3D).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void castShadow( ShadowedObject&amp; object, GLfloat *lightPosition )
+{
+	<font class="theme">// Determine Which Faces Are Visible By The Light.</font>
+	for ( int i = 0; i &lt; object.nFaces; i++ )
+	{
+		const Plane&amp; plane = object.pFaces[i].planeEquation;
+
+		GLfloat side = plane.a*lightPosition[0]+
+			plane.b*lightPosition[1]+
+			plane.c*lightPosition[2]+
+			plane.d;
+
+		if ( side &gt; 0 )
+			object.pFaces[i].visible = true;
+		else
+			object.pFaces[i].visible = false;
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The next section sets up the necessary OpenGL states for rendering the shadows.
+<br><br>
+First, we push all the attributes onto the stack that will be modified.  This makes changing them back a lot easier.
+<br><br>
+Lighting is disabled because we will not be rendering to the color (output) buffer, just the stencil buffer. For the same
+reason, the color mask turns off all color components (so drawing a polygon won't get through to the output buffer).
+<br><br>
+Although depth testing is still used, we don't want the shadows to appear as solid objects in the depth buffer, so the
+depth mask prevents this from happening.
+<br><br>
+The stencil buffer is turned on as that is what is going to be used to draw the shadows into.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glPushAttrib( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_ENABLE_BIT | GL_POLYGON_BIT | GL_STENCIL_BUFFER_BIT );
+	glDisable( GL_LIGHTING );					<font class="theme">// Turn Off Lighting</font>
+	glDepthMask( GL_FALSE );					<font class="theme">// Turn Off Writing To The Depth-Buffer</font>
+	glDepthFunc( GL_LEQUAL );
+	glEnable( GL_STENCIL_TEST );					<font class="theme">// Turn On Stencil Buffer Testing</font>
+	glColorMask( GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE );		<font class="theme">// Don't Draw Into The Colour Buffer</font>
+	glStencilFunc( GL_ALWAYS, 1, 0xFFFFFFFFL );
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Ok, now the shadows are actually rendered. We'll come back to that in a moment when we look at the doShadowPass
+function. They are rendered in two passes as you can see, one incrementing the stencil buffer with the front faces (casting
+the shadow), the second decrementing the stencil buffer with the backfaces ("turning off" the shadow between
+the object and any other surfaces).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// First Pass. Increase Stencil Value In The Shadow</font>
+	glFrontFace( GL_CCW );
+	glStencilOp( GL_KEEP, GL_KEEP, GL_INCR );
+	doShadowPass( object, lightPosition );
+	<font class="theme">// Second Pass. Decrease Stencil Value In The Shadow</font>
+	glFrontFace( GL_CW );
+	glStencilOp( GL_KEEP, GL_KEEP, GL_DECR );
+	doShadowPass( object, lightPosition );
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">To
+understand how the second pass works, my best advise is to comment it
+out and run the tutorial again. To save you the trouble, I have done it
+here:
+<br><br>
+<table align="center" border="0">
+<tbody><tr align="center" valign="top"> 
+<td><img src="lesson.asp-Dateien/pass1.jpg" height="150" width="200"></td>
+<td><img src="lesson.asp-Dateien/pass2.jpg" height="150" width="200"></td>
+</tr>
+<tr align="center" valign="top"> 
+<td>Figure 1: First Pass</td>
+<td>Figure 2: Second Pass</td>
+</tr>
+</tbody></table>
+<br><br>The final section of this function draws one blended rectangle
+over the whole screen, to cast a shadow. The darker you make this
+rectangle, the
+darker the shadows will be. So to change the properties of the shadow,
+change the glColor4f statement. Higher alpha will make it more black.
+Or you
+can make it red, green, purple, ...!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glFrontFace( GL_CCW );
+	glColorMask( GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE );	<font class="theme">// Enable Rendering To Colour Buffer For All Components</font>
+
+	<font class="theme">// Draw A Shadowing Rectangle Covering The Entire Screen</font>
+	glColor4f( 0.0f, 0.0f, 0.0f, 0.4f );
+	glEnable( GL_BLEND );
+	glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+	glStencilFunc( GL_NOTEQUAL, 0, 0xFFFFFFFFL );
+	glStencilOp( GL_KEEP, GL_KEEP, GL_KEEP );
+	glPushMatrix();
+	glLoadIdentity();
+	glBegin( GL_TRIANGLE_STRIP );
+		glVertex3f(-0.1f, 0.1f,-0.10f);
+		glVertex3f(-0.1f,-0.1f,-0.10f);
+		glVertex3f( 0.1f, 0.1f,-0.10f);
+		glVertex3f( 0.1f,-0.1f,-0.10f);
+	glEnd();
+	glPopMatrix();
+	glPopAttrib();
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Ok,
+the next part draws the shadowed quads. How does that work? What
+happens is that you go through every face, and if it is visible, then
+you check
+all of its edges. If at the edge, there is no neighbouring face, or the
+neighbouring face is not visible, the edge casts a shadow. If you think
+about the two cases clearly, then you'll see this is true. By drawing a
+quadrilateral (as two triangles) comprising of the points of the edge,
+and
+the edge projected backwards through the scene you get the shadow cast
+by it.
+<br><br>The brute force approach used here just draws to "infinity",
+and the shadow polygon is clipped against all the polygons it
+encounters. This causes
+piercing, which will stress the video hardware. For a high-performance
+modification to this algorithm, you should clip the polygon to the
+objects
+behind it. This is much trickier and has problems of its own, but if
+that's what you want to do, you should refer to
+<a href="http://www.gamasutra.com/features/19991115/bestimt_freitag_02.htm">this Gamasutra article</a>.
+<br><br>The code to do all of that is not as tricky as it sounds. To
+start with, here is a snippet that loops through the objects. By the
+end of it, we have
+an edge, <i>j</i>, and its neighbouring face, specified by <i>neighbourIndex</i>.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void doShadowPass( ShadowedObject&amp; object, GLfloat *lightPosition )
+{
+	for ( int i = 0; i &lt; object.nFaces; i++ )
+	{
+		const Face&amp; face = object.pFaces[i];
+
+		if ( face.visible )
+		{
+			<font class="theme">// Go Through Each Edge</font>
+			for ( int j = 0; j &lt; 3; j++ )
+			{
+				int neighbourIndex = face.neighbourIndices[j];
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Next, check if there is a visible neighbouring face to this object. If not, then this edge casts a shadow.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				<font class="theme">// If There Is No Neighbour, Or Its Neighbouring Face Is Not Visible, Then This Edge Casts A Shadow</font>
+				if ( neighbourIndex == -1 || object.pFaces[neighbourIndex].visible == false )
+				{
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The next segment of code will retrieve the two vertices from the current edge, <i>v1</i> and <i>v2</i>.  Then, it
+calculates <i>v3</i> and <i>v4</i>, which are projected along the vector between the light source and the first edge. They
+are scaled to INFINITY, which was set to a very large value.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>					<font class="theme">// Get The Points On The Edge</font>
+					const Point3f&amp; v1 = object.pVertices[face.vertexIndices[j]];
+					const Point3f&amp; v2 = object.pVertices[face.vertexIndices[( j+1 )%3]];
+
+					<font class="theme">// Calculate The Two Vertices In Distance</font>
+					Point3f v3, v4;
+
+					v3.x = ( v1.x-lightPosition[0] )*INFINITY;
+					v3.y = ( v1.y-lightPosition[1] )*INFINITY;
+					v3.z = ( v1.z-lightPosition[2] )*INFINITY;
+
+					v4.x = ( v2.x-lightPosition[0] )*INFINITY;
+					v4.y = ( v2.y-lightPosition[1] )*INFINITY;
+					v4.z = ( v2.z-lightPosition[2] )*INFINITY;
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+I think you'll understand the next section, it justs draws the quadrilateral defined by those four points:
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>					<font class="theme">// Draw The Quadrilateral (As A Triangle Strip)</font>
+					glBegin( GL_TRIANGLE_STRIP );
+						glVertex3f( v1.x, v1.y, v1.z );
+						glVertex3f( v1.x+v3.x, v1.y+v3.y, v1.z+v3.z );
+						glVertex3f( v2.x, v2.y, v2.z );
+						glVertex3f( v2.x+v4.x, v2.y+v4.y, v2.z+v4.z );
+					glEnd();
+				}
+			}
+		}
+	}
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+With that, the shadow casting section is completed. But we are not finished yet! What about drawGLScene? Lets start
+with the simple bits: clearing the buffers, positioning the light source, and drawing a sphere:
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>bool drawGLScene()
+{
+	GLmatrix16f Minv;
+	GLvector4f wlp, lp;
+
+	<font class="theme">// Clear Color Buffer, Depth Buffer, Stencil Buffer</font>
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+	
+	glLoadIdentity();						<font class="theme">// Reset Modelview Matrix</font>
+	glTranslatef(0.0f, 0.0f, -20.0f);				<font class="theme">// Zoom Into Screen 20 Units</font>
+	glLightfv(GL_LIGHT1, GL_POSITION, LightPos);			<font class="theme">// Position Light1</font>
+	glTranslatef(SpherePos[0], SpherePos[1], SpherePos[2]);		<font class="theme">// Position The Sphere</font>
+	gluSphere(q, 1.5f, 32, 16);					<font class="theme">// Draw A Sphere</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Next, we have to calculate the light's position relative to the local coordinate system of the object. The comments explain
+each step in detail. <i>Minv</i> stores the object's transformation matrix, however it is done in reverse, and with
+negative arguments, so it is actually the inverse of the transformation matrix. Then <i>lp</i> is created as a copy of the
+light's position, and multiplied by the matrix. Thus, <i>lp</i> is the light's position in the object's coordinate system.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glLoadIdentity();						<font class="theme">// Reset Matrix</font>
+	glRotatef(-yrot, 0.0f, 1.0f, 0.0f);				<font class="theme">// Rotate By -yrot On Y Axis</font>
+	glRotatef(-xrot, 1.0f, 0.0f, 0.0f);				<font class="theme">// Rotate By -xrot On X Axis</font>
+	glTranslatef(-ObjPos[0], -ObjPos[1], -ObjPos[2]);		<font class="theme">// Move Negative On All Axis Based On ObjPos[] Values (X, Y, Z)</font>
+	glGetFloatv(GL_MODELVIEW_MATRIX,Minv);				<font class="theme">// Retrieve ModelView Matrix (Stores In Minv)</font>
+	lp[0] = LightPos[0];						<font class="theme">// Store Light Position X In lp[0]</font>
+	lp[1] = LightPos[1];						<font class="theme">// Store Light Position Y In lp[1]</font>
+	lp[2] = LightPos[2];						<font class="theme">// Store Light Position Z In lp[2]</font>
+	lp[3] = LightPos[3];						<font class="theme">// Store Light Direction In lp[3]</font>
+	VMatMult(Minv, lp);						<font class="theme">// We Store Rotated Light Vector In 'lp' Array</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now, palm off some of the work to draw the room, and the object. Calling castShadow draws the shadow of the object.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glLoadIdentity();						<font class="theme">// Reset Modelview Matrix</font>
+	glTranslatef(0.0f, 0.0f, -20.0f);				<font class="theme">// Zoom Into The Screen 20 Units</font>
+	DrawGLRoom();							<font class="theme">// Draw The Room</font>
+	glTranslatef(ObjPos[0], ObjPos[1], ObjPos[2]);			<font class="theme">// Position The Object</font>
+	glRotatef(xrot, 1.0f, 0.0f, 0.0f);				<font class="theme">// Spin It On The X Axis By xrot</font>
+	glRotatef(yrot, 0.0f, 1.0f, 0.0f);				<font class="theme">// Spin It On The Y Axis By yrot</font>
+	drawObject(obj);						<font class="theme">// Procedure For Drawing The Loaded Object</font>
+	castShadow(obj, lp);						<font class="theme">// Procedure For Casting The Shadow Based On The Silhouette</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The following few lines draw a little orange circle where the light is:
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glColor4f(0.7f, 0.4f, 0.0f, 1.0f);				<font class="theme">// Set Color To An Orange</font>
+	glDisable(GL_LIGHTING);						<font class="theme">// Disable Lighting</font>
+	glDepthMask(GL_FALSE);						<font class="theme">// Disable Depth Mask</font>
+	glTranslatef(lp[0], lp[1], lp[2]);				<font class="theme">// Translate To Light's Position</font>
+									<font class="theme">// Notice We're Still In Local Coordinate System</font>
+	gluSphere(q, 0.2f, 16, 8);					<font class="theme">// Draw A Little Yellow Sphere (Represents Light)</font>
+	glEnable(GL_LIGHTING);						<font class="theme">// Enable Lighting</font>
+	glDepthMask(GL_TRUE);						<font class="theme">// Enable Depth Mask</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The last part updates the object's position and returns.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	xrot += xspeed;							<font class="theme">// Increase xrot By xspeed</font>
+	yrot += yspeed;							<font class="theme">// Increase yrot By yspeed</font>
+
+	glFlush();							<font class="theme">// Flush The OpenGL Pipeline</font>
+	return TRUE;							<font class="theme">// Everything Went OK</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We did specify a DrawGLRoom function, and here it is - a bunch of rectangles to cast shadows against:
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void DrawGLRoom()							<font class="theme">// Draw The Room (Box)</font>
+{
+	glBegin(GL_QUADS);						<font class="theme">// Begin Drawing Quads</font>
+		<font class="theme">// Floor</font>
+		glNormal3f(0.0f, 1.0f, 0.0f);				<font class="theme">// Normal Pointing Up</font>
+		glVertex3f(-10.0f,-10.0f,-20.0f);			<font class="theme">// Back Left</font>
+		glVertex3f(-10.0f,-10.0f, 20.0f);			<font class="theme">// Front Left</font>
+		glVertex3f( 10.0f,-10.0f, 20.0f);			<font class="theme">// Front Right</font>
+		glVertex3f( 10.0f,-10.0f,-20.0f);			<font class="theme">// Back Right</font>
+		<font class="theme">// Ceiling</font>
+		glNormal3f(0.0f,-1.0f, 0.0f);				<font class="theme">// Normal Point Down</font>
+		glVertex3f(-10.0f, 10.0f, 20.0f);			<font class="theme">// Front Left</font>
+		glVertex3f(-10.0f, 10.0f,-20.0f);			<font class="theme">// Back Left</font>
+		glVertex3f( 10.0f, 10.0f,-20.0f);			<font class="theme">// Back Right</font>
+		glVertex3f( 10.0f, 10.0f, 20.0f);			<font class="theme">// Front Right</font>
+		<font class="theme">// Front Wall</font>
+		glNormal3f(0.0f, 0.0f, 1.0f);				<font class="theme">// Normal Pointing Away From Viewer</font>
+		glVertex3f(-10.0f, 10.0f,-20.0f);			<font class="theme">// Top Left</font>
+		glVertex3f(-10.0f,-10.0f,-20.0f);			<font class="theme">// Bottom Left</font>
+		glVertex3f( 10.0f,-10.0f,-20.0f);			<font class="theme">// Bottom Right</font>
+		glVertex3f( 10.0f, 10.0f,-20.0f);			<font class="theme">// Top Right</font>
+		<font class="theme">// Back Wall</font>
+		glNormal3f(0.0f, 0.0f,-1.0f);				<font class="theme">// Normal Pointing Towards Viewer</font>
+		glVertex3f( 10.0f, 10.0f, 20.0f);			<font class="theme">// Top Right</font>
+		glVertex3f( 10.0f,-10.0f, 20.0f);			<font class="theme">// Bottom Right</font>
+		glVertex3f(-10.0f,-10.0f, 20.0f);			<font class="theme">// Bottom Left</font>
+		glVertex3f(-10.0f, 10.0f, 20.0f);			<font class="theme">// Top Left</font>
+		<font class="theme">// Left Wall</font>
+		glNormal3f(1.0f, 0.0f, 0.0f);				<font class="theme">// Normal Pointing Right</font>
+		glVertex3f(-10.0f, 10.0f, 20.0f);			<font class="theme">// Top Front</font>
+		glVertex3f(-10.0f,-10.0f, 20.0f);			<font class="theme">// Bottom Front</font>
+		glVertex3f(-10.0f,-10.0f,-20.0f);			<font class="theme">// Bottom Back</font>
+		glVertex3f(-10.0f, 10.0f,-20.0f);			<font class="theme">// Top Back</font>
+		<font class="theme">// Right Wall</font>
+		glNormal3f(-1.0f, 0.0f, 0.0f);				<font class="theme">// Normal Pointing Left</font>
+		glVertex3f( 10.0f, 10.0f,-20.0f);			<font class="theme">// Top Back</font>
+		glVertex3f( 10.0f,-10.0f,-20.0f);			<font class="theme">// Bottom Back</font>
+		glVertex3f( 10.0f,-10.0f, 20.0f);			<font class="theme">// Bottom Front</font>
+		glVertex3f( 10.0f, 10.0f, 20.0f);			<font class="theme">// Top Front</font>
+	glEnd();							<font class="theme">// Done Drawing Quads</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+And before I forget, here is the VMatMult function which multiplies a vector by a matrix (get that Math textbook out
+again!):
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void VMatMult(GLmatrix16f M, GLvector4f v)
+{
+	GLfloat res[4];							<font class="theme">// Hold Calculated Results</font>
+	res[0]=M[ 0]*v[0]+M[ 4]*v[1]+M[ 8]*v[2]+M[12]*v[3];
+	res[1]=M[ 1]*v[0]+M[ 5]*v[1]+M[ 9]*v[2]+M[13]*v[3];
+	res[2]=M[ 2]*v[0]+M[ 6]*v[1]+M[10]*v[2]+M[14]*v[3];
+	res[3]=M[ 3]*v[0]+M[ 7]*v[1]+M[11]*v[2]+M[15]*v[3];
+	v[0]=res[0];							<font class="theme">// Results Are Stored Back In v[]</font>
+	v[1]=res[1];
+	v[2]=res[2];
+	v[3]=res[3];							<font class="theme">// Homogenous Coordinate</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The function to load the object is simple, just calling readObject, and then setting up the connectivity and the
+plane equations for each face. 
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int InitGLObjects()							<font class="theme">// Initialize Objects</font>
+{
+	if (!readObject("Data/Object2.txt", obj))			<font class="theme">// Read Object2 Into obj</font>
+	{
+		return FALSE;						<font class="theme">// If Failed Return False</font>
+	}
+
+	setConnectivity(obj);						<font class="theme">// Set Face To Face Connectivity</font>
+
+	for ( int i=0;i &lt; obj.nFaces;i++)				<font class="theme">// Loop Through All Object Faces</font>
+		calculatePlane(obj, obj.pFaces[i]);			<font class="theme">// Compute Plane Equations For All Faces</font>
+
+	return TRUE;							<font class="theme">// Return True</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Finally, KillGLObjects is a convenience function so that if you add more objects, you can add them in a central
+place.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void KillGLObjects()
+{
+	killObject( obj );	
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+All of the other functions don't require any further explanantion.  I have left out the standard NeHe tutorial code, as
+well as all of the variable definitions and the keyboard processing function. The commenting alone explains these
+sufficiently.
+<br><br>
+Some things to note about the tutorial:
+</font><ul>
+<font class="text"><li>The sphere doesn't stop shadows being projected on the wall. In reality, the sphere should also be casting a shadow, so
+seeing the one on the wall won't matter, it's hidden. It's just there to see what happens on curved surfaces :)</li>
+<li>If you are noticing extremely slow frame rates, try switching to fullscreen mode, or setting your desktop colour depth to
+32bpp.</li>
+<li>Arseny L. writes:  If you are having problems with a TNT2 in Windowed mode, make sure your desktop color depth is
+not set to 16bit.  In 16bit color mode, the stencil buffer is emulated, resulting in sluggish performance. There are no
+problems in 32bit mode (I have a TNT2 Ultra and I checked it).</li>
+</font></ul>
+<font class="text">I've got to admit this was a lengthy task to write out this tutorial.  It gives you full appreciation for the work that
+Jeff puts in! I hope you enjoy it, and give a huge thanks to Banu who wrote the original code! IF there is anything that
+needs further explaining in here, you are welcome to contact me (Brett), at
+<a href="mailto:brettporter@yahoo.com">brettporter@yahoo.com</a>.
+<br><br>
+* Randy Ridge adds:  In order to see shadows on my particular card the near clipping plane needs to be set to 0.001f rather
+than 0.1f in the ReSizeGLScene( ) section of code.  The code has been modified in this tutorial and should work on all cards!
+<br><br>
+<b>Banu Octavian</b> (<b>Choko</b>) &amp; <b>Brett Porter</b>
+<br><br>
+<b>Jeff Molofee</b> (<b>NeHe</b>)
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vc/lesson27.zip">Visual C++</a> Code For This Lesson.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/bcb6/lesson27_bcb6.zip">Borland C++ Builder 6</a> Code For This Lesson. ( Conversion by <a href="mailto:christian@tugzip.com">Christian Kindahl</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cwarrior/lesson27.zip">Code Warrior 5.3</a> Code For This Lesson. ( Conversion by <a href="mailto:DelusionalBeing@hotmail.com">Scott Lupton</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/delphi/lesson27.zip">Delphi</a> Code For This Lesson. ( Conversion by <a href="mailto:michal_praha@seznam.cz">Michal Tucek</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/devc/lesson27.zip">Dev C++</a> Code For This Lesson. ( Conversion by <a href="mailto:danprogram@hotmail.com">Dan</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/euphoria/lesson27.zip">Euphoria</a> Code For This Lesson. ( Conversion by <a href="mailto:1evan@sbcglobal.net">Evan Marshall</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/jogl/lesson27.jar">JoGL</a> Code For This Lesson. ( Conversion by <a href="mailto:abezrati@hotmail.com">Abdul Bezrati</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/kde/lesson27.tar.gz">KDE/QT</a> Code For This Lesson. ( Conversion by <a href="mailto:zhajdu@socal.rr.com">Zsolt Hajdu</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linux/lesson27.tar.gz">Linux</a> Code For This Lesson. ( Conversion by <a href="mailto:jpound@shaw.ca">Jeff Pound</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/lwjgl/lesson27.jar">LWJGL</a> Code For This Lesson. ( Conversion by <a href="mailto:mark.bernard@rogers.com">Mark Bernard</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/macosxcocoa/lesson27.zip">Mac OS X/Cocoa</a> Code For This Lesson. ( Conversion by <a href="mailto:blb@pobox.com">Bryan Blackburn</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vs_net/lesson27.zip">Visual Studio .NET</a> Code For This Lesson. ( Conversion by <a href="mailto:ultimatezeus@hotmail.com">Grant James</a> )<br>
+<br><br>
+<br><br>
+<table border="0" width="100%">
+<tbody><tr><td align="left" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=26">&lt; Lesson 26</a></font></b></td>
+<td align="right" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=28">Lesson 28 &gt;</a></font></b></td>
+</tr></tbody></table>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table>
+
+</body></html>

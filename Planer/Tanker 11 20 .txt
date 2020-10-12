@@ -1,0 +1,46 @@
+Schiffstyp: Tanker (Typ 36)
+Techlevel: 11
+Module: 20
+Kommandopunkte: 18
+Angriffswert: 0
+Schilde: 603
+Panzerung: 2298
+Struktur: 266
+Wendigkeit: 1836
+Reaktor: 3174
+Laderaum: 0
+Sensor: 1
+Tarnung: 0
+Min Crew: 57
+Max Crew: 76
+Sprung Sektor: 9
+Sprung-Zeit: 52
+Angriffs-Zeit: 8
+Angriffsenergie: 38
+
+Kampfwert (Taktik 100): 0,00
+KW/KP: 80,583
+AW/KP: 0,000
+Sch/P: 0,26
+
+Verwendete Forschungen: 
+3x Leiterbahnen (Lvl 21)
+6x Kybernetik (Lvl 22)
+4x Kybernetik (Lvl 34)
+7x Photovoltaik (Lvl 28)
+
+Baukosten: 
+Iso: 0
+Eg: 6
+Es: 30
+Rad: 310
+Em: 831
+Sm: 0
+Lm: 2961
+Fe: 2145
+Syn: 285
+Org: 1080
+Erz: 0
+Rek: 0
+Nrg: 4690
+Cr: 4840

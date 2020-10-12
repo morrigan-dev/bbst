@@ -1,0 +1,43 @@
+Schiffstyp: Zerstörer (Typ 6)
+Techlevel: 11
+Module: 20
+Kommandopunkte: 75
+Angriffswert: 3177
+Schilde: 1087
+Panzerung: 1252
+Struktur: 162
+Wendigkeit: 1467
+Reaktor: 456
+Laderaum: 0
+Sensor: 4
+Tarnung: 0
+Min Crew: 152
+Max Crew: 169
+Sprung Sektor: 15
+Sprung-Zeit: 50
+Angriffs-Zeit: 11
+Angriffsenergie: 330
+
+Verwendete Forschungen: 
+1x Nanotechnik (Lvl 33)
+2x Antimaterie (Lvl 17)
+11x Antimaterie (Lvl 15)
+1x Nanotechnik (Lvl 29)
+2x Photovoltaik (Lvl 34)
+3x Antimaterie (Lvl 30)
+
+Baukosten: 
+Iso: 15
+Eg: 358
+Es: 5
+Rad: 277
+Em: 1510
+Sm: 553
+Lm: 1055
+Fe: 815
+Syn: 0
+Org: 0
+Erz: 0
+Rek: 0
+Nrg: 8343
+Cr: 14368

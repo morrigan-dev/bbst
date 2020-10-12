@@ -1,0 +1,19 @@
+h1 { font-family:Trebuchet MS, Arial; font-size:24pt; font-style:normal; color:blue; margin-top: 12pt; margin-bottom: 6pt; }
+h2 { font-family:Trebuchet MS, Arial; font-size:20pt; font-style:normal; color:blue; margin-top: 10pt; margin-bottom: 5pt; }
+h3 { font-family:Trebuchet MS, Arial; font-size:16pt; font-style:normal; color:blue; margin-top: 8pt; margin-bottom: 4pt; }
+h4 { font-family:Trebuchet MS, Arial; font-size:14pt; font-weight:bold; color:blue; margin-top: 6pt; margin-bottom: 3pt; }
+h5 { font-family:Trebuchet MS, Arial; font-size:12pt; font-style:italic; color:blue; margin-top: 4pt; margin-bottom: 2pt; }
+h6 { font-family:Trebuchet MS, Arial; font-size:12pt; font-style:italic; color:blue; margin-top: 2pt; margin-bottom: 1pt; }
+p   { font-family:Trebuchet MS, Arial; font-size:12pt; font-style:normal; color:black; line-height:14pt; margin-top:3pt; margin-bottom: 3pt; }
+p.s { font-family:Trebuchet MS, Arial; font-size:10pt; font-style:normal; color:blue;  line-height:14pt; margin-top:3pt; margin-bottom: 3pt; }
+li   { font-family:Trebuchet MS, Arial; font-size:12pt; font-style:normal; color:black; }
+pre { font-family:Courier New; font-size:10pt; font-style:normal; color: black; line-height:12pt; margin-top:0pt; margin-bottom:0pt; }
+th   { font-family:Trebuchet MS, Arial; font-size:10pt; font-weight:bold; color: black;  }
+td   { font-family:Trebuchet MS, Arial; font-size:10pt; font-style:normal; color: black; }
+ul   { list-style:disc; }
+ol    {list-style:decimal; }
+blockquote { font-family:Trebuchet MS,Arial; font-size:12pt; font-style:italic; color:black; }
+em   { font-family:Trebuchet MS, Arial; font-size:12pt; font-style:italic; color:blue; line-height:14pt; margin-top:3pt; margin-bottom: 3pt; }
+a:link      { font-family:Trebuchet MS, Arial; font-size:12pt; font-style:normal; color:blue; }
+a:active  { font-family:Trebuchet MS, Arial; font-size:12pt; font-style:normal; color:red; }
+a:visited { font-family:Trebuchet MS, Arial; font-size:12pt; font-style:normal; color:purple; }

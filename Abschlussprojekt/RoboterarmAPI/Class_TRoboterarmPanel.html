@@ -1,0 +1,1082 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title>Class TRoboterarmPanel - Roboterarm Simulation - JADD - Just Another DelphiDoc</title>
+  <meta name="keywords" content="TRoboterarmPanel">
+  <meta name="Generator" content="JADD - Just Another DelphiDoc">
+  <link rel="stylesheet" type="text/css" href="DelphiDoc.css" title="Style">
+</head>
+<body>
+<table width="100%" class="headerlinks"><tbody><tr>
+<td align="center"><a href="index.html">Index</a></td>
+<td align="center"><a href="FileList.html">Files</a></td>
+<td align="center"><a href="RecordList.html">Records</a></td>
+<td align="center"><a href="ObjectList.html">Objects</a></td>
+<td align="center"><a href="ClassList.html">Classes</a></td>
+<td align="center"><a href="InterfaceList.html">Interfaces</a></td>
+<td align="center"><a href="DispInterfaceList.html">Dispatch-Interfaces</a></td>
+</tr></tbody></table>
+<hr>
+<h1 class="class">Class TRoboterarmPanel</h1>
+TObject &lt;-- ... &lt;-- TCustomControl &lt;-- <strong>TRoboterarmPanel</strong><br>
+Declared in <b class="resword">Unit</b> <a href="File_unitRoboterarmPanel.html">unitRoboterarmPanel</a><br>
+<h2 class="class">Implemented Interfaces</h2>
+<a href="Interface_IOpenGL.html">IOpenGL</a>
+<h2 class="class">No known Subclasses</h2>
+<h2 class="class">Used by Classes:</h2>
+<a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>
+<hr>
+<h2 class="classcomment">Description:</h2>
+
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="File_unitRoboterarmPanel.html#I_Register">Register</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a></dd>
+</dl>
+<hr>
+<h2 class="methodlist">List of Constructors:</h2>
+<dl class="funclist">
+  <dt><img src="public.gif" alt="public" title="public"> <b class="resword">constructor</b> <a href="#I_Create">Create</a></dt>
+  <dd>Konstruktor, der eine Instanz dieser Klasse erzeugt.</dd>
+</dl>
+<hr>
+<h2 class="methodlist">List of Destructors:</h2>
+<dl class="funclist">
+  <dt><img src="public.gif" alt="public" title="public"> <b class="resword">destructor</b> <a href="#I_Destroy">Destroy</a></dt>
+  <dd>Destruktor, der sämtliche von dieser Klasse erzeugten Objekte wieder freigibt.</dd>
+</dl>
+<hr>
+<h2 class="methodlist">List of Methods:</h2>
+<dl class="funclist">
+  <dt><img src="public.gif" alt="public" title="public"> <b class="resword">procedure</b> <a href="#I_AfterConstruction">AfterConstruction</a></dt>
+  <dd>Erzeugt die einzelnen Element und Servo Properties für den Objekt Inspektor.</dd>
+  <dt><img src="private.gif" alt="private" title="private"> <b class="resword">procedure</b> <a href="#I_correctGrad">correctGrad</a></dt>
+  <dd>Diese Prozedur korrigiert Gradwerte, indem nur ein Bereich von 0 bis 360 zugelassen wird.</dd>
+  <dt><img src="private.gif" alt="private" title="private"> <b class="resword">procedure</b> <a href="#I_correctProzent">correctProzent</a></dt>
+  <dd></dd>
+  <dt><img src="private.gif" alt="private" title="private"> <b class="resword">procedure</b> <a href="#I_correctRenderValues">correctRenderValues</a></dt>
+  <dd>Diese Prozedur korrigiert die Werte der Slices, Stacks und Loops.</dd>
+  <dt><img src="published.gif" alt="published" title="published"> <b class="resword">procedure</b> <a href="#I_destroyOGL">destroyOGL</a></dt>
+  <dd>Diese Prozedur wird aufgerufen kurz bevor das Formular zerstört wird und der Speicher frei gegeben wird.</dd>
+  <dt><img src="public.gif" alt="public" title="public"> <b class="resword">procedure</b> <a href="#I_initElements">initElements</a></dt>
+  <dd>Diese Prozedur initialisiert alle Elemente mit ihren Startwerten.</dd>
+  <dt><img src="published.gif" alt="published" title="published"> <b class="resword">procedure</b> <a href="#I_initOGL">initOGL</a></dt>
+  <dd>Diese Prozedur wird unmittelbar nach der Erstellung des Formulars aufgerufen, initialisiert das OpenGL und setzt dessen Startwerte.</dd>
+  <dt><img src="public.gif" alt="public" title="public"> <b class="resword">procedure</b> <a href="#I_initServos">initServos</a></dt>
+  <dd>Diese Prozedur initialisiert alle Servos mit ihren Startwerten.</dd>
+  <dt><img src="private.gif" alt="private" title="private"> <b class="resword">procedure</b> <a href="#I_Koordinatenraum">Koordinatenraum</a></dt>
+  <dd>Diese Prozedur zeichnet ein Koordinatensystem im Universumursprung</dd>
+  <dt><img src="public.gif" alt="public" title="public"> <b class="resword">procedure</b> <a href="#I_Render">Render</a></dt>
+  <dd>Diese Prozedur organisiert das Zeichnen der einzelnen Elemente und Servos.</dd>
+  <dt><img src="private.gif" alt="private" title="private"> <b class="resword">procedure</b> <a href="#I_RenderElement0">RenderElement0</a></dt>
+  <dd>Diese Prozedur zeichnet das Element 0, welches ein nach oben offener Zylinder ist.</dd>
+  <dt><img src="private.gif" alt="private" title="private"> <b class="resword">procedure</b> <a href="#I_RenderElement1">RenderElement1</a></dt>
+  <dd>Diese Prozedur zeichnet das Element 1, welches aus zwei Querstreben besteht.</dd>
+  <dt><img src="private.gif" alt="private" title="private"> <b class="resword">procedure</b> <a href="#I_RenderElement2">RenderElement2</a></dt>
+  <dd>Diese Prozedur zeichnet das Element 2, welches aus zwei Querstreben besteht.</dd>
+  <dt><img src="private.gif" alt="private" title="private"> <b class="resword">procedure</b> <a href="#I_RenderElement3">RenderElement3</a></dt>
+  <dd>Diese Prozedur zeichnet das Element 3, welches aus zwei Querstreben besteht, die einen Quader umschließen.</dd>
+  <dt><img src="private.gif" alt="private" title="private"> <b class="resword">procedure</b> <a href="#I_RenderElement4">RenderElement4</a></dt>
+  <dd>Diese Prozedur zeichnet das Element 4.</dd>
+  <dt><img src="private.gif" alt="private" title="private"> <b class="resword">procedure</b> <a href="#I_RenderServo0">RenderServo0</a></dt>
+  <dd>Diese Prozedur zeichnet den Servo 0.</dd>
+  <dt><img src="private.gif" alt="private" title="private"> <b class="resword">procedure</b> <a href="#I_RenderServo12">RenderServo12</a></dt>
+  <dd>Diese Prozedur zeichnet den Servo 1 und 2.</dd>
+  <dt><img src="private.gif" alt="private" title="private"> <b class="resword">procedure</b> <a href="#I_RenderServo3">RenderServo3</a></dt>
+  <dd>Diese Prozedur zeichnet den Servo 3.</dd>
+  <dt><img src="private.gif" alt="private" title="private"> <b class="resword">procedure</b> <a href="#I_RenderServo4">RenderServo4</a></dt>
+  <dd>Diese Prozedur zeichnet den Servo 4.</dd>
+  <dt><img src="private.gif" alt="private" title="private"> <b class="resword">procedure</b> <a href="#I_RenderServo5">RenderServo5</a></dt>
+  <dd>Diese Prozedur zeichnet den Servo 5.</dd>
+  <dt><img src="private.gif" alt="private" title="private"> <b class="resword">procedure</b> <a href="#I_RenderServo6">RenderServo6</a></dt>
+  <dd>Diese Prozedur zeichnet das Servo 6, welches aus 2 Zylindern und einem Würfel besteht.</dd>
+  <dt><img src="private.gif" alt="private" title="private"> <b class="resword">procedure</b> <a href="#I_RenderServo7">RenderServo7</a></dt>
+  <dd>Diese Prozedur zeichnet das Servo 7, welches aus 2 Zylindern und einem Würfel besteht.</dd>
+  <dt><img src="published.gif" alt="published" title="published"> <b class="resword">procedure</b> <a href="#I_RoboterarmDblClick">RoboterarmDblClick</a></dt>
+  <dd>Setzt den Roboterarm auf seine ursprüngliche Perspektive zurück.</dd>
+  <dt><img src="published.gif" alt="published" title="published"> <b class="resword">procedure</b> <a href="#I_RoboterarmMouseDown">RoboterarmMouseDown</a></dt>
+  <dd>Aktiviert je nach Maustaste die Bewegung oder die Rotation.</dd>
+  <dt><img src="published.gif" alt="published" title="published"> <b class="resword">procedure</b> <a href="#I_RoboterarmMouseMove">RoboterarmMouseMove</a></dt>
+  <dd>Verschiebt bzw.</dd>
+  <dt><img src="published.gif" alt="published" title="published"> <b class="resword">procedure</b> <a href="#I_RoboterarmMouseUp">RoboterarmMouseUp</a></dt>
+  <dd>Setzt die Bewegungs- und Rotationsflags zurück.</dd>
+  <dt><img src="published.gif" alt="published" title="published"> <b class="resword">procedure</b> <a href="#I_RoboterarmMouseWheel">RoboterarmMouseWheel</a></dt>
+  <dd>Setzt den Zoomfaktor, entsprechend der Bewegung des Mausrads.</dd>
+  <dt><img src="published.gif" alt="published" title="published"> <b class="resword">procedure</b> <a href="#I_RoboterarmResize">RoboterarmResize</a></dt>
+  <dd>Diese Prozedur wird immer dann aufgerufe, wenn sich die Größe des Formulars ändert.</dd>
+  <dt><img src="private.gif" alt="private" title="private"> <b class="resword">procedure</b> <a href="#I_SetHeight">SetHeight</a></dt>
+  <dd>Setzt die Höhe des Panels und aktualisiert anschließend die Simulation.</dd>
+  <dt><img src="public.gif" alt="public" title="public"> <b class="resword">procedure</b> <a href="#I_SetShowKoordinatensystem">SetShowKoordinatensystem</a></dt>
+  <dd>Diese Setter-Prozedur setzt das Flag, ob das Universum Koordinatensystem angezeigt werden soll.</dd>
+  <dt><img src="public.gif" alt="public" title="public"> <b class="resword">procedure</b> <a href="#I_SetShowObjektMittelpunkt">SetShowObjektMittelpunkt</a></dt>
+  <dd>Diese Setter-Prozedur setzt das Flag, ob die geometrischen Mittelpunkte der Objekte angezeigt werden sollen.</dd>
+  <dt><img src="public.gif" alt="public" title="public"> <b class="resword">procedure</b> <a href="#I_SetShowOpenGLInfoPanel">SetShowOpenGLInfoPanel</a></dt>
+  <dd>Diese Setter-Prozedur setzt das Flag, ob das OpenGL Infopanel angezeigt werden soll.</dd>
+  <dt><img src="public.gif" alt="public" title="public"> <b class="resword">procedure</b> <a href="#I_SetShowRotationsmarkierung">SetShowRotationsmarkierung</a></dt>
+  <dd>Diese Setter-Prozedur setzt das Flag, ob die Rotationsmarkierungen bei den Servos angezeigt werden sollen.</dd>
+  <dt><img src="public.gif" alt="public" title="public"> <b class="resword">procedure</b> <a href="#I_SetShowTexturen">SetShowTexturen</a></dt>
+  <dd>Diese Setter-Prozedur setzt das Flag, ob die Texturen angezeigt werden sollen.</dd>
+  <dt><img src="private.gif" alt="private" title="private"> <b class="resword">procedure</b> <a href="#I_SetupGL">SetupGL</a></dt>
+  <dd>Diese Prozedur korrigiert das OpenGL.</dd>
+  <dt><img src="private.gif" alt="private" title="private"> <b class="resword">procedure</b> <a href="#I_SetWidth">SetWidth</a></dt>
+  <dd>Setzt die Breite des Panels und aktualisiert anschließend die Simulation.</dd>
+  <dt><img src="private.gif" alt="private" title="private"> <b class="resword">procedure</b> <a href="#I_ShowObjektMittelpunkt">ShowObjektMittelpunkt</a></dt>
+  <dd>Diese Prozedur zeichnet in das aktuelle Objekt ein Kreuz, welches den geometrischen Mittelpunkt anzeigt.</dd>
+  <dt><img src="private.gif" alt="private" title="private"> <b class="resword">procedure</b> <a href="#I_updateViewport">updateViewport</a></dt>
+  <dd>Aktualisiert die Perspekte von OpenGL.</dd>
+</dl>
+<hr>
+<h2 class="member">Fields:</h2>
+<dl class="member">
+
+<dt class="member"><br>
+<a name="I_config"><img src="private.gif" alt="private" title="private"></a> config: <a href="Record_TConfig.html">TConfig</a></dt>
+<dd class="member">Erstelle Konfigurationsrecord
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_Render">Render</a>, <a href="#I_RenderElement0">RenderElement0</a>, <a href="#I_RenderElement1">RenderElement1</a>, <a href="#I_RenderElement2">RenderElement2</a>, <a href="#I_RenderElement3">RenderElement3</a>, <a href="#I_RenderElement4">RenderElement4</a>, <a href="#I_RenderServo0">RenderServo0</a>, <a href="#I_RenderServo12">RenderServo12</a>, <a href="#I_RenderServo3">RenderServo3</a>, <a href="#I_RenderServo4">RenderServo4</a>, <a href="#I_RenderServo5">RenderServo5</a>, <a href="#I_RenderServo6">RenderServo6</a>, <a href="#I_RenderServo7">RenderServo7</a>, <a href="#I_SetShowKoordinatensystem">SetShowKoordinatensystem</a>, <a href="#I_SetShowObjektMittelpunkt">SetShowObjektMittelpunkt</a>, <a href="#I_SetShowOpenGLInfoPanel">SetShowOpenGLInfoPanel</a>, <a href="#I_SetShowRotationsmarkierung">SetShowRotationsmarkierung</a>, <a href="#I_SetShowTexturen">SetShowTexturen</a>, <a href="#I_ShowObjektMittelpunkt">ShowObjektMittelpunkt</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_DC"><img src="private.gif" alt="private" title="private"></a> DC: HDC</dt>
+<dd class="member">Handle auf Zeichenfläche HDC und HGLRC sind Typen die von Windows zur Verfügung gestellt werden. Ihr findet sie in der Unit &quot;Windows&quot;.
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_destroyOGL">destroyOGL</a>, <a href="#I_initOGL">initOGL</a>, <a href="#I_Render">Render</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Felement0"><img src="private.gif" alt="private" title="private"></a> Felement0: <a href="Class_TElement.html">TElement</a></dt>
+<dd class="member">Erstelle Elementrecords
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_AfterConstruction">AfterConstruction</a>, <a href="#I_Destroy">Destroy</a>, <a href="#I_initElements">initElements</a>, <a href="#I_Render">Render</a>, <a href="#I_RenderElement0">RenderElement0</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Felement1"><img src="private.gif" alt="private" title="private"></a> Felement1: <a href="Class_TElement.html">TElement</a></dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_AfterConstruction">AfterConstruction</a>, <a href="#I_Destroy">Destroy</a>, <a href="#I_initElements">initElements</a>, <a href="#I_Render">Render</a>, <a href="#I_RenderElement1">RenderElement1</a>, <a href="#I_RenderElement3">RenderElement3</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Felement2"><img src="private.gif" alt="private" title="private"></a> Felement2: <a href="Class_TElement.html">TElement</a></dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_AfterConstruction">AfterConstruction</a>, <a href="#I_Destroy">Destroy</a>, <a href="#I_initElements">initElements</a>, <a href="#I_Render">Render</a>, <a href="#I_RenderElement2">RenderElement2</a>, <a href="#I_RenderElement3">RenderElement3</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Felement3"><img src="private.gif" alt="private" title="private"></a> Felement3: <a href="Class_TElement.html">TElement</a></dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_AfterConstruction">AfterConstruction</a>, <a href="#I_Destroy">Destroy</a>, <a href="#I_initElements">initElements</a>, <a href="#I_Render">Render</a>, <a href="#I_RenderElement3">RenderElement3</a>, <a href="#I_RenderServo6">RenderServo6</a>, <a href="#I_RenderServo7">RenderServo7</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Felement4"><img src="private.gif" alt="private" title="private"></a> Felement4: <a href="Class_TElement.html">TElement</a></dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_AfterConstruction">AfterConstruction</a>, <a href="#I_Destroy">Destroy</a>, <a href="#I_initElements">initElements</a>, <a href="#I_Render">Render</a>, <a href="#I_RenderElement4">RenderElement4</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Felement5"><img src="private.gif" alt="private" title="private"></a> Felement5: <a href="Class_TElement.html">TElement</a></dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_AfterConstruction">AfterConstruction</a>, <a href="#I_Destroy">Destroy</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Fheight"><img src="private.gif" alt="private" title="private"></a> Fheight: Integer</dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_SetHeight">SetHeight</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Fservo0"><img src="private.gif" alt="private" title="private"></a> Fservo0: <a href="Class_TServo.html">TServo</a></dt>
+<dd class="member">Erstelle Servoobjekte
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_AfterConstruction">AfterConstruction</a>, <a href="#I_Destroy">Destroy</a>, <a href="#I_initServos">initServos</a>, <a href="#I_Render">Render</a>, <a href="#I_RenderServo0">RenderServo0</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Fservo12"><img src="private.gif" alt="private" title="private"></a> Fservo12: <a href="Class_TServo.html">TServo</a></dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_AfterConstruction">AfterConstruction</a>, <a href="#I_Destroy">Destroy</a>, <a href="#I_initServos">initServos</a>, <a href="#I_RenderServo12">RenderServo12</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Fservo3"><img src="private.gif" alt="private" title="private"></a> Fservo3: <a href="Class_TServo.html">TServo</a></dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_AfterConstruction">AfterConstruction</a>, <a href="#I_Destroy">Destroy</a>, <a href="#I_initServos">initServos</a>, <a href="#I_RenderServo3">RenderServo3</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Fservo4"><img src="private.gif" alt="private" title="private"></a> Fservo4: <a href="Class_TServo.html">TServo</a></dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_AfterConstruction">AfterConstruction</a>, <a href="#I_Destroy">Destroy</a>, <a href="#I_initServos">initServos</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Fservo5"><img src="private.gif" alt="private" title="private"></a> Fservo5: <a href="Class_TServo.html">TServo</a></dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_AfterConstruction">AfterConstruction</a>, <a href="#I_Destroy">Destroy</a>, <a href="#I_initServos">initServos</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Fservo6"><img src="private.gif" alt="private" title="private"></a> Fservo6: <a href="Class_TServo.html">TServo</a></dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_AfterConstruction">AfterConstruction</a>, <a href="#I_Destroy">Destroy</a>, <a href="#I_initServos">initServos</a>, <a href="#I_RenderServo6">RenderServo6</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Fservo7"><img src="private.gif" alt="private" title="private"></a> Fservo7: <a href="Class_TServo.html">TServo</a></dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_AfterConstruction">AfterConstruction</a>, <a href="#I_Destroy">Destroy</a>, <a href="#I_initServos">initServos</a>, <a href="#I_RenderServo7">RenderServo7</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Fwidth"><img src="private.gif" alt="private" title="private"></a> Fwidth: Integer</dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_SetWidth">SetWidth</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_mouseMove"><img src="private.gif" alt="private" title="private"></a> mouseMove: Boolean</dt>
+<dd class="member">Gibt an, ob der Roboterarm per Mausbewegung verschoben werden soll
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_RoboterarmMouseDown">RoboterarmMouseDown</a>, <a href="#I_RoboterarmMouseMove">RoboterarmMouseMove</a>, <a href="#I_RoboterarmMouseUp">RoboterarmMouseUp</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_mouseRotation"><img src="private.gif" alt="private" title="private"></a> mouseRotation: Boolean</dt>
+<dd class="member">Gibt an, ob der Roboterarm per Mausbewegung gedreht werden soll
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_initOGL">initOGL</a>, <a href="#I_RoboterarmMouseDown">RoboterarmMouseDown</a>, <a href="#I_RoboterarmMouseMove">RoboterarmMouseMove</a>, <a href="#I_RoboterarmMouseUp">RoboterarmMouseUp</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_oldXMove"><img src="private.gif" alt="private" title="private"></a> oldXMove: Real</dt>
+<dd class="member">Der alte horizontale Verschiebungswert des Universums
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_RoboterarmMouseMove">RoboterarmMouseMove</a>, <a href="#I_RoboterarmMouseUp">RoboterarmMouseUp</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_oldXRotation"><img src="private.gif" alt="private" title="private"></a> oldXRotation: Real</dt>
+<dd class="member">Der alte Rotationsstand der horizontalen Rotation des gesamten Universums
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_RoboterarmMouseMove">RoboterarmMouseMove</a>, <a href="#I_RoboterarmMouseUp">RoboterarmMouseUp</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_oldYMove"><img src="private.gif" alt="private" title="private"></a> oldYMove: Real</dt>
+<dd class="member">Der alte vertikale Verschiebungswert des Universums
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_RoboterarmMouseMove">RoboterarmMouseMove</a>, <a href="#I_RoboterarmMouseUp">RoboterarmMouseUp</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_oldYRotation"><img src="private.gif" alt="private" title="private"></a> oldYRotation: Real</dt>
+<dd class="member">Der alte Rotationsstand der vertikalen Rotation des gesamten Universums
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_RoboterarmMouseMove">RoboterarmMouseMove</a>, <a href="#I_RoboterarmMouseUp">RoboterarmMouseUp</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_panelHeight"><img src="private.gif" alt="private" title="private"></a> panelHeight: Integer</dt>
+<dd class="member">Gibt die Höhe des Panels an
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_initOGL">initOGL</a>, <a href="#I_updateViewport">updateViewport</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_panelWidth"><img src="private.gif" alt="private" title="private"></a> panelWidth: Integer</dt>
+<dd class="member">Gibt die Breite des Panels an
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_initOGL">initOGL</a>, <a href="#I_updateViewport">updateViewport</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_RC"><img src="private.gif" alt="private" title="private"></a> RC: HGLRC</dt>
+<dd class="member">Rendering Context (Diese Unit sollte bei einem neuen Projekt bereits durch Delphi eingebunden worden sein.)
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_destroyOGL">destroyOGL</a>, <a href="#I_initOGL">initOGL</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_wasserBewegung"><img src="private.gif" alt="private" title="private"></a> wasserBewegung: Real</dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_initOGL">initOGL</a>, <a href="#I_RenderElement0">RenderElement0</a>, <a href="#I_RenderElement1">RenderElement1</a>, <a href="#I_RenderElement2">RenderElement2</a>, <a href="#I_RenderElement3">RenderElement3</a>, <a href="#I_RenderElement4">RenderElement4</a>, <a href="#I_RenderServo12">RenderServo12</a>, <a href="#I_RenderServo3">RenderServo3</a>, <a href="#I_RenderServo4">RenderServo4</a>, <a href="#I_RenderServo6">RenderServo6</a>, <a href="#I_RenderServo7">RenderServo7</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_xMousePos"><img src="private.gif" alt="private" title="private"></a> xMousePos: Integer</dt>
+<dd class="member">x Mausposition zum Zeitpunkt als eine Maustaste gedrückt wurde
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_RoboterarmMouseDown">RoboterarmMouseDown</a>, <a href="#I_RoboterarmMouseMove">RoboterarmMouseMove</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_xMove"><img src="private.gif" alt="private" title="private"></a> xMove: Real</dt>
+<dd class="member">Gibt die horizontale Verschiebung des Universums an
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_initOGL">initOGL</a>, <a href="#I_Render">Render</a>, <a href="#I_RoboterarmDblClick">RoboterarmDblClick</a>, <a href="#I_RoboterarmMouseMove">RoboterarmMouseMove</a>, <a href="#I_RoboterarmMouseUp">RoboterarmMouseUp</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_xRotation"><img src="private.gif" alt="private" title="private"></a> xRotation: Real</dt>
+<dd class="member">Interner Variablenblock Verantwortlich für die horizontale Rotation des gesamten Universums
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_initOGL">initOGL</a>, <a href="#I_Render">Render</a>, <a href="#I_RoboterarmDblClick">RoboterarmDblClick</a>, <a href="#I_RoboterarmMouseMove">RoboterarmMouseMove</a>, <a href="#I_RoboterarmMouseUp">RoboterarmMouseUp</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_yMousePos"><img src="private.gif" alt="private" title="private"></a> yMousePos: Integer</dt>
+<dd class="member">y Mausposition zum Zeitpunkt als eine Maustaste gedrückt wurde
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_RoboterarmMouseDown">RoboterarmMouseDown</a>, <a href="#I_RoboterarmMouseMove">RoboterarmMouseMove</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_yMove"><img src="private.gif" alt="private" title="private"></a> yMove: Real</dt>
+<dd class="member">Gibt die vertikale Verschiebung des Universums an
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_initOGL">initOGL</a>, <a href="#I_Render">Render</a>, <a href="#I_RoboterarmDblClick">RoboterarmDblClick</a>, <a href="#I_RoboterarmMouseMove">RoboterarmMouseMove</a>, <a href="#I_RoboterarmMouseUp">RoboterarmMouseUp</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_yRotation"><img src="private.gif" alt="private" title="private"></a> yRotation: Real</dt>
+<dd class="member">Verantwortlich für die vertikale Rotation des gesamten Universums
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_initOGL">initOGL</a>, <a href="#I_Render">Render</a>, <a href="#I_RoboterarmDblClick">RoboterarmDblClick</a>, <a href="#I_RoboterarmMouseMove">RoboterarmMouseMove</a>, <a href="#I_RoboterarmMouseUp">RoboterarmMouseUp</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_zZoom"><img src="private.gif" alt="private" title="private"></a> zZoom: Real</dt>
+<dd class="member">Gibt die Tiefenverschiebung des Universums an
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_initOGL">initOGL</a>, <a href="#I_Render">Render</a>, <a href="#I_RoboterarmDblClick">RoboterarmDblClick</a>, <a href="#I_RoboterarmMouseWheel">RoboterarmMouseWheel</a></dd>
+</dl>
+</dd>
+</dl>
+<hr>
+<h2 class="member">Properties:</h2>
+<dl class="member">
+
+<dt class="member"><br>
+<a name="I_Element0"><img src="published.gif" alt="published" title="published"></a> <b class="resword">property</b> Element0: <a href="Class_TElement.html">TElement</a> <b class="resword">read</b> <a href="#I_Felement0">Felement0</a> <b class="resword">write</b> <a href="#I_Felement0">Felement0</a></dt>
+<dd class="member">Erstelle Elementrecords
+</dd>
+
+<dt class="member"><br>
+<a name="I_Element1"><img src="published.gif" alt="published" title="published"></a> <b class="resword">property</b> Element1: <a href="Class_TElement.html">TElement</a> <b class="resword">read</b> <a href="#I_Felement1">Felement1</a> <b class="resword">write</b> <a href="#I_Felement1">Felement1</a></dt>
+<dd class="member">
+</dd>
+
+<dt class="member"><br>
+<a name="I_Element2"><img src="published.gif" alt="published" title="published"></a> <b class="resword">property</b> Element2: <a href="Class_TElement.html">TElement</a> <b class="resword">read</b> <a href="#I_Felement2">Felement2</a> <b class="resword">write</b> <a href="#I_Felement2">Felement2</a></dt>
+<dd class="member">
+</dd>
+
+<dt class="member"><br>
+<a name="I_Element3"><img src="published.gif" alt="published" title="published"></a> <b class="resword">property</b> Element3: <a href="Class_TElement.html">TElement</a> <b class="resword">read</b> <a href="#I_Felement3">Felement3</a> <b class="resword">write</b> <a href="#I_Felement3">Felement3</a></dt>
+<dd class="member">
+</dd>
+
+<dt class="member"><br>
+<a name="I_Element4"><img src="published.gif" alt="published" title="published"></a> <b class="resword">property</b> Element4: <a href="Class_TElement.html">TElement</a> <b class="resword">read</b> <a href="#I_Felement4">Felement4</a> <b class="resword">write</b> <a href="#I_Felement4">Felement4</a></dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_RenderServo6">RenderServo6</a>, <a href="#I_RenderServo7">RenderServo7</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Element5"><img src="published.gif" alt="published" title="published"></a> <b class="resword">property</b> Element5: <a href="Class_TElement.html">TElement</a> <b class="resword">read</b> <a href="#I_Felement5">Felement5</a> <b class="resword">write</b> <a href="#I_Felement5">Felement5</a></dt>
+<dd class="member">
+</dd>
+
+<dt class="member"><br>
+<a name="I_Height"><img src="published.gif" alt="published" title="published"></a> <b class="resword">property</b> Height: Integer <b class="resword">read</b> <a href="#I_Fheight">Fheight</a> <b class="resword">write</b> <a href="#I_SetHeight">SetHeight</a></dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_FormResize">FormResize</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Servo0"><img src="published.gif" alt="published" title="published"></a> <b class="resword">property</b> Servo0: <a href="Class_TServo.html">TServo</a> <b class="resword">read</b> <a href="#I_Fservo0">Fservo0</a> <b class="resword">write</b> <a href="#I_Fservo0">Fservo0</a></dt>
+<dd class="member">Erstelle Servoobjekte
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_edtServo0MaxGradChange">edtServo0MaxGradChange</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_edtServo0MinGradChange">edtServo0MinGradChange</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_FormCreate">FormCreate</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo0Change">tbarServo0Change</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo0Enter">tbarServo0Enter</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo0Exit">tbarServo0Exit</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Servo12"><img src="published.gif" alt="published" title="published"></a> <b class="resword">property</b> Servo12: <a href="Class_TServo.html">TServo</a> <b class="resword">read</b> <a href="#I_Fservo12">Fservo12</a> <b class="resword">write</b> <a href="#I_Fservo12">Fservo12</a></dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_Render">Render</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_edtServo12MaxGradChange">edtServo12MaxGradChange</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_edtServo12MinGradChange">edtServo12MinGradChange</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_FormCreate">FormCreate</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo12Change">tbarServo12Change</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo12Enter">tbarServo12Enter</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo12Exit">tbarServo12Exit</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Servo3"><img src="published.gif" alt="published" title="published"></a> <b class="resword">property</b> Servo3: <a href="Class_TServo.html">TServo</a> <b class="resword">read</b> <a href="#I_Fservo3">Fservo3</a> <b class="resword">write</b> <a href="#I_Fservo3">Fservo3</a></dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_Render">Render</a>, <a href="#I_RenderServo3">RenderServo3</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_edtServo3MaxGradChange">edtServo3MaxGradChange</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_edtServo3MinGradChange">edtServo3MinGradChange</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_FormCreate">FormCreate</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo3Change">tbarServo3Change</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo3Enter">tbarServo3Enter</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo3Exit">tbarServo3Exit</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Servo4"><img src="published.gif" alt="published" title="published"></a> <b class="resword">property</b> Servo4: <a href="Class_TServo.html">TServo</a> <b class="resword">read</b> <a href="#I_Fservo4">Fservo4</a> <b class="resword">write</b> <a href="#I_Fservo4">Fservo4</a></dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_Render">Render</a>, <a href="#I_RenderServo4">RenderServo4</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_edtServo4MaxGradChange">edtServo4MaxGradChange</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_edtServo4MinGradChange">edtServo4MinGradChange</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_FormCreate">FormCreate</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo4Change">tbarServo4Change</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo4Enter">tbarServo4Enter</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo4Exit">tbarServo4Exit</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Servo5"><img src="published.gif" alt="published" title="published"></a> <b class="resword">property</b> Servo5: <a href="Class_TServo.html">TServo</a> <b class="resword">read</b> <a href="#I_Fservo5">Fservo5</a> <b class="resword">write</b> <a href="#I_Fservo5">Fservo5</a></dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_Render">Render</a>, <a href="#I_RenderServo5">RenderServo5</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_edtServo5MaxGradChange">edtServo5MaxGradChange</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_edtServo5MinGradChange">edtServo5MinGradChange</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_FormCreate">FormCreate</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo5Change">tbarServo5Change</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo5Enter">tbarServo5Enter</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo5Exit">tbarServo5Exit</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Servo6"><img src="published.gif" alt="published" title="published"></a> <b class="resword">property</b> Servo6: <a href="Class_TServo.html">TServo</a> <b class="resword">read</b> <a href="#I_Fservo6">Fservo6</a> <b class="resword">write</b> <a href="#I_Fservo6">Fservo6</a></dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_RenderServo6">RenderServo6</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_edtServo6MaxGradChange">edtServo6MaxGradChange</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_edtServo6MinGradChange">edtServo6MinGradChange</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_FormCreate">FormCreate</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo6Change">tbarServo6Change</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo6Enter">tbarServo6Enter</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo6Exit">tbarServo6Exit</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Servo7"><img src="published.gif" alt="published" title="published"></a> <b class="resword">property</b> Servo7: <a href="Class_TServo.html">TServo</a> <b class="resword">read</b> <a href="#I_Fservo7">Fservo7</a> <b class="resword">write</b> <a href="#I_Fservo7">Fservo7</a></dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_RenderServo7">RenderServo7</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_edtServo6MaxGradChange">edtServo6MaxGradChange</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_edtServo6MinGradChange">edtServo6MinGradChange</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo6Change">tbarServo6Change</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo6Enter">tbarServo6Enter</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo6Exit">tbarServo6Exit</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Width"><img src="published.gif" alt="published" title="published"></a> <b class="resword">property</b> Width: Integer <b class="resword">read</b> <a href="#I_Fwidth">Fwidth</a> <b class="resword">write</b> <a href="#I_SetWidth">SetWidth</a></dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_FormResize">FormResize</a></dd>
+</dl>
+</dd>
+</dl>
+<hr>
+<h2 class="member">Constructors:</h2>
+<dl class="member">
+
+<dt class="member"><br>
+<a name="I_Create"><img src="public.gif" alt="public" title="public"></a> <b class="resword">constructor</b> Create(AOwner: TComponent); <b class="resword">override</b></dt>
+<dd class="member">Konstruktor, der eine Instanz dieser Klasse erzeugt.
+<dl><dt class="params"><strong>Parameters</strong></dt><dd class="params"><dl class="param">
+<dt class="param">AOwner</dt>
+<dd class="param">Die Komponente auf der die Instanz liegt.</dd>
+</dl>
+</dd>
+<dt class="overrides"><strong>Overrides</strong></dt><dd class="overrides">Create</dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Gattinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+</dl>
+<hr>
+<h2 class="member">Destructors:</h2>
+<dl class="member">
+
+<dt class="member"><br>
+<a name="I_Destroy"><img src="public.gif" alt="public" title="public"></a> <b class="resword">destructor</b> Destroy; <b class="resword">override</b></dt>
+<dd class="member">Destruktor, der sämtliche von dieser Klasse erzeugten Objekte wieder freigibt.
+<dl><dt class="overrides"><strong>Overrides</strong></dt><dd class="overrides">Destroy</dd>
+<dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_Felement0">Felement0</a>, <a href="#I_Felement1">Felement1</a>, <a href="#I_Felement2">Felement2</a>, <a href="#I_Felement3">Felement3</a>, <a href="#I_Felement4">Felement4</a>, <a href="#I_Felement5">Felement5</a>, <a href="#I_Fservo0">Fservo0</a>, <a href="#I_Fservo12">Fservo12</a>, <a href="#I_Fservo3">Fservo3</a>, <a href="#I_Fservo4">Fservo4</a>, <a href="#I_Fservo5">Fservo5</a>, <a href="#I_Fservo6">Fservo6</a>, <a href="#I_Fservo7">Fservo7</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Gattinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+</dl>
+<hr>
+<h2 class="member">Methods:</h2>
+<dl class="member">
+
+<dt class="member"><br>
+<a name="I_AfterConstruction"><img src="public.gif" alt="public" title="public"></a> <b class="resword">procedure</b> AfterConstruction; <b class="resword">override</b></dt>
+<dd class="member">Erzeugt die einzelnen Element und Servo Properties für den Objekt Inspektor.
+<dl><dt class="overrides"><strong>Overrides</strong></dt><dd class="overrides">AfterConstruction</dd>
+<dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_Felement0">Felement0</a>, <a href="#I_Felement1">Felement1</a>, <a href="#I_Felement2">Felement2</a>, <a href="#I_Felement3">Felement3</a>, <a href="#I_Felement4">Felement4</a>, <a href="#I_Felement5">Felement5</a>, <a href="#I_Fservo0">Fservo0</a>, <a href="#I_Fservo12">Fservo12</a>, <a href="#I_Fservo3">Fservo3</a>, <a href="#I_Fservo4">Fservo4</a>, <a href="#I_Fservo5">Fservo5</a>, <a href="#I_Fservo6">Fservo6</a>, <a href="#I_Fservo7">Fservo7</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="#I_initElements">initElements</a>, <a href="#I_initOGL">initOGL</a>, <a href="#I_initServos">initServos</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Create">Create</a>, <a href="Class_TServo.html">TServo</a>.<a href="Class_TServo.html#I_Create">Create</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Gattinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_correctGrad"><img src="private.gif" alt="private" title="private"></a> <b class="resword">procedure</b> correctGrad(<b class="resword">var</b> grad: Real)</dt>
+<dd class="member">Diese Prozedur korrigiert Gradwerte, indem nur ein Bereich von 0 bis 360 zugelassen wird. Ein Vielfaches dieses Bereiches wird auf diesen Bereich reduziert.
+<dl><dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Gattinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_correctProzent"><img src="private.gif" alt="private" title="private"></a> <b class="resword">procedure</b> correctProzent(<b class="resword">var</b> prozent: Real)</dt>
+<dd class="member">
+</dd>
+
+<dt class="member"><br>
+<a name="I_correctRenderValues"><img src="private.gif" alt="private" title="private"></a> <b class="resword">procedure</b> correctRenderValues(<b class="resword">var</b> slices, stacks, loops: Integer)</dt>
+<dd class="member">Diese Prozedur korrigiert die Werte der Slices, Stacks und Loops.
+<dl><dt class="params"><strong>Parameters</strong></dt><dd class="params"><dl class="param">
+<dt class="param">slices</dt>
+<dd class="param">Anzahl der ...</dd>
+<dt class="param">stacks</dt>
+<dd class="param">Anzahl der Trennlinien in Bezug auf die Höhe eines Objekts</dd>
+<dt class="param">loops</dt>
+<dd class="param">Anzahl der Zwischenkreise in einem Kreis</dd>
+</dl>
+</dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="#I_RenderElement0">RenderElement0</a>, <a href="#I_RenderElement1">RenderElement1</a>, <a href="#I_RenderElement2">RenderElement2</a>, <a href="#I_RenderElement3">RenderElement3</a>, <a href="#I_RenderElement4">RenderElement4</a>, <a href="#I_RenderServo0">RenderServo0</a>, <a href="#I_RenderServo12">RenderServo12</a>, <a href="#I_RenderServo3">RenderServo3</a>, <a href="#I_RenderServo4">RenderServo4</a>, <a href="#I_RenderServo5">RenderServo5</a>, <a href="#I_RenderServo6">RenderServo6</a>, <a href="#I_RenderServo7">RenderServo7</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Gattinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_destroyOGL"><img src="published.gif" alt="published" title="published"></a> <b class="resword">procedure</b> destroyOGL</dt>
+<dd class="member">Diese Prozedur wird aufgerufen kurz bevor das Formular zerstört wird und der Speicher frei gegeben wird. Der OpenGL Context wird nun auch wieder freigegeben.
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_DC">DC</a>, <a href="#I_RC">RC</a>, <a href="File_unitRoboterarmPanel.html#I_obj">obj</a>, <a href="File_unitRoboterarmPanel.html#I_texture">texture</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_FormDestroy">FormDestroy</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Rittinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_initElements"><img src="public.gif" alt="public" title="public"></a> <b class="resword">procedure</b> initElements</dt>
+<dd class="member">Diese Prozedur initialisiert alle Elemente mit ihren Startwerten.
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_Felement0">Felement0</a>, <a href="#I_Felement1">Felement1</a>, <a href="#I_Felement2">Felement2</a>, <a href="#I_Felement3">Felement3</a>, <a href="#I_Felement4">Felement4</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Color">Color</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Depth">Depth</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Height">Height</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Width">Width</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="#I_Render">Render</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="#I_AfterConstruction">AfterConstruction</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Frédéric Nickol</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_initOGL"><img src="published.gif" alt="published" title="published"></a> <b class="resword">procedure</b> initOGL</dt>
+<dd class="member">Diese Prozedur wird unmittelbar nach der Erstellung des Formulars aufgerufen, initialisiert das OpenGL und setzt dessen Startwerte. Anschließend werden die Startwerte des Roboterarms gesetzt.
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_DC">DC</a>, <a href="#I_mouseRotation">mouseRotation</a>, <a href="#I_panelHeight">panelHeight</a>, <a href="#I_panelWidth">panelWidth</a>, <a href="#I_RC">RC</a>, <a href="#I_wasserBewegung">wasserBewegung</a>, <a href="#I_xMove">xMove</a>, <a href="#I_xRotation">xRotation</a>, <a href="#I_yMove">yMove</a>, <a href="#I_yRotation">yRotation</a>, <a href="#I_zZoom">zZoom</a>, <a href="File_unitRoboterarmPanel.html#I_obj">obj</a>, <a href="File_unitRoboterarmPanel.html#I_texture">texture</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="#I_Render">Render</a>, <a href="#I_RoboterarmDblClick">RoboterarmDblClick</a>, <a href="#I_RoboterarmMouseDown">RoboterarmMouseDown</a>, <a href="#I_RoboterarmMouseMove">RoboterarmMouseMove</a>, <a href="#I_RoboterarmMouseUp">RoboterarmMouseUp</a>, <a href="#I_RoboterarmMouseWheel">RoboterarmMouseWheel</a>, <a href="#I_RoboterarmResize">RoboterarmResize</a>, <a href="#I_SetupGL">SetupGL</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="#I_AfterConstruction">AfterConstruction</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Rittinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_initServos"><img src="public.gif" alt="public" title="public"></a> <b class="resword">procedure</b> initServos</dt>
+<dd class="member">Diese Prozedur initialisiert alle Servos mit ihren Startwerten.
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_Fservo0">Fservo0</a>, <a href="#I_Fservo12">Fservo12</a>, <a href="#I_Fservo3">Fservo3</a>, <a href="#I_Fservo4">Fservo4</a>, <a href="#I_Fservo5">Fservo5</a>, <a href="#I_Fservo6">Fservo6</a>, <a href="#I_Fservo7">Fservo7</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Color">Color</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Depth">Depth</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Height">Height</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Width">Width</a>, <a href="Class_TServo.html">TServo</a>.<a href="Class_TServo.html#I_AktPos">AktPos</a>, <a href="Class_TServo.html">TServo</a>.<a href="Class_TServo.html#I_HighlightColor">HighlightColor</a>, <a href="Class_TServo.html">TServo</a>.<a href="Class_TServo.html#I_MaxGrad">MaxGrad</a>, <a href="Class_TServo.html">TServo</a>.<a href="Class_TServo.html#I_MinGrad">MinGrad</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="#I_Render">Render</a>, <a href="Class_TServo.html">TServo</a>.<a href="Class_TServo.html#I_SetHighlighted">SetHighlighted</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="#I_AfterConstruction">AfterConstruction</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Frédéric Nickol</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Koordinatenraum"><img src="private.gif" alt="private" title="private"></a> <b class="resword">procedure</b> Koordinatenraum</dt>
+<dd class="member">Diese Prozedur zeichnet ein Koordinatensystem im Universumursprung
+<dl><dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="#I_Render">Render</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Frédéric Nickol</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Render"><img src="public.gif" alt="public" title="public"></a> <b class="resword">procedure</b> Render</dt>
+<dd class="member">Diese Prozedur organisiert das Zeichnen der einzelnen Elemente und Servos. Um die Drehung der einzelnen Servos auf die nachfolgenden Objekte zu übertragen. wird folgende Strategie verfolgt: 1) Schritt: Setze den Mittelpunkt des Universums auf die Stelle an der der Mittelpunkt des zu zeichnenden Objekt ist. 2) Schritt: Falls das nächste Objekt ein Servo ist, so rotiere nun das Universum entsprechend dem Rotationsverhalten des Servos. Ist das nächste Objekt kein Servo, so gehe direkt zu Schritt 3) 3) Schritt: Zeiche das nächste Objekt, sodass dessen Mittelpunkt genau auf dem Mittelpunkt des Universums ist. <p>
+Da wir immer erst das Universum verschieben und drehen sieht es so aus, als würden die Servo Drehungen die nachfolgenden Elemente mit sich drehen. In Wirklichkeit drehen wir jedoch alle Objekt, die sich bisher im Universum befinden! So gesehen zeichnen wir jedes neue Objekt immer nach dem gleichen Muster. Jedes Objekt wird in seiner Grundstellung bei 0 Grad gezeichnet. Die Angaben der Dimensionen beziehen sich immer auf das Koordinatensystem des Universums
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_config">config</a>, <a href="#I_DC">DC</a>, <a href="#I_Felement0">Felement0</a>, <a href="#I_Felement1">Felement1</a>, <a href="#I_Felement2">Felement2</a>, <a href="#I_Felement3">Felement3</a>, <a href="#I_Felement4">Felement4</a>, <a href="#I_Fservo0">Fservo0</a>, <a href="#I_Servo12">Servo12</a>, <a href="#I_Servo3">Servo3</a>, <a href="#I_Servo4">Servo4</a>, <a href="#I_Servo5">Servo5</a>, <a href="#I_xMove">xMove</a>, <a href="#I_xRotation">xRotation</a>, <a href="#I_yMove">yMove</a>, <a href="#I_yRotation">yRotation</a>, <a href="#I_zZoom">zZoom</a>, <a href="Record_TConfig.html">TConfig</a>.<a href="Record_TConfig.html#I_showKoordinatensystem">showKoordinatensystem</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Height">Height</a>, <a href="File_unitRoboterarmPanel.html#I_FAR_CLIPPING">FAR_CLIPPING</a>, <a href="File_unitRoboterarmPanel.html#I_NEAR_CLIPPING">NEAR_CLIPPING</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="#I_Koordinatenraum">Koordinatenraum</a>, <a href="#I_RenderElement0">RenderElement0</a>, <a href="#I_RenderElement1">RenderElement1</a>, <a href="#I_RenderElement2">RenderElement2</a>, <a href="#I_RenderElement3">RenderElement3</a>, <a href="#I_RenderElement4">RenderElement4</a>, <a href="#I_RenderServo0">RenderServo0</a>, <a href="#I_RenderServo12">RenderServo12</a>, <a href="#I_RenderServo3">RenderServo3</a>, <a href="#I_RenderServo4">RenderServo4</a>, <a href="#I_RenderServo5">RenderServo5</a>, <a href="#I_RenderServo6">RenderServo6</a>, <a href="#I_RenderServo7">RenderServo7</a>, <a href="Class_TServo.html">TServo</a>.<a href="Class_TServo.html#I_GetAktGrad">GetAktGrad</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="#I_initElements">initElements</a>, <a href="#I_initOGL">initOGL</a>, <a href="#I_initServos">initServos</a>, <a href="#I_RoboterarmMouseMove">RoboterarmMouseMove</a>, <a href="#I_RoboterarmMouseWheel">RoboterarmMouseWheel</a>, <a href="#I_RoboterarmResize">RoboterarmResize</a>, <a href="#I_SetHeight">SetHeight</a>, <a href="#I_SetShowKoordinatensystem">SetShowKoordinatensystem</a>, <a href="#I_SetShowObjektMittelpunkt">SetShowObjektMittelpunkt</a>, <a href="#I_SetShowOpenGLInfoPanel">SetShowOpenGLInfoPanel</a>, <a href="#I_SetShowRotationsmarkierung">SetShowRotationsmarkierung</a>, <a href="#I_SetShowTexturen">SetShowTexturen</a>, <a href="#I_SetWidth">SetWidth</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_Timer1Timer">Timer1Timer</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Gattinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.8</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_RenderElement0"><img src="private.gif" alt="private" title="private"></a> <b class="resword">procedure</b> RenderElement0</dt>
+<dd class="member">Diese Prozedur zeichnet das Element 0, welches ein nach oben offener Zylinder ist. Der Mittelpunkt des Elements ist der geometrische Mittelpunkt.
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_config">config</a>, <a href="#I_Felement0">Felement0</a>, <a href="#I_wasserBewegung">wasserBewegung</a>, <a href="Record_TConfig.html">TConfig</a>.<a href="Record_TConfig.html#I_showTexturen">showTexturen</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Color">Color</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Height">Height</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Width">Width</a>, <a href="File_unitRoboterarmPanel.html#I_obj">obj</a>, <a href="File_unitRoboterarmPanel.html#I_texture">texture</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="#I_correctRenderValues">correctRenderValues</a>, <a href="#I_ShowObjektMittelpunkt">ShowObjektMittelpunkt</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="#I_Render">Render</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Rittinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_RenderElement1"><img src="private.gif" alt="private" title="private"></a> <b class="resword">procedure</b> RenderElement1</dt>
+<dd class="member">Diese Prozedur zeichnet das Element 1, welches aus zwei Querstreben besteht.
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_config">config</a>, <a href="#I_Felement1">Felement1</a>, <a href="#I_wasserBewegung">wasserBewegung</a>, <a href="Record_TConfig.html">TConfig</a>.<a href="Record_TConfig.html#I_showTexturen">showTexturen</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Color">Color</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Depth">Depth</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Height">Height</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Width">Width</a>, <a href="File_unitRoboterarmPanel.html#I_obj">obj</a>, <a href="File_unitRoboterarmPanel.html#I_texture">texture</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="#I_correctRenderValues">correctRenderValues</a>, <a href="#I_ShowObjektMittelpunkt">ShowObjektMittelpunkt</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="#I_Render">Render</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Rittinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_RenderElement2"><img src="private.gif" alt="private" title="private"></a> <b class="resword">procedure</b> RenderElement2</dt>
+<dd class="member">Diese Prozedur zeichnet das Element 2, welches aus zwei Querstreben besteht.
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_config">config</a>, <a href="#I_Felement2">Felement2</a>, <a href="#I_wasserBewegung">wasserBewegung</a>, <a href="Record_TConfig.html">TConfig</a>.<a href="Record_TConfig.html#I_showTexturen">showTexturen</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Color">Color</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Depth">Depth</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Height">Height</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Width">Width</a>, <a href="File_unitRoboterarmPanel.html#I_obj">obj</a>, <a href="File_unitRoboterarmPanel.html#I_texture">texture</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="#I_correctRenderValues">correctRenderValues</a>, <a href="#I_ShowObjektMittelpunkt">ShowObjektMittelpunkt</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="#I_Render">Render</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Rittinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_RenderElement3"><img src="private.gif" alt="private" title="private"></a> <b class="resword">procedure</b> RenderElement3</dt>
+<dd class="member">Diese Prozedur zeichnet das Element 3, welches aus zwei Querstreben besteht, die einen Quader umschließen.
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_config">config</a>, <a href="#I_Felement1">Felement1</a>, <a href="#I_Felement2">Felement2</a>, <a href="#I_Felement3">Felement3</a>, <a href="#I_wasserBewegung">wasserBewegung</a>, <a href="Record_TConfig.html">TConfig</a>.<a href="Record_TConfig.html#I_showTexturen">showTexturen</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Color">Color</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Depth">Depth</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Height">Height</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Width">Width</a>, <a href="File_unitRoboterarmPanel.html#I_obj">obj</a>, <a href="File_unitRoboterarmPanel.html#I_texture">texture</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="#I_correctRenderValues">correctRenderValues</a>, <a href="#I_ShowObjektMittelpunkt">ShowObjektMittelpunkt</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="#I_Render">Render</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Gattinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_RenderElement4"><img src="private.gif" alt="private" title="private"></a> <b class="resword">procedure</b> RenderElement4</dt>
+<dd class="member">Diese Prozedur zeichnet das Element 4. Je nach Einstellung wird nur das Gitter oder mit Texturen gezeichnet.
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_config">config</a>, <a href="#I_Felement4">Felement4</a>, <a href="#I_wasserBewegung">wasserBewegung</a>, <a href="Record_TConfig.html">TConfig</a>.<a href="Record_TConfig.html#I_showTexturen">showTexturen</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Color">Color</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Depth">Depth</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Height">Height</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Width">Width</a>, <a href="File_unitRoboterarmPanel.html#I_obj">obj</a>, <a href="File_unitRoboterarmPanel.html#I_texture">texture</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="#I_correctRenderValues">correctRenderValues</a>, <a href="#I_ShowObjektMittelpunkt">ShowObjektMittelpunkt</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="#I_Render">Render</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Gattinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.2</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_RenderServo0"><img src="private.gif" alt="private" title="private"></a> <b class="resword">procedure</b> RenderServo0</dt>
+<dd class="member">Diese Prozedur zeichnet den Servo 0. Je nach Einstellung wird nur das Gitter oder mit Texturen gezeichnet.
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_config">config</a>, <a href="#I_Fservo0">Fservo0</a>, <a href="Record_TConfig.html">TConfig</a>.<a href="Record_TConfig.html#I_showRotationMarkierung">showRotationMarkierung</a>, <a href="Record_TConfig.html">TConfig</a>.<a href="Record_TConfig.html#I_showTexturen">showTexturen</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Color">Color</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Height">Height</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Width">Width</a>, <a href="Class_TServo.html">TServo</a>.<a href="Class_TServo.html#I_HighlightColor">HighlightColor</a>, <a href="File_unitRoboterarmPanel.html#I_obj">obj</a>, <a href="File_unitRoboterarmPanel.html#I_texture">texture</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="#I_correctRenderValues">correctRenderValues</a>, <a href="#I_ShowObjektMittelpunkt">ShowObjektMittelpunkt</a>, <a href="Class_TServo.html">TServo</a>.<a href="Class_TServo.html#I_isHighlighted">isHighlighted</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="#I_Render">Render</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Rittinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.2</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_RenderServo12"><img src="private.gif" alt="private" title="private"></a> <b class="resword">procedure</b> RenderServo12</dt>
+<dd class="member">Diese Prozedur zeichnet den Servo 1 und 2. Je nach Einstellung wird nur das Gitter oder mit Texturen gezeichnet.
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_config">config</a>, <a href="#I_Fservo12">Fservo12</a>, <a href="#I_wasserBewegung">wasserBewegung</a>, <a href="Record_TConfig.html">TConfig</a>.<a href="Record_TConfig.html#I_showRotationMarkierung">showRotationMarkierung</a>, <a href="Record_TConfig.html">TConfig</a>.<a href="Record_TConfig.html#I_showTexturen">showTexturen</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Color">Color</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Depth">Depth</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Height">Height</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Width">Width</a>, <a href="Class_TServo.html">TServo</a>.<a href="Class_TServo.html#I_HighlightColor">HighlightColor</a>, <a href="File_unitRoboterarmPanel.html#I_obj">obj</a>, <a href="File_unitRoboterarmPanel.html#I_texture">texture</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="#I_correctRenderValues">correctRenderValues</a>, <a href="#I_ShowObjektMittelpunkt">ShowObjektMittelpunkt</a>, <a href="Class_TServo.html">TServo</a>.<a href="Class_TServo.html#I_isHighlighted">isHighlighted</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="#I_Render">Render</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Rittinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.2</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_RenderServo3"><img src="private.gif" alt="private" title="private"></a> <b class="resword">procedure</b> RenderServo3</dt>
+<dd class="member">Diese Prozedur zeichnet den Servo 3. Je nach Einstellung wird nur das Gitter oder mit Texturen gezeichnet.
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_config">config</a>, <a href="#I_Fservo3">Fservo3</a>, <a href="#I_Servo3">Servo3</a>, <a href="#I_wasserBewegung">wasserBewegung</a>, <a href="Record_TConfig.html">TConfig</a>.<a href="Record_TConfig.html#I_showRotationMarkierung">showRotationMarkierung</a>, <a href="Record_TConfig.html">TConfig</a>.<a href="Record_TConfig.html#I_showTexturen">showTexturen</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Color">Color</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Depth">Depth</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Width">Width</a>, <a href="Class_TServo.html">TServo</a>.<a href="Class_TServo.html#I_HighlightColor">HighlightColor</a>, <a href="File_unitRoboterarmPanel.html#I_obj">obj</a>, <a href="File_unitRoboterarmPanel.html#I_texture">texture</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="#I_correctRenderValues">correctRenderValues</a>, <a href="#I_ShowObjektMittelpunkt">ShowObjektMittelpunkt</a>, <a href="Class_TServo.html">TServo</a>.<a href="Class_TServo.html#I_isHighlighted">isHighlighted</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="#I_Render">Render</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Rittinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.2</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_RenderServo4"><img src="private.gif" alt="private" title="private"></a> <b class="resword">procedure</b> RenderServo4</dt>
+<dd class="member">Diese Prozedur zeichnet den Servo 4. Je nach Einstellung wird nur das Gitter oder mit Texturen gezeichnet.
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_config">config</a>, <a href="#I_Servo4">Servo4</a>, <a href="#I_wasserBewegung">wasserBewegung</a>, <a href="Record_TConfig.html">TConfig</a>.<a href="Record_TConfig.html#I_showRotationMarkierung">showRotationMarkierung</a>, <a href="Record_TConfig.html">TConfig</a>.<a href="Record_TConfig.html#I_showTexturen">showTexturen</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Color">Color</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Depth">Depth</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Width">Width</a>, <a href="Class_TServo.html">TServo</a>.<a href="Class_TServo.html#I_HighlightColor">HighlightColor</a>, <a href="File_unitRoboterarmPanel.html#I_obj">obj</a>, <a href="File_unitRoboterarmPanel.html#I_texture">texture</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="#I_correctRenderValues">correctRenderValues</a>, <a href="#I_ShowObjektMittelpunkt">ShowObjektMittelpunkt</a>, <a href="Class_TServo.html">TServo</a>.<a href="Class_TServo.html#I_isHighlighted">isHighlighted</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="#I_Render">Render</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Gattinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.2</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_RenderServo5"><img src="private.gif" alt="private" title="private"></a> <b class="resword">procedure</b> RenderServo5</dt>
+<dd class="member">Diese Prozedur zeichnet den Servo 5. Je nach Einstellung wird nur das Gitter oder mit Texturen gezeichnet.
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_config">config</a>, <a href="#I_Servo5">Servo5</a>, <a href="Record_TConfig.html">TConfig</a>.<a href="Record_TConfig.html#I_showRotationMarkierung">showRotationMarkierung</a>, <a href="Record_TConfig.html">TConfig</a>.<a href="Record_TConfig.html#I_showTexturen">showTexturen</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Color">Color</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Height">Height</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Width">Width</a>, <a href="Class_TServo.html">TServo</a>.<a href="Class_TServo.html#I_HighlightColor">HighlightColor</a>, <a href="File_unitRoboterarmPanel.html#I_obj">obj</a>, <a href="File_unitRoboterarmPanel.html#I_texture">texture</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="#I_correctRenderValues">correctRenderValues</a>, <a href="#I_ShowObjektMittelpunkt">ShowObjektMittelpunkt</a>, <a href="Class_TServo.html">TServo</a>.<a href="Class_TServo.html#I_isHighlighted">isHighlighted</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="#I_Render">Render</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Gattinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.2</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_RenderServo6"><img src="private.gif" alt="private" title="private"></a> <b class="resword">procedure</b> RenderServo6</dt>
+<dd class="member">Diese Prozedur zeichnet das Servo 6, welches aus 2 Zylindern und einem Würfel besteht.
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_config">config</a>, <a href="#I_Element4">Element4</a>, <a href="#I_Felement3">Felement3</a>, <a href="#I_Fservo6">Fservo6</a>, <a href="#I_Servo6">Servo6</a>, <a href="#I_wasserBewegung">wasserBewegung</a>, <a href="Record_TConfig.html">TConfig</a>.<a href="Record_TConfig.html#I_showTexturen">showTexturen</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Color">Color</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Depth">Depth</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Height">Height</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Width">Width</a>, <a href="Class_TServo.html">TServo</a>.<a href="Class_TServo.html#I_HighlightColor">HighlightColor</a>, <a href="File_unitRoboterarmPanel.html#I_obj">obj</a>, <a href="File_unitRoboterarmPanel.html#I_texture">texture</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="#I_correctRenderValues">correctRenderValues</a>, <a href="#I_ShowObjektMittelpunkt">ShowObjektMittelpunkt</a>, <a href="Class_TServo.html">TServo</a>.<a href="Class_TServo.html#I_GetAktGrad">GetAktGrad</a>, <a href="Class_TServo.html">TServo</a>.<a href="Class_TServo.html#I_isHighlighted">isHighlighted</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="#I_Render">Render</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Frédéric Nickol</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_RenderServo7"><img src="private.gif" alt="private" title="private"></a> <b class="resword">procedure</b> RenderServo7</dt>
+<dd class="member">Diese Prozedur zeichnet das Servo 7, welches aus 2 Zylindern und einem Würfel besteht.
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_config">config</a>, <a href="#I_Element4">Element4</a>, <a href="#I_Felement3">Felement3</a>, <a href="#I_Fservo7">Fservo7</a>, <a href="#I_Servo7">Servo7</a>, <a href="#I_wasserBewegung">wasserBewegung</a>, <a href="Record_TConfig.html">TConfig</a>.<a href="Record_TConfig.html#I_showTexturen">showTexturen</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Color">Color</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Depth">Depth</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Height">Height</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Width">Width</a>, <a href="Class_TServo.html">TServo</a>.<a href="Class_TServo.html#I_HighlightColor">HighlightColor</a>, <a href="File_unitRoboterarmPanel.html#I_obj">obj</a>, <a href="File_unitRoboterarmPanel.html#I_texture">texture</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="#I_correctRenderValues">correctRenderValues</a>, <a href="#I_ShowObjektMittelpunkt">ShowObjektMittelpunkt</a>, <a href="Class_TServo.html">TServo</a>.<a href="Class_TServo.html#I_GetAktGrad">GetAktGrad</a>, <a href="Class_TServo.html">TServo</a>.<a href="Class_TServo.html#I_isHighlighted">isHighlighted</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="#I_Render">Render</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Frédéric Nickol</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_RoboterarmDblClick"><img src="published.gif" alt="published" title="published"></a> <b class="resword">procedure</b> RoboterarmDblClick(Sender: TObject)</dt>
+<dd class="member">Setzt den Roboterarm auf seine ursprüngliche Perspektive zurück.
+<dl><dt class="params"><strong>Parameters</strong></dt><dd class="params"><dl class="param">
+<dt class="param">Sender</dt>
+<dd class="param">Das Objekt, von dem der Aufruf stammt</dd>
+</dl>
+</dd>
+<dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_xMove">xMove</a>, <a href="#I_xRotation">xRotation</a>, <a href="#I_yMove">yMove</a>, <a href="#I_yRotation">yRotation</a>, <a href="#I_zZoom">zZoom</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="#I_initOGL">initOGL</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Gattinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_RoboterarmMouseDown"><img src="published.gif" alt="published" title="published"></a> <b class="resword">procedure</b> RoboterarmMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer)</dt>
+<dd class="member">Aktiviert je nach Maustaste die Bewegung oder die Rotation. Die linke Maustaste aktiviert die Bewegung, die rechte Maustaste aktiviert die Rotation.
+<dl><dt class="params"><strong>Parameters</strong></dt><dd class="params"><dl class="param">
+<dt class="param">Sender</dt>
+<dd class="param">Das Objekt, von dem der Aufruf stammt</dd>
+<dt class="param">Button</dt>
+<dd class="param">Die Maustaste, die gedrückt wurde</dd>
+<dt class="param">Shift</dt>
+<dd class="param">Gibt an, ob die Shift Taste gedrückt wurde</dd>
+<dt class="param">X</dt>
+<dd class="param">Die Position des Mauscursors auf der x-Achse</dd>
+<dt class="param">Y</dt>
+<dd class="param">Die Position des Mauscursors auf der y-Achse</dd>
+</dl>
+</dd>
+<dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_mouseMove">mouseMove</a>, <a href="#I_mouseRotation">mouseRotation</a>, <a href="#I_xMousePos">xMousePos</a>, <a href="#I_yMousePos">yMousePos</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="#I_initOGL">initOGL</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Gattinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_RoboterarmMouseMove"><img src="published.gif" alt="published" title="published"></a> <b class="resword">procedure</b> RoboterarmMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer)</dt>
+<dd class="member">Verschiebt bzw. Rotiert den Roboterarm, jenachdem welche Aktion momentan aktiv ist.
+<dl><dt class="params"><strong>Parameters</strong></dt><dd class="params"><dl class="param">
+<dt class="param">Sender</dt>
+<dd class="param">Das Objekt, von dem der Aufruf stammt</dd>
+<dt class="param">Shift</dt>
+<dd class="param">Gibt an, ob die Shift Taste gedrückt wurde</dd>
+<dt class="param">X</dt>
+<dd class="param">Die Position des Mauscursors auf der x-Achse</dd>
+<dt class="param">Y</dt>
+<dd class="param">Die Position des Mauscursors auf der y-Achse</dd>
+</dl>
+</dd>
+<dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_mouseMove">mouseMove</a>, <a href="#I_mouseRotation">mouseRotation</a>, <a href="#I_oldXMove">oldXMove</a>, <a href="#I_oldXRotation">oldXRotation</a>, <a href="#I_oldYMove">oldYMove</a>, <a href="#I_oldYRotation">oldYRotation</a>, <a href="#I_xMousePos">xMousePos</a>, <a href="#I_xMove">xMove</a>, <a href="#I_xRotation">xRotation</a>, <a href="#I_yMousePos">yMousePos</a>, <a href="#I_yMove">yMove</a>, <a href="#I_yRotation">yRotation</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="#I_Render">Render</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="#I_initOGL">initOGL</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Gattinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_RoboterarmMouseUp"><img src="published.gif" alt="published" title="published"></a> <b class="resword">procedure</b> RoboterarmMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer)</dt>
+<dd class="member">Setzt die Bewegungs- und Rotationsflags zurück.
+<dl><dt class="params"><strong>Parameters</strong></dt><dd class="params"><dl class="param">
+<dt class="param">Sender</dt>
+<dd class="param">Das Objekt, von dem der Aufruf stammt</dd>
+<dt class="param">Button</dt>
+<dd class="param">Die Maustaste, die gedrückt wurde</dd>
+<dt class="param">Shift</dt>
+<dd class="param">Gibt an, ob die Shift Taste gedrückt wurde</dd>
+<dt class="param">X</dt>
+<dd class="param">Die Position des Mauscursors auf der x-Achse</dd>
+<dt class="param">Y</dt>
+<dd class="param">Die Position des Mauscursors auf der y-Achse</dd>
+</dl>
+</dd>
+<dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_mouseMove">mouseMove</a>, <a href="#I_mouseRotation">mouseRotation</a>, <a href="#I_oldXMove">oldXMove</a>, <a href="#I_oldXRotation">oldXRotation</a>, <a href="#I_oldYMove">oldYMove</a>, <a href="#I_oldYRotation">oldYRotation</a>, <a href="#I_xMove">xMove</a>, <a href="#I_xRotation">xRotation</a>, <a href="#I_yMove">yMove</a>, <a href="#I_yRotation">yRotation</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="#I_initOGL">initOGL</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Gattinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_RoboterarmMouseWheel"><img src="published.gif" alt="published" title="published"></a> <b class="resword">procedure</b> RoboterarmMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint; <b class="resword">var</b> Handled: Boolean)</dt>
+<dd class="member">Setzt den Zoomfaktor, entsprechend der Bewegung des Mausrads. Wird das Mausrad nach vorne gedreht, so steigt der Zoom- faktor und der Roboterarm wird größer. Entsprechend sinkt der Zoomfaktor, wenn das Mausrad zurückgedreht wird.
+<dl><dt class="params"><strong>Parameters</strong></dt><dd class="params"><dl class="param">
+<dt class="param">Sender</dt>
+<dd class="param">Das Objekt, von dem der Aufruf stammt</dd>
+<dt class="param">Shift</dt>
+<dd class="param">Signalisiert, ob die Shift Taste gedrückt wurde</dd>
+<dt class="param">WheelDelta</dt>
+<dd class="param">Die Schritte die eine Mausradbewegung bewirkt</dd>
+<dt class="param">MousePos</dt>
+<dd class="param">Die Cursorposition des Mauszeigers</dd>
+<dt class="param">Handled</dt>
+<dd class="param"></dd>
+</dl>
+</dd>
+<dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_zZoom">zZoom</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="#I_Render">Render</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="#I_initOGL">initOGL</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Gattinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_RoboterarmResize"><img src="published.gif" alt="published" title="published"></a> <b class="resword">procedure</b> RoboterarmResize(Sender: TObject)</dt>
+<dd class="member">Diese Prozedur wird immer dann aufgerufe, wenn sich die Größe des Formulars ändert. Sie passt den OpenGL Bereich dem verfügbaren Platz auf dem Formular an.
+<dl><dt class="params"><strong>Parameters</strong></dt><dd class="params"><dl class="param">
+<dt class="param">Sender</dt>
+<dd class="param">Das Objekt, von dem der Aufruf stammt.</dd>
+</dl>
+</dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="#I_Render">Render</a>, <a href="#I_updateViewport">updateViewport</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="#I_initOGL">initOGL</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_FormShow">FormShow</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Rittinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_SetHeight"><img src="private.gif" alt="private" title="private"></a> <b class="resword">procedure</b> SetHeight(height: Integer)</dt>
+<dd class="member">Setzt die Höhe des Panels und aktualisiert anschließend die Simulation.
+<dl><dt class="params"><strong>Parameters</strong></dt><dd class="params"><dl class="param">
+<dt class="param">height</dt>
+<dd class="param">Die Höhe des Panels in Pixel.</dd>
+</dl>
+</dd>
+<dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_Fheight">Fheight</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="#I_Render">Render</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Gattinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_SetShowKoordinatensystem"><img src="public.gif" alt="public" title="public"></a> <b class="resword">procedure</b> SetShowKoordinatensystem(configValue: Boolean)</dt>
+<dd class="member">Diese Setter-Prozedur setzt das Flag, ob das Universum Koordinatensystem angezeigt werden soll.
+<dl><dt class="params"><strong>Parameters</strong></dt><dd class="params"><dl class="param">
+<dt class="param">configValue</dt>
+<dd class="param">True, falls das Koordinatensystem angezeigt werden soll, sonst false</dd>
+</dl>
+</dd>
+<dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_config">config</a>, <a href="Record_TConfig.html">TConfig</a>.<a href="Record_TConfig.html#I_showKoordinatensystem">showKoordinatensystem</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="#I_Render">Render</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_chkShowKoordinatensystemClick">chkShowKoordinatensystemClick</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_FormCreate">FormCreate</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Gattinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_SetShowObjektMittelpunkt"><img src="public.gif" alt="public" title="public"></a> <b class="resword">procedure</b> SetShowObjektMittelpunkt(configValue: Boolean)</dt>
+<dd class="member">Diese Setter-Prozedur setzt das Flag, ob die geometrischen Mittelpunkte der Objekte angezeigt werden sollen.
+<dl><dt class="params"><strong>Parameters</strong></dt><dd class="params"><dl class="param">
+<dt class="param">configValue</dt>
+<dd class="param">True, falls die Mittelpunkte angezeigt werden soll, sonst false</dd>
+</dl>
+</dd>
+<dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_config">config</a>, <a href="Record_TConfig.html">TConfig</a>.<a href="Record_TConfig.html#I_showObjektMittelpunk">showObjektMittelpunk</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="#I_Render">Render</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_chkShowGeoMittelpunktClick">chkShowGeoMittelpunktClick</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_FormCreate">FormCreate</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Gattinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_SetShowOpenGLInfoPanel"><img src="public.gif" alt="public" title="public"></a> <b class="resword">procedure</b> SetShowOpenGLInfoPanel(configValue: Boolean)</dt>
+<dd class="member">Diese Setter-Prozedur setzt das Flag, ob das OpenGL Infopanel angezeigt werden soll.
+<dl><dt class="params"><strong>Parameters</strong></dt><dd class="params"><dl class="param">
+<dt class="param">configValue</dt>
+<dd class="param">True, falls das Infopanel angezeigt werden soll, sonst false</dd>
+</dl>
+</dd>
+<dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_config">config</a>, <a href="Record_TConfig.html">TConfig</a>.<a href="Record_TConfig.html#I_showOpenGLInfoPanel">showOpenGLInfoPanel</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="#I_Render">Render</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Gattinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_SetShowRotationsmarkierung"><img src="public.gif" alt="public" title="public"></a> <b class="resword">procedure</b> SetShowRotationsmarkierung(configValue: Boolean)</dt>
+<dd class="member">Diese Setter-Prozedur setzt das Flag, ob die Rotationsmarkierungen bei den Servos angezeigt werden sollen.
+<dl><dt class="params"><strong>Parameters</strong></dt><dd class="params"><dl class="param">
+<dt class="param">configValue</dt>
+<dd class="param">True, falls die Rotationsmarkierungen angezeigt werden soll, sonst false</dd>
+</dl>
+</dd>
+<dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_config">config</a>, <a href="Record_TConfig.html">TConfig</a>.<a href="Record_TConfig.html#I_showRotationMarkierung">showRotationMarkierung</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="#I_Render">Render</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_chkShowRotationsmarkierungClick">chkShowRotationsmarkierungClick</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_FormCreate">FormCreate</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Gattinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_SetShowTexturen"><img src="public.gif" alt="public" title="public"></a> <b class="resword">procedure</b> SetShowTexturen(configValue: Boolean)</dt>
+<dd class="member">Diese Setter-Prozedur setzt das Flag, ob die Texturen angezeigt werden sollen.
+<dl><dt class="params"><strong>Parameters</strong></dt><dd class="params"><dl class="param">
+<dt class="param">configValue</dt>
+<dd class="param">True, falls die Texturen angezeigt werden soll, sonst false</dd>
+</dl>
+</dd>
+<dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_config">config</a>, <a href="Record_TConfig.html">TConfig</a>.<a href="Record_TConfig.html#I_showTexturen">showTexturen</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="#I_Render">Render</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_chkDeaktiviereTexturenClick">chkDeaktiviereTexturenClick</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_FormCreate">FormCreate</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Gattinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_SetupGL"><img src="private.gif" alt="private" title="private"></a> <b class="resword">procedure</b> SetupGL</dt>
+<dd class="member">Diese Prozedur korrigiert das OpenGL.
+<dl><dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="#I_initOGL">initOGL</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Rittinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_SetWidth"><img src="private.gif" alt="private" title="private"></a> <b class="resword">procedure</b> SetWidth(width: Integer)</dt>
+<dd class="member">Setzt die Breite des Panels und aktualisiert anschließend die Simulation.
+<dl><dt class="params"><strong>Parameters</strong></dt><dd class="params"><dl class="param">
+<dt class="param">width</dt>
+<dd class="param">Die Breite des Panels in Pixel.</dd>
+</dl>
+</dd>
+<dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_Fwidth">Fwidth</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="#I_Render">Render</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Gattinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_ShowObjektMittelpunkt"><img src="private.gif" alt="private" title="private"></a> <b class="resword">procedure</b> ShowObjektMittelpunkt</dt>
+<dd class="member">Diese Prozedur zeichnet in das aktuelle Objekt ein Kreuz, welches den geometrischen Mittelpunkt anzeigt.
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_config">config</a>, <a href="Record_TConfig.html">TConfig</a>.<a href="Record_TConfig.html#I_showObjektMittelpunk">showObjektMittelpunk</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="#I_RenderElement0">RenderElement0</a>, <a href="#I_RenderElement1">RenderElement1</a>, <a href="#I_RenderElement2">RenderElement2</a>, <a href="#I_RenderElement3">RenderElement3</a>, <a href="#I_RenderElement4">RenderElement4</a>, <a href="#I_RenderServo0">RenderServo0</a>, <a href="#I_RenderServo12">RenderServo12</a>, <a href="#I_RenderServo3">RenderServo3</a>, <a href="#I_RenderServo4">RenderServo4</a>, <a href="#I_RenderServo5">RenderServo5</a>, <a href="#I_RenderServo6">RenderServo6</a>, <a href="#I_RenderServo7">RenderServo7</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Frédéric Nickol</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_updateViewport"><img src="private.gif" alt="private" title="private"></a> <b class="resword">procedure</b> updateViewport</dt>
+<dd class="member">Aktualisiert die Perspekte von OpenGL.
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_panelHeight">panelHeight</a>, <a href="#I_panelWidth">panelWidth</a>, <a href="File_unitRoboterarmPanel.html#I_FAR_CLIPPING">FAR_CLIPPING</a>, <a href="File_unitRoboterarmPanel.html#I_NEAR_CLIPPING">NEAR_CLIPPING</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="#I_RoboterarmResize">RoboterarmResize</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Rittinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+</dl>
+<hr>
+</body>
+</html>

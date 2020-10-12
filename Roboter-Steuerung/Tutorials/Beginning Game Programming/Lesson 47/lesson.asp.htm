@@ -1,0 +1,434 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+<title>NeHe Productions: OpenGL Lesson #47</title>
+<meta name="author" content="Jeff Molofee">
+<meta name="description" content="OpenGL Tutorials, Demos, Games and More...">
+<meta name="keywords" content="opengl, tutorial, article, demo, game, blend, texturemap, lighting, contest, 3D">
+<link rel="stylesheet" type="text/css" href="lesson.asp-Dateien/rgb.css">
+</head><body bgcolor="black" link="#aaccff" text="white" vlink="#aaccff">
+
+<table border="0" width="100%"><tbody><tr><td align="center">
+<!-- Begin -  Site: GameDev.net Zone: NeHe 728x90 -->
+<script language="javascript" type="text/javascript">
+<!--
+var browName = navigator.appName;
+var SiteID = 1;
+var ZoneID = 4;
+var browDateTime = (new Date()).getTime();
+if (browName=='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;Browser=NETSCAPE4&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+if (browName!='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+// --> 
+</script><script language="javascript" src="lesson.asp-Dateien/a.js"></script><script type="text/javascript"><!--
+google_ad_client = "pub-3167291168602081";
+google_alternate_ad_url = "http://www.gamedev.net/banman/banman.asp?ZoneID=21&Task=Get";
+google_ad_width = 728;
+google_ad_height = 90;
+google_ad_format = "728x90_as";
+google_ad_type = "text_image";
+google_ad_channel ="";
+google_color_border = "336699";
+google_color_bg = "FFFFFF";
+google_color_link = "0000FF";
+google_color_url = "008000";
+google_color_text = "000000";
+//--></script>
+<script type="text/javascript" src="lesson.asp-Dateien/show_ads.js">
+</script>
+<noscript> <a
+href="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Click&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+target="_blank"> <img
+src="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Get&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+width="728" height="90" border="0" alt=""></a>
+</noscript>
+<!-- End -  Site: GameDev.net Zone: NeHe 728x90 --></td></tr></tbody></table><br>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tinylogo" height="130" width="326"><img src="lesson.asp-Dateien/blank.gif" alt="NeHe Productions" height="130" width="326"></td><td class="indexheading" align="center" valign="middle"><font class="text"><font class="theme" size="+3"><b><i>Lesson: 47</i></b></font></font></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Using vertex and fragment (or pixel) shaders to do some rendering dirty work can have numerous benefits.
+The most obvious is the movement of some of the graphics related CPU load off the CPU and onto the GPU.
+Cg provides a (reasonably) simple language for writing very powerful shaders.
+<br><br>
+This tutorial has multiple aims. The first is to present a simple vertex shader that actually does something,
+without introducing unnecessary lighting etc� The second is to provide the basic mechanism for running the
+vertex shader with visible results using OpenGL. As such, it is aimed at the beginner interested in Cg who
+has a little experience in OpenGL.
+<br><br>
+This tutorial is based on the Latest NeHeGL Basecode. For more information on Cg check out nVidia�s
+website (<a href="http://developer.nvidia.com/" target="_blank">developer.nvidia.com</a>) and
+<a href="http://www.cgshaders.org/" target="_blank">www.cgshaders.org</a> for some cool shaders.
+<br><br>
+NOTE: This tutorial is not intended to teach you everything you need to know about writing vertex shaders
+using Cg. It is intended to teach you how to successfully load and run vertex shaders within OpenGL.
+<br><br>
+<font size="+1"><u>Setup:</u></font>
+<br><br>
+The first step (if it hasn�t been done already) is to download the <b>Cg Compiler</b> from nVidia. It is important
+that you download version 1.1, as nVidia appear to have made changes between version 1.0 and 1.1 (different
+variable naming, replaced functions, etc�), and code compiled for one may not necessarily work with the other.
+<br><br>
+The next step is to setup the header files and library files for Cg to a place where Visual Studio can find
+them. Because I am inherently distrustful of installers working the way they are supposed to, I copy the
+library files...
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>From: C:\Program Files\NVIDIA Corporation\Cg\lib
+To:   C:\Program Files\Microsoft Visual Studio\VC98\Lib
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+and the header files (Cg sub-directory and GLext.h into the GL sub-directory)...
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>From: C:\Program Files\NVIDIA Corporation\Cg\include
+To:   C:\Program Files\Microsoft Visual Studio\VC98\Include
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We�re now ready to get on with the tutorial.
+<br><br>
+<font size="+1"><u>Cg tutorial:</u></font>
+<br><br>
+The information regarding Cg contained in this tutorial was obtained mostly from the Cg Toolkit User�s Manual.
+<br><br>
+There are a few important points that you need to remember when dealing with vertex (and later fragment)
+programs. The first thing to remember is that a vertex program will execute in its entirety on EVERY vertex.
+The only way to run the vertex program on selected vertices is to either load/unload the vertex program for
+each individual vertex, or to batch vertices into a stream that are affected by the vertex program, and a
+stream that isn�t.
+<br><br>
+The output of a vertex program is passed to a fragment shader, regardless of whether you have implemented
+and activated a fragment shader.
+<br><br>
+Finally, remember that a vertex program is executed on the vertices before primitive assembly, while a fragment
+program is executed after rasterization. On with the tutorial.
+<br><br>
+First, we need to create a blank file (save as �wave.cg�). We then create a structure to contain the variables
+and information that we want available to our shader.  This code is added to the wave.cg file.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>struct appdata 
+{
+	float4 position : POSITION;
+	float4 color	: COLOR0;
+	float3 wave	: COLOR1;
+};
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Each of the 3 variables (position, color and wave) are bound to predefined names (POSITION, COLOR0 and COLOR1
+respectively). These predefined names are referred to as the binding semantics. In OpenGL, these predefined
+names implicitly specify the mapping of the inputs to particular hardware registers. The main program must supply
+the data for each of these variables. The position variable is REQUIRED, as it is used for rasterization. It is
+the only variable that is required as an input to the vertex program.
+<br><br>
+The next step is to create a structure to contain the output which will be passed on to the fragment processor
+after rasterization.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>struct vfconn
+{
+	float4 HPos	: POSITION;
+	float4 Col0	: COLOR0;
+};
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+As with the inputs, each of the output variables is bound to a predefined name. Hpos represents the position
+transformed into homogenous clip-space. Col0 represents the color of the vertex after changes made to it by
+the vertex program.
+<br><br>
+The only thing left to do is to write the actual vertex program, utilizing both of our newly defined structures.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>vfconn main(appdata IN,	uniform float4x4 ModelViewProj)
+{
+	vfconn OUT;									<font class="theme">// Variable To Handle Our Output From The Vertex</font>
+											<font class="theme">// Shader (Goes To A Fragment Shader If Available)</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Much as in C, we define our function as having a return type (struct vfconn), a function name (main, but can be
+anything we want), and the parameters. In our example, we take our struct appdata as an input (containing the
+current position of the vertex, the color of the vertex, and a wave value for moving the sine wave across the mesh).
+<br><br>
+We also pass in a uniform parameter, which is the current modelview matrix from OpenGL (in our main program). This
+value typically does not change as we manipulate our vertices, and is therefore referred to as uniform. This matrix
+is required to transform the vertex position into homogenous clip-space.
+<br><br>
+We declare a variable to hold our modified values from the vertex shader. These values are returned at the end
+of the function, and are passed to the fragment shader (if it exists).
+<br><br>
+We now need to perform our modifications to the vertex data.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Change The Y Position Of The Vertex Based On Sine Waves</font>
+	IN.position.y = ( sin(IN.wave.x + (IN.position.z / 4.0) ) + sin(IN.wave.x + (IN.position.x / 5.0) ) ) * 2.5f;
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We change the Y position of the vertex depending on the current X / Z position of the vertex. The X and Z
+positions of the vertex are divided by 4.0 and 5.0 respectively to make them smoother (to see what I mean,
+change both of these values to 1.0).
+<br><br>
+Our IN.wave variable contains an ever-increasing value which causes the sine waves to move across our mesh. This
+variable is specified within our main program. Therefore, we calculate the Y position of the X / Y position
+of the mesh as sin of the wave value + the current X or Z position. Finally, we multiple the value by 2.5 to
+make the waves more noticeable (higher).
+<br><br>
+We now perform the required operations to determine the values to output to the fragment program.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Transform The Vertex Position Into Homogenous Clip-Space (Required)</font>
+	OUT.HPos = mul(ModelViewProj, IN.position);
+
+	<font class="theme">// Set The Color To The Value Specified In IN.color</font>
+	OUT.Col0.xyz = IN.color.xyz;
+
+	return OUT;
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+First we transform the new vertex position into homogenous clip-space. We then set our output color to the input
+color, which is specified in our main program. Finally, we return our values for use by a fragment shader (if we
+have one).
+<br><br>
+We�ll now move on the main program which creates a triangle mesh and runs our shader on each vertex to produce a
+nice wave effect.
+<br><br>
+<font size="+1"><u>OpenGL tutorial:</u></font>
+<br><br>
+The main sequence of steps for dealing with our Cg shader is to generate our mesh, load up and compile our Cg
+program and then run this program on each vertex as it is being drawn.
+<br><br>
+First we must get some of the necessary setup details out of the way. We need to include the necessary header
+files to run Cg shaders with OpenGL. After our other #include statements, we need to include the Cg and
+CgGL headers.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>#include &lt;cg\cg.h&gt;									<font class="theme">// NEW: Cg Header</font>
+#include &lt;cg\cggl.h&gt;									<font class="theme">// NEW: Cg OpenGL Specific Header</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we should be ready to setup our project and get to work. Before we start, we need to make sure that Visual
+Studio can find the correct libraries.  The following code will do the trick!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>#pragma comment( lib, "cg.lib" )							<font class="theme">// Search For Cg.lib While Linking</font>
+#pragma comment( lib, "cggl.lib" )							<font class="theme">// Search For CgGL.lib While Linking</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Next we�ll create some global variables for our mesh and for toggling the CG program on / off.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>#define		SIZE	64								<font class="theme">// Defines The Size Of The X/Z Axis Of The Mesh</font>
+bool		cg_enable = TRUE, sp;							<font class="theme">// Toggle Cg Program On / Off, Space Pressed?</font>
+GLfloat		mesh[SIZE][SIZE][3];							<font class="theme">// Our Static Mesh</font>
+GLfloat		wave_movement = 0.0f;							<font class="theme">// Our Variable To Move The Waves Across The Mesh</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We define the size as 64 points on each edge of our mesh (X and Z axes). We then create an array for each vertex
+of our mesh. The final variable is required to make the sine waves �move� across our mesh.
+<br><br>
+We now need to define some Cg specific global variables.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>CGcontext	cgContext;								<font class="theme">// A Context To Hold Our Cg Program(s)</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The first variable we need is a CGcontext. A CGcontext variable is a container for multiple Cg programs. In general,
+you require only one CGcontext variable regardless of the number of vertex and fragment programs you have. You can
+select different programs from the same CGcontext using the functions cgGetFirstProgram and cgGetNextProgram.
+<br><br>
+We next define a CGprogram variable for our vertex program.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>CGprogram	cgProgram;								<font class="theme">// Our Cg Vertex Program</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Our CGprogram variable is used to store our vertex program. A CGprogram is essentially a handle to our vertex (or
+fragment) program. This is added to our CGcontext.
+<br><br>
+We next need to have a variable to store our vertex profile.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>CGprofile	cgVertexProfile;							<font class="theme">// The Profile To Use For Our Vertex Shader</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Our CGprofile defines the most suitable profile. We next need variables that provide a connection between
+variables in our main program and variables in our shader.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>CGparameter	position, color, modelViewMatrix, wave;					<font class="theme">// The Parameters Needed For Our Shader</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Each CGparameter is essentially a handle to the corresponding parameter in our shader.
+<br><br>
+Now that we�ve taken care of our global variables, it�s time to get to work on setting up our mesh and vertex program.
+<br><br>
+In our Initialize function, before we call �return TRUE;�, we need to add our custom code.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);					<font class="theme">// Draw Our Mesh In Wireframe Mode</font>
+
+	<font class="theme">// Create Our Mesh</font>
+	for (int x = 0; x &lt; SIZE; x++)
+	{
+		for (int z = 0; z &lt; SIZE; z++)
+		{
+			mesh[x][z][0] = (float) (SIZE / 2) - x;				<font class="theme">// We Want To Center Our Mesh Around The Origin</font>
+			mesh[x][z][1] = 0.0f;						<font class="theme">// Set The Y Values For All Points To 0</font>
+			mesh[x][z][2] = (float) (SIZE / 2) - z;				<font class="theme">// We Want To Center Our Mesh Around The Origin</font>
+		}
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We first call glPolygonMode to change the display to wireframe (flatshaded looks awful without correct lighting).
+We then traverse through our mesh, setting the X and Z values around the origin. The Y value for each point is set
+to 0.0f. It is interesting to note that the values generated in this step at no point change during executing.
+<br><br>
+With our mesh initialization out of the way, we�re now ready to initialize our Cg stuff.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Setup Cg</font>
+	cgContext = cgCreateContext();							<font class="theme">// Create A New Context For Our Cg Program(s)</font>
+
+	<font class="theme">// Validate Our Context Generation Was Successful</font>
+	if (cgContext == NULL)
+	{
+		MessageBox(NULL, "Failed To Create Cg Context", "Error", MB_OK);
+		return FALSE;								<font class="theme">// We Cannot Continue</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We first try to create a new CGcontext to store our Cg programs. If our return value is NULL, then our context creation
+fails. This will usually only fail due to memory allocation errors.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	cgVertexProfile = cgGLGetLatestProfile(CG_GL_VERTEX);				<font class="theme">// Get The Latest GL Vertex Profile</font>
+
+	<font class="theme">// Validate Our Profile Determination Was Successful</font>
+	if (cgVertexProfile == CG_PROFILE_UNKNOWN)
+	{
+		MessageBox(NULL, "Invalid profile type", "Error", MB_OK);
+		return FALSE;								<font class="theme">// We Cannot Continue</font>
+	}
+
+	cgGLSetOptimalOptions(cgVertexProfile);						<font class="theme">// Set The Current Profile</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We now determine the last vertex profile for use. To determine the latest fragment profile, we call cgGLGetLatestProfile
+with the CG_GL_FRAGMENT profile type. If our return value is CG_PROFILE_UNKNOWN, there was no appropriate profile available.
+With a valid profile, we can set call cgGLSetOptimalOptions. This function sets compiler arguments based on available compiler
+arguments, GPU and driver. These functions are used each time a new Cg program is compiler. (Essentially optimizes the
+compilation of the shader dependent on the current graphics hardware and drivers).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Load And Compile The Vertex Shader From File</font>
+	cgProgram = cgCreateProgramFromFile(cgContext, CG_SOURCE, "CG/Wave.cg", cgVertexProfile, "main", 0);
+
+	<font class="theme">// Validate Success</font>
+	if (cgProgram == NULL)
+	{
+		<font class="theme">// We Need To Determine What Went Wrong</font>
+		CGerror Error = cgGetError();
+
+		<font class="theme">// Show A Message Box Explaining What Went Wrong</font>
+		MessageBox(NULL, cgGetErrorString(Error), "Error", MB_OK);
+		return FALSE;								<font class="theme">// We Cannot Continue</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We now attempt to create our program from our source file. We call cgCreateProgramFromFile, which will load and compile
+our Cg program from the specified file. The first parameter defines which CGcontext variable our program will be
+attached to. The second parameter define whether our Cg code is assumed to be in a file that contains source code
+(CG_SOURCE), or a file which contains the object code from a pre-compiled Cg program (CG_OBJECT). The third parameter
+is the name of the file containing our Cg program. The fourth parameter is the latest profile for the particular type of
+program (use a vertex profile for vertex programs, fragment profiles for fragment programs). The fifth parameter determines
+the entry function of our Cg program. This function can be arbitrarily specified, and often should be something other than
+�main�. The last parameter provides for additional arguments to be passed to the Cg compiler. This is often left as NULL.
+<br><br>
+If cgCreateProgramFromFile fails for any reason, we retrieve the last error by calling cgGetError. We can then get a
+human-readable string of the error contained in our CGerror variable by calling cgGetErrorString.
+<br><br>
+We�re almost finished our initialization.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Load The Program</font>
+	cgGLLoadProgram(cgProgram);
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The next step to do is to actually load our program, and prepare it for binding. All programs must be loaded before they
+can be bound to the current state.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Get Handles To Each Of Our Parameters So That</font>
+	<font class="theme">// We Can Change Them At Will Within Our Code</font>
+	position	= cgGetNamedParameter(cgProgram, "IN.position");
+	color		= cgGetNamedParameter(cgProgram, "IN.color");
+	wave		= cgGetNamedParameter(cgProgram, "IN.wave");
+	modelViewMatrix	= cgGetNamedParameter(cgProgram, "ModelViewProj");
+
+	return TRUE;									<font class="theme">// Return TRUE (Initialization Successful)</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The final step of initialization requires our program to get handles to the variables which we wish to manipulate in our
+Cg program. For each CGparameter we attempt to retrieve a handle to the corresponding Cg program parameter. If a
+parameter does not exist, cgGetNamedParameter will return NULL.
+<br><br>
+If the parameters into the Cg program are unknown, cgGetFirstParameter and cgGetNextParameter can be used to traverse
+the parameters of a given CGprogram.
+<br><br>
+We�ve finally finished with the initialization of our Cg program, so now we�ll quickly take care of cleaning up after
+ourselves, and then it�s on to the fun of drawing.
+<br><br>
+In the function Deinitialize, we need clean up our Cg program(s).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	cgDestroyContext(cgContext);							<font class="theme">// Destroy Our Cg Context And All Programs Contained Within It</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We simply call cgDestroyContext for each of our CGcontext variables (we can have multiple, but there�s usually only
+one). You can individually delete all of your CGprograms by calling cgDestoryProgram, however calling cgDestoryContext
+deletes all CGprograms contained by the CGcontext, and then deletes the CGcontext itself.
+<br><br>
+Now we will add some code to our Update function.  The following code checks to see if the spacebar is pressed and
+not held down.  If space is press and not held down, we toggle cg_enable from true to false or from false to true.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	if (g_keys-&gt;keyDown [' '] &amp;&amp; !sp)
+	{
+		sp=TRUE;
+		cg_enable=!cg_enable;
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The last bit of code checks to see if the spacebar has been released, and if so, it sets sp (space pressed?) to false.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	if (!g_keys-&gt;keyDown [' '])
+		sp=FALSE;
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now that we�ve dealt with all of that, it�s time to get down to the fun of actually drawing our mesh and running our
+vertex program.
+<br><br>
+The final function we need to modify is the Draw function. We�re going to add our code after glLoadIdentity
+and before glFlush.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Position The Camera To Look At Our Mesh From A Distance</font>
+	gluLookAt(0.0f, 25.0f, -45.0f, 0.0f, 0.0f, 0.0f, 0, 1, 0);
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+First, we want to move our viewpoint far enough away from the origin to view our mesh. We move the camera 25 units
+vertically, 45 units away from the screen, and center our focal point at the origin.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Set The Modelview Matrix Of Our Shader To Our OpenGL Modelview Matrix</font>
+	cgGLSetStateMatrixParameter(modelViewMatrix, CG_GL_MODELVIEW_PROJECTION_MATRIX, CG_GL_MATRIX_IDENTITY);
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The next thing we want to do is set the model view matrix of our vertex shader to the current OpenGL modelview matrix.
+This needs to be done, as the position which is changed in our vertex shaders needs to transform the new position into
+homogenous clip-space, which is done by multiplying the new position by our modelview matrix.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	if (cg_enable)
+	{
+		cgGLEnableProfile(cgVertexProfile);					<font class="theme">// Enable Our Vertex Shader Profile</font>
+
+		<font class="theme">// Bind Our Vertex Program To The Current State</font>
+		cgGLBindProgram(cgProgram);
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We then have to enable our vertex profile. cgGLEnableProfile enables a given profile by making the relevant OpenGL
+calls. cgGLBindProgram binds our program to the current state. This essentially activates our program, and subsequently
+runs our program on each vertex passed to the GPU. The same program will be run on each vertex until we disable our
+profile.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		<font class="theme">// Set The Drawing Color To Light Green (Can Be Changed By Shader, Etc...)</font>
+		cgGLSetParameter4f(color, 0.5f, 1.0f, 0.5f, 1.0f);
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Next we set the drawing color for our mesh. This value can be dynamically changed while drawing the mesh to create
+cool color cycling effects.
+<br><br>
+Notice the check to see if cg_enable is true?  If it is not, we do not deal with any of the Cg commands above.
+This prevents the CG code from running.
+<br><br>
+We�re now ready to render our mesh!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Start Drawing Our Mesh</font>
+	for (int x = 0; x &lt; SIZE - 1; x++)
+	{
+		<font class="theme">// Draw A Triangle Strip For Each Column Of Our Mesh</font>
+		glBegin(GL_TRIANGLE_STRIP);
+		for (int z = 0; z &lt; SIZE - 1; z++)
+		{
+			<font class="theme">// Set The Wave Parameter Of Our Shader To The Incremented Wave Value From Our Main Program</font>
+			cgGLSetParameter3f(wave, wave_movement, 1.0f, 1.0f);
+			glVertex3f(mesh[x][z][0], mesh[x][z][1], mesh[x][z][2]);	<font class="theme">// Draw Vertex</font>
+			glVertex3f(mesh[x+1][z][0], mesh[x+1][z][1], mesh[x+1][z][2]);	<font class="theme">// Draw Vertex</font>
+			wave_movement += 0.00001f;					<font class="theme">// Increment Our Wave Movement</font>
+			if (wave_movement &gt; TWO_PI)					<font class="theme">// Prevent Crashing</font>
+				wave_movement = 0.0f;
+		}
+		glEnd();
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+To render our mesh, we simply loop along the Z axis for each X axis (essentially we work in columns from one side
+of our mesh to the other). For each column, we begin a new triangle strip.
+<br><br>
+For each vertex we render, we dynamically pass the value of our wave parameter of our vertex program. Because this
+value is determined by the wave_movement variable in our main program, which is incremented continuously, our sine
+waves appear to move across and down our mesh.
+<br><br>
+We then pass the vertices we are currently drawing to our GPU, while the GPU will handle automatically running the
+our vertex program on each vertex. We slowly increment our wave_movement variable so as to get slow and smooth movement.
+<br><br>If the value of wave_movement gets to high, we reset it back to
+0 to prevent crashing. TWO_PI is defined at the top of the program.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	if (cg_enable)
+		cgGLDisableProfile(cgVertexProfile);					<font class="theme">// Disable Our Vertex Profile</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Once we�ve finished our rendering, we check to see if cg_enable is true and if so, we disable our vertex profile
+and continue to render anything else that we wish.
+<br><br>
+<a href="mailto:o.bourne@griffith.edu.au">Owen Bourne</a>
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vc/lesson47.zip">Visual C++</a> Code For This Lesson.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/bcb6/lesson47_bcb6.zip">Borland C++ Builder 6</a> Code For This Lesson. ( Conversion by <a href="mailto:mail@bking.de">Ingo Boller</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/delphi/lesson47.zip">Delphi</a> Code For This Lesson. ( Conversion by <a href="mailto:michal_praha@seznam.cz">Michal Tucek</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linux/lesson47.tar.gz">Linux/GLut</a> Code For This Lesson. ( Conversion by <a href="mailto:foxdie@pobox.sk">Gray Fox</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxglx/lesson47.tar.gz">Linux/GLX</a> Code For This Lesson. ( Conversion by <a href="mailto:r3lik@shaw.ca">Jason Schultz</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/python/lesson47.tar.gz">Python</a> Code For This Lesson. ( Conversion by <a href="mailto:bleair@comcast.net">Brian Leair</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vs_net/lesson47.zip">Visual Studio .NET</a> Code For This Lesson. ( Conversion by <a href="mailto:webmaster@joachimrohde.de">Joachim Rohde</a> )<br>
+<br><br>
+<table border="0" width="100%">
+<tbody><tr><td align="left" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=46">&lt; Lesson 46</a></font></b></td>
+<td align="right" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=48">Lesson 48 &gt;</a></font></b></td>
+</tr></tbody></table>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table>
+
+</body></html>

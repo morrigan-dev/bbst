@@ -1,0 +1,512 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+<title>NeHe Productions: OpenGL Lesson #37</title>
+<meta name="author" content="Jeff Molofee">
+<meta name="description" content="OpenGL Tutorials, Demos, Games and More...">
+<meta name="keywords" content="opengl, tutorial, article, demo, game, blend, texturemap, lighting, contest, 3D">
+<link rel="stylesheet" type="text/css" href="lesson.asp-Dateien/rgb.css">
+</head><body bgcolor="black" link="#aaccff" text="white" vlink="#aaccff">
+
+<table border="0" width="100%"><tbody><tr><td align="center">
+<!-- Begin -  Site: GameDev.net Zone: NeHe 728x90 -->
+<script language="javascript" type="text/javascript">
+<!--
+var browName = navigator.appName;
+var SiteID = 1;
+var ZoneID = 4;
+var browDateTime = (new Date()).getTime();
+if (browName=='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;Browser=NETSCAPE4&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+if (browName!='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+// --> 
+</script><script language="javascript" src="lesson.asp-Dateien/a.js"></script><script language="JavaScript">
+var ShockMode = 0;
+if (navigator.mimeTypes && navigator.mimeTypes["application/x-shockwave-flash"] && navigator.mimeTypes["application/x-shockwave-flash"].enabledPlugin) {
+if (navigator.plugins && navigator.plugins["Shockwave Flash"])
+ShockMode = 1;
+}
+else if (navigator.userAgent && navigator.userAgent.indexOf("MSIE")>=0 
+&& (navigator.userAgent.indexOf("Windows 9")>=0 || navigator.userAgent.indexOf("Windows NT")>=0)) {
+document.write('<SCRIPT LANGUAGE=VBScript\> \n');
+document.write('on error resume next \n');
+document.write('ShockMode = (IsObject(CreateObject("ShockwaveFlash.ShockwaveFlash.4"))) ');
+document.write('<\/SCRIPT\> ');
+}
+if ( ShockMode ) {
+document.write('<OBJECT classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"');
+document.write(' codebase="http://active.macromedia.com/flash2/cabs/swflash.cab#version=4,0,0,0"');
+document.write(' ID=banner WIDTH="728" HEIGHT="90" >');
+document.write(' <PARAM NAME=movie VALUE="http://members.gamedev.net/dave/ads/Intel/728x90GameDev_dirt2_Traffic-Driver.swf?url=http%3a%2f%2fwww.gamedev.net%2fbanman%2fa.aspx%3fTask%3dClick%26ZoneID%3d4%26CampaignID%3d715%26AdvertiserID%3d119%26BannerID%3d771%26SiteID%3d1%26RandomNumber%3d526974838%26Keywords%3d"> ');
+document.write(' <param name="wmode" value="transparent"> ');
+document.write(' <PARAM NAME=quality VALUE=autohigh> ');
+document.write('<EMBED SRC="http://members.gamedev.net/dave/ads/Intel/728x90GameDev_dirt2_Traffic-Driver.swf?url=http%3a%2f%2fwww.gamedev.net%2fbanman%2fa.aspx%3fTask%3dClick%26ZoneID%3d4%26CampaignID%3d715%26AdvertiserID%3d119%26BannerID%3d771%26SiteID%3d1%26RandomNumber%3d526974838%26Keywords%3d"');
+document.write(' swLiveConnect=FALSE WIDTH="728" HEIGHT="90"');
+document.write(' QUALITY=autohigh wmode="transparent"');
+document.write(' TYPE="application/x-shockwave-flash" PLUGINSPAGE="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash">');
+document.write('</EMBED>');
+document.write('</OBJECT>');
+} else if (!(navigator.appName && navigator.appName.indexOf("Netscape")>=0 && navigator.appVersion.indexOf("2.")>=0)){
+document.write('<A HREF="http://www.gamedev.net/banman/a.aspx?Task=Click&ZoneID=4&CampaignID=715&AdvertiserID=119&BannerID=771&SiteID=1&RandomNumber=526974838&Keywords=" TARGET="_top"><IMG SRC="http://members.gamedev.net/dave/ads/Intel/728x90GameDev_dirt2_Traffic-Driver_Backup.gif" WIDTH="728" HEIGHT="90" BORDER="0"></A>');
+}
+</script><object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://active.macromedia.com/flash2/cabs/swflash.cab#version=4,0,0,0" id="banner" height="90" width="728"> <param name="movie" value="http://members.gamedev.net/dave/ads/Intel/728x90GameDev_dirt2_Traffic-Driver.swf?url=http%3a%2f%2fwww.gamedev.net%2fbanman%2fa.aspx%3fTask%3dClick%26ZoneID%3d4%26CampaignID%3d715%26AdvertiserID%3d119%26BannerID%3d771%26SiteID%3d1%26RandomNumber%3d526974838%26Keywords%3d">  <param name="wmode" value="transparent">  <param name="quality" value="autohigh"> <embed src="lesson.asp-Dateien/728x90GameDev_dirt2_Traffic-Driver.swf" swliveconnect="FALSE" quality="autohigh" wmode="transparent" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" height="90" width="728"><a class="prnedhmidpgwpzjxwowq" href="http://members.gamedev.net/dave/ads/Intel/728x90GameDev_dirt2_Traffic-Driver.swf?url=http%3a%2f%2fwww.gamedev.net%2fbanman%2fa.aspx%3fTask%3dClick%26ZoneID%3d4%26CampaignID%3d715%26AdvertiserID%3d119%26BannerID%3d771%26SiteID%3d1%26RandomNumber%3d526974838%26Keywords%3d"></a><a class="prnedhmidpgwpzjxwowq" href="http://members.gamedev.net/dave/ads/Intel/728x90GameDev_dirt2_Traffic-Driver.swf?url=http%3a%2f%2fwww.gamedev.net%2fbanman%2fa.aspx%3fTask%3dClick%26ZoneID%3d4%26CampaignID%3d715%26AdvertiserID%3d119%26BannerID%3d771%26SiteID%3d1%26RandomNumber%3d526974838%26Keywords%3d"></a></object>
+<noembed>&lt;A
+HREF="http://www.gamedev.net/banman/a.aspx?Task=Click&amp;ZoneID=4&amp;CampaignID=715&amp;AdvertiserID=119&amp;BannerID=771&amp;SiteID=1&amp;RandomNumber=526974838&amp;Keywords="
+TARGET="_top"&gt;&lt;IMG
+SRC="http://members.gamedev.net/dave/ads/Intel/728x90GameDev_dirt2_Traffic-Driver_Backup.gif"
+WIDTH="728" HEIGHT="90" BORDER="0"&gt;&lt;/A&gt;</noembed>
+<noscript><A
+HREF="http://www.gamedev.net/banman/a.aspx?Task=Click&ZoneID=4&CampaignID=715&AdvertiserID=119&BannerID=771&SiteID=1&RandomNumber=526974838&Keywords="
+TARGET="_top"><IMG
+SRC="http://members.gamedev.net/dave/ads/Intel/728x90GameDev_dirt2_Traffic-Driver_Backup.gif"
+WIDTH="728" HEIGHT="90" BORDER="0"></A></noscript>
+
+<noscript> <a
+href="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Click&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+target="_blank"> <img
+src="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Get&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+width="728" height="90" border="0" alt=""></a>
+</noscript>
+<!-- End -  Site: GameDev.net Zone: NeHe 728x90 --></td></tr></tbody></table><br>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tinylogo" height="130" width="326"><img src="lesson.asp-Dateien/blank.gif" alt="NeHe Productions" height="130" width="326"></td><td class="indexheading" align="center" valign="middle"><font class="text"><font class="theme" size="+3"><b><i>Lesson: 37</i></b></font></font></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Cel-Shading By Sami "MENTAL" Hamlaoui
+<br><br>
+Seeing as people still e-mail me asking for source code to the article I wrote on GameDev.net a while ago, and seeing as the 2nd
+version of that article (with source for every API out there) isn't even close to being halfway finished, I've hacked together
+this tutorial for NeHe (that was actually going to be the original intention of the article) so all of you OpenGL gurus can play
+around with it.  Sorry for the choice of model, but I've been playing Quake 2 extensivly recently... :)
+<br><br>
+Note: The original article for this code can be found at: http://www.gamedev.net/reference/programming/features/celshading.
+<br><br>This tutorial doesn't actually explain the theory, just the
+code. WHY it works can be found at the above link. Now for crying out
+loud STOP E-MAILING ME REQUESTS FOR SOURCE CODE!!!!
+<br><br>
+Enjoy :).
+<br><br>
+First of all, we need to include a few extra header files. The first one (math.h) is so we can use the sqrtf (square root)
+function, and the second (stdio.h) is for file access.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>#include &lt;math.h&gt;						<font class="theme">// Header File For The Math Library</font>
+#include &lt;stdio.h&gt;						<font class="theme">// Header File For The Standard I/O Library</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we are going to define a few structures to help store our data (saves having hundreds of arrays of floats). The first one is
+the tagMATRIX structure. If you look closely, you will see that we are storing the matrix as a 1D array of 16 floats as
+opposed to a 2D 4x4 array. This is down to how OpenGL stores it's matrices. If we used 4x4, the values would come out in the
+wrong order.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>typedef struct tagMATRIX					<font class="theme">// A Structure To Hold An OpenGL Matrix</font>
+{
+	float Data[16];						<font class="theme">// We Use [16] Due To OpenGL's Matrix Format</font>
+}
+MATRIX;
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Second up is the vector class. This simply stores a value for X, Y and Z.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>typedef struct tagVECTOR					<font class="theme">// A Structure To Hold A Single Vector</font>
+{
+	float X, Y, Z;						<font class="theme">// The Components Of The Vector</font>
+}
+VECTOR;
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Third, we have the vertex structure. Each vertex only needs it's normal and position (no texture co-ordinates). They MUST be
+stored in this order, or else when it comes to loading the file things will go horribly wrong (I found out the hard way :(.
+That'll teach me to hack my code to pieces.).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>typedef struct tagVERTEX					<font class="theme">// A Structure To Hold A Single Vertex</font>
+{
+	VECTOR Nor;						<font class="theme">// Vertex Normal</font>
+	VECTOR Pos;						<font class="theme">// Vertex Position</font>
+}
+VERTEX;
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Finally, the polygon structure. I know this is a stupid way of storing vertexes, but for the sake of simplicity it works
+perfectly. Usually I would use an array of vertexes, an array of polygons, and contain the Index number of the 3 verts in the
+polygon structure, but this is easier to show you what's going on.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>typedef struct tagPOLYGON					<font class="theme">// A Structure To Hold A Single Polygon</font>
+{
+	VERTEX Verts[3];					<font class="theme">// Array Of 3 VERTEX Structures</font>
+}
+POLYGON;
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Pretty simple stuff here too. Look at the comments for an explanation of each variable.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>bool		outlineDraw	= true;				<font class="theme">// Flag To Draw The Outline</font>
+bool		outlineSmooth	= false;			<font class="theme">// Flag To Anti-Alias The Lines</font>
+float		outlineColor[3]	= { 0.0f, 0.0f, 0.0f };		<font class="theme">// Color Of The Lines</font>
+float		outlineWidth	= 3.0f;				<font class="theme">// Width Of The Lines</font>
+
+VECTOR		lightAngle;					<font class="theme">// The Direction Of The Light</font>
+bool		lightRotate	= false;			<font class="theme">// Flag To See If We Rotate The Light</font>
+
+float		modelAngle	= 0.0f;				<font class="theme">// Y-Axis Angle Of The Model</font>
+bool    	modelRotate	= false;			<font class="theme">// Flag To Rotate The Model</font>
+
+POLYGON		*polyData	= NULL;				<font class="theme">// Polygon Data</font>
+int		polyNum		= 0;				<font class="theme">// Number Of Polygons</font>
+
+GLuint		shaderTexture[1];				<font class="theme">// Storage For One Texture</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+This is as simple as model file formats get. The first few bytes store the number of polygons in the scene, and the rest of the
+file is an array of tagPOLYGON structures. Because of this, the data can be read in without any need to sort it into any
+particular order.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>BOOL ReadMesh ()						<font class="theme">// Reads The Contents Of The "model.txt" File</font>
+{
+	FILE *In = fopen ("Data\\model.txt", "rb");		<font class="theme">// Open The File</font>
+
+	if (!In)
+		return FALSE;					<font class="theme">// Return FALSE If File Not Opened</font>
+
+	fread (&amp;polyNum, sizeof (int), 1, In);			<font class="theme">// Read The Header (i.e. Number Of Polygons)</font>
+
+	polyData = new POLYGON [polyNum];			<font class="theme">// Allocate The Memory</font>
+
+	fread (&amp;polyData[0], sizeof (POLYGON) * polyNum, 1, In);<font class="theme">// Read In All Polygon Data</font>
+
+	fclose (In);						<font class="theme">// Close The File</font>
+
+	return TRUE;						<font class="theme">// It Worked</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Some basic math functions now. The DotProduct calculates the angle between 2 vectors or planes, the Magnitude
+function calculates the length of the vector, and the Normalize function reduces the vector to a unit length of 1.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>inline float DotProduct (VECTOR &amp;V1, VECTOR &amp;V2)		<font class="theme">// Calculate The Angle Between The 2 Vectors</font>
+{
+	return V1.X * V2.X + V1.Y * V2.Y + V1.Z * V2.Z;		<font class="theme">// Return The Angle</font>
+}
+
+inline float Magnitude (VECTOR &amp;V)				<font class="theme">// Calculate The Length Of The Vector</font>
+{
+	return sqrtf (V.X * V.X + V.Y * V.Y + V.Z * V.Z);	<font class="theme">// Return The Length Of The Vector</font>
+}
+
+void Normalize (VECTOR &amp;V)					<font class="theme">// Creates A Vector With A Unit Length Of 1</font>
+{
+	float M = Magnitude (V);				<font class="theme">// Calculate The Length Of The Vector </font>
+
+	if (M != 0.0f)						<font class="theme">// Make Sure We Don't Divide By 0 </font>
+	{
+		V.X /= M;					<font class="theme">// Normalize The 3 Components </font>
+		V.Y /= M;
+		V.Z /= M;
+	}
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">This
+function rotates a vector using the matrix provided. Please note that
+it ONLY rotates the vector - it has nothing to do with
+the position of the vector. This is used when rotating normals to make
+sure that they stay pointing in the right direction when we
+calculate the lighting.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void RotateVector (MATRIX &amp;M, VECTOR &amp;V, VECTOR &amp;D)		<font class="theme">// Rotate A Vector Using The Supplied Matrix</font>
+{
+	D.X = (M.Data[0] * V.X) + (M.Data[4] * V.Y) + (M.Data[8]  * V.Z);	<font class="theme">// Rotate Around The X Axis</font>
+	D.Y = (M.Data[1] * V.X) + (M.Data[5] * V.Y) + (M.Data[9]  * V.Z);	<font class="theme">// Rotate Around The Y Axis</font>
+	D.Z = (M.Data[2] * V.X) + (M.Data[6] * V.Y) + (M.Data[10] * V.Z);	<font class="theme">// Rotate Around The Z Axis</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The first major function of the engine... Initialize, does exactly what is says. I've cut out a few lines of code as they are
+not needed in the explanation.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// Any GL Init Code &amp; User Initialization Goes Here</font>
+BOOL Initialize (GL_Window* window, Keys* keys)
+{
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+These 3 variables are used to load the shader file. Line contains space for a single line in the text file, while
+shaderData stores the actual shader values. You may be wondering why we have 96 values instead of 32. Well, we need to
+convert the greyscale values to RGB so that OpenGL can use them. We can still store the values as greyscale, but we will simply
+use the same value for the R, G and B components when uploading the texture.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	char Line[255];						<font class="theme">// Storage For 255 Characters</font>
+	float shaderData[32][3];				<font class="theme">// Storage For The 96 Shader Values</font>
+
+	FILE *In = NULL;					<font class="theme">// File Pointer</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+When drawing the lines, we want to make sure that they are nice and smooth. Initially this value is turned off, but by pressing
+the "2" key, it can be toggled on/off.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glShadeModel (GL_SMOOTH);				<font class="theme">// Enables Smooth Color Shading</font>
+	glDisable (GL_LINE_SMOOTH);				<font class="theme">// Initially Disable Line Smoothing</font>
+
+	glEnable (GL_CULL_FACE);				<font class="theme">// Enable OpenGL Face Culling</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We disable OpenGL lighting because we do all of the lighting calculations ourself.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glDisable (GL_LIGHTING);				<font class="theme">// Disable OpenGL Lighting</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Here is where we load the shader file. It is simply 32 floating point values stored as ASCII (for easy modification), each one
+on a seperate line.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	In = fopen ("Data\\shader.txt", "r");			<font class="theme">// Open The Shader File</font>
+
+	if (In)							<font class="theme">// Check To See If The File Opened</font>
+	{
+		for (i = 0; i &lt; 32; i++)			<font class="theme">// Loop Though The 32 Greyscale Values</font>
+		{
+			if (feof (In))				<font class="theme">// Check For The End Of The File</font>
+				break;
+
+			fgets (Line, 255, In);			<font class="theme">// Get The Current Line</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Here we convert the greyscale value into RGB, as described above.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>			<font class="theme">// Copy Over The Value</font>
+			shaderData[i][0] = shaderData[i][1] = shaderData[i][2] = atof (Line);
+		}
+
+		fclose (In);					<font class="theme">// Close The File</font>
+	}
+
+	else
+		return FALSE;					<font class="theme">// It Went Horribly Horribly Wrong</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Now
+we upload the texture. As it clearly states, do not use any kind of
+filtering on the texture or else it will look odd, to say
+the least. GL_TEXTURE_1D is used because it is a 1D array of values.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glGenTextures (1, &amp;shaderTexture[0]);			<font class="theme">// Get A Free Texture ID</font>
+
+	glBindTexture (GL_TEXTURE_1D, shaderTexture[0]);	<font class="theme">// Bind This Texture. From Now On It Will Be 1D</font>
+
+	<font class="theme">// For Crying Out Loud Don't Let OpenGL Use Bi/Trilinear Filtering!</font>
+	glTexParameteri (GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);	
+	glTexParameteri (GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	<font class="theme">// Upload</font>
+	glTexImage1D (GL_TEXTURE_1D, 0, GL_RGB, 32, 0, GL_RGB , GL_FLOAT, shaderData);
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now set the lighting direction. I've got it pointing down positive Z, which means it's going to hit the model face-on.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	lightAngle.X = 0.0f;					<font class="theme">// Set The X Direction</font>
+	lightAngle.Y = 0.0f;					<font class="theme">// Set The Y Direction</font>
+	lightAngle.Z = 1.0f;					<font class="theme">// Set The Z Direction</font>
+
+	Normalize (lightAngle);					<font class="theme">// Normalize The Light Direction</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Load in the mesh from file (described above).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	return ReadMesh ();					<font class="theme">// Return The Value Of ReadMesh</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The opposite of the above function... Deinitialize, deletes the texture and polygon data created by Initalize and
+ReadMesh.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void Deinitialize (void)					<font class="theme">// Any User DeInitialization Goes Here</font>
+{
+	glDeleteTextures (1, &amp;shaderTexture[0]);		<font class="theme">// Delete The Shader Texture</font>
+
+	delete [] polyData;					<font class="theme">// Delete The Polygon Data</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The main demo loop. All this does is process the input and update the angle. Controls are as follows:
+<br><br>
+&lt;SPACE&gt;	= Toggle rotation
+<br><br>
+1	= Toggle outline drawing
+<br><br>
+2	= Toggle outline anti-aliasing
+<br><br>
+&lt;UP&gt;	= Increase line width
+<br><br>
+&lt;DOWN&gt;	= Decrease line width
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void Update (DWORD milliseconds)				<font class="theme">// Perform Motion Updates Here</font>
+{
+	if (g_keys-&gt;keyDown [' '] == TRUE)			<font class="theme">// Is the Space Bar Being Pressed?</font>
+	{
+		modelRotate = !modelRotate;			<font class="theme">// Toggle Model Rotation On/Off</font>
+
+		g_keys-&gt;keyDown [' '] = FALSE;
+	}
+
+	if (g_keys-&gt;keyDown ['1'] == TRUE)			<font class="theme">// Is The Number 1 Being Pressed?</font>
+	{
+		outlineDraw = !outlineDraw;			<font class="theme">// Toggle Outline Drawing On/Off</font>
+
+		g_keys-&gt;keyDown ['1'] = FALSE;
+	}
+
+	if (g_keys-&gt;keyDown ['2'] == TRUE)			<font class="theme">// Is The Number 2 Being Pressed?</font>
+	{
+		outlineSmooth = !outlineSmooth;			<font class="theme">// Toggle Anti-Aliasing On/Off</font>
+
+		g_keys-&gt;keyDown ['2'] = FALSE;
+	}
+
+	if (g_keys-&gt;keyDown [VK_UP] == TRUE)			<font class="theme">// Is The Up Arrow Being Pressed?</font>
+	{
+		outlineWidth++;					<font class="theme">// Increase Line Width</font>
+
+		g_keys-&gt;keyDown [VK_UP] = FALSE;
+	}
+
+	if (g_keys-&gt;keyDown [VK_DOWN] == TRUE)			<font class="theme">// Is The Down Arrow Being Pressed?</font>
+	{
+		outlineWidth--;					<font class="theme">// Decrease Line Width</font>
+
+		g_keys-&gt;keyDown [VK_DOWN] = FALSE;
+	}
+
+	if (modelRotate)					<font class="theme">// Check To See If Rotation Is Enabled</font>
+		modelAngle += (float) (milliseconds) / 10.0f;	<font class="theme">// Update Angle Based On The Clock</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The function you've all been waiting for. The Draw function does everything - calculates the shade values, renders the mesh,
+renders the outline, and, well that's it really.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void Draw (void)
+{
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+TmpShade is used to store the shader value for the current vertex.  All vertex data is calculated at the same time, meaning
+that we only need to use a single variable that we can just keep reusing.
+<br><br>
+The TmpMatrix, TmpVector and TmpNormal structures are also used to calculate the vertex data. TmpMatrix
+is set once at the start of the function and never changed until Draw is called again. TmpVector and TmpNormal
+on the other hand, change when another vertex is processed.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	float TmpShade;						<font class="theme">// Temporary Shader Value</font>
+
+	MATRIX TmpMatrix;					<font class="theme">// Temporary MATRIX Structure</font>
+	VECTOR TmpVector, TmpNormal;				<font class="theme">// Temporary VECTOR Structures</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Let's clear the buffers and matrix data.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	<font class="theme">// Clear The Buffers</font>
+	glLoadIdentity ();					<font class="theme">// Reset The Matrix</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The first check is to see if we want to have smooth outlines.  If so, then we turn on anti-alaising.  If not, we turn it off.
+Simple!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	if (outlineSmooth)					<font class="theme">// Check To See If We Want Anti-Aliased Lines</font>
+	{
+		glHint (GL_LINE_SMOOTH_HINT, GL_NICEST);	<font class="theme">// Use The Good Calculations</font>
+		glEnable (GL_LINE_SMOOTH);			<font class="theme">// Enable Anti-Aliasing</font>
+	}
+
+	else							<font class="theme">// We Don't Want Smooth Lines</font>
+		glDisable (GL_LINE_SMOOTH);			<font class="theme">// Disable Anti-Aliasing</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We then setup the viewport. We move the camera back 2 units, and then rotate the model by the angle. Note: because we moved the
+camera first, the model will rotate on the spot. If we did it the other way around, the model would rotate around the camera.
+<br><br>
+We then grab the newly created matrix from OpenGL and store it in TmpMatrix.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glTranslatef (0.0f, 0.0f, -2.0f);			<font class="theme">// Move 2 Units Away From The Screen</font>
+	glRotatef (modelAngle, 0.0f, 1.0f, 0.0f);		<font class="theme">// Rotate The Model On It's Y-Axis</font>
+
+	glGetFloatv (GL_MODELVIEW_MATRIX, TmpMatrix.Data);	<font class="theme">// Get The Generated Matrix</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The magic begins. We first enable 1D texturing, and then enable the shader texture. This is to be used as a look-up table
+by OpenGL. We then set the color of the model (white). I chose white because it shows up the highlights and shading much
+better then other colors. I suggest that you don't use black :)
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Cel-Shading Code</font>
+	glEnable (GL_TEXTURE_1D);				<font class="theme">// Enable 1D Texturing</font>
+	glBindTexture (GL_TEXTURE_1D, shaderTexture[0]);	<font class="theme">// Bind Our Texture</font>
+
+	glColor3f (1.0f, 1.0f, 1.0f);				<font class="theme">// Set The Color Of The Model</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we start drawing the triangles. We look though each polygon in the array, and then in turn each of it's vertexes.
+The first step is to copy the normal information into a temporary structure. This is so we can rotate the normals, but
+still keep the original values preserved (no precision degradation).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glBegin (GL_TRIANGLES);					<font class="theme">// Tell OpenGL That We're Drawing Triangles</font>
+
+		for (i = 0; i &lt; polyNum; i++)			<font class="theme">// Loop Through Each Polygon</font>
+		{
+			for (j = 0; j &lt; 3; j++)			<font class="theme">// Loop Through Each Vertex</font>
+			{
+				TmpNormal.X = polyData[i].Verts[j].Nor.X;	<font class="theme">// Fill Up The TmpNormal Structure With The</font>
+				TmpNormal.Y = polyData[i].Verts[j].Nor.Y;	<font class="theme">// Current Vertices' Normal Values</font>
+				TmpNormal.Z = polyData[i].Verts[j].Nor.Z;
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Second, we rotate the normal by the matrix grabbed from OpenGL earlier. We then normalize this so it doesn't go all screwy.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				<font class="theme">// Rotate This By The Matrix</font>
+				RotateVector (TmpMatrix, TmpNormal, TmpVector);
+
+				Normalize (TmpVector);		<font class="theme">// Normalize The New Normal</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Third, we get the dot product of the rotated normal and light direction (called lightAngle, because I forgot to change it
+from my old light class). We then clamp the value to the range 0-1 (from -1 to +1).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				<font class="theme">// Calculate The Shade Value</font>
+				TmpShade = DotProduct (TmpVector, lightAngle);
+
+				if (TmpShade &lt; 0.0f)
+					TmpShade = 0.0f;	<font class="theme">// Clamp The Value to 0 If Negative</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Forth, we pass this value to OpenGL as the texture coordinate. The shader texture acts as a lookup table (the shader
+value being the index), which is (I think) the main reason why 1D textures were invented. We then pass the vertices position
+to OpenGL, and repeat. And Repeat. And Repeat. And I think you get the idea.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				glTexCoord1f (TmpShade);	<font class="theme">// Set The Texture Co-ordinate As The Shade Value</font>
+				<font class="theme">// Send The Vertices</font>
+				glVertex3fv (&amp;polyData[i].Verts[j].Pos.X);
+		    }
+		}
+
+	glEnd ();						<font class="theme">// Tell OpenGL To Finish Drawing</font>
+
+	glDisable (GL_TEXTURE_1D);				<font class="theme">// Disable 1D Textures</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we move onto the outlines. An outline can be defined as "an edge where one polygon is front facing, and the other is
+backfacing". In OpenGL, it's where the depth test is set to less than or equal to (GL_LEQUAL) the current value, and when
+all front faces are being culled. We also blend the lines in, to make it look nice :)
+<br><br>
+So, we enable blending and set the blend mode. We tell OpenGL to render backfacing polygons as lines, and set the width of those
+lines. We cull all front facing polygons, and set the depth test to less than or equal to the current Z value. After this the
+color of the line is set, and we loop through each polygon, drawing it's vertices. We only need to pass the vertex position, and
+not the normal or shade value because all we want is an outline.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Outline Code</font>
+	if (outlineDraw)					<font class="theme">// Check To See If We Want To Draw The Outline</font>
+	{
+		glEnable (GL_BLEND);				<font class="theme">// Enable Blending</font>
+		<font class="theme">// Set The Blend Mode		</font>
+		glBlendFunc (GL_SRC_ALPHA ,GL_ONE_MINUS_SRC_ALPHA);
+
+		glPolygonMode (GL_BACK, GL_LINE);		<font class="theme">// Draw Backfacing Polygons As Wireframes</font>
+		glLineWidth (outlineWidth);			<font class="theme">// Set The Line Width</font>
+
+		glCullFace (GL_FRONT);				<font class="theme">// Don't Draw Any Front-Facing Polygons</font>
+
+		glDepthFunc (GL_LEQUAL);			<font class="theme">// Change The Depth Mode</font>
+
+		glColor3fv (&amp;outlineColor[0]);			<font class="theme">// Set The Outline Color</font>
+
+		glBegin (GL_TRIANGLES);				<font class="theme">// Tell OpenGL What We Want To Draw</font>
+
+			for (i = 0; i &lt; polyNum; i++)		<font class="theme">// Loop Through Each Polygon</font>
+			{
+				for (j = 0; j &lt; 3; j++)		<font class="theme">// Loop Through Each Vertice</font>
+				{
+					<font class="theme">// Send The Vertices</font>
+					glVertex3fv (&amp;polyData[i].Verts[j].Pos.X);
+				}
+			}
+
+		glEnd ();					<font class="theme">// Tell OpenGL We've Finished</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+After this, we just set everything back to how it was before, and exit.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		glDepthFunc (GL_LESS);				<font class="theme">// Reset The Depth-Testing Mode</font>
+
+		glCullFace (GL_BACK);				<font class="theme">// Reset The Face To Be Culled</font>
+
+		glPolygonMode (GL_BACK, GL_FILL);		<font class="theme">// Reset Back-Facing Polygon Drawing Mode</font>
+
+		glDisable (GL_BLEND);				<font class="theme">// Disable Blending</font>
+	}
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+You see now Cel-Shading isn't that difficult. Of course the techniques could be enhanced a lot. A good example is the game XIII
+<a href="http://www.nvidia.com/object/game_xiii.html" target="_blank">http://www.nvidia.com/object/game_xiii.html</a>,
+which makes you think you are in a cartoon world.  If you want to get deeper into cartoon rendering techniques, you could
+look into the book Real-time Rendering (M�ller, Haines) on the chapter "Non-Photorealistic Rendering". If you prefer reading
+articles from the web, a huge link list can be found here:
+<a href="http://www.red3d.com/cwr/npr/" target="_blank">http://www.red3d.com/cwr/npr/</a>
+<br><br>
+<b>Sami Hamlaoui</b> (<b>MENTAL</b>)
+<br><br>
+<b>Jeff Molofee</b> (<b>NeHe</b>)
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vc/lesson37.zip">Visual C++</a> Code For This Lesson.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/bcb6/lesson37_bcb6.zip">Borland C++ Builder 6</a> Code For This Lesson. ( Conversion by <a href="mailto:christian@tugzip.com">Christian Kindahl</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cwarrior/lesson37.zip">Code Warrior 5.3</a> Code For This Lesson. ( Conversion by <a href="mailto:DelusionalBeing@hotmail.com">Scott Lupton</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/delphi/lesson37.zip">Delphi</a> Code For This Lesson. ( Conversion by <a href="mailto:michal_praha@seznam.cz">Michal Tucek</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/devc/lesson37.zip">Dev C++</a> Code For This Lesson. ( Conversion by <a href="mailto:zealouselixir@mchsi.com">Warren Moore</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/euphoria/lesson37.zip">Euphoria</a> Code For This Lesson. ( Conversion by <a href="mailto:1evan@sbcglobal.net">Evan Marshall</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/jogl/lesson37.jar">JoGL</a> Code For This Lesson. ( Conversion by <a href="mailto:abezrati@hotmail.com">Abdul Bezrati</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linux/lesson37.tar.gz">Linux / GLut</a> Code For This Lesson. ( Conversion by <a href="mailto:rainmaker@xs4all.nl">Kah</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxglx/lesson37.tar.gz">Linux/GLX</a> Code For This Lesson. ( Conversion by <a href="mailto:Schubert_P@Yahoo.de">Patrick Schubert</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxsdl/lesson37.tar.gz">Linux/SDL</a> Code For This Lesson. ( Conversion by <a href="mailto:drfnbee@wanadoo.fr">Sean Farrell</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/macosxcocoa/lesson37.zip">Mac OS X/Cocoa</a> Code For This Lesson. ( Conversion by <a href="mailto:blb@pobox.com">Bryan Blackburn</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vs_net/lesson37.zip">Visual Studio .NET</a> Code For This Lesson. ( Conversion by <a href="mailto:ultimatezeus@hotmail.com">Grant James</a> )<br>
+<br><br>
+<br><br>
+<table border="0" width="100%">
+<tbody><tr><td align="left" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=36">&lt; Lesson 36</a></font></b></td>
+<td align="right" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=38">Lesson 38 &gt;</a></font></b></td>
+</tr></tbody></table>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table>
+
+</body></html>

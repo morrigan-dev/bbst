@@ -1,0 +1,224 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title>Class TElement - Roboterarm Simulation - JADD - Just Another DelphiDoc</title>
+  <meta name="keywords" content="TElement">
+  <meta name="Generator" content="JADD - Just Another DelphiDoc">
+  <link rel="stylesheet" type="text/css" href="DelphiDoc.css" title="Style">
+</head>
+<body>
+<table width="100%" class="headerlinks"><tbody><tr>
+<td align="center"><a href="index.html">Index</a></td>
+<td align="center"><a href="FileList.html">Files</a></td>
+<td align="center"><a href="RecordList.html">Records</a></td>
+<td align="center"><a href="ObjectList.html">Objects</a></td>
+<td align="center"><a href="ClassList.html">Classes</a></td>
+<td align="center"><a href="InterfaceList.html">Interfaces</a></td>
+<td align="center"><a href="DispInterfaceList.html">Dispatch-Interfaces</a></td>
+</tr></tbody></table>
+<hr>
+<h1 class="class">Class TElement</h1>
+TObject &lt;-- ... &lt;-- TPersistent &lt;-- <strong>TElement</strong><br>
+Declared in <b class="resword">Unit</b> <a href="File_unitElement.html">unitElement</a><br>
+<h2 class="class">Direct known Subclasses:</h2>
+<a href="Class_TServo.html">TServo</a>
+<h2 class="class">Used by Classes:</h2>
+<a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>
+<hr>
+<h2 class="classcomment">Description:</h2>
+Diese Klasse ist lediglich für die Schnittstelle im Object Inspector verantwortlich. Sie stellt verschiedene Properties zur Verfügung und reicht deren Inhalte an die Zeichenmethoden weiter bzw. holt sich die aktuellen Werte.
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_AfterConstruction">AfterConstruction</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Gattinger</ul></dd>
+</dl>
+<hr>
+<h2 class="methodlist">List of Constructors:</h2>
+<dl class="funclist">
+  <dt><img src="public.gif" alt="public" title="public"> <b class="resword">constructor</b> <a href="#I_Create">Create</a></dt>
+  <dd>Konstruktor, der eine Instanz dieser Klasse erzeugt und die Klassenvariablen initialisiert.</dd>
+</dl>
+<hr>
+<h2 class="methodlist">List of Methods:</h2>
+<dl class="funclist">
+  <dt><img src="public.gif" alt="public" title="public"> <b class="resword">function</b> <a href="#I_GetTexture">GetTexture</a></dt>
+  <dd></dd>
+  <dt><img src="protected.gif" alt="protected" title="protected"> <b class="resword">procedure</b> <a href="#I_SetColorProperty">SetColorProperty</a></dt>
+  <dd></dd>
+  <dt><img src="protected.gif" alt="protected" title="protected"> <b class="resword">procedure</b> <a href="#I_SetDepthProperty">SetDepthProperty</a></dt>
+  <dd></dd>
+  <dt><img src="protected.gif" alt="protected" title="protected"> <b class="resword">procedure</b> <a href="#I_SetHeightProperty">SetHeightProperty</a></dt>
+  <dd></dd>
+  <dt><img src="public.gif" alt="public" title="public"> <b class="resword">procedure</b> <a href="#I_SetTexture">SetTexture</a></dt>
+  <dd>Setzt die Textur für das Element</dd>
+  <dt><img src="protected.gif" alt="protected" title="protected"> <b class="resword">procedure</b> <a href="#I_SetWidthProperty">SetWidthProperty</a></dt>
+  <dd></dd>
+</dl>
+<hr>
+<h2 class="member">Fields:</h2>
+<dl class="member">
+
+<dt class="member"><br>
+<a name="I_Fcolor"><img src="private.gif" alt="private" title="private"></a> Fcolor: TColor</dt>
+<dd class="member">Properties
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_Create">Create</a>, <a href="#I_SetColorProperty">SetColorProperty</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Fdepth"><img src="private.gif" alt="private" title="private"></a> Fdepth: Real</dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_Create">Create</a>, <a href="#I_SetDepthProperty">SetDepthProperty</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Fheight"><img src="private.gif" alt="private" title="private"></a> Fheight: Real</dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_Create">Create</a>, <a href="#I_SetHeightProperty">SetHeightProperty</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Fwidth"><img src="private.gif" alt="private" title="private"></a> Fwidth: Real</dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_Create">Create</a>, <a href="#I_SetWidthProperty">SetWidthProperty</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_owner"><img src="protected.gif" alt="protected" title="protected"></a> owner: <a href="Interface_IOpenGL.html">IOpenGL</a></dt>
+<dd class="member">Interne Eigenschaften
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_Create">Create</a>, <a href="#I_SetColorProperty">SetColorProperty</a>, <a href="#I_SetDepthProperty">SetDepthProperty</a>, <a href="#I_SetHeightProperty">SetHeightProperty</a>, <a href="#I_SetTexture">SetTexture</a>, <a href="#I_SetWidthProperty">SetWidthProperty</a>, <a href="Class_TServo.html">TServo</a>.<a href="Class_TServo.html#I_SetAktPosProperty">SetAktPosProperty</a>, <a href="Class_TServo.html">TServo</a>.<a href="Class_TServo.html#I_SetHighlightColorProperty">SetHighlightColorProperty</a>, <a href="Class_TServo.html">TServo</a>.<a href="Class_TServo.html#I_SetHighlighted">SetHighlighted</a>, <a href="Class_TServo.html">TServo</a>.<a href="Class_TServo.html#I_SetMaxGradProperty">SetMaxGradProperty</a>, <a href="Class_TServo.html">TServo</a>.<a href="Class_TServo.html#I_SetMinGradProperty">SetMinGradProperty</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_texture"><img src="protected.gif" alt="protected" title="protected"></a> texture: PGLUQuadric</dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_GetTexture">GetTexture</a>, <a href="#I_SetTexture">SetTexture</a></dd>
+</dl>
+</dd>
+</dl>
+<hr>
+<h2 class="member">Properties:</h2>
+<dl class="member">
+
+<dt class="member"><br>
+<a name="I_Color"><img src="published.gif" alt="published" title="published"></a> <b class="resword">property</b> Color: TColor <b class="resword">read</b> <a href="#I_Fcolor">Fcolor</a> <b class="resword">write</b> <a href="#I_SetColorProperty">SetColorProperty</a></dt>
+<dd class="member">Properties
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_initElements">initElements</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_initServos">initServos</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderElement0">RenderElement0</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderElement1">RenderElement1</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderElement2">RenderElement2</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderElement3">RenderElement3</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderElement4">RenderElement4</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo0">RenderServo0</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo12">RenderServo12</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo3">RenderServo3</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo4">RenderServo4</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo5">RenderServo5</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo6">RenderServo6</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo7">RenderServo7</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Depth"><img src="published.gif" alt="published" title="published"></a> <b class="resword">property</b> Depth: Real <b class="resword">read</b> <a href="#I_Fdepth">Fdepth</a> <b class="resword">write</b> <a href="#I_SetDepthProperty">SetDepthProperty</a></dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_initElements">initElements</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_initServos">initServos</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderElement1">RenderElement1</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderElement2">RenderElement2</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderElement3">RenderElement3</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderElement4">RenderElement4</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo12">RenderServo12</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo3">RenderServo3</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo4">RenderServo4</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo6">RenderServo6</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo7">RenderServo7</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Height"><img src="published.gif" alt="published" title="published"></a> <b class="resword">property</b> Height: Real <b class="resword">read</b> <a href="#I_Fheight">Fheight</a> <b class="resword">write</b> <a href="#I_SetHeightProperty">SetHeightProperty</a></dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_initElements">initElements</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_initServos">initServos</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_Render">Render</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderElement0">RenderElement0</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderElement1">RenderElement1</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderElement2">RenderElement2</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderElement3">RenderElement3</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderElement4">RenderElement4</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo0">RenderServo0</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo12">RenderServo12</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo5">RenderServo5</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo6">RenderServo6</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo7">RenderServo7</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_Width"><img src="published.gif" alt="published" title="published"></a> <b class="resword">property</b> Width: Real <b class="resword">read</b> <a href="#I_Fwidth">Fwidth</a> <b class="resword">write</b> <a href="#I_SetWidthProperty">SetWidthProperty</a></dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_initElements">initElements</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_initServos">initServos</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderElement0">RenderElement0</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderElement1">RenderElement1</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderElement2">RenderElement2</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderElement3">RenderElement3</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderElement4">RenderElement4</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo0">RenderServo0</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo12">RenderServo12</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo3">RenderServo3</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo4">RenderServo4</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo5">RenderServo5</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo6">RenderServo6</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo7">RenderServo7</a></dd>
+</dl>
+</dd>
+</dl>
+<hr>
+<h2 class="member">Constructors:</h2>
+<dl class="member">
+
+<dt class="member"><br>
+<a name="I_Create"><img src="public.gif" alt="public" title="public"></a> <b class="resword">constructor</b> Create(owner: <a href="Interface_IOpenGL.html">IOpenGL</a>)</dt>
+<dd class="member">Konstruktor, der eine Instanz dieser Klasse erzeugt und die Klassenvariablen initialisiert.
+<dl><dt class="params"><strong>Parameters</strong></dt><dd class="params"><dl class="param">
+<dt class="param">owner</dt>
+<dd class="param">Eine Klasse, die das IOpenGL Interface implementier, um den Callback Aufruf sicherzustellen.</dd>
+</dl>
+</dd>
+<dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_Fcolor">Fcolor</a>, <a href="#I_Fdepth">Fdepth</a>, <a href="#I_Fheight">Fheight</a>, <a href="#I_Fwidth">Fwidth</a>, <a href="#I_owner">owner</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_AfterConstruction">AfterConstruction</a>, <a href="Class_TServo.html">TServo</a>.<a href="Class_TServo.html#I_Create">Create</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Gattinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.1</ul></dd>
+</dl>
+</dd>
+</dl>
+<hr>
+<h2 class="member">Methods:</h2>
+<dl class="member">
+
+<dt class="member"><br>
+<a name="I_GetTexture"><img src="public.gif" alt="public" title="public"></a> <b class="resword">function</b> GetTexture: PGLUQuadric</dt>
+<dd class="member">
+<dl><dt class="result"><strong>Result</strong></dt><dd class="result">Liefert die Textur des Elements</dd>
+<dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_texture">texture</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Gattinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_SetColorProperty"><img src="protected.gif" alt="protected" title="protected"></a> <b class="resword">procedure</b> SetColorProperty(color: TColor)</dt>
+<dd class="member">
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_Fcolor">Fcolor</a>, <a href="#I_owner">owner</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="Interface_IOpenGL.html">IOpenGL</a>.<a href="Interface_IOpenGL.html#I_Render">Render</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_SetDepthProperty"><img src="protected.gif" alt="protected" title="protected"></a> <b class="resword">procedure</b> SetDepthProperty(depth: Real)</dt>
+<dd class="member">
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_Fdepth">Fdepth</a>, <a href="#I_owner">owner</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="Interface_IOpenGL.html">IOpenGL</a>.<a href="Interface_IOpenGL.html#I_Render">Render</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_SetHeightProperty"><img src="protected.gif" alt="protected" title="protected"></a> <b class="resword">procedure</b> SetHeightProperty(height: Real)</dt>
+<dd class="member">
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_Fheight">Fheight</a>, <a href="#I_owner">owner</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="Interface_IOpenGL.html">IOpenGL</a>.<a href="Interface_IOpenGL.html#I_Render">Render</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_SetTexture"><img src="public.gif" alt="public" title="public"></a> <b class="resword">procedure</b> SetTexture(texture: PGLUQuadric)</dt>
+<dd class="member">Setzt die Textur für das Element
+<dl><dt class="params"><strong>Parameters</strong></dt><dd class="params"><dl class="param">
+<dt class="param">texture</dt>
+<dd class="param">Die Textur</dd>
+</dl>
+</dd>
+<dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_owner">owner</a>, <a href="#I_texture">texture</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="Interface_IOpenGL.html">IOpenGL</a>.<a href="Interface_IOpenGL.html#I_Render">Render</a></dd>
+<dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Gattinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_SetWidthProperty"><img src="protected.gif" alt="protected" title="protected"></a> <b class="resword">procedure</b> SetWidthProperty(width: Real)</dt>
+<dd class="member">
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_Fwidth">Fwidth</a>, <a href="#I_owner">owner</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="Interface_IOpenGL.html">IOpenGL</a>.<a href="Interface_IOpenGL.html#I_Render">Render</a></dd>
+</dl>
+</dd>
+</dl>
+<hr>
+</body>
+</html>

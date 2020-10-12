@@ -1,0 +1,743 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+<title>NeHe Productions: OpenGL Lesson #43</title>
+<meta name="author" content="Jeff Molofee">
+<meta name="description" content="OpenGL Tutorials, Demos, Games and More...">
+<meta name="keywords" content="opengl, tutorial, article, demo, game, blend, texturemap, lighting, contest, 3D">
+<link rel="stylesheet" type="text/css" href="lesson.asp-Dateien/rgb.css">
+</head><body bgcolor="black" link="#aaccff" text="white" vlink="#aaccff">
+
+<table border="0" width="100%"><tbody><tr><td align="center">
+<!-- Begin -  Site: GameDev.net Zone: NeHe 728x90 -->
+<script language="javascript" type="text/javascript">
+<!--
+var browName = navigator.appName;
+var SiteID = 1;
+var ZoneID = 4;
+var browDateTime = (new Date()).getTime();
+if (browName=='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;Browser=NETSCAPE4&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+if (browName!='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+// --> 
+</script><script language="javascript" src="lesson.asp-Dateien/a.js"></script><a href="http://www.gamedev.net/banman/a.aspx?Task=Click&amp;ZoneID=4&amp;CampaignID=609&amp;AdvertiserID=11&amp;BannerID=680&amp;SiteID=1&amp;RandomNumber=1568795947&amp;Keywords=" target="_Blank"><img src="lesson.asp-Dateien/DCleader.png" alt="" align="Center" border="0" height="90" width="728"></a><br>
+<noscript> <a
+href="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Click&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+target="_blank"> <img
+src="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Get&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+width="728" height="90" border="0" alt=""></a>
+</noscript>
+<!-- End -  Site: GameDev.net Zone: NeHe 728x90 --></td></tr></tbody></table><br>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tinylogo" height="130" width="326"><img src="lesson.asp-Dateien/blank.gif" alt="NeHe Productions" height="130" width="326"></td><td class="indexheading" align="center" valign="middle"><font class="text"><font class="theme" size="+3"><b><i>Lesson: 43</i></b></font></font></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text"><center><font size="+1">Tutorial on using FreeType Fonts in OpenGL</font></center>
+<br><br>So here's a quick tutorial to show you how to use the FreeType
+version 2 font rendering library in OpenGL. By using the FreeType
+library we can create
+anti-aliased text that looks better than text made using bitmap fonts
+(as in Lesson 13). Our text will also have some other advantages over
+bitmap fonts - it will be easy to rotate and works well with OpenGL's
+picking functions.
+<br><br>
+<b><u>Motivation</u></b>
+<br><br>Here I've printed out the same text using both WGL bitmap fonts
+and fonts rendered with FreeType as per this tutorial (both are Arial
+Black
+Italic).
+<br><br>
+<center><img src="lesson.asp-Dateien/foo_foo.gif"></center><br>The
+basic problem with using bitmaps fonts is that in OpenGL bitmaps are by
+definition binary images. This means that an OpenGL bitmap stores
+only one bit of information per-pixel. If you zoom in on the text
+created using WGL bitmaps, the result looks like this:
+<br><br>
+<center><img src="lesson.asp-Dateien/wgl.gif"></center><br>
+Because bitmaps are binary images, there are no gray pixels in the image above, and it means that the text looks blocky.
+<br><br>Luckily it is fairly easy to make better looking fonts using
+the GNU FreeType library. FreeType is the same library that Blizzard
+uses to
+render the fonts in their games, so you know it has to be good!
+<br><br>
+Here's a close up of the text that I've created with the help of the FreeType library:
+<br><br>
+<center><img src="lesson.asp-Dateien/free.gif"></center><br>You can see
+that there are a fair number of gray pixels around the edges of the
+text; this is typical of an anti-aliased font, the gray
+pixels make the font look smoother from a distance.
+<br><br>
+<b><u>Creating the Program</u></b>
+<br><br>
+The first step is to get yourself a copy of the GNU FreeType library. Go to
+<a href="http://gnuwin32.sourceforge.net/packages/freetype.htm" target="_blank">http://gnuwin32.sourceforge.net/packages/freetype.htm</a>and
+download the binaries and developer files. When you install it make
+sure to notice the licensing terms, which basically say that if you
+are going to use FreeType in your own programs, you need to give them
+credit somewhere in your documentation.
+<br><br>Now we need to setup MSVC to use FreeType. So create new
+project as in Lesson 1, but when you go to
+Project-&gt;Settings-&gt;Link make sure you
+add libfreetype.lib to Object Modules / libraries along with
+opengl32.lib, glu32.lib and glaux.lib (if required).
+<br><br>Next we need to go to Tools-&gt;Options-&gt;Directories and
+add the FreeType library directories. Under "Show Directories For"
+select
+"Include Files", then double click on the empty line at the bottom of
+the directory list, after you double click a "..." button will
+appear that you can use to browse for a directory. In this way add
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>C:\PROGRAM FILES\GNUWIN32\INCLUDE\FREETYPE2
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+and
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>C:\PROGRAM FILES\GNUWIN32\INCLUDE
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+To you list of header directories.
+<br><br>
+Now under "Show Directories For" select "Library Files", and this time add
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>C:\PROGRAM FILES\GNUWIN32\LIB
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">At
+this point we should be able to compile programs using FreeType, but
+they won't run unless they can access the freetype-6.dll. Right now
+you have a copy of that DLL file in your GNUWIN32\BIN directory, and if
+you put it somewhere where all your programs can see it (Program
+Files\Microsoft Visual Studio\VC98\Bin is a good choice), you will be
+able to run programs using FreeType. But remember that if you
+distribute a program that you have made using FreeType, you will need
+to also distribute copies of the DLL along with it.
+<br><br>
+Ok, now we can finally start writing code. I've decided to work off the <a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=13" target="_blank">Lesson 13</a>
+source,
+so grab a copy of lesson 13 if you don't have one already. Copy
+lesson13.cpp to your project directory, and add the file to the
+project.
+<br><br>Now add and create two new files called "freetype.cpp" and
+"freetype.h". We will put all our FreeType specific code into these
+files, and
+then modify lesson13 a little to show off the functions that we've
+written. When we are done, we will have created a very simple OpenGL
+FreeType library that could theoretically be used in any OpenGL
+project.
+<br><br>
+We will start with freetype.h.
+<br><br>Naturally, we need include the FreeType and OpenGL headers. We
+will also include some handy parts of the Standard Template Library,
+including
+STL's exception classes, which will make it easier for us create nice
+debugging messages.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>#ifndef FREE_NEHE_H
+#define FREE_NEHE_H
+
+<font class="theme">// FreeType Headers</font>
+#include &lt;ft2build.h&gt;
+#include &lt;freetype/freetype.h&gt;
+#include &lt;freetype/ftglyph.h&gt;
+#include &lt;freetype/ftoutln.h&gt;
+#include &lt;freetype/fttrigon.h&gt;
+
+<font class="theme">// OpenGL Headers </font>
+#include &lt;windows.h&gt;										<font class="theme">// (The GL Headers Need It)</font>
+#include &lt;GL/gl.h&gt;
+#include &lt;GL/glu.h&gt;
+
+<font class="theme">// Some STL Headers</font>
+#include &lt;vector&gt;
+#include &lt;string&gt;
+
+<font class="theme">// Using The STL Exception Library Increases The</font>
+<font class="theme">// Chances That Someone Else Using Our Code Will Correctly</font>
+<font class="theme">// Catch Any Exceptions That We Throw.</font>
+#include &lt;stdexcept&gt;
+
+<font class="theme">// MSVC Will Spit Out All Sorts Of Useless Warnings If</font>
+<font class="theme">// You Create Vectors Of Strings, This Pragma Gets Rid Of Them.</font>
+#pragma warning(disable: 4786)
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">We
+will put all the information that each font needs into one structure
+(this will make managing multiple fonts a little easier). As we
+learned in Lesson 13, when WGL creates a font, it generates a set of
+consecutive display lists. This is nifty, because it means that you can
+use glCallLists to print out a string of characters with just one
+command. When we create our font we will set things up the same way,
+which
+means that the list_base field will store the first of 128 consecutive
+display lists. Because we are going to use textures to draw our text,
+so we will also need storage for the 128 associated textures. The last
+bit of info that we will need is the height, in pixels, of the font
+that we have created (this will make it possible to handle newlines in
+our print function).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// Wrap Everything In A Namespace, That Way We Can Use A Common</font>
+<font class="theme">// Function Name Like "print" Without Worrying About</font>
+<font class="theme">// Overlapping With Anyone Else's Code.</font>
+namespace freetype {
+
+<font class="theme">// Inside Of This Namespace, Give Ourselves The Ability</font>
+<font class="theme">// To Write Just "vector" Instead Of "std::vector"</font>
+using std::vector;
+
+<font class="theme">// Ditto For String.</font>
+using std::string;
+
+<font class="theme">// This Holds All Of The Information Related To Any</font>
+<font class="theme">// FreeType Font That We Want To Create.  </font>
+struct font_data {
+	float h;										<font class="theme">// Holds The Height Of The Font.</font>
+	GLuint * textures;									<font class="theme">// Holds The Texture Id's </font>
+	GLuint list_base;									<font class="theme">// Holds The First Display List Id</font>
+
+	<font class="theme">// The Init Function Will Create A Font With</font>
+	<font class="theme">// The Height h From The File fname.</font>
+	void init(const char * fname, unsigned int h);
+
+	<font class="theme">// Free All The Resources Associated With The Font.</font>
+        void clean();
+};
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The last thing we need is a prototype for our print function:
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// The Flagship Function Of The Library - This Thing Will Print</font>
+<font class="theme">// Out Text At Window Coordinates X, Y, Using The Font ft_font.</font>
+<font class="theme">// The Current Modelview Matrix Will Also Be Applied To The Text. </font>
+void print(const font_data &amp;ft_font, float x, float y, const char *fmt, ...);
+
+}												<font class="theme">// Close The Namespace</font>
+
+#endif
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+And that's the end of the header file! Time to open up freetype.cpp.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// Include Our Header File.</font>
+#include "freetype.h"
+
+namespace freetype {
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">We
+are using textures to display each character in our font. OpenGL
+textures need to have dimensions that are powers of two, so we need to
+pad the font bitmaps created by FreeType to make them a legal size.
+That's why we need this function:
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// This Function Gets The First Power Of 2 &gt;= The</font>
+<font class="theme">// Int That We Pass It.</font>
+inline int next_p2 (int a )
+{
+	int rval=1;
+	<font class="theme">// rval&lt;&lt;=1 Is A Prettier Way Of Writing rval*=2; </font>
+	while(rval&lt;a) rval&lt;&lt;=1;
+	return rval;
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">The
+next function that we need is make_dlist, it is really the heart of
+this code. It takes in an FT_Face, which is an object that FreeType
+uses to store information about a font, and creates a display list
+coresponding to the character which we pass in.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// Create A Display List Corresponding To The Given Character.</font>
+void make_dlist ( FT_Face face, char ch, GLuint list_base, GLuint * tex_base ) {
+
+	<font class="theme">// The First Thing We Do Is Get FreeType To Render Our Character</font>
+	<font class="theme">// Into A Bitmap.  This Actually Requires A Couple Of FreeType Commands:</font>
+
+	<font class="theme">// Load The Glyph For Our Character.</font>
+	if(FT_Load_Glyph( face, FT_Get_Char_Index( face, ch ), FT_LOAD_DEFAULT ))
+		throw std::runtime_error("FT_Load_Glyph failed");
+
+	<font class="theme">// Move The Face's Glyph Into A Glyph Object.</font>
+	FT_Glyph glyph;
+	if(FT_Get_Glyph( face-&gt;glyph, &amp;glyph ))
+		throw std::runtime_error("FT_Get_Glyph failed");
+
+	<font class="theme">// Convert The Glyph To A Bitmap.</font>
+	FT_Glyph_To_Bitmap( &amp;glyph, ft_render_mode_normal, 0, 1 );
+	FT_BitmapGlyph bitmap_glyph = (FT_BitmapGlyph)glyph;
+
+	<font class="theme">// This Reference Will Make Accessing The Bitmap Easier.</font>
+	FT_Bitmap&amp; bitmap=bitmap_glyph-&gt;bitmap;
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Now
+that we have a bitmap created by FreeType, we need to pad it with empty
+pixels to make it a legal source for an OpenGL texture. It's
+important to remember that while OpenGL uses the term "bitmap" to mean
+binary images, in FreeType bitmaps store 8 bits of information per
+pixel, so FreeType's bitmaps can store the grays that we need to create
+anti-aliased text.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Use Our Helper Function To Get The Widths Of</font>
+	<font class="theme">// The Bitmap Data That We Will Need In Order To Create</font>
+	<font class="theme">// Our Texture.</font>
+	int width = next_p2( bitmap.width );
+	int height = next_p2( bitmap.rows );
+
+	<font class="theme">// Allocate Memory For The Texture Data.</font>
+	GLubyte* expanded_data = new GLubyte[ 2 * width * height];
+
+	<font class="theme">// Here We Fill In The Data For The Expanded Bitmap.</font>
+	<font class="theme">// Notice That We Are Using A Two Channel Bitmap (One For</font>
+	<font class="theme">// Channel Luminosity And One For Alpha), But We Assign</font>
+	<font class="theme">// Both Luminosity And Alpha To The Value That We</font>
+	<font class="theme">// Find In The FreeType Bitmap. </font>
+	<font class="theme">// We Use The ?: Operator To Say That Value Which We Use</font>
+	<font class="theme">// Will Be 0 If We Are In The Padding Zone, And Whatever</font>
+	<font class="theme">// Is The FreeType Bitmap Otherwise.</font>
+	for(int j=0; j &lt;height;j++) {
+		for(int i=0; i &lt; width; i++){
+			expanded_data[2*(i+j*width)]= expanded_data[2*(i+j*width)+1] = 
+				(i&gt;=bitmap.width || j&gt;=bitmap.rows) ?
+				0 : bitmap.buffer[i + bitmap.width*j];
+		}
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">With
+the padding done, we can get onto creating the OpenGL texture. We are
+including an alpha channel so that the black parts of the
+bitmap will be transparent, and so that the edges of the text will be
+slightly translucent (which should make them look right against
+any background).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Now We Just Setup Some Texture Parameters.</font>
+	glBindTexture( GL_TEXTURE_2D, tex_base[ch]);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+
+	<font class="theme">// Here We Actually Create The Texture Itself, Notice</font>
+	<font class="theme">// That We Are Using GL_LUMINANCE_ALPHA To Indicate That</font>
+	<font class="theme">// We Are Using 2 Channel Data.</font>
+	glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0,
+		GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, expanded_data );
+
+	<font class="theme">// With The Texture Created, We Don't Need The Expanded Data Anymore.</font>
+	delete [] expanded_data;
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">We
+use texture mapped quads to draw our text. This means that it will be
+easy to rotate and scale text, and it will also make fonts inherit
+their color from the current OpenGL color (none of which would be true
+if we used pixmaps).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Now We Create The Display List</font>
+	glNewList(list_base+ch,GL_COMPILE);
+
+	glBindTexture(GL_TEXTURE_2D,tex_base[ch]);
+
+	glPushMatrix();
+
+	<font class="theme">// First We Need To Move Over A Little So That</font>
+	<font class="theme">// The Character Has The Right Amount Of Space</font>
+	<font class="theme">// Between It And The One Before It.</font>
+	glTranslatef(bitmap_glyph-&gt;left,0,0);
+
+	<font class="theme">// Now We Move Down A Little In The Case That The</font>
+	<font class="theme">// Bitmap Extends Past The Bottom Of The Line </font>
+	<font class="theme">// This Is Only True For Characters Like 'g' Or 'y'.</font>
+	glTranslatef(0,bitmap_glyph-&gt;top-bitmap.rows,0);
+
+	<font class="theme">// Now We Need To Account For The Fact That Many Of</font>
+	<font class="theme">// Our Textures Are Filled With Empty Padding Space.</font>
+	<font class="theme">// We Figure What Portion Of The Texture Is Used By </font>
+	<font class="theme">// The Actual Character And Store That Information In</font>
+	<font class="theme">// The x And y Variables, Then When We Draw The</font>
+	<font class="theme">// Quad, We Will Only Reference The Parts Of The Texture</font>
+	<font class="theme">// That Contains The Character Itself.</font>
+	float   x=(float)bitmap.width / (float)width,
+	y=(float)bitmap.rows / (float)height;
+
+	<font class="theme">// Here We Draw The Texturemapped Quads.</font>
+	<font class="theme">// The Bitmap That We Got From FreeType Was Not </font>
+	<font class="theme">// Oriented Quite Like We Would Like It To Be,</font>
+	<font class="theme">// But We Link The Texture To The Quad</font>
+	<font class="theme">// In Such A Way That The Result Will Be Properly Aligned.</font>
+	glBegin(GL_QUADS);
+	glTexCoord2d(0,0); glVertex2f(0,bitmap.rows);
+	glTexCoord2d(0,y); glVertex2f(0,0);
+	glTexCoord2d(x,y); glVertex2f(bitmap.width,0);
+	glTexCoord2d(x,0); glVertex2f(bitmap.width,bitmap.rows);
+	glEnd();
+	glPopMatrix();
+	glTranslatef(face-&gt;glyph-&gt;advance.x &gt;&gt; 6 ,0,0);
+
+	<font class="theme">// Increment The Raster Position As If We Were A Bitmap Font.</font>
+	<font class="theme">// (Only Needed If You Want To Calculate Text Length)</font>
+	<font class="theme">// glBitmap(0,0,0,0,face-&gt;glyph-&gt;advance.x &gt;&gt; 6,0,NULL);</font>
+
+	<font class="theme">// Finish The Display List</font>
+	glEndList();
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">The
+next function that we are going to create will use make_dlist to create
+a set of display lists corresponding to a given font file and
+pixel height.
+<br><br>FreeType uses truetype fonts, so you will want to find
+yourself some truetype font files to feed into this function. Truetype
+font files
+are very common, and there are a bunch of sites out there where you can
+download lots of different truetype fonts for free. Windows 98
+used truetype for nearly all of it's fonts, so if you can find an old
+computer running windows98, you can get all of the standard fonts
+in truetype format from its windows/fonts directory.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void font_data::init(const char * fname, unsigned int h) {
+	<font class="theme">// Allocate Some Memory To Store The Texture Ids.</font>
+	textures = new GLuint[128];
+
+	this-&gt;h=h;
+
+	<font class="theme">// Create And Initilize A FreeType Font Library.</font>
+	FT_Library library;
+	if (FT_Init_FreeType( &amp;library )) 
+		throw std::runtime_error("FT_Init_FreeType failed");
+
+	<font class="theme">// The Object In Which FreeType Holds Information On A Given</font>
+	<font class="theme">// Font Is Called A "face".</font>
+	FT_Face face;
+
+	<font class="theme">// This Is Where We Load In The Font Information From The File.</font>
+	<font class="theme">// Of All The Places Where The Code Might Die, This Is The Most Likely,</font>
+	<font class="theme">// As FT_New_Face Will Fail If The Font File Does Not Exist Or Is Somehow Broken.</font>
+	if (FT_New_Face( library, fname, 0, &amp;face )) 
+		throw std::runtime_error("FT_New_Face failed (there is probably a problem with your font file)");
+
+	<font class="theme">// For Some Twisted Reason, FreeType Measures Font Size</font>
+	<font class="theme">// In Terms Of 1/64ths Of Pixels.  Thus, To Make A Font</font>
+	<font class="theme">// h Pixels High, We Need To Request A Size Of h*64.</font>
+	<font class="theme">// (h &lt;&lt; 6 Is Just A Prettier Way Of Writing h*64)</font>
+	FT_Set_Char_Size( face, h &lt;&lt; 6, h &lt;&lt; 6, 96, 96);
+
+	<font class="theme">// Here We Ask OpenGL To Allocate Resources For</font>
+	<font class="theme">// All The Textures And Display Lists Which We</font>
+	<font class="theme">// Are About To Create.  </font>
+	list_base=glGenLists(128);
+	glGenTextures( 128, textures );
+
+	<font class="theme">// This Is Where We Actually Create Each Of The Fonts Display Lists.</font>
+	for(unsigned char i=0;i&lt;128;i++)
+		make_dlist(face,i,list_base,textures);
+
+	<font class="theme">// We Don't Need The Face Information Now That The Display</font>
+	<font class="theme">// Lists Have Been Created, So We Free The Assosiated Resources.</font>
+	FT_Done_Face(face);
+
+	<font class="theme">// Ditto For The Font Library.</font>
+	FT_Done_FreeType(library);
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we need a function to cleanup all the displaylist and textures associated with a font.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void font_data::clean() {
+	glDeleteLists(list_base,128);
+	glDeleteTextures(128,textures);
+	delete [] textures;
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Here
+are two little functions that we are going to define in anticipation of
+our print function. The print function is going to want to
+think in pixel coordinates (also called window coordinates), so we are
+going to need to switch to a projection matrix that makes
+everything measured in pixel coordinates.
+<br><br>We are using two very handy OpenGL functions here, glGet to
+get the window dimensions, and glPush / PopAttrib to make sure that
+leave
+the matrix mode in the same state as we found it. If you are not
+familiar with these functions, it's probably worth your time to look
+them up in your favorite OpenGL reference manual.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// A Fairly Straightforward Function That Pushes</font>
+<font class="theme">// A Projection Matrix That Will Make Object World </font>
+<font class="theme">// Coordinates Identical To Window Coordinates.</font>
+inline void pushScreenCoordinateMatrix() {
+	glPushAttrib(GL_TRANSFORM_BIT);
+	GLint   viewport[4];
+	glGetIntegerv(GL_VIEWPORT, viewport);
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	gluOrtho2D(viewport[0],viewport[2],viewport[1],viewport[3]);
+	glPopAttrib();
+}
+
+<font class="theme">// Pops The Projection Matrix Without Changing The Current</font>
+<font class="theme">// MatrixMode.</font>
+inline void pop_projection_matrix() {
+	glPushAttrib(GL_TRANSFORM_BIT);
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glPopAttrib();
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Our
+printing function looks very much like the one from lesson 13, but
+there are a couple of important differences. The OpenGL enable flags
+that we set are different, which reflects the fact that we are actually
+using 2 channel textures rather than bitmaps. We also do a little
+extra processing on the line of text that we get in order to properly
+handle newlines. Because we are such good samaritans, we take care
+to use OpenGL's matrix and attribute stacks to ensure that the function
+undoes any changes that it makes to OpenGL's internal state (this
+will prevent anyone using the function from suddenly finding that, say,
+the modelview matrix had mysteriously changed).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// Much Like NeHe's glPrint Function, But Modified To Work</font>
+<font class="theme">// With FreeType Fonts.</font>
+void print(const font_data &amp;ft_font, float x, float y, const char *fmt, ...)  {
+        
+	<font class="theme">// We Want A Coordinate System Where Distance Is Measured In Window Pixels.</font>
+	pushScreenCoordinateMatrix();                                   
+        
+	GLuint font=ft_font.list_base;
+	<font class="theme">// We Make The Height A Little Bigger.  There Will Be Some Space Between Lines.</font>
+	float h=ft_font.h/.63f;                                                 
+	char	text[256];									<font class="theme">// Holds Our String</font>
+	va_list	ap;										<font class="theme">// Pointer To List Of Arguments</font>
+
+	if (fmt == NULL)									<font class="theme">// If There's No Text</font>
+		*text=0;									<font class="theme">// Do Nothing</font>
+	else {
+		va_start(ap, fmt);								<font class="theme">// Parses The String For Variables</font>
+		vsprintf(text, fmt, ap);							<font class="theme">// And Converts Symbols To Actual Numbers</font>
+		va_end(ap);									<font class="theme">// Results Are Stored In Text</font>
+	}
+
+	<font class="theme">// Here Is Some Code To Split The Text That We Have Been</font>
+	<font class="theme">// Given Into A Set Of Lines.  </font>
+	<font class="theme">// This Could Be Made Much Neater By Using</font>
+	<font class="theme">// A Regular Expression Library Such As The One Available From</font>
+	<font class="theme">// boost.org (I've Only Done It Out By Hand To Avoid Complicating</font>
+	<font class="theme">// This Tutorial With Unnecessary Library Dependencies).</font>
+	const char *start_line=text;
+	vector&lt;string&gt; lines;
+	for(const char *c=text;*c;c++) {
+		if(*c=='\n') {
+			string line;
+			for(const char *n=start_line;n&lt;c;n++) line.append(1,*n);
+			lines.push_back(line);
+			start_line=c+1;
+		}
+	}
+	if(start_line) {
+		string line;
+		for(const char *n=start_line;n&lt;c;n++) line.append(1,*n);
+		lines.push_back(line);
+	}
+
+	glPushAttrib(GL_LIST_BIT | GL_CURRENT_BIT  | GL_ENABLE_BIT | GL_TRANSFORM_BIT); 
+	glMatrixMode(GL_MODELVIEW);
+	glDisable(GL_LIGHTING);
+	glEnable(GL_TEXTURE_2D);
+	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);      
+
+	glListBase(font);
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Because
+we are using texture mapped quads, any transformations that we apply to
+the modelview matrix before making our glCallLists call
+will apply to the text itself. This means that there is the potential
+to rotate or scale the text (another advantage over using WGL bitmaps).
+The most natural way to take advantage of this fact would be to leave
+the current modelview matrix alone, thus letting any transformation
+made before the print function apply to the text. But because of the
+way that we are using the modelview matrix to set font position, this
+won't work. Our next best option is to save a copy of the modelview
+matrix that is passed in, and apply it between the glTranslate and the
+glCallLists. This is easy enough to do, but because we need to draw the
+text using a special projection matrix the effects of the modelview
+matrix will be a little different than one might expect- everything
+will be will be interpreted on scale of pixels. We could get around
+this
+issue entirely by not resetting the projection matrix inside of print.
+This is probably a good idea in some situations - but if you try it
+make sure to scale the fonts to an appropriate size (they tend to be
+something like 32x32, and you probably want something on the order of
+0.01x0.01).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	float modelview_matrix[16];     
+	glGetFloatv(GL_MODELVIEW_MATRIX, modelview_matrix);
+
+	<font class="theme">// This Is Where The Text Display Actually Happens.</font>
+	<font class="theme">// For Each Line Of Text We Reset The Modelview Matrix</font>
+	<font class="theme">// So That The Line's Text Will Start In The Correct Position.</font>
+	<font class="theme">// Notice That We Need To Reset The Matrix, Rather Than Just Translating</font>
+	<font class="theme">// Down By h. This Is Because When Each Character Is</font>
+	<font class="theme">// Drawn It Modifies The Current Matrix So That The Next Character</font>
+	<font class="theme">// Will Be Drawn Immediately After It.  </font>
+	for(int i=0;i&lt;lines.size();i++) {
+		glPushMatrix();
+		glLoadIdentity();
+		glTranslatef(x,y-h*i,0);
+		glMultMatrixf(modelview_matrix);
+
+	<font class="theme">// The Commented Out Raster Position Stuff Can Be Useful If You Need To</font>
+	<font class="theme">// Know The Length Of The Text That You Are Creating.</font>
+	<font class="theme">// If You Decide To Use It Make Sure To Also Uncomment The glBitmap Command</font>
+	<font class="theme">// In make_dlist().</font>
+		<font class="theme">// glRasterPos2f(0,0);</font>
+		glCallLists(lines[i].length(), GL_UNSIGNED_BYTE, lines[i].c_str());
+		<font class="theme">// float rpos[4];</font>
+		<font class="theme">// glGetFloatv(GL_CURRENT_RASTER_POSITION ,rpos);</font>
+		<font class="theme">// float len=x-rpos[0]; (Assuming No Rotations Have Happend)</font>
+
+		glPopMatrix();
+	}
+
+	glPopAttrib();          
+
+	pop_projection_matrix();
+}
+
+}												<font class="theme">// Close The Namespace</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">The
+library is now finished. Open up lesson13.cpp and we will make some
+minor modifications to show off the functions we just wrote.
+<br><br>
+Underneth the other headers, add in the freetype.h header.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>#include "freetype.h"										<font class="theme">// Header For Our Little Font Library.</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+And while we are here, let's create a global font_data object.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// This Holds All The Information For The Font That We Are Going To Create.</font>
+freetype::font_data our_font;
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we need to see about creating and destroying the resources for our font. So add the following line to the end of InitGL
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>our_font.init("Test.ttf", 16);									<font class="theme">// Build The FreeType Font</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+And add this line to the start of KillGLWindow to destroy the font when we are finished.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>our_font.clean();
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Now
+we need to modify the function DrawGLScene function so that it uses our
+print function. This could have been as simple to adding a
+single line "hello world" command to the end of the function, but I got
+a little more creative because I wanted to show off rotations
+and scaling.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int DrawGLScene(GLvoid)										<font class="theme">// Here's Where We Do All The Drawing</font>
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);					<font class="theme">// Clear Screen And Depth Buffer</font>
+	glLoadIdentity();									<font class="theme">// Reset The Current Modelview Matrix</font>
+	glTranslatef(0.0f,0.0f,-1.0f);								<font class="theme">// Move One Unit Into The Screen</font>
+
+	<font class="theme">// Blue text</font>
+	glColor3ub(0,0,0xff);
+
+	<font class="theme">// Position the WGL Text On The Screen</font>
+	glRasterPos2f(-0.40f, 0.35f);
+ 	glPrint("Active WGL Bitmap Text With NeHe - %7.2f", cnt1);	<font class="theme">// Print GL Text To The Screen</font>
+
+	<font class="theme">// Here We Print Some Text Using Our Freetype Font</font>
+	<font class="theme">// The Only Really Important Command Is The Actual Print() Call,</font>
+	<font class="theme">// But For The Sake Of Making The Results A Bit More Interesting</font>
+	<font class="theme">// I Have Put In Some Code To Rotate And Scale The Text.</font>
+
+	<font class="theme">// Red Text</font>
+	glColor3ub(0xff,0,0);
+
+	glPushMatrix();
+	glLoadIdentity();
+	glRotatef(cnt1,0,0,1);
+	glScalef(1,.8+.3*cos(cnt1/5),1);
+	glTranslatef(-180,0,0);
+	freetype::print(our_font, 320, 200, "Active FreeType Text - %7.2f", cnt1);
+	glPopMatrix();
+
+	<font class="theme">// Uncomment This To Test Out Print's Ability To Handle Newlines.</font>
+	<font class="theme">// freetype::print(our_font, 320, 200, "Here\nthere\nbe\n\nnewlines\n.", cnt1);</font>
+
+	cnt1+=0.051f;										<font class="theme">// Increase The First Counter</font>
+	cnt2+=0.005f;										<font class="theme">// Increase The First Counter</font>
+	return TRUE;										<font class="theme">// Everything Went OK</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">The
+last thing to do is put in a little exception handling code. Go to
+WinMain and open up a try { .. } statement at the beginning of the
+function.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	MSG	msg;										<font class="theme">// Windows Message Structure</font>
+	BOOL	done=FALSE;									<font class="theme">// Bool Variable To Exit Loop</font>
+
+	try {											<font class="theme">// Use Exception Handling</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Then modify the end of the function to have a catch {} command.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Shutdown</font>
+	KillGLWindow();										<font class="theme">// Kill The Window</font>
+
+	<font class="theme">// Catch Any Exceptions That Were Thrown</font>
+	} catch (std::exception &amp;e) {
+		MessageBox(NULL,e.what(),"CAUGHT AN EXCEPTION",MB_OK | MB_ICONINFORMATION);
+	}
+
+	return (msg.wParam);									<font class="theme">// Exit The Program</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Now
+if we ever hit an exception, we will get a little message box telling
+us what happened. Note that exception handling can slow down your
+code, so when you are compiling a release version of your program, you
+may want to go to Project-&gt;Settings-&gt;C/C++, switch to the
+"C++ Language" category, and turn off exception handling.
+<br><br>So that's it! Compile the program and you should see some nice
+FreeType rendered text moving around underneath the original bitmapped
+text
+from lesson 13.
+<br><br>
+<b><u>General Notes</u></b>
+<br><br>
+<b>I have been keeping track of all known bugs in this tutorial, please take a look at the <a href="http://www.cs.northwestern.edu/%7Esco590/fonts_tutorial.html">errata</a>.</b>
+<br><br>There are a number of improvements that you might want to make
+to this library. For one thing using the font data objects directly
+tends to
+be a little awkward, so you might want to create a standard cache of
+fonts to hide font resource management from users. You might also want
+to take a tip from the OpenGL library itself and create a font stack,
+which would let you avoid passing in references to font objects each
+time you called the print function. (These are all things that I
+currently do things in my own code, but decided to leave out of the
+tutorial
+for the sake of simplicity.) You might also want to make a version of
+print that centers the text- to do that you will probably need to use
+the techniques discussed below.
+<br><br>Right now I have the text spinning around it's center.
+However, to get an effect like this to work for arbitrary text, you
+would need to
+have some way of knowing exactly how long the line of text was - this
+can be a little tricky. One way to get the length of the text is to
+put glBitmap commands into the font's display lists in order modify the
+raster position as well as the modelview matrix (I've left the
+necessary line in the code, but it is commented out). Then you can set
+the raster position to x,y before using glCallLists, and use glGet
+to find the raster position after the text is drawn - the difference in
+raster positions will give you the length of the text in pixels.
+<br><br>You should be aware that FreeType fonts take up much more
+memory than WGL's bitmap fonts (that's one the advantages of binary
+images, they
+use very little space). If for some reason you really need to conserve
+your texture memory, you might want to stick with the code from
+lesson 13.
+<br><br>Another interesting advantage of using texture mapped quads to
+represent fonts is that quads, unlike bitmaps, work well with the
+OpenGL
+picking functions (see <a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=32" target="_blank">Lesson 32</a>
+). This makes life much easier if you want to create
+text that responds when someone holds the mouse over it or clicks on
+it. (Making WGL fonts work well with picking functions is possible,
+again the key trick is to use raster coordinates to figure out the
+length of the text in pixels).
+<br><br>And finally, here are some links to OpenGL font libraries.
+Depending on your goals and compiler you may want to use one of them
+instead
+of this code (there are many more of them out there, I've generally
+only included things that I have some amount of experience with
+myself).
+<br><br>
+GLTT This library is an old library that doesn't seem to still be maintained, but it has gotten some very positive reviews.
+Based on FreeType1. I think you will need to find a copy of the old FreeType1 source distribution to compile it in MSVC6.
+Download available from
+<a href="http://www.opengl.org/developers/faqs/technical/fonts.htm" target="_blank">http://www.opengl.org/developers/faqs/technical/fonts.htm</a>.
+<br><br>OGLFT A nice FreeType2 based font library, it takes a bit of
+work to compile under MSVC though (mostly just typical for-loop scope
+problems). Seems to be targeted at linux machines... <a href="http://oglft.sourceforge.net/" target="_blank">http://oglft.sourceforge.net</a>.
+<br><br>
+FTGL Yet a third FreeType based font library, this one was clearly developed for OS X.
+<a href="http://homepages.paradise.net.nz/henryj/code/#FTGL" target="_blank">http://homepages.paradise.net.nz/henryj/code/#FTGL</a>.
+<br><br>
+FNT A non-FreeType library that is part of PLIB. Seems to have a nice
+interface, uses its own font format, compiles under MSVC6 with a
+minimum amount of fuss... <a href="http://plib.sourceforge.net/fnt" target="_blank">http://plib.sourceforge.net/fnt</a>.
+<br><br>
+<b><a href="http://www.sccs.swarthmore.edu/users/03/sven" target="_blank">Sven Olsen</a></b>
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vc/lesson43.zip">Visual C++</a> Code For This Lesson.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/bcb6/lesson43_bcb6.zip">Borland C++ Builder 6</a> Code For This Lesson. ( Conversion by <a href="mailto:galileo_m2@hotmail.com">Galileo Sjodin</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cwarrior/lesson43.zip">Code Warrior 5.3</a> Code For This Lesson. ( Conversion by <a href="mailto:DelusionalBeing@hotmail.com">Scott Lupton</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/devc/lesson43.zip">Dev C++</a> Code For This Lesson. ( Conversion by <a href="mailto:wudan@sisna.com">mt-Wudan</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxsdl/lesson43.tar.gz">Linux/SDL</a> Code For This Lesson. ( Conversion by <a href="mailto:agraves@bu.edu">Aaron Graves</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/python/lesson43.tar.gz">Python</a> Code For This Lesson. ( Conversion by <a href="mailto:bleair@comcast.net">Brian Leair</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vs_net/lesson43.zip">Visual Studio .NET</a> Code For This Lesson. ( Conversion by <a href="mailto:webmaster@joachimrohde.de">Joachim Rohde</a> )<br>
+<br><br>
+<table border="0" width="100%">
+<tbody><tr><td align="left" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=42">&lt; Lesson 42</a></font></b></td>
+<td align="right" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=44">Lesson 44 &gt;</a></font></b></td>
+</tr></tbody></table>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table>
+
+</body></html>

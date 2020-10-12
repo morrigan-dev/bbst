@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+   "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+>
+  <title>Figure of the Inheritance Tree</title>
+
+  <g font-family="Verdana, Verdana, Helvetica, Arial, sans-serif" font-size="10pt">
+
+    <g>
+      <a xlink:href="Record_TConfig.html">
+        <rect x="0" y="0" width="70" height="29" rx="5" fill="white" stroke="black" stroke-width="2" />
+      </a>
+      <text x="35" y="18" text-anchor="middle">TConfig</text>
+    </g>
+
+  </g>
+</svg>

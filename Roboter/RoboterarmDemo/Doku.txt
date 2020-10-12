@@ -1,0 +1,61 @@
+Abschluss Projekt "Roboterarm"
+
+Hiermit möchten wir (Thomas Gattinger, Thomas Rittinger, Frédéric Nickol) unser Abschlussprojekt
+für das erste Lehrjahr im Lernfeld 6 vorstellen.
+
+Unser Projekt stellt ein in OpenGl realisiertes 3D-Modell des ARO-Roboterarms dar.
+Auf die Idee für dieses Projekt kamen wir recht früh im Laufe des ersten Lehrjahres, da Herr
+Wintgen uns erzählte wie vorteilhaft eine Visualisierung des Roboterarms wäre.
+
+
+Nach einer langen Suche nach geeigneten OpenGl-Tutorials und einigen vergeblich Versuchen
+stieß Thomas Rittinger auf folgende Seite: http://wiki.delphigl.com/index.php/Hauptseite
+Dort sind einige sehr gute Tutorials vorhanden, sowie eine eigene OpenGl-Lib, welche wir
+dann auch für das Projekt verwendeten.
+
+Zu Beginn wurde natürlich viel ausprobiert, beispielsweise welche Elemente am besten geeignet
+sind für den Aufbau des Arms. So befanden wir relativ schnell dass sich Zylinder am besten
+dafür eignen würden. Daraufhin begannen wir an einem Projekt und versuchten uns an die Eigenheiten
+von OpenGl zu gewöhnen bzw. diese zu verstehen.
+
+Erste größere Probleme traten bei den Rotationen der einzelnen Elemente auf. Die Rotation in OpenGl
+wird nicht durch das Drehen des Objekts, sondern durch das Rotieren des Betrachters um das Objekt
+bewerkstelligt. Dies führte zu einiger Verwirrung. Desweiteren erwies es sich als umständlich
+Elemente in Abhängigkeit von anderen Elementen rotieren zu lassen. 
+
+Das anfängliche Testprojekt entwickelte sich nun immer weiter und wurde schließlich 
+das Hauptprojekt. Nur war es auch durch diese Tatsache nicht sonderlich gut strukturiert.
+Thomas Gattinger nahm sich dann zum Ziel das ganze Projekt zu strukturieren, einige Fehler auszubessern
+und es als eigene Delphi-Komponente zu realisieren.
+
+
+Wie in dem Projekt zu sehen wird der Arm durch 6 Schieberegler gesteuert.
+
+	Servo 0	 : Lässt den Deckel des Standfußes rotieren. Abhänghig davon werden die restlichen 
+		   Elemente ebenfalls gedreht.
+
+	Servo 1&2: Dieser regler "kippt" den Arm nach vorne bzw. hinten.
+
+	Servo 3	 : Das Gelenk am Ende des ersten Armelements wird gedreht. Der Arm "öffnet" bzw.
+		   "schliesst" sich.
+
+	Servo 4	 : Die Greifhand wird gekippt.
+
+	Servo 5	 : Die Greifhand wird um die eigene Achse gedreht.
+
+	Servo 6	 : Hiermit wird die "Hand" geöffnet bzw. geschlossen.
+
+Außerdem können die minimale wie maximale Gradzahl angegeben werden. Dadurch kann der Arm
+in seiner Beweglichkeit eingeschränkt werden. Dies ist für die Simulation an sich wichtig,
+da der original Arm sich ja auch nicht überall um 360° drehen kann und außerdem da bisher
+noch keine Kollisionsabfrage implementiert ist.
+
+Desweiteren können noch einige Extras hinzugeschaltet werden.
+
+	Zeige Koordinatensystem			: Die X-, Y- und Z-Achse werden zur Orientierung angezeigt.
+	Zeige geometrischen Objektmittelpunkt	: Der Mittelpunkt eines jeden Objektes wird angezeigt.
+						  Dies ist gleichzeitig der Mittelpunkt der objekteigenen Matrix.
+	Zeige Rotationsmakierung		: Hilfspfeile werden eingeblendet, an denen es leichter ersichtlich
+						  ist in welche Richtung sich das Element dreht.
+	Deaktiviere Texturen			: Die voreingestellten Texturen werden ausgeblendet und der 
+						  Roboterarm als Gitternetz angezeigt.

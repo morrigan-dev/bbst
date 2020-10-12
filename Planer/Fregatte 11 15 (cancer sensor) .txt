@@ -1,0 +1,50 @@
+Schiffstyp: Fregatte (Typ 32)
+Techlevel: 11
+Module: 15
+Kommandopunkte: 20
+Angriffswert: 181
+Schilde: 318
+Panzerung: 1144
+Struktur: 106
+Wendigkeit: 466
+Reaktor: 326
+Laderaum: 0
+Sensor: 38
+Tarnung: 5
+Min Crew: 94
+Max Crew: 129
+Sprung Sektor: 15
+Sprung-Zeit: 56
+Angriffs-Zeit: 10
+Angriffsenergie: 19
+
+Kampfwert (Taktik 100): 514,41
+KW/KP: 45,600
+AW/KP: 9,050
+Sch/P: 0,28
+
+Verwendete Forschungen: 
+1x Ionenverhalten (Lvl 27)
+7x Kybernetik (Lvl 22)
+3x Leiterbahnen (Lvl 34)
+2x Photovoltaik (Lvl 34)
+2x Kybernetik (Lvl 31)
+
+Baukosten: 
+Iso: 6
+Eg: 42
+Es: 55
+Rad: 155
+Em: 465
+Sm: 400
+Lm: 1060
+Fe: 980
+Syn: 230
+Org: 1300
+Erz: 0
+Rek: 0
+Nrg: 3150
+Cr: 4045
+
+verbesserte Variante:
+http://x-clan.whitestarprogramming.de/?tradeportal&do=bp&venad=MysticX&ship=2&type=31&mods=4,17,1;4,28,1;15,34,3;21,31,1;21,22,7;8,34,2;

@@ -1,0 +1,549 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+<title>NeHe Productions: OpenGL Lesson #20</title>
+<meta name="author" content="Jeff Molofee">
+<meta name="description" content="OpenGL Tutorials, Demos, Games and More...">
+<meta name="keywords" content="opengl, tutorial, article, demo, game, blend, texturemap, lighting, contest, 3D">
+<link rel="stylesheet" type="text/css" href="lesson.asp-Dateien/rgb.css">
+</head><body bgcolor="black" link="#aaccff" text="white" vlink="#aaccff">
+
+<table border="0" width="100%"><tbody><tr><td align="center">
+<!-- Begin -  Site: GameDev.net Zone: NeHe 728x90 -->
+<script language="javascript" type="text/javascript">
+<!--
+var browName = navigator.appName;
+var SiteID = 1;
+var ZoneID = 4;
+var browDateTime = (new Date()).getTime();
+if (browName=='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;Browser=NETSCAPE4&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+if (browName!='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+// --> 
+</script><script language="javascript" src="lesson.asp-Dateien/a.js"></script><script type="text/javascript"><!--
+google_ad_client = "pub-3167291168602081";
+google_alternate_ad_url = "http://www.gamedev.net/banman/banman.asp?ZoneID=21&Task=Get";
+google_ad_width = 728;
+google_ad_height = 90;
+google_ad_format = "728x90_as";
+google_ad_type = "text_image";
+google_ad_channel ="";
+google_color_border = "336699";
+google_color_bg = "FFFFFF";
+google_color_link = "0000FF";
+google_color_url = "008000";
+google_color_text = "000000";
+//--></script>
+<script type="text/javascript" src="lesson.asp-Dateien/show_ads.js">
+</script>
+<noscript> <a
+href="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Click&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+target="_blank"> <img
+src="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Get&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+width="728" height="90" border="0" alt=""></a>
+</noscript>
+<!-- End -  Site: GameDev.net Zone: NeHe 728x90 --></td></tr></tbody></table><br>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tinylogo" height="130" width="326"><img src="lesson.asp-Dateien/blank.gif" alt="NeHe Productions" height="130" width="326"></td><td class="indexheading" align="center" valign="middle"><font class="text"><font class="theme" size="+3"><b><i>Lesson: 20</i></b></font></font></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Welcome to Tutorial 20.  The bitmap image format is supported on just about every computer, and
+just about every operating system.  Not only is it easy to work with, it's very easy to load and
+use as a texture.  Up until now, we've been using blending to place text and other images onto
+the screen without erasing what's underneath the text or image.  This is effective, but the
+results are not always pretty.
+<br><br>
+Most the time a blended texture blends in too much or not enough.  When making a game using
+sprites, you don't want the scene behind your character shining through the characters body.
+When writing text to the screen you want the text to be solid and easy to read.
+<br><br>
+That's where masking comes in handy.  Masking is a two step process.  First we place a black
+and white image of our texture on top of the scene.  The white represents the transparent part
+of our texture.  The black represents the solid part of our texture.  Because of the type of
+blending we use, only the black will appear on the scene.  Almost like a cookie cutter effect.
+Then we switch blending modes, and map our texture on top of the black cut out.  Again, because
+of the blending mode we use, the only parts of our texture that will be copied to the screen are
+the parts that land on top of the black mask.
+<br><br>
+I'll rewrite the entire program in this tutorial aside from the sections that haven't changed.
+So if you're ready to learn something new, let's begin!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>#include &lt;windows.h&gt;								<font class="theme">// Header File For Windows</font>
+#include &lt;math.h&gt;								<font class="theme">// Header File For Windows Math Library</font>
+#include &lt;stdio.h&gt;								<font class="theme">// Header File For Standard Input/Output</font>
+#include &lt;gl\gl.h&gt;								<font class="theme">// Header File For The OpenGL32 Library</font>
+#include &lt;gl\glu.h&gt;								<font class="theme">// Header File For The GLu32 Library</font>
+#include &lt;gl\glaux.h&gt;								<font class="theme">// Header File For The Glaux Library</font>
+
+HDC		hDC=NULL;							<font class="theme">// Private GDI Device Context</font>
+HGLRC		hRC=NULL;							<font class="theme">// Permanent Rendering Context</font>
+HWND		hWnd=NULL;							<font class="theme">// Holds Our Window Handle</font>
+HINSTANCE	hInstance;							<font class="theme">// Holds The Instance Of The Application</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We'll be using 7 global variables in this program.  masking is a boolean variable
+(TRUE / FALSE) that will keep track of whether or not masking is turned on of off.  mp is
+used to make sure that the 'M' key isn't being held down.  sp is used to make sure that
+the 'Spacebar' isn't being held down and the variable scene will keep track of whether or
+not we're drawing the first or second scene.
+<br><br>
+We set up storage space for 5 textures using the variable texture[5].  loop is our
+generic counter variable, we'll use it a few times in our program to set up textures, etc.
+Finally we have the variable roll.   We'll use roll to roll the textures across the
+screen.  Creates a neat effect!  We'll also use it to spin the object in scene 2.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>bool	keys[256];								<font class="theme">// Array Used For The Keyboard Routine</font>
+bool	active=TRUE;								<font class="theme">// Window Active Flag Set To TRUE By Default</font>
+bool	fullscreen=TRUE;							<font class="theme">// Fullscreen Flag Set To Fullscreen Mode By Default</font>
+bool	masking=TRUE;								<font class="theme">// Masking On/Off</font>
+bool	mp;									<font class="theme">// M Pressed?</font>
+bool	sp;									<font class="theme">// Space Pressed?</font>
+bool	scene;									<font class="theme">// Which Scene To Draw</font>
+
+GLuint	texture[5];								<font class="theme">// Storage For Our Five Textures</font>
+GLuint	loop;									<font class="theme">// Generic Loop Variable</font>
+
+GLfloat	roll;									<font class="theme">// Rolling Texture</font>
+
+LRESULT	CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);				<font class="theme">// Declaration For WndProc</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The load bitmap code hasn't changed.  It's the same as it was in lesson 6, etc.
+<br><br>
+In the code below we create storage space for 5 images.  We clear the space and load in all 5
+bitmaps.  We loop through each image and convert it into a texture for use in our program.
+The textures are stored in texture[0-4].
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int LoadGLTextures()								<font class="theme">// Load Bitmaps And Convert To Textures</font>
+{
+	int Status=FALSE;							<font class="theme">// Status Indicator</font>
+	AUX_RGBImageRec *TextureImage[5];					<font class="theme">// Create Storage Space For The Texture Data</font>
+	memset(TextureImage,0,sizeof(void *)*5);				<font class="theme">// Set The Pointer To NULL</font>
+
+	if ((TextureImage[0]=LoadBMP("Data/logo.bmp")) &amp;&amp;			<font class="theme">// Logo Texture</font>
+	    (TextureImage[1]=LoadBMP("Data/mask1.bmp")) &amp;&amp;			<font class="theme">// First Mask</font>
+	    (TextureImage[2]=LoadBMP("Data/image1.bmp")) &amp;&amp;			<font class="theme">// First Image</font>
+	    (TextureImage[3]=LoadBMP("Data/mask2.bmp")) &amp;&amp;			<font class="theme">// Second Mask</font>
+	    (TextureImage[4]=LoadBMP("Data/image2.bmp")))			<font class="theme">// Second Image</font>
+	{
+		Status=TRUE;							<font class="theme">// Set The Status To TRUE</font>
+		glGenTextures(5, &amp;texture[0]);					<font class="theme">// Create Five Textures</font>
+
+		for (loop=0; loop&lt;5; loop++)					<font class="theme">// Loop Through All 5 Textures</font>
+		{
+			glBindTexture(GL_TEXTURE_2D, texture[loop]);
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+			glTexImage2D(GL_TEXTURE_2D, 0, 3, TextureImage[loop]-&gt;sizeX, TextureImage[loop]-&gt;sizeY,
+				0, GL_RGB, GL_UNSIGNED_BYTE, TextureImage[loop]-&gt;data);
+		}
+	}
+	for (loop=0; loop&lt;5; loop++)						<font class="theme">// Loop Through All 5 Textures</font>
+	{
+		if (TextureImage[loop])						<font class="theme">// If Texture Exists</font>
+		{
+			if (TextureImage[loop]-&gt;data)				<font class="theme">// If Texture Image Exists</font>
+			{
+				free(TextureImage[loop]-&gt;data);			<font class="theme">// Free The Texture Image Memory</font>
+			}
+			free(TextureImage[loop]);				<font class="theme">// Free The Image Structure</font>
+		}
+	}
+	return Status;								<font class="theme">// Return The Status</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The ReSizeGLScene() code hasn't changed so we'll skip over it.
+<br><br>
+The Init code is fairly bare bones.  We load in our textures, set the clear color, set and enable
+depth testing, turn on smooth shading, and enable texture mapping.  Simple program so no need for
+a complex init :)
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int InitGL(GLvoid)								<font class="theme">// All Setup For OpenGL Goes Here</font>
+{
+	if (!LoadGLTextures())							<font class="theme">// Jump To Texture Loading Routine</font>
+	{
+		return FALSE;							<font class="theme">// If Texture Didn't Load Return FALSE</font>
+	}
+
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);					<font class="theme">// Clear The Background Color To Black</font>
+	glClearDepth(1.0);							<font class="theme">// Enables Clearing Of The Depth Buffer</font>
+	glEnable(GL_DEPTH_TEST);						<font class="theme">// Enable Depth Testing</font>
+	glShadeModel(GL_SMOOTH);						<font class="theme">// Enables Smooth Color Shading</font>
+	glEnable(GL_TEXTURE_2D);						<font class="theme">// Enable 2D Texture Mapping</font>
+	return TRUE;								<font class="theme">// Initialization Went OK</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now for the fun stuff.  Our drawing code!  We start off the same as usual.  We clear the background
+color and the depth buffer.  Then we reset the modelview matrix, and translate into the screen
+2 units so that we can see our scene.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int DrawGLScene(GLvoid)								<font class="theme">// Here's Where We Do All The Drawing</font>
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);			<font class="theme">// Clear The Screen And The Depth Buffer</font>
+	glLoadIdentity();							<font class="theme">// Reset The Modelview Matrix</font>
+	glTranslatef(0.0f,0.0f,-2.0f);						<font class="theme">// Move Into The Screen 5 Units</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The first line below selects the 'logo' texture. We'll map the texture to the screen using a quad. We specify
+our four texture coordinates along with our four vertices.
+<br><br>
+Revised Description by Jonathan Roy:  Remember that OpenGL is a vertex-based graphic system. Most of the
+parameters you set are recorded as attributes of a particular vertex. Texture coordinate is one such attribute.
+You simply specify appropriate texture coordinates for each vertex of a polygon, and OpenGL automatically fills
+in the surface between the vertices with the texture, through a process known as interpolation. Interpolation is
+a standard geometric technique that lets OpenGL determine how a given parameter varies between vertices just by
+knowing the value that parameter takes at the vertices themselves.
+<br><br>
+Like in the previous lessons, we pretend we are facing the quad and assign texture coordinates as follows:
+(0.0, 0.0) to the bottom-left corner, (0.0, 1.0) to the top-left corner, (1.0, 0.0) to the bottom-right,
+and (1.0, 1.0) to the top-right. Now, given these settings, can you tell what texture coordinates correspond
+to the quad's middle point? That's right, (0.5, 0.5). But no where in the code did you specify that coordinate,
+did you? When it draws the quad, OpenGL computes it for you. And the real magic is that it does so whatever the
+position, size, or orientation of the polygon!
+<br><br>
+In this lesson we add another interesting twist by assigning texture coordinates with values other than 0.0 and
+1.0. Texture coordinates are said to be normalized. Value 0.0 maps to one edge of the texture, while value 1.0
+maps to the opposite edge, spanning the full width or height of the texture image in a one unit step, regardless
+of the polygon's size or the image's size in pixels (which we therefore don't have to worry about when doing
+texture mapping, and that makes life a whole lot easier).  Above 1.0, the mapping simply wraps around at the
+other edge and the texture repeats. In other words, texture coordinate (0.3, 0.5) for instance, maps to the
+exact same pixel in the texture image as coordinate (1.3, 0.5), or as (12.3, -2.5). In this lesson, we achieve
+a tiling effect by specifying value 3.0 instead of 1.0, effectively repeating the texture nine times (3x3 tiling)
+over the surface of the quad.
+<br><br>
+<img src="lesson.asp-Dateien/lesson20-1.jpg" align="left"><img src="lesson.asp-Dateien/lesson20-2.jpg" align="right">
+Additionally, we use the roll variable to translate (or slide) the texture over the surface of the quad.  A
+value of 0.0 for roll, which is added to the vertical texture coordinate, means that texture mapping on the
+bottom edge of the quad begins at the bottom edge of the texture image, as shown in the figure on the left.
+When roll equals 0.5, mapping on the bottom edge of the quad begins halfway up in the image (see figure on the
+right).  Rolling textures can be used to create great effects such as moving clouds, words spinning around an
+object, etc.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glBindTexture(GL_TEXTURE_2D, texture[0]);				<font class="theme">// Select Our Logo Texture</font>
+	glBegin(GL_QUADS);							<font class="theme">// Start Drawing A Textured Quad</font>
+		glTexCoord2f(0.0f, -roll+0.0f); glVertex3f(-1.1f, -1.1f,  0.0f);	<font class="theme">// Bottom Left</font>
+		glTexCoord2f(3.0f, -roll+0.0f); glVertex3f( 1.1f, -1.1f,  0.0f);	<font class="theme">// Bottom Right</font>
+		glTexCoord2f(3.0f, -roll+3.0f); glVertex3f( 1.1f,  1.1f,  0.0f);	<font class="theme">// Top Right</font>
+		glTexCoord2f(0.0f, -roll+3.0f); glVertex3f(-1.1f,  1.1f,  0.0f);	<font class="theme">// Top Left</font>
+	glEnd();								<font class="theme">// Done Drawing The Quad</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Anyways... back to reality.  Now we enable blending.  In order for this effect to work we also
+have to disable depth testing.  It's very important that you do this!  If you do not disable
+depth testing you probably wont see anything.  Your entire image will vanish!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glEnable(GL_BLEND);							<font class="theme">// Enable Blending</font>
+	glDisable(GL_DEPTH_TEST);						<font class="theme">// Disable Depth Testing</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The first thing we do after we enable blending and disable depth testing is check to see if we're
+going to mask our image or blend it the old fashioned way.  The line of code below checks to see
+if masking is TRUE.  If it is we'll set up blending so that our mask gets drawn to the
+screen properly.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	if (masking)								<font class="theme">// Is Masking Enabled?</font>
+	{
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+If masking is TRUE the line below will set up blending for our mask.  A mask is just a
+copy of the texture we want to draw to the screen but in black and white.  Any section of the
+mask that is white will be transparent.  Any sections of the mask that is black will be SOLID.
+<br><br>
+The blend command below does the following:  The Destination color (screen color) will be set to
+black if the section of our mask that is being copied to the screen is black.  This means that
+sections of the screen that the black portion of our mask covers will turn black.  Anything that
+was on the screen under the mask will be cleared to black.  The section of the screen covered by
+the white mask will not change.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		glBlendFunc(GL_DST_COLOR,GL_ZERO);				<font class="theme">// Blend Screen Color With Zero (Black)</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we check to see what scene to draw.  If scene is TRUE we will draw the second scene.
+If scene is FALSE we will draw the first scene.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	if (scene)								<font class="theme">// Are We Drawing The Second Scene?</font>
+	{
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We don't want things to be too big so we translate one more unit into the screen.  This reduces
+the size of our objects.
+<br><br>
+After we translate into the screen, we rotate from 0-360 degrees depending on the value of
+roll.  If roll is 0.0 we will be rotating 0 degrees.  If roll is 1.0 we will
+be rotating 360 degrees.  Fairly fast rotation, but I didn't feel like creating another variable
+just to rotate the image in the center of the screen. :)
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		glTranslatef(0.0f,0.0f,-1.0f);					<font class="theme">// Translate Into The Screen One Unit</font>
+		glRotatef(roll*360,0.0f,0.0f,1.0f);				<font class="theme">// Rotate On The Z Axis 360 Degrees</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We already have the rolling logo on the screen and we've rotated the scene on the Z axis causing
+any objects we draw to be rotated counter-clockwise, now all we have to do is check to see if
+masking is on.  If it is we'll draw our mask then our object.  If masking is off we'll just draw
+our object.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		if (masking)							<font class="theme">// Is Masking On?</font>
+		{
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+If masking is TRUE the code below will draw our mask to the screen.  Our blend mode should
+be set up properly because we had checked for masking once already while setting up the blending.
+Now all we have to do is draw the mask to the screen.  We select mask 2 (because this is the
+second scene).  After we have selected the mask texture we texture map it onto a quad.  The quad
+is 1.1 units to the left and right so that it fills the screen up a little more.  We only want
+one texture to show up so our texture coordinates only go from 0.0 to 1.0.
+<br><br>
+After drawing our mask to the screen a solid black copy of our final texture will appear on
+the screen.  The final result will look as if someone took a cookie cutter and cut the shape of
+our final texture out of the screen, leaving an empty black space.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>			glBindTexture(GL_TEXTURE_2D, texture[3]);		<font class="theme">// Select The Second Mask Texture</font>
+			glBegin(GL_QUADS);					<font class="theme">// Start Drawing A Textured Quad</font>
+				glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.1f, -1.1f,  0.0f);	<font class="theme">// Bottom Left</font>
+				glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.1f, -1.1f,  0.0f);	<font class="theme">// Bottom Right</font>
+				glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.1f,  1.1f,  0.0f);	<font class="theme">// Top Right</font>
+				glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.1f,  1.1f,  0.0f);	<font class="theme">// Top Left</font>
+			glEnd();						<font class="theme">// Done Drawing The Quad</font>
+		}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now that we have drawn our mask to the screen it's time to change blending modes again.  This time
+we're going to tell OpenGL to copy any part of our colored texture that is NOT black to the
+screen.  Because the final texture is an exact copy of the mask but with color, the only parts of
+our texture that get drawn to the screen are parts that land on top of the black portion of the
+mask.  Because the mask is black, nothing from the screen will shine through our texture.  This
+leaves us with a very solid looking texture floating on top of the screen.
+<br><br>
+Notice that we select the second image after selecting the final blending mode.  This selects our
+colored image (the image that our second mask is based on).  Also notice that we draw this image
+right on top of the mask.  Same texture coordinates, same vertices.
+<br><br>
+If we don't lay down a mask, our image will still be copied to the screen, but it will blend with
+whatever was on the screen.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		glBlendFunc(GL_ONE, GL_ONE);					<font class="theme">// Copy Image 2 Color To The Screen</font>
+		glBindTexture(GL_TEXTURE_2D, texture[4]);			<font class="theme">// Select The Second Image Texture</font>
+		glBegin(GL_QUADS);						<font class="theme">// Start Drawing A Textured Quad</font>
+			glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.1f, -1.1f,  0.0f);	<font class="theme">// Bottom Left</font>
+			glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.1f, -1.1f,  0.0f);	<font class="theme">// Bottom Right</font>
+			glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.1f,  1.1f,  0.0f);	<font class="theme">// Top Right</font>
+			glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.1f,  1.1f,  0.0f);	<font class="theme">// Top Left</font>
+		glEnd();							<font class="theme">// Done Drawing The Quad</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+If scene was FALSE, we will draw the first scene (my favorite).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	else									<font class="theme">// Otherwise</font>
+	{
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We start off by checking to see if masking is TRUE of FALSE, just like in the code above.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		if (masking)							<font class="theme">// Is Masking On?</font>
+		{
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+If masking is TRUE we draw our mask 1 to the screen (the mask for scene 1).  Notice that
+the texture is rolling from right to left (roll is added to the horizontal texture
+coordinate).  We want this texture to fill the entire screen that is why we never translated
+further into the screen.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>			glBindTexture(GL_TEXTURE_2D, texture[1]);		<font class="theme">// Select The First Mask Texture</font>
+			glBegin(GL_QUADS);					<font class="theme">// Start Drawing A Textured Quad</font>
+				glTexCoord2f(roll+0.0f, 0.0f); glVertex3f(-1.1f, -1.1f,  0.0f);	<font class="theme">// Bottom Left</font>
+				glTexCoord2f(roll+4.0f, 0.0f); glVertex3f( 1.1f, -1.1f,  0.0f);	<font class="theme">// Bottom Right</font>
+				glTexCoord2f(roll+4.0f, 4.0f); glVertex3f( 1.1f,  1.1f,  0.0f);	<font class="theme">// Top Right</font>
+				glTexCoord2f(roll+0.0f, 4.0f); glVertex3f(-1.1f,  1.1f,  0.0f);	<font class="theme">// Top Left</font>
+			glEnd();						<font class="theme">// Done Drawing The Quad</font>
+		}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Again we enable blending and select our texture for scene 1.  We map this texture on top of it's
+mask.  Notice we roll this texture as well, otherwise the mask and final image wouldn't line up.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		glBlendFunc(GL_ONE, GL_ONE);					<font class="theme">// Copy Image 1 Color To The Screen</font>
+		glBindTexture(GL_TEXTURE_2D, texture[2]);			<font class="theme">// Select The First Image Texture</font>
+		glBegin(GL_QUADS);						<font class="theme">// Start Drawing A Textured Quad</font>
+			glTexCoord2f(roll+0.0f, 0.0f); glVertex3f(-1.1f, -1.1f,  0.0f);	<font class="theme">// Bottom Left</font>
+			glTexCoord2f(roll+4.0f, 0.0f); glVertex3f( 1.1f, -1.1f,  0.0f);	<font class="theme">// Bottom Right</font>
+			glTexCoord2f(roll+4.0f, 4.0f); glVertex3f( 1.1f,  1.1f,  0.0f);	<font class="theme">// Top Right</font>
+			glTexCoord2f(roll+0.0f, 4.0f); glVertex3f(-1.1f,  1.1f,  0.0f);	<font class="theme">// Top Left</font>
+		glEnd();							<font class="theme">// Done Drawing The Quad</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Next we enable depth testing, and disable blending.  This prevents strange things from happening
+in the rest of our program :)
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glEnable(GL_DEPTH_TEST);						<font class="theme">// Enable Depth Testing</font>
+	glDisable(GL_BLEND);							<font class="theme">// Disable Blending</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Finally all we have left to do is increase the value of roll.  If roll is greater
+than 1.0 we subtract 1.0.  This prevents the value of roll from getting to high.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	roll+=0.002f;								<font class="theme">// Increase Our Texture Roll Variable</font>
+	if (roll&gt;1.0f)								<font class="theme">// Is Roll Greater Than One</font>
+	{
+		roll-=1.0f;							<font class="theme">// Subtract 1 From Roll</font>
+	}
+
+	return TRUE;								<font class="theme">// Everything Went OK</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The KillGLWindow(), CreateGLWindow() and WndProc() code hasn't changed so we'll skip over it.
+<br><br>
+The first thing you will notice different in the WinMain() code is the Window title.  It's now
+titled "NeHe's Masking Tutorial".  Change it to whatever you want :)
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int WINAPI WinMain(	HINSTANCE	hInstance,				<font class="theme">// Instance</font>
+			HINSTANCE	hPrevInstance,				<font class="theme">// Previous Instance</font>
+			LPSTR		lpCmdLine,				<font class="theme">// Command Line Parameters</font>
+			int		nCmdShow)				<font class="theme">// Window Show State</font>
+{
+	MSG	msg;								<font class="theme">// Windows Message Structure</font>
+	BOOL	done=FALSE;							<font class="theme">// Bool Variable To Exit Loop</font>
+
+	<font class="theme">// Ask The User Which Screen Mode They Prefer</font>
+	if (MessageBox(NULL,"Would You Like To Run In Fullscreen Mode?", "Start FullScreen?",MB_YESNO|MB_ICONQUESTION)==IDNO)
+	{
+		fullscreen=FALSE;						<font class="theme">// Windowed Mode</font>
+	}
+
+	<font class="theme">// Create Our OpenGL Window</font>
+	if (!CreateGLWindow("NeHe's Masking Tutorial",640,480,16,fullscreen))
+	{
+		return 0;							<font class="theme">// Quit If Window Was Not Created</font>
+	}
+
+	while(!done)								<font class="theme">// Loop That Runs While done=FALSE</font>
+	{
+		if (PeekMessage(&amp;msg,NULL,0,0,PM_REMOVE))			<font class="theme">// Is There A Message Waiting?</font>
+		{
+			if (msg.message==WM_QUIT)				<font class="theme">// Have We Received A Quit Message?</font>
+			{
+				done=TRUE;					<font class="theme">// If So done=TRUE</font>
+			}
+			else							<font class="theme">// If Not, Deal With Window Messages</font>
+			{
+				TranslateMessage(&amp;msg);				<font class="theme">// Translate The Message</font>
+				DispatchMessage(&amp;msg);				<font class="theme">// Dispatch The Message</font>
+			}
+		}
+		else								<font class="theme">// If There Are No Messages</font>
+		{
+			<font class="theme">// Draw The Scene.  Watch For ESC Key And Quit Messages From DrawGLScene()</font>
+			if ((active &amp;&amp; !DrawGLScene()) || keys[VK_ESCAPE])	<font class="theme">// Active?  Was There A Quit Received?</font>
+			{
+				done=TRUE;					<font class="theme">// ESC or DrawGLScene Signalled A Quit</font>
+			}
+			else							<font class="theme">// Not Time To Quit, Update Screen</font>
+			{
+				SwapBuffers(hDC);				<font class="theme">// Swap Buffers (Double Buffering)</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now for our simple key handling code.  We check to see if the spacebar is being pressed.  If it
+is, we set the sp variable to TRUE.  If sp is TRUE, the code below will not run a
+second time until the spacebar has been released.  This keeps our program from flipping back and
+forth from scene to scene very rapidly.  After we set sp to TRUE, we toggle the scene.  If
+it was TRUE, it becomes FALSE, if it was FALSE it becomes TRUE.  In our drawing code above, if
+scene is FALSE the first scene is drawn.  If scene is TRUE the second scene is drawn.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				if (keys[' '] &amp;&amp; !sp)				<font class="theme">// Is Space Being Pressed?</font>
+				{
+					sp=TRUE;				<font class="theme">// Tell Program Spacebar Is Being Held</font>
+					scene=!scene;				<font class="theme">// Toggle From One Scene To The Other</font>
+				}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The code below checks to see if we have released the spacebar (if NOT ' ').  If the spacebar has
+been released, we set sp to FALSE letting our program know that the spacebar is NOT being
+held down.  By setting sp to FALSE the code above will check to see if the spacebar has
+been pressed again, and if so the cycle will start over.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				if (!keys[' '])					<font class="theme">// Has Spacebar Been Released?</font>
+				{
+					sp=FALSE;				<font class="theme">// Tell Program Spacebar Has Been Released</font>
+				}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The next section of code checks to see if the 'M' key is being pressed.  If it is being pressed,
+we set mp to TRUE, telling our program not to check again until the key is released, and
+we toggle masking from TRUE to FALSE or FALSE to TRUE.  If masking is TRUE, the
+drawing code will turn on masking.  If it is FALSE masking will be off.  If masking is off, the
+object will be blended to the screen using the old fashioned blending we've been using up until now.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				if (keys['M'] &amp;&amp; !mp)				<font class="theme">// Is M Being Pressed?</font>
+				{
+					mp=TRUE;				<font class="theme">// Tell Program M Is Being Held</font>
+					masking=!masking;			<font class="theme">// Toggle Masking Mode OFF/ON</font>
+				}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The last bit of code checks to see if we've stopped pressing 'M'.  If we have, mp becomes
+FALSE letting the program know that we are no longer holding the 'M' key down.  Once the 'M' key
+has been released, we are able to press it once again to toggle masking on or off.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				if (!keys['M'])					<font class="theme">// Has M Been Released?</font>
+				{
+					mp=FALSE;				<font class="theme">// Tell Program That M Has Been Released</font>
+				}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Like all the previous tutorials, make sure the title at the top of the window is correct.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				if (keys[VK_F1])				<font class="theme">// Is F1 Being Pressed?</font>
+				{
+					keys[VK_F1]=FALSE;			<font class="theme">// If So Make Key FALSE</font>
+					KillGLWindow();				<font class="theme">// Kill Our Current Window</font>
+					fullscreen=!fullscreen;			<font class="theme">// Toggle Fullscreen / Windowed Mode</font>
+					<font class="theme">// Recreate Our OpenGL Window</font>
+					if (!CreateGLWindow("NeHe's Masking Tutorial",640,480,16,fullscreen))
+					{
+						return 0;			<font class="theme">// Quit If Window Was Not Created</font>
+					}
+				}
+			}
+		}
+	}
+	<font class="theme">// Shutdown</font>
+	KillGLWindow();								<font class="theme">// Kill The Window</font>
+	return (msg.wParam);							<font class="theme">// Exit The Program</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Creating a mask isn't to hard.  A little time consuming.  The best way to make a mask if you
+already have your image made is to load your image into an art program or a handy program like
+infranview, and reduce it to a gray scale image.  After you've done that, turn the contrast way up
+so that gray pixels become black.  You can also try turning down the brightness, etc.  It's
+important that the white is bright white, and the black is pure black.  If you have any gray
+pixels in your mask, that section of the image will appear transparent.  The most reliable way to
+make sure your mask is a perfect copy of your image is to trace over the image with black.  It's
+also very important that your image has a BLACK background and the mask has a WHITE background!
+If you create a mask and notice a square shape around your texture, either your white isn't bright
+enough (255 or FFFFFF) or your black isn't true black (0 or 000000).  Below you can see an example
+of a mask and the image that goes over top of the mask.  The image can be any color you want as
+long as the background is black.  The mask must have a white background and a black copy of your
+image.
+<br><br>
+<table border="0" width="100%"><tbody><tr>
+<td class="text" width="150px">This is the mask -&gt;</td><td><img src="lesson.asp-Dateien/lesson20-3.jpg" align="middle" hspace="20"></td>
+<td>&nbsp;</td>
+<td class="text" width="150px">This is the image -&gt;</td><td><img src="lesson.asp-Dateien/lesson20-4.jpg" align="middle" hspace="20"></td>
+</tr></tbody></table>
+<br><br>
+Eric Desrosiers pointed out that you can also check the value of each pixel in your bitmap while you load
+it.  If you want the pixel transparent you can give it an alpha value of 0.  For all the other colors you
+can give them an alpha value of 255.  This method will also work but requires some extra coding.  The
+current tutorial is simple and requires very little extra code.  I'm not blind to other techniques, but
+when I write a tutorial I try to make the code easy to understand and easy to use.  I just wanted to
+point out that there are always other ways to get the job done.  Thanks for the feedback Eric.
+<br><br>
+In this tutorial I have shown you a simple, but effective way to draw sections of a texture to the
+screen without using the alpha channel.  Normal blending usually looks bad (textures are either
+transparent or they're not), and texturing with an alpha channel requires that your images support
+the alpha channel.  Bitmaps are convenient to work with, but they do not support the alpha channel
+this program shows us how to get around the limitations of bitmap images, while demonstrating a
+cool way to create overlay type effects.
+<br><br>
+Thanks to Rob Santa for the idea and for example code.  I had never heard of this little trick until he
+pointed it out.  He wanted me to point out that although this trick does work, it takes two passes, which
+causes a performance hit.  He recommends that you use textures that support the alpha channel for complex
+scenes.
+<br><br>
+I hope you enjoyed this tutorial.  If you had any problems understanding it, or you've found a
+mistake in the tutorial please let me know.  I want to make the best tutorials available.  Your
+feedback is important!
+<br><br>
+<b>Jeff Molofee</b> (<b>NeHe</b>)
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vc/lesson20.zip">Visual C++</a> Code For This Lesson.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/bcb6/lesson20_bcb6.zip">Borland C++ Builder 6</a> Code For This Lesson. ( Conversion by <a href="mailto:christian@tugzip.com">Christian Kindahl</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/c_sharp/lesson20.zip">C#</a> Code For This Lesson. ( Conversion by <a href="mailto:bholley@unlnotes.unl.edu">Brian Holley</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cwarrior/lesson20.zip">Code Warrior 5.3</a> Code For This Lesson. ( Conversion by <a href="mailto:DelusionalBeing@hotmail.com">Scott Lupton</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cygwin/lesson20.tar.gz">Cygwin</a> Code For This Lesson. ( Conversion by <a href="mailto:stephan@lazyfellow.com">Stephan Ferraro</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/delphi/lesson20.zip">Delphi</a> Code For This Lesson. ( Conversion by <a href="mailto:michal_praha@seznam.cz">Michal Tucek</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/devc/lesson20.zip">Dev C++</a> Code For This Lesson. ( Conversion by <a href="mailto:danprogram@hotmail.com">Dan</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/euphoria/lesson20.zip">Euphoria</a> Code For This Lesson. ( Conversion by <a href="mailto:1evan@sbcglobal.net">Evan Marshall</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/gameglut/lesson20.zip">Game GLUT</a> Code For This Lesson. ( Conversion by <a href="mailto:alex_r@vortexentertainment.com">Alexandre Ribeiro de S�</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/irix/lesson20.tar.gz">Irix / GLUT</a> Code For This Lesson. ( Conversion by <a href="mailto:rpf1@york.ac.uk">Rob Fletcher</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/java/lesson20.zip">Java</a> Code For This Lesson. ( Conversion by <a href="mailto:jeff@consunet.com.au">Jeff Kirby</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/lccwin32/lccwin32_lesson20.zip">LCC Win32</a> Code For This Lesson. ( Conversion by <a href="mailto:rwishlaw@shaw.ca">Robert Wishlaw</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linux/lesson20.tar.gz">Linux</a> Code For This Lesson. ( Conversion by <a href="mailto:bryantdesign11@mindspring.com">Daniel Davis</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxglx/lesson20.tar.gz">Linux/GLX</a> Code For This Lesson. ( Conversion by <a href="mailto:miqster@gmx.net">Mihael Vrbanec</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxsdl/lesson20.tar.gz">Linux/SDL</a> Code For This Lesson. ( Conversion by <a href="mailto:leggett@eecs.tulane.edu">Ti Leggett</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/lwjgl/lesson20.jar">LWJGL</a> Code For This Lesson. ( Conversion by <a href="mailto:mark.bernard@rogers.com">Mark Bernard</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/mac/lesson20.sit">Mac OS</a> Code For This Lesson. ( Conversion by <a href="mailto:asp@usc.edu">Anthony Parker</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/macosxcocoa/lesson20.zip">Mac OS X/Cocoa</a> Code For This Lesson. ( Conversion by <a href="mailto:blb@pobox.com">Bryan Blackburn</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/masm/lesson20.zip">MASM</a> Code For This Lesson. ( Conversion by <a href="mailto:chris.j84@free.fr">Christophe</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/openil/lesson20.zip">Visual C++ / OpenIL</a> Code For This Lesson. ( Conversion by <a href="mailto:doomwiz@ticnet.com">Denton Woods</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/pelles_c/lesson20.zip">Pelles C</a> Code For This Lesson. ( Conversion by <a href="mailto:pelle@smorgasbordet.com">Pelle Orinius</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vb/lesson20.zip">Visual Basic</a> Code For This Lesson. ( Conversion by <a href="mailto:fredo@studenten.net">Edo</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vs_net/lesson20.zip">Visual Studio .NET</a> Code For This Lesson. ( Conversion by <a href="mailto:ultimatezeus@hotmail.com">Grant James</a> )<br>
+<br><br>
+<br><br>
+<table border="0" width="100%">
+<tbody><tr><td align="left" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=19">&lt; Lesson 19</a></font></b></td>
+<td align="right" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=21">Lesson 21 &gt;</a></font></b></td>
+</tr></tbody></table>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table>
+
+</body></html>

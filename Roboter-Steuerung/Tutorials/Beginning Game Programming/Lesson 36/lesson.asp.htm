@@ -1,0 +1,539 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+<title>NeHe Productions: OpenGL Lesson #36</title>
+<meta name="author" content="Jeff Molofee">
+<meta name="description" content="OpenGL Tutorials, Demos, Games and More...">
+<meta name="keywords" content="opengl, tutorial, article, demo, game, blend, texturemap, lighting, contest, 3D">
+<link rel="stylesheet" type="text/css" href="lesson.asp-Dateien/rgb.css">
+</head><body bgcolor="black" link="#aaccff" text="white" vlink="#aaccff">
+
+<table border="0" width="100%"><tbody><tr><td align="center">
+<!-- Begin -  Site: GameDev.net Zone: NeHe 728x90 -->
+<script language="javascript" type="text/javascript">
+<!--
+var browName = navigator.appName;
+var SiteID = 1;
+var ZoneID = 4;
+var browDateTime = (new Date()).getTime();
+if (browName=='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;Browser=NETSCAPE4&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+if (browName!='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+// --> 
+</script><script language="javascript" src="lesson.asp-Dateien/a.js"></script><a href="http://www.gamedev.net/banman/a.aspx?Task=Click&amp;ZoneID=4&amp;CampaignID=609&amp;AdvertiserID=11&amp;BannerID=673&amp;SiteID=1&amp;RandomNumber=1254427939&amp;Keywords=" target="_Blank"><img src="lesson.asp-Dateien/BGPleader.png" alt="" align="Center" border="0" height="90" width="728"></a><br>
+<noscript> <a
+href="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Click&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+target="_blank"> <img
+src="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Get&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+width="728" height="90" border="0" alt=""></a>
+</noscript>
+<!-- End -  Site: GameDev.net Zone: NeHe 728x90 --></td></tr></tbody></table><br>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tinylogo" height="130" width="326"><img src="lesson.asp-Dateien/blank.gif" alt="NeHe Productions" height="130" width="326"></td><td class="indexheading" align="center" valign="middle"><font class="text"><font class="theme" size="+3"><b><i>Lesson: 36</i></b></font></font></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Hi! I'm Dario Corno, also known as rIo of SpinningKids.  First of all, I want to explain why I decided to write this little
+tutorial.  I have been a scener since 1989.  I want all of you to download some demos so you understand what a demo is and what
+demo effects are.
+<br><br>
+Demos are done to show off hardcore and sometimes brutal coding as well as artistic skill.  You can usually find some really
+killer effects in todays demos!  This won't be a killer effect tutorial, but the end result is very cool!  You can find a huge
+collection of demos at http://www.pouet.net and http://ftp.scene.org.
+<br><br>
+Now that the introduction is out of the way, we can go on with the tutorial...
+<br><br>I will explain how to do an eye candy effect (used in demos)
+that looks like radial blur. Sometimes it's referred to as volumetric
+lights, don't believe it, it's just a fake radial blur! ;D
+<br><br>Radial blur was usually done (when there were only software
+renderers) by blurring every pixel of the original image in a direction
+opposite the center of the blur.
+<br><br>
+With todays hardware it is quite difficult to do blurring by hand using the color buffer (at least in a way that is supported by
+all the gfx cards), so we need to do a little trick to achieve the same effect.
+<br><br>
+As a bonus while learning the radial blur effect, you will also learn how to render to a texture the easy way!
+<br><br>
+I decided to use a spring as the shape in this tutorial because it's a cool shape, and I'm tired of cubes :)
+<br><br>It's important to note that this tutorial is more a guideline
+on how to create the effect. I don't go into great detail explaining
+the code. You should know most of it off by heart :)
+<br><br>
+Below are the variable definitions and includes used:
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>#include &lt;math.h&gt;							<font class="theme">// We'll Need Some Math</font>
+
+float		angle;							<font class="theme">// Used To Rotate The Helix</font>
+float		vertexes[4][3];						<font class="theme">// Holds Float Info For 4 Sets Of Vertices</font>
+float		normal[3];						<font class="theme">// An Array To Store The Normal Data</font>
+GLuint		BlurTexture;						<font class="theme">// An Unsigned Int To Store The Texture Number</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The function EmptyTexture() creates an empty texture and returns the number of that texture.  We just allocate some free
+space (exactly 128 * 128 * 4 unsigned integers).
+<br><br>
+128 * 128 is the size of the texture (128 pixels wide and tall), the 4 means that for every pixel we want 4 byte to store the
+RED, GREEN, BLUE and ALPHA components.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>GLuint EmptyTexture()							<font class="theme">// Create An Empty Texture</font>
+{
+	GLuint txtnumber;						<font class="theme">// Texture ID</font>
+	unsigned int* data;						<font class="theme">// Stored Data</font>
+
+	<font class="theme">// Create Storage Space For Texture Data (128x128x4)</font>
+	data = (unsigned int*)new GLuint[((128 * 128)* 4 * sizeof(unsigned int))];
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+After allocating space we zero it using the ZeroMemory function, passing the pointer (data) and the size of memory to be
+"zeroed".
+<br><br>
+A semi important thing to note is that we set the magnification and  minification methods to GL_LINEAR.  That's because we will
+be stretching our texture and GL_NEAREST looks quite bad if stretched.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	ZeroMemory(data,((128 * 128)* 4 * sizeof(unsigned int)));	<font class="theme">// Clear Storage Memory</font>
+
+	glGenTextures(1, &amp;txtnumber);					<font class="theme">// Create 1 Texture</font>
+	glBindTexture(GL_TEXTURE_2D, txtnumber);			<font class="theme">// Bind The Texture</font>
+	glTexImage2D(GL_TEXTURE_2D, 0, 4, 128, 128, 0,
+		GL_RGBA, GL_UNSIGNED_BYTE, data);			<font class="theme">// Build Texture Using Information In data</font>
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+
+	delete [] data;							<font class="theme">// Release data</font>
+
+	return txtnumber;						<font class="theme">// Return The Texture ID</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+This function simply normalizes the length of the normal vectors.  Vectors are expressed as arrays of 3 elements of type float,
+where the first element represents X, the second Y and the third Z.  A normalized vector (Nv) is expressed by Vn = (Vox / |Vo| ,
+Voy / |Vo|, Voz / |Vo|), where Vo is the original vector, |vo| is the modulus (or length) of that vector, and x,y,z are the
+component of that vector.  Doing it "digitally" will be:  Calculating the length of the original vector by doing: sqrt(x^2 + y^2
++ z^2) ,where x,y,z are the 3 components of the vector.  And then dividing each normal vector component by the length of
+the vector.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void ReduceToUnit(float vector[3])					<font class="theme">// Reduces A Normal Vector (3 Coordinates)</font>
+{									<font class="theme">// To A Unit Normal Vector With A Length Of One.</font>
+	float length;							<font class="theme">// Holds Unit Length</font>
+	<font class="theme">// Calculates The Length Of The Vector</font>
+	length = (float)sqrt((vector[0]*vector[0]) + (vector[1]*vector[1]) + (vector[2]*vector[2]));
+
+	if(length == 0.0f)						<font class="theme">// Prevents Divide By 0 Error By Providing</font>
+		length = 1.0f;						<font class="theme">// An Acceptable Value For Vectors To Close To 0.</font>
+
+	vector[0] /= length;						<font class="theme">// Dividing Each Element By</font>
+	vector[1] /= length;						<font class="theme">// The Length Results In A</font>
+	vector[2] /= length;						<font class="theme">// Unit Normal Vector.</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">The
+following routine calculates the normal given 3 vertices (always in the
+3 float array). We have two parameters : v[3][3] and
+out[3]. Of course the first parameter is a matrix of floats with m=3
+and n=3 where every line is a vertex of the triangle.
+out is the place where we'll put the resulting normal vector.
+<br><br>
+A bit of (easy) math.  We are going to use the famous cross product. By definition the cross product is an operation between two
+vectors that returns another vector orthogonal to the two original vectors.  The normal is the vector orthogonal to a surface,
+with the versus opposite to that surface (and usually a normalized length).  Imagine now if the two vectors above are the sides
+of a triangle, then the orthogonal vector (calculated with the cross product) of two sides of a triangle is exactly the normal
+of that triangle.
+<br><br>
+Harder to explain than to do.
+<br><br>
+We will start finding the vector going from vertex 0 to vertex 1, and the vector from vertex 1 to vertex 2.  This is basically
+done by (brutally) subtracting each component of each vertex from the next.  Now we got the vectors for our triangle sides.  By
+doing the cross product (vXw) we get the normal vector for that triangle.
+<br><br>
+Let's see the code.
+<br><br>
+v[0][] is the first vertex, v[1][] is the second vertex, v[2][] is the third vertex.  Every vertex has:  v[][0] the x coordinate
+of that vertex, v[][1] the y coord of that vertex, v[][2] the z coord of that vertex.
+<br><br>
+By simply subtracting every coord of one vertex from the next we get the VECTOR from this vertex to the next.  v1[0] = v[0][0] -
+v[1][0], this calculates the X component of the VECTOR going from VERTEX 0 to vertex 1.  v1[1] = v[0][1] - v[1][1] will
+calculate the Y component v1[2] = v[0][2] - v[1][2] will calculate the Z component and so on...
+<br><br>
+Now we have the two VECTORS, so let's calculate the cross product of them to get the normal of the triangle.
+<br><br>
+The formula for the cross product is:
+<br><br>
+out[x] = v1[y] * v2[z] - v1[z] * v2[y]          
+<br><br>
+out[y] = v1[z] * v2[x] - v1[x] * v2[z]
+<br><br>
+out[z] = v1[x] * v2[y] - v1[y] * v2[x]
+<br><br>
+We finally have the normal of the triangle in out[].
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void calcNormal(float v[3][3], float out[3])				<font class="theme">// Calculates Normal For A Quad Using 3 Points</font>
+{
+	float v1[3],v2[3];						<font class="theme">// Vector 1 (x,y,z) &amp; Vector 2 (x,y,z)</font>
+	static const int x = 0;						<font class="theme">// Define X Coord</font>
+	static const int y = 1;						<font class="theme">// Define Y Coord</font>
+	static const int z = 2;						<font class="theme">// Define Z Coord</font>
+
+	<font class="theme">// Finds The Vector Between 2 Points By Subtracting</font>
+	<font class="theme">// The x,y,z Coordinates From One Point To Another.</font>
+
+	<font class="theme">// Calculate The Vector From Point 1 To Point 0</font>
+	v1[x] = v[0][x] - v[1][x];					<font class="theme">// Vector 1.x=Vertex[0].x-Vertex[1].x</font>
+	v1[y] = v[0][y] - v[1][y];					<font class="theme">// Vector 1.y=Vertex[0].y-Vertex[1].y</font>
+	v1[z] = v[0][z] - v[1][z];					<font class="theme">// Vector 1.z=Vertex[0].y-Vertex[1].z</font>
+	<font class="theme">// Calculate The Vector From Point 2 To Point 1</font>
+	v2[x] = v[1][x] - v[2][x];					<font class="theme">// Vector 2.x=Vertex[0].x-Vertex[1].x</font>
+	v2[y] = v[1][y] - v[2][y];					<font class="theme">// Vector 2.y=Vertex[0].y-Vertex[1].y</font>
+	v2[z] = v[1][z] - v[2][z];					<font class="theme">// Vector 2.z=Vertex[0].z-Vertex[1].z</font>
+	<font class="theme">// Compute The Cross Product To Give Us A Surface Normal</font>
+	out[x] = v1[y]*v2[z] - v1[z]*v2[y];				<font class="theme">// Cross Product For Y - Z</font>
+	out[y] = v1[z]*v2[x] - v1[x]*v2[z];				<font class="theme">// Cross Product For X - Z</font>
+	out[z] = v1[x]*v2[y] - v1[y]*v2[x];				<font class="theme">// Cross Product For X - Y</font>
+
+	ReduceToUnit(out);						<font class="theme">// Normalize The Vectors</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The following routine just sets up a point of view using gluLookAt.  We set a point of view placed at 0, 5, 50 that is looking
+to 0, 0, 0 and that has the UP vector looking UP (0, 1, 0)! :D
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void ProcessHelix()							<font class="theme">// Draws A Helix</font>
+{
+	GLfloat x;							<font class="theme">// Helix x Coordinate</font>
+	GLfloat y;							<font class="theme">// Helix y Coordinate</font>
+	GLfloat z;							<font class="theme">// Helix z Coordinate</font>
+	GLfloat phi;							<font class="theme">// Angle</font>
+	GLfloat theta;							<font class="theme">// Angle</font>
+	GLfloat v,u;							<font class="theme">// Angles</font>
+	GLfloat r;							<font class="theme">// Radius Of Twist</font>
+	int twists = 5;							<font class="theme">// 5 Twists</font>
+
+	GLfloat glfMaterialColor[]={0.4f,0.2f,0.8f,1.0f};		<font class="theme">// Set The Material Color</font>
+	GLfloat specular[]={1.0f,1.0f,1.0f,1.0f};			<font class="theme">// Sets Up Specular Lighting</font>
+
+	glLoadIdentity();						<font class="theme">// Reset The Modelview Matrix</font>
+	gluLookAt(0, 5, 50, 0, 0, 0, 0, 1, 0);				<font class="theme">// Eye Position (0,5,50) Center Of Scene (0,0,0)</font>
+									<font class="theme">// Up On Y Axis.</font>
+	glPushMatrix();							<font class="theme">// Push The Modelview Matrix</font>
+
+	glTranslatef(0,0,-50);						<font class="theme">// Translate 50 Units Into The Screen</font>
+	glRotatef(angle/2.0f,1,0,0);					<font class="theme">// Rotate By angle/2 On The X-Axis</font>
+	glRotatef(angle/3.0f,0,1,0);					<font class="theme">// Rotate By angle/3 On The Y-Axis</font>
+
+	glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,glfMaterialColor);
+	glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,specular);
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">We
+then calculate the helix formula and render the spring. It's quite
+simple, I won't explain it, because it isn't the main goal
+of this tutorial. The helix code was borrowed (and optimized a bit)
+from Listen Software friends. This is written the simple way,
+and is not the fastest method. Using vertex arrays would make it
+faster!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	r=1.5f;								<font class="theme">// Radius</font>
+
+	glBegin(GL_QUADS);						<font class="theme">// Begin Drawing Quads</font>
+	for(phi=0; phi &lt;= 360; phi+=20.0)				<font class="theme">// 360 Degrees In Steps Of 20</font>
+	{
+		for(theta=0; theta&lt;=360*twists; theta+=20.0)		<font class="theme">// 360 Degrees * Number Of Twists In Steps Of 20</font>
+		{
+			v=(phi/180.0f*3.142f);				<font class="theme">// Calculate Angle Of First Point	(  0 )</font>
+			u=(theta/180.0f*3.142f);			<font class="theme">// Calculate Angle Of First Point	(  0 )</font>
+
+			x=float(cos(u)*(2.0f+cos(v) ))*r;		<font class="theme">// Calculate x Position (1st Point)</font>
+			y=float(sin(u)*(2.0f+cos(v) ))*r;		<font class="theme">// Calculate y Position (1st Point)</font>
+			z=float((( u-(2.0f*3.142f)) + sin(v) ) * r);	<font class="theme">// Calculate z Position (1st Point)</font>
+
+			vertexes[0][0]=x;				<font class="theme">// Set x Value Of First Vertex</font>
+			vertexes[0][1]=y;				<font class="theme">// Set y Value Of First Vertex</font>
+			vertexes[0][2]=z;				<font class="theme">// Set z Value Of First Vertex</font>
+
+			v=(phi/180.0f*3.142f);				<font class="theme">// Calculate Angle Of Second Point	(  0 )</font>
+			u=((theta+20)/180.0f*3.142f);			<font class="theme">// Calculate Angle Of Second Point	( 20 )</font>
+
+			x=float(cos(u)*(2.0f+cos(v) ))*r;		<font class="theme">// Calculate x Position (2nd Point)</font>
+			y=float(sin(u)*(2.0f+cos(v) ))*r;		<font class="theme">// Calculate y Position (2nd Point)</font>
+			z=float((( u-(2.0f*3.142f)) + sin(v) ) * r);	<font class="theme">// Calculate z Position (2nd Point)</font>
+
+			vertexes[1][0]=x;				<font class="theme">// Set x Value Of Second Vertex</font>
+			vertexes[1][1]=y;				<font class="theme">// Set y Value Of Second Vertex</font>
+			vertexes[1][2]=z;				<font class="theme">// Set z Value Of Second Vertex</font>
+
+			v=((phi+20)/180.0f*3.142f);			<font class="theme">// Calculate Angle Of Third Point	( 20 )</font>
+			u=((theta+20)/180.0f*3.142f);			<font class="theme">// Calculate Angle Of Third Point	( 20 )</font>
+
+			x=float(cos(u)*(2.0f+cos(v) ))*r;		<font class="theme">// Calculate x Position (3rd Point)</font>
+			y=float(sin(u)*(2.0f+cos(v) ))*r;		<font class="theme">// Calculate y Position (3rd Point)</font>
+			z=float((( u-(2.0f*3.142f)) + sin(v) ) * r);	<font class="theme">// Calculate z Position (3rd Point)</font>
+
+			vertexes[2][0]=x;				<font class="theme">// Set x Value Of Third Vertex</font>
+			vertexes[2][1]=y;				<font class="theme">// Set y Value Of Third Vertex</font>
+			vertexes[2][2]=z;				<font class="theme">// Set z Value Of Third Vertex</font>
+
+			v=((phi+20)/180.0f*3.142f);			<font class="theme">// Calculate Angle Of Fourth Point	( 20 )</font>
+			u=((theta)/180.0f*3.142f);			<font class="theme">// Calculate Angle Of Fourth Point	(  0 )</font>
+
+			x=float(cos(u)*(2.0f+cos(v) ))*r;		<font class="theme">// Calculate x Position (4th Point)</font>
+			y=float(sin(u)*(2.0f+cos(v) ))*r;		<font class="theme">// Calculate y Position (4th Point)</font>
+			z=float((( u-(2.0f*3.142f)) + sin(v) ) * r);	<font class="theme">// Calculate z Position (4th Point)</font>
+
+			vertexes[3][0]=x;				<font class="theme">// Set x Value Of Fourth Vertex</font>
+			vertexes[3][1]=y;				<font class="theme">// Set y Value Of Fourth Vertex</font>
+			vertexes[3][2]=z;				<font class="theme">// Set z Value Of Fourth Vertex</font>
+
+			calcNormal(vertexes,normal);			<font class="theme">// Calculate The Quad Normal</font>
+
+			glNormal3f(normal[0],normal[1],normal[2]);	<font class="theme">// Set The Normal</font>
+
+			<font class="theme">// Render The Quad</font>
+			glVertex3f(vertexes[0][0],vertexes[0][1],vertexes[0][2]);
+			glVertex3f(vertexes[1][0],vertexes[1][1],vertexes[1][2]);
+			glVertex3f(vertexes[2][0],vertexes[2][1],vertexes[2][2]);
+			glVertex3f(vertexes[3][0],vertexes[3][1],vertexes[3][2]);
+		}
+	}
+	glEnd();							<font class="theme">// Done Rendering Quads</font>
+	
+	glPopMatrix();							<font class="theme">// Pop The Matrix</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+This two routines (ViewOrtho and ViewPerspective) were coded to make it easy to draw in an orthogonal way and get
+back to perspective rendering with ease.
+<br><br>
+ViewOrtho simply sets the projection matrix, then pushes a copy of the actual projection matrix onto the OpenGL stack.  The
+identity matrix is then loaded and an orthographic view with the current screen resolution is set up.
+<br><br>This way it is possible to draw using 2D coordinates with 0,0
+in the upper left corner of the screen and with 639, 479 in the lower
+right corner of the screen.
+<br><br>
+Finally, the modelview matrix is activated for rendering stuff.
+<br><br>
+ViewPerspective sets up projection matrix mode and pops back the non-orthogonal matrix that ViewOrtho pushed onto the
+stack.  The modelview matrix is then selected so we can rendering stuff.
+<br><br>I suggest you keep these two procedures, it's nice being able
+to render in 2D without having to worry about the projection matrix!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void ViewOrtho()							<font class="theme">// Set Up An Ortho View</font>
+{
+	glMatrixMode(GL_PROJECTION);					<font class="theme">// Select Projection</font>
+	glPushMatrix();							<font class="theme">// Push The Matrix</font>
+	glLoadIdentity();						<font class="theme">// Reset The Matrix</font>
+	glOrtho( 0, 640 , 480 , 0, -1, 1 );				<font class="theme">// Select Ortho Mode (640x480)</font>
+	glMatrixMode(GL_MODELVIEW);					<font class="theme">// Select Modelview Matrix</font>
+	glPushMatrix();							<font class="theme">// Push The Matrix</font>
+	glLoadIdentity();						<font class="theme">// Reset The Matrix</font>
+}
+
+void ViewPerspective()							<font class="theme">// Set Up A Perspective View</font>
+{
+	glMatrixMode( GL_PROJECTION );					<font class="theme">// Select Projection</font>
+	glPopMatrix();							<font class="theme">// Pop The Matrix</font>
+	glMatrixMode( GL_MODELVIEW );					<font class="theme">// Select Modelview</font>
+	glPopMatrix();							<font class="theme">// Pop The Matrix</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now it's time to explain how the fake radial blur effect is done:
+<br><br>We need to draw the scene so it appears blurred in all
+directions starting from the center. The trick is doing this without a
+major performance hit. We can't read and write pixels, and if we want
+compatibility with non kick-butt video cards, we can't use
+extensions or driver specific commands.
+<br><br>
+Time to give up... ?
+<br><br>
+No, the solution is quite easy, OpenGL gives us the ability to "blur" textures.  Ok... Not really blurring, but if we scale a
+texture using linear filtering, the result (with a bit of imagination) looks like gaussian blur.
+<br><br>
+So what would happen if we put a lot of stretched textures right on top of the 3D scene and scaled them?
+<br><br>
+The answer is simple... A radial blur effect!
+<br><br>There are two problems: How do we create the texture realtime
+and how do we place the texture exactly in front of the 3D object?
+<br><br>
+The solutions are easier than you may think!
+<br><br>
+Problem ONE:  Rendering To A Texture
+<br><br>The problem is easy to solve on pixel formats that have a back
+buffer. Rendering to a texture without a back buffer can be a real
+pain on the eyes!
+<br><br>Rendering to texture is achieved with just one function! We
+need to draw our object and then copy the result (BEFORE SWAPPING THE
+BACK BUFFER WITH THE FRONT BUFFER) to a texture using the
+glCopytexImage function.
+<br><br>
+Problem TWO: Fitting The Texture Exactly In Front Of The 3D Object
+<br><br>
+We know that, if we change the viewport without setting the right perspective, we get a stretched rendering of our object.  For
+example if we set a viewport really wide we get a vertically stretched rendering.
+<br><br>The solution is first to set a viewport that is square like our
+texture (128x128). After rendering our object to the texture,
+we render the texture to the screen using the current screen
+resolution. This way OpenGL reduces the object to fit into the
+texture, and when we stretch the texture to the full size of the
+screen, OpenGL resizes the texture to fit perfectly over top of
+our 3d object. Hopefully I haven't lost anyone. Another quick
+example... If you took a 640x480 screenshot, and then resized the
+screenshot to a 256x256 bitmap, you could load that bitmap as a texture
+and stretch it to fit on a 640x480 screen. The quality
+would not be as good, but the texture should line up pretty close to
+the original 640x480 image.
+<br><br>
+On to the fun stuff!  This function is really easy and is one of my preferred "design tricks".  It sets a viewport with a size
+that matches our BlurTexture dimensions (128x128).  It then calls the routine that renders the spring.  The spring will be
+stretched to fit the 128*128 texture because of the viewport (128x128 viewport).
+<br><br>
+After the spring is rendered to fit the 128x128 viewport, we bind to the BlurTexture and copy the colour buffer from the
+viewport to the BlurTexture using glCopyTexImage2D.
+<br><br>
+The parameters are as follows:
+<br><br>GL_TEXTURE_2D indicates that we are using a 2Dimensional
+texture, 0 is the mip map level we want to copy the buffer to, the
+default
+level is 0, GL_LUMINANCE indicates the format of the data to be copied.
+I used GL_LUMINANCE because the final result looks better,
+this way the luminance part of the buffer will be copied to the
+texture. Other parameters could be GL_ALPHA, GL_RGB, GL_INTENSITY
+and more.
+<br><br>
+The next 2 parameters tell OpenGL where to start copying from (0,0).  The width and height (128,128) is how many pixels to copy
+from left to right and how many to copy up and down.  The last parameter is only used if we want a border which we dont.
+<br><br>
+Now that we have a copy of the colour buffer (with the stretched spring) in our BlurTexture we can clear the buffer and set
+the viewport back to the proper dimensions (640x480 - fullscreen).
+<br><br>
+IMPORTANT:
+<br><br>
+This trick can be used only with double buffered pixel formats.  The reason why is because all these operations are hidden from
+the viewer (done on the back buffer).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void RenderToTexture()							<font class="theme">// Renders To A Texture</font>
+{
+	glViewport(0,0,128,128);					<font class="theme">// Set Our Viewport (Match Texture Size)</font>
+
+	ProcessHelix();							<font class="theme">// Render The Helix</font>
+
+	glBindTexture(GL_TEXTURE_2D,BlurTexture);			<font class="theme">// Bind To The Blur Texture</font>
+
+	<font class="theme">// Copy Our ViewPort To The Blur Texture (From 0,0 To 128,128... No Border)</font>
+	glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE, 0, 0, 128, 128, 0);
+
+	glClearColor(0.0f, 0.0f, 0.5f, 0.5);				<font class="theme">// Set The Clear Color To Medium Blue</font>
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		<font class="theme">// Clear The Screen And Depth Buffer</font>
+
+	glViewport(0 , 0,640 ,480);					<font class="theme">// Set Viewport (0,0 to 640x480)</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The DrawBlur function simply draws some blended quads in front of our 3D scene, using the BlurTexture we got before.
+This way, playing a bit with alpha and scaling the texture, we get something that really looks like radial blur.
+<br><br>
+I first disable GEN_S and GEN_T (I'm addicted to sphere mapping, so my routines usually enable these instructions :P ).
+<br><br>
+We enable 2D texturing, disable depth testing, set the proper blend function, enable blending and then bind the BlurTexture.
+<br><br>The next thing we do is switch to an ortho view, that way it's
+easier to draw a quad that perfectly fits the screen size. This
+is how we line up the texture over top of the 3D object (by stretching
+the texture to match the screen ratio). This is where problem
+two is resolved!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void DrawBlur(int times, float inc)					<font class="theme">// Draw The Blurred Image</font>
+{
+	float spost = 0.0f;						<font class="theme">// Starting Texture Coordinate Offset</font>
+	float alphainc = 0.9f / times;					<font class="theme">// Fade Speed For Alpha Blending</font>
+	float alpha = 0.2f;						<font class="theme">// Starting Alpha Value</font>
+
+	<font class="theme">// Disable AutoTexture Coordinates</font>
+	glDisable(GL_TEXTURE_GEN_S);
+	glDisable(GL_TEXTURE_GEN_T);
+
+	glEnable(GL_TEXTURE_2D);					<font class="theme">// Enable 2D Texture Mapping</font>
+	glDisable(GL_DEPTH_TEST);					<font class="theme">// Disable Depth Testing</font>
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE);				<font class="theme">// Set Blending Mode</font>
+	glEnable(GL_BLEND);						<font class="theme">// Enable Blending</font>
+	glBindTexture(GL_TEXTURE_2D,BlurTexture);			<font class="theme">// Bind To The Blur Texture</font>
+	ViewOrtho();							<font class="theme">// Switch To An Ortho View</font>
+
+	alphainc = alpha / times;					<font class="theme">// alphainc=0.2f / Times To Render Blur</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We draw the texture many times to create the radial effect, scaling the texture coordinates and raising the blend factor every
+time we do another pass.   We draw 25 quads stretching the texture by 0.015f each time.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glBegin(GL_QUADS);						<font class="theme">// Begin Drawing Quads</font>
+		for (int num = 0;num &lt; times;num++)			<font class="theme">// Number Of Times To Render Blur</font>
+		{
+			glColor4f(1.0f, 1.0f, 1.0f, alpha);		<font class="theme">// Set The Alpha Value (Starts At 0.2)</font>
+			glTexCoord2f(0+spost,1-spost);			<font class="theme">// Texture Coordinate	(   0,   1 )</font>
+			glVertex2f(0,0);				<font class="theme">// First Vertex		(   0,   0 )</font>
+
+			glTexCoord2f(0+spost,0+spost);			<font class="theme">// Texture Coordinate	(   0,   0 )</font>
+			glVertex2f(0,480);				<font class="theme">// Second Vertex	(   0, 480 )</font>
+
+			glTexCoord2f(1-spost,0+spost);			<font class="theme">// Texture Coordinate	(   1,   0 )</font>
+			glVertex2f(640,480);				<font class="theme">// Third Vertex		( 640, 480 )</font>
+
+			glTexCoord2f(1-spost,1-spost);			<font class="theme">// Texture Coordinate	(   1,   1 )</font>
+			glVertex2f(640,0);				<font class="theme">// Fourth Vertex	( 640,   0 )</font>
+
+			spost += inc;					<font class="theme">// Gradually Increase spost (Zooming Closer To Texture Center)</font>
+			alpha = alpha - alphainc;			<font class="theme">// Gradually Decrease alpha (Gradually Fading Image Out)</font>
+		}
+	glEnd();							<font class="theme">// Done Drawing Quads</font>
+
+	ViewPerspective();						<font class="theme">// Switch To A Perspective View</font>
+
+	glEnable(GL_DEPTH_TEST);					<font class="theme">// Enable Depth Testing</font>
+	glDisable(GL_TEXTURE_2D);					<font class="theme">// Disable 2D Texture Mapping</font>
+	glDisable(GL_BLEND);						<font class="theme">// Disable Blending</font>
+	glBindTexture(GL_TEXTURE_2D,0);					<font class="theme">// Unbind The Blur Texture</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+And voila', this is the shortest Draw routine ever seen, with a great looking effect!
+<br><br>
+We call the RenderToTexture function.  This renders the stretched spring once thanks to our viewport change.  The stretched
+spring is rendered to our texture, and the buffers are cleared.
+<br><br>
+We then draw the "REAL" spring (the 3D object you see on the screen) by calling ProcessHelix( ).
+<br><br>
+Finally, we draw some blended quads in front of the spring.  The textured quads will be stretched to fit over top of the REAL 3D
+spring.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void Draw (void)							<font class="theme">// Draw The Scene</font>
+{
+	glClearColor(0.0f, 0.0f, 0.0f, 0.5);				<font class="theme">// Set The Clear Color To Black</font>
+	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		<font class="theme">// Clear Screen And Depth Buffer</font>
+	glLoadIdentity();						<font class="theme">// Reset The View</font>
+	RenderToTexture();						<font class="theme">// Render To A Texture</font>
+	ProcessHelix();							<font class="theme">// Draw Our Helix</font>
+	DrawBlur(25,0.02f);						<font class="theme">// Draw The Blur Effect</font>
+	glFlush ();							<font class="theme">// Flush The GL Rendering Pipeline</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+I hope you enjoyed this tutorial, it really doesn't teach much other than rendering to a texture, but it's definitely an
+interesting effect to add to your 3d programs.
+<br><br>
+If you have any comments suggestions or if you know of a better way to implement this effect contact me <a href="mailto:rio@spinningkids.org">rio@spinningkids.org</a>.
+<br><br>
+You are free to use this code however you want in productions of your own, but before you RIP it, give it a look and try to
+understand what it does, that's the only way ripping is allowed!  Also, if you use this code, please, give me some credit!
+<br><br>
+I want also leave you all with a list of things to do (homework) :D
+<br><br>
+1) Modify the DrawBlur routine to get an horizontal blur, vertical blur and some more good effects (Twirl blur!).<br>
+2) Play with the DrawBlur parameter (add, remove) to get a good routine to sync with your music.<br>
+3) Play around with DrawBlur params and a SMALL texture using GL_LUMINANCE (Funky Shininess!).<br>
+4) Try superfake volumetric shadows using dark textures instead of luminance one!
+<br><br>
+Ok, that should be all for now.
+<br><br>
+Visit my site and (SK one) for more upcoming tutorials at http://www.spinningkids.org/rio.
+<br><br>
+<b>Dario Corno</b> (<b>rIo</b>)
+<br><br>
+<b>Jeff Molofee</b> (<b>NeHe</b>)
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vc/lesson36.zip">Visual C++</a> Code For This Lesson.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/bcb6/lesson36_bcb6.zip">Borland C++ Builder 6</a> Code For This Lesson. ( Conversion by <a href="mailto:christian@tugzip.com">Christian Kindahl</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cwarrior/lesson36.zip">Code Warrior 5.3</a> Code For This Lesson. ( Conversion by <a href="mailto:DelusionalBeing@hotmail.com">Scott Lupton</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/delphi/lesson36.zip">Delphi</a> Code For This Lesson. ( Conversion by <a href="mailto:michal_praha@seznam.cz">Michal Tucek</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/devc/lesson36.zip">Dev C++</a> Code For This Lesson. ( Conversion by <a href="mailto:zealouselixir@mchsi.com">Warren Moore</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/euphoria/lesson36.zip">Euphoria</a> Code For This Lesson. ( Conversion by <a href="mailto:1evan@sbcglobal.net">Evan Marshall</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/lccwin32/lccwin32_lesson36.zip">LCC Win32</a> Code For This Lesson. ( Conversion by <a href="mailto:parmentier.yann@wanadoo.fr">Yann Parmentier</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxglx/lesson36.tar.gz">Linux/GLX</a> Code For This Lesson. ( Conversion by <a href="mailto:Schubert_P@Yahoo.de">Patrick Schubert</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxsdl/lesson36.tar.gz">Linux/SDL</a> Code For This Lesson. ( Conversion by <a href="mailto:ant@solace.mh.se">Anthony Whitehead</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/macosxcocoa/lesson36.zip">Mac OS X/Cocoa</a> Code For This Lesson. ( Conversion by <a href="mailto:blb@pobox.com">Bryan Blackburn</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vb/lesson36.zip">Visual Basic</a> Code For This Lesson. ( Conversion by <a href="mailto:dario@solinf.it">Dario Corno</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vs_net/lesson36.zip">Visual Studio .NET</a> Code For This Lesson. ( Conversion by <a href="mailto:ultimatezeus@hotmail.com">Grant James</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/masm/lesson36.zip">MASM</a> Code For This Lesson. ( Conversion by Else.Popelse )<br>
+<br><br>
+<table border="0" width="100%">
+<tbody><tr><td align="left" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=35">&lt; Lesson 35</a></font></b></td>
+<td align="right" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=37">Lesson 37 &gt;</a></font></b></td>
+</tr></tbody></table>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table>
+
+</body></html>

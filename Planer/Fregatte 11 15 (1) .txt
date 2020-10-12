@@ -1,0 +1,47 @@
+Schiffstyp: Fregatte (Typ 32)
+Techlevel: 11
+Module: 15
+Kommandopunkte: 22
+Angriffswert: 0
+Schilde: 332
+Panzerung: 1144
+Struktur: 116
+Wendigkeit: 1016
+Reaktor: 320
+Laderaum: 0
+Sensor: 44
+Tarnung: 8
+Min Crew: 111
+Max Crew: 134
+Sprung Sektor: 17
+Sprung-Zeit: 56
+Angriffs-Zeit: 10
+Angriffsenergie: 19
+
+Kampfwert (Taktik 100): 0,00
+KW/KP: 33,545
+AW/KP: 0,000
+Sch/P: 0,29
+
+Verwendete Forschungen: 
+7x Kybernetik (Lvl 22)
+4x Leiterbahnen (Lvl 34)
+1x Photovoltaik (Lvl 27)
+2x Photovoltaik (Lvl 34)
+1x Kybernetik (Lvl 31)
+
+Baukosten: 
+Iso: 11
+Eg: 40
+Es: 40
+Rad: 205
+Em: 605
+Sm: 0
+Lm: 1400
+Fe: 955
+Syn: 150
+Org: 1140
+Erz: 0
+Rek: 0
+Nrg: 2550
+Cr: 3340

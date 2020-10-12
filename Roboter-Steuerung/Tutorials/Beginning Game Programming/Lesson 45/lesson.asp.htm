@@ -1,0 +1,515 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+<title>NeHe Productions: OpenGL Lesson #45</title>
+<meta name="author" content="Jeff Molofee">
+<meta name="description" content="OpenGL Tutorials, Demos, Games and More...">
+<meta name="keywords" content="opengl, tutorial, article, demo, game, blend, texturemap, lighting, contest, 3D">
+<link rel="stylesheet" type="text/css" href="lesson.asp-Dateien/rgb.css">
+</head><body bgcolor="black" link="#aaccff" text="white" vlink="#aaccff">
+
+<table border="0" width="100%"><tbody><tr><td align="center">
+<!-- Begin -  Site: GameDev.net Zone: NeHe 728x90 -->
+<script language="javascript" type="text/javascript">
+<!--
+var browName = navigator.appName;
+var SiteID = 1;
+var ZoneID = 4;
+var browDateTime = (new Date()).getTime();
+if (browName=='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;Browser=NETSCAPE4&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+if (browName!='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+// --> 
+</script><script language="javascript" src="lesson.asp-Dateien/a.js"></script><script type="text/javascript"><!--
+google_ad_client = "pub-3167291168602081";
+google_alternate_ad_url = "http://www.gamedev.net/banman/banman.asp?ZoneID=21&Task=Get";
+google_ad_width = 728;
+google_ad_height = 90;
+google_ad_format = "728x90_as";
+google_ad_type = "text_image";
+google_ad_channel ="";
+google_color_border = "336699";
+google_color_bg = "FFFFFF";
+google_color_link = "0000FF";
+google_color_url = "008000";
+google_color_text = "000000";
+//--></script>
+<script type="text/javascript" src="lesson.asp-Dateien/show_ads.js">
+</script>
+<noscript> <a
+href="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Click&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+target="_blank"> <img
+src="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Get&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+width="728" height="90" border="0" alt=""></a>
+</noscript>
+<!-- End -  Site: GameDev.net Zone: NeHe 728x90 --></td></tr></tbody></table><br>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tinylogo" height="130" width="326"><img src="lesson.asp-Dateien/blank.gif" alt="NeHe Productions" height="130" width="326"></td><td class="indexheading" align="center" valign="middle"><font class="text"><font class="theme" size="+3"><b><i>Lesson: 45</i></b></font></font></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">One
+of the largest goals of any 3d application is speed. You should always
+limit the amount of polygons actually rendered, whether by sorting,
+culling, or
+level-of-detail algorithms. However, when all else fails and you simply
+need raw polygon-pushing power, you can always utilize the
+optimizations provided
+by OpenGL. Vertex Arrays are one good way to do that, plus a recent
+extension to graphics cards named Vertex Buffer Objects adds the FPS
+boost everybody
+dreams of. The extension, ARB_vertex_buffer_object, works just like
+vertex arrays, except that it loads the data into the graphics card's
+high-performance
+memory, significantly lowering rendering time. Of course, the extension
+being relatively new, not all cards will support it, so we will have to
+write in
+some technology scaling.
+<br><br>
+In this tutorial, we will
+<ul>
+<li>Load data from a heightmap</li>
+<li>Use Vertex Arrays to send mesh data to OpenGL more efficiently</li>
+<li>Load data into high-performance memory via the VBO extension</li>
+</ul>
+So let's get started! First we are going to define a few application parameters.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>#define MESH_RESOLUTION 4.0f							<font class="theme">// Pixels Per Vertex</font>
+#define MESH_HEIGHTSCALE 1.0f							<font class="theme">// Mesh Height Scale</font>
+//#define NO_VBOS								<font class="theme">// If Defined, VBOs Will Be Forced Off</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">The
+first two constants are standard heightmap fare - the former sets the
+resolution at which the heightmap will be generated per pixel, and the
+latter
+sets the vertical scaling of the data retrieved from the heightmap. The
+third constant, when defined, will force VBOs off - a provision I added
+so that
+those with bleeding-edge cards can easily see the difference.
+<br><br>
+Next we have the VBO extension constant, data type, and function pointer definitions.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// VBO Extension Definitions, From glext.h</font>
+#define GL_ARRAY_BUFFER_ARB 0x8892
+#define GL_STATIC_DRAW_ARB 0x88E4
+typedef void (APIENTRY * PFNGLBINDBUFFERARBPROC) (GLenum target, GLuint buffer);
+typedef void (APIENTRY * PFNGLDELETEBUFFERSARBPROC) (GLsizei n, const GLuint *buffers);
+typedef void (APIENTRY * PFNGLGENBUFFERSARBPROC) (GLsizei n, GLuint *buffers);
+typedef void (APIENTRY * PFNGLBUFFERDATAARBPROC) (GLenum target, int size, const GLvoid *data, GLenum usage);
+
+<font class="theme">// VBO Extension Function Pointers</font>
+PFNGLGENBUFFERSARBPROC glGenBuffersARB = NULL;					<font class="theme">// VBO Name Generation Procedure</font>
+PFNGLBINDBUFFERARBPROC glBindBufferARB = NULL;					<font class="theme">// VBO Bind Procedure</font>
+PFNGLBUFFERDATAARBPROC glBufferDataARB = NULL;					<font class="theme">// VBO Data Loading Procedure</font>
+PFNGLDELETEBUFFERSARBPROC glDeleteBuffersARB = NULL;				<font class="theme">// VBO Deletion Procedure</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">I
+have only included what will be necessary for the demo. If you need any
+more of the functionality, I recommend downloading the latest glext.h
+from
+<a href="http://www.opengl.org/" target="_blank">http://www.opengl.org</a> and using the definitions there (it will be much cleaner for your code,
+anyway). We will get into the specifics of those functions as we use them.
+<br><br>Now we find the standard mathematical definitions, plus our
+mesh class. All of them are very bare-bones, designed specifically for
+the demo. As always,
+I recommend developing your own math library.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>class CVert									<font class="theme">// Vertex Class</font>
+{
+public:
+	float x;								<font class="theme">// X Component</font>
+	float y;								<font class="theme">// Y Component</font>
+	float z;								<font class="theme">// Z Component</font>
+};
+typedef CVert CVec;								<font class="theme">// The Definitions Are Synonymous</font>
+
+class CTexCoord									<font class="theme">// Texture Coordinate Class</font>
+{
+public:
+	float u;								<font class="theme">// U Component</font>
+	float v;								<font class="theme">// V Component</font>
+};
+
+class CMesh
+{
+public:
+	<font class="theme">// Mesh Data</font>
+	int		m_nVertexCount;						<font class="theme">// Vertex Count</font>
+	CVert*		m_pVertices;						<font class="theme">// Vertex Data</font>
+	CTexCoord*	m_pTexCoords;						<font class="theme">// Texture Coordinates</font>
+	unsigned int	m_nTextureId;						<font class="theme">// Texture ID</font>
+
+	<font class="theme">// Vertex Buffer Object Names</font>
+	unsigned int	m_nVBOVertices;						<font class="theme">// Vertex VBO Name</font>
+	unsigned int	m_nVBOTexCoords;					<font class="theme">// Texture Coordinate VBO Name</font>
+
+	<font class="theme">// Temporary Data</font>
+	AUX_RGBImageRec* m_pTextureImage;					<font class="theme">// Heightmap Data</font>
+
+public:
+	CMesh();								<font class="theme">// Mesh Constructor</font>
+	~CMesh();								<font class="theme">// Mesh Deconstructor</font>
+
+	<font class="theme">// Heightmap Loader</font>
+	bool LoadHeightmap( char* szPath, float flHeightScale, float flResolution );
+	<font class="theme">// Single Point Height</font>
+	float PtHeight( int nX, int nY );
+	<font class="theme">// VBO Build Function</font>
+	void BuildVBOs();
+};
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Most
+of that code is relatively self-explanatory. Note that while I do keep
+the Vertex and Texture Coordinate data seperate, that is not wholly
+necessary, as will be indicated later.
+<br><br>Here we have our global variables. First we have a VBO
+extension validity flag, which will be set in the initialization code.
+Then we have our
+mesh, followed by our Y rotation counter. Leading up the rear are the
+FPS monitoring variables. I decided to write in a FPS gauge to help
+display
+the optimization provided by this code.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>bool		g_fVBOSupported = false;					<font class="theme">// ARB_vertex_buffer_object supported?</font>
+CMesh*		g_pMesh = NULL;							<font class="theme">// Mesh Data</font>
+float		g_flYRot = 0.0f;						<font class="theme">// Rotation</font>
+int		g_nFPS = 0, g_nFrames = 0;					<font class="theme">// FPS and FPS Counter</font>
+DWORD		g_dwLastFPS = 0;						<font class="theme">// Last FPS Check Time	</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Let's
+skip over to the CMesh function definitions, starting with
+LoadHeightmap. For those of you who live under a rock, a heightmap is a
+two-dimensional dataset, commonly an image, which specifies the terrain
+mesh's vertical data. There are many ways to implement a heightmap, and
+certainly no one right way. My implementation reads a three channel
+bitmap and uses the luminosity algorithm to determine the height from
+the
+data. The resulting data would be exactly the same if the image was in
+color or in grayscale, which allows the heightmap to be in color.
+Personally, I recommend using a four channel image, such as a targa,
+and using the alpha channel for the heights. However, for the purpose
+of
+this tutorial, I decided that a simple bitmap would be best.
+<br><br>First, we make sure that the heightmap exists, and if so, we
+load it using GLaux's bitmap loader. Yes yes, it probably is better to
+write your
+own image loading routines, but that is not in the scope of this
+tutorial.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>bool CMesh :: LoadHeightmap( char* szPath, float flHeightScale, float flResolution )
+{
+	<font class="theme">// Error-Checking</font>
+	FILE* fTest = fopen( szPath, "r" );					<font class="theme">// Open The Image</font>
+	if( !fTest )								<font class="theme">// Make Sure It Was Found</font>
+		return false;							<font class="theme">// If Not, The File Is Missing</font>
+	fclose( fTest );							<font class="theme">// Done With The Handle</font>
+
+	<font class="theme">// Load Texture Data</font>
+	m_pTextureImage = auxDIBImageLoad( szPath );				<font class="theme">// Utilize GLaux's Bitmap Load Routine</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Now
+things start getting a little more interesting. First of all, I would
+like to point out that my heightmap generates three vertices for every
+triangle - vertices are not shared. I will explain why I chose to do
+that later, but I figured you should know before looking at this code.
+<br><br>I start by calculating the amount of vertices in the mesh. The
+algorithm is essentially ( ( Terrain Width / Resolution ) * ( Terrain
+Length /
+Resolution ) * 3 Vertices in a Triangle * 2 Triangles in a Square ).
+Then I allocate my data, and start working my way through the vertex
+field,
+setting data.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Generate Vertex Field</font>
+	m_nVertexCount = (int) ( m_pTextureImage-&gt;sizeX * m_pTextureImage-&gt;sizeY * 6 / ( flResolution * flResolution ) );
+	m_pVertices = new CVec[m_nVertexCount];					<font class="theme">// Allocate Vertex Data</font>
+	m_pTexCoords = new CTexCoord[m_nVertexCount];				<font class="theme">// Allocate Tex Coord Data</font>
+	int nX, nZ, nTri, nIndex=0;						<font class="theme">// Create Variables</font>
+	float flX, flZ;
+	for( nZ = 0; nZ &lt; m_pTextureImage-&gt;sizeY; nZ += (int) flResolution )
+	{
+		for( nX = 0; nX &lt; m_pTextureImage-&gt;sizeX; nX += (int) flResolution )
+		{
+			for( nTri = 0; nTri &lt; 6; nTri++ )
+			{
+				<font class="theme">// Using This Quick Hack, Figure The X,Z Position Of The Point</font>
+				flX = (float) nX + ( ( nTri == 1 || nTri == 2 || nTri == 5 ) ? flResolution : 0.0f );
+				flZ = (float) nZ + ( ( nTri == 2 || nTri == 4 || nTri == 5 ) ? flResolution : 0.0f );
+
+				<font class="theme">// Set The Data, Using PtHeight To Obtain The Y Value</font>
+				m_pVertices[nIndex].x = flX - ( m_pTextureImage-&gt;sizeX / 2 );
+				m_pVertices[nIndex].y = PtHeight( (int) flX, (int) flZ ) *  flHeightScale;
+				m_pVertices[nIndex].z = flZ - ( m_pTextureImage-&gt;sizeY / 2 );
+
+				<font class="theme">// Stretch The Texture Across The Entire Mesh</font>
+				m_pTexCoords[nIndex].u = flX / m_pTextureImage-&gt;sizeX;
+				m_pTexCoords[nIndex].v = flZ / m_pTextureImage-&gt;sizeY;
+
+				<font class="theme">// Increment Our Index</font>
+				nIndex++;
+			}
+		}
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">I
+finish off the function by loading the heightmap texture into OpenGL,
+and freeing our copy of the data. This should be fairly familiar from
+past tutorials.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Load The Texture Into OpenGL</font>
+	glGenTextures( 1, &amp;m_nTextureId );					<font class="theme">// Get An Open ID</font>
+	glBindTexture( GL_TEXTURE_2D, m_nTextureId );				<font class="theme">// Bind The Texture</font>
+	glTexImage2D( GL_TEXTURE_2D, 0, 3, m_pTextureImage-&gt;sizeX, m_pTextureImage-&gt;sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, m_pTextureImage-&gt;data );
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+
+	<font class="theme">// Free The Texture Data</font>
+	if( m_pTextureImage )
+	{
+		if( m_pTextureImage-&gt;data )
+			free( m_pTextureImage-&gt;data );
+		free( m_pTextureImage );
+	}
+	return true;
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">PtHeight
+is relatively simple. It calculates the index of the data in question,
+wrapping any overflows to avoid error, and calculates the height.
+The luminance formula is very simple, as you can see, so don't sweat it
+too much.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>float CMesh :: PtHeight( int nX, int nY )
+{
+	<font class="theme">// Calculate The Position In The Texture, Careful Not To Overflow</font>
+	int nPos = ( ( nX % m_pTextureImage-&gt;sizeX )  + ( ( nY % m_pTextureImage-&gt;sizeY ) * m_pTextureImage-&gt;sizeX ) ) * 3;
+	float flR = (float) m_pTextureImage-&gt;data[ nPos ];			<font class="theme">// Get The Red Component</font>
+	float flG = (float) m_pTextureImage-&gt;data[ nPos + 1 ];			<font class="theme">// Get The Green Component</font>
+	float flB = (float) m_pTextureImage-&gt;data[ nPos + 2 ];			<font class="theme">// Get The Blue Component</font>
+	return ( 0.299f * flR + 0.587f * flG + 0.114f * flB );			<font class="theme">// Calculate The Height Using The Luminance Algorithm</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Hurray,
+time to get dirty with Vertex Arrays and VBOs. So what are Vertex
+Arrays? Essentially, it is a system by which you can point OpenGL to
+your geometric data, and then subsequently render data in relatively
+few calls. The resulting cut down on function calls (glVertex, etc)
+adds a
+significant boost in speed. What are VBOs? Well, Vertex Buffer Objects
+use high-performance graphics card memory instead of your standard,
+ram-allocated memory. Not only does that lower the memory operations
+every frame, but it shortens the bus distance for your data to travel.
+On my specs, VBOs actually triple my framerate, which is something not
+to be taken lightly.
+<br><br>So now we are going to build the Vertex Buffer Objects. There
+are really a couple of ways to go about this, one of which is called
+"mapping" the
+memory. I think the simplist way is best here. The process is as
+follows: first, use glGenBuffersARB to get a valid VBO "name".
+Essentially, a
+name is an ID number which OpenGL will associate with your data. We
+want to generate a name because the same ones won't always be
+available. Next,
+we make that VBO the active one by binding it with glBindBufferARB.
+Finally, we load the data into our gfx card's data with a call to
+glBufferDataARB,
+passing the size and the pointer to the data. glBufferDataARB will copy
+that data into your gfx card memory, which means that we will not have
+any
+reason to maintain it anymore, so we can delete it.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void CMesh :: BuildVBOs()
+{
+	<font class="theme">// Generate And Bind The Vertex Buffer</font>
+	glGenBuffersARB( 1, &amp;m_nVBOVertices );					<font class="theme">// Get A Valid Name</font>
+	glBindBufferARB( GL_ARRAY_BUFFER_ARB, m_nVBOVertices );			<font class="theme">// Bind The Buffer</font>
+	<font class="theme">// Load The Data</font>
+	glBufferDataARB( GL_ARRAY_BUFFER_ARB, m_nVertexCount*3*sizeof(float), m_pVertices, GL_STATIC_DRAW_ARB );
+
+	<font class="theme">// Generate And Bind The Texture Coordinate Buffer</font>
+	glGenBuffersARB( 1, &amp;m_nVBOTexCoords );					<font class="theme">// Get A Valid Name</font>
+	glBindBufferARB( GL_ARRAY_BUFFER_ARB, m_nVBOTexCoords );		<font class="theme">// Bind The Buffer</font>
+	<font class="theme">// Load The Data</font>
+	glBufferDataARB( GL_ARRAY_BUFFER_ARB, m_nVertexCount*2*sizeof(float), m_pTexCoords, GL_STATIC_DRAW_ARB );
+
+	<font class="theme">// Our Copy Of The Data Is No Longer Necessary, It Is Safe In The Graphics Card</font>
+	delete [] m_pVertices; m_pVertices = NULL;
+	delete [] m_pTexCoords; m_pTexCoords = NULL;
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Ok,
+time to initialize. First we will allocate and load our mesh data. Then
+we will check for GL_ARB_vertex_buffer_object support. If we have it,
+we will grab the function pointers with wglGetProcAddress, and build
+our VBOs. Note that if VBOs aren't supported, we will retain the data
+as
+usual. Also note the provision for forced no VBOs.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Load The Mesh Data</font>
+	g_pMesh = new CMesh();							<font class="theme">// Instantiate Our Mesh</font>
+	if( !g_pMesh-&gt;LoadHeightmap( "terrain.bmp",				<font class="theme">// Load Our Heightmap</font>
+				MESH_HEIGHTSCALE, MESH_RESOLUTION ) )
+	{
+		MessageBox( NULL, "Error Loading Heightmap", "Error", MB_OK );
+		return false;
+	}
+
+	<font class="theme">// Check For VBOs Supported</font>
+#ifndef NO_VBOS
+	g_fVBOSupported = IsExtensionSupported( "GL_ARB_vertex_buffer_object" );
+	if( g_fVBOSupported )
+	{
+		<font class="theme">// Get Pointers To The GL Functions</font>
+		glGenBuffersARB = (PFNGLGENBUFFERSARBPROC) wglGetProcAddress("glGenBuffersARB");
+		glBindBufferARB = (PFNGLBINDBUFFERARBPROC) wglGetProcAddress("glBindBufferARB");
+		glBufferDataARB = (PFNGLBUFFERDATAARBPROC) wglGetProcAddress("glBufferDataARB");
+		glDeleteBuffersARB = (PFNGLDELETEBUFFERSARBPROC) wglGetProcAddress("glDeleteBuffersARB");
+		<font class="theme">// Load Vertex Data Into The Graphics Card Memory</font>
+		g_pMesh-&gt;BuildVBOs();						<font class="theme">// Build The VBOs</font>
+	}
+#else /* NO_VBOS */
+	g_fVBOSupported = false;
+#endif
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+IsExtensionSupported is a function you can get from OpenGL.org. My variation is, in my humble opinion, a little cleaner.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>bool IsExtensionSupported( char* szTargetExtension )
+{
+	const unsigned char *pszExtensions = NULL;
+	const unsigned char *pszStart;
+	unsigned char *pszWhere, *pszTerminator;
+
+	<font class="theme">// Extension names should not have spaces</font>
+	pszWhere = (unsigned char *) strchr( szTargetExtension, ' ' );
+	if( pszWhere || *szTargetExtension == '\0' )
+		return false;
+
+	<font class="theme">// Get Extensions String</font>
+	pszExtensions = glGetString( GL_EXTENSIONS );
+
+	<font class="theme">// Search The Extensions String For An Exact Copy</font>
+	pszStart = pszExtensions;
+	for(;;)
+	{
+		pszWhere = (unsigned char *) strstr( (const char *) pszStart, szTargetExtension );
+		if( !pszWhere )
+			break;
+		pszTerminator = pszWhere + strlen( szTargetExtension );
+		if( pszWhere == pszStart || *( pszWhere - 1 ) == ' ' )
+			if( *pszTerminator == ' ' || *pszTerminator == '\0' )
+				return true;
+		pszStart = pszTerminator;
+	}
+	return false;
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">It
+is relatively simple. Some people simply use a sub-string search with
+strstr, but apparently OpenGL.org doesn't trust the consistancy of the
+extension string enough to accept that as proof. And hey, I am not
+about to argue with those guys.
+<br><br>
+Almost finished now! All we gotta do is render the data.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void Draw (void)
+{
+	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);			<font class="theme">// Clear Screen And Depth Buffer</font>
+	glLoadIdentity ();							<font class="theme">// Reset The Modelview Matrix</font>
+
+	<font class="theme">// Get FPS</font>
+	if( GetTickCount() - g_dwLastFPS &gt;= 1000 )				<font class="theme">// When A Second Has Passed...</font>
+	{
+		g_dwLastFPS = GetTickCount();					<font class="theme">// Update Our Time Variable</font>
+		g_nFPS = g_nFrames;						<font class="theme">// Save The FPS</font>
+		g_nFrames = 0;							<font class="theme">// Reset The FPS Counter</font>
+
+		char szTitle[256]={0};						<font class="theme">// Build The Title String</font>
+		sprintf( szTitle, "Lesson 45: NeHe &amp; Paul Frazee's VBO Tut - %d Triangles, %d FPS", g_pMesh-&gt;m_nVertexCount / 3, g_nFPS );
+		if( g_fVBOSupported )						<font class="theme">// Include A Notice About VBOs</font>
+			strcat( szTitle, ", Using VBOs" );
+		else
+			strcat( szTitle, ", Not Using VBOs" );
+		SetWindowText( g_window-&gt;hWnd, szTitle );			<font class="theme">// Set The Title</font>
+	}
+	g_nFrames++;								<font class="theme">// Increment Our FPS Counter</font>
+
+	<font class="theme">// Move The Camera</font>
+	glTranslatef( 0.0f, -220.0f, 0.0f );					<font class="theme">// Move Above The Terrain</font>
+	glRotatef( 10.0f, 1.0f, 0.0f, 0.0f );					<font class="theme">// Look Down Slightly</font>
+	glRotatef( g_flYRot, 0.0f, 1.0f, 0.0f );				<font class="theme">// Rotate The Camera</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Pretty
+simple - every second, save the frame counter as the FPS and reset the
+frame counter. I decided to throw in poly count for impact. Then
+we move the camera above the terrain (you may need to adjust that if
+you change the heightmap), and do a few rotations. g_flYRot is
+incremented
+in the Update function.
+<br><br>To use Vertex Arrays (and VBOs), you need to tell OpenGL what
+data you are going to be specifying with your memory. So the first step
+is to
+enable the client states GL_VERTEX_ARRAY and GL_TEXTURE_COORD_ARRAY.
+Then we are going to want to set our pointers. I doubt you have to do
+this
+every frame unless you have multiple meshes, but it doesn't hurt us
+cycle-wise, so I don't see a problem.
+<br><br>To set a pointer for a certain data type, you have to use the
+appropriate function - glVertexPointer and glTexCoordPointer, in our
+case. The
+usage is pretty easy - pass the amount of variables in a point (three
+for a vertex, two for a texcoord), the data cast (float), the stride
+between
+the desired data (in the event that the vertices are not stored alone
+in their structure), and the pointer to the data. You can actually use
+glInterleavedArrays and store all of your data in one big memory
+buffer, but I chose to keep it seperate to show you how to use multiple
+VBOs.
+<br><br>Speaking of VBOs, implementing them isn't much different. The
+only real change is that instead of providing a pointer to the data, we
+bind the
+VBO we want and set the pointer to zero. Take a look.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Set Pointers To Our Data</font>
+	if( g_fVBOSupported )
+	{
+		glBindBufferARB( GL_ARRAY_BUFFER_ARB, g_pMesh-&gt;m_nVBOVertices );
+		glVertexPointer( 3, GL_FLOAT, 0, (char *) NULL );		<font class="theme">// Set The Vertex Pointer To The Vertex Buffer</font>
+		glBindBufferARB( GL_ARRAY_BUFFER_ARB, g_pMesh-&gt;m_nVBOTexCoords );
+		glTexCoordPointer( 2, GL_FLOAT, 0, (char *) NULL );		<font class="theme">// Set The TexCoord Pointer To The TexCoord Buffer</font>
+	} else
+	{
+		glVertexPointer( 3, GL_FLOAT, 0, g_pMesh-&gt;m_pVertices );	<font class="theme">// Set The Vertex Pointer To Our Vertex Data</font>
+		glTexCoordPointer( 2, GL_FLOAT, 0, g_pMesh-&gt;m_pTexCoords );	<font class="theme">// Set The Vertex Pointer To Our TexCoord Data</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Guess what? Rendering is even easier.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Render</font>
+	glDrawArrays( GL_TRIANGLES, 0, g_pMesh-&gt;m_nVertexCount );		<font class="theme">// Draw All Of The Triangles At Once</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Here
+we use glDrawArrays to send our data to OpenGL. glDrawArrays checks
+which client states are enabled, and then uses their pointers to
+render. We tell it the geometric type, the index we want to start from,
+and how many vertices to render. There are many other ways we can send
+the data for rendering, such as glArrayElement, but this is the fastest
+way to do it. You will notice that glDrawArrays is not within
+glBegin / glEnd statements. That isn't necessary here.
+<br><br>glDrawArrays is why I chose not to share my vertex data
+between triangles - it isn't possible. As far as I know, the best way
+to optimize memory
+usage is to use triangle strips, which is, again, out of this
+tutorial's scope. Also you should be aware that normals operate "one
+for one" with
+vertices, meaning that if you are using normals, each vertex should
+have an accompanying normal. Consider that an opportunity to calculate
+your
+normals per-vertex, which will greatly increase visual accuracy.
+<br><br>
+Now all we have left is to disable vertex arrays, and we are finished.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Disable Pointers</font>
+	glDisableClientState( GL_VERTEX_ARRAY );				<font class="theme">// Disable Vertex Arrays</font>
+	glDisableClientState( GL_TEXTURE_COORD_ARRAY );				<font class="theme">// Disable Texture Coord Arrays</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+If you want more information on Vertex Buffer Objects, I recommend reading the documentation in SGI's extension registry -
+<a href="http://oss.sgi.com/projects/ogl-sample/registry/" target="_blank">http://oss.sgi.com/projects/ogl-sample/registry</a>. It is a little
+more tedious to read through than a tutorial, but it will give you much more detailed information.
+<br><br>
+Well that does it for the tutorial. If you find any mistakes or misinformation, or simply have questions, you can contact me at
+<a href="mailto:paulfrazee@cox.net">paulfrazee@cox.net</a>.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vc/lesson45.zip">Visual C++</a> Code For This Lesson.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/bcb6/lesson45_bcb6.zip">Borland C++ Builder 6</a> Code For This Lesson. ( Conversion by <a href="mailto:conglth@hotmail.com">Le Thanh Cong</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cwarrior/lesson45.zip">Code Warrior 5.3</a> Code For This Lesson. ( Conversion by <a href="mailto:DelusionalBeing@hotmail.com">Scott Lupton</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/delphi/lesson45.zip">Delphi</a> Code For This Lesson. ( Conversion by <a href="mailto:michal_praha@seznam.cz">Michal Tucek</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/devc/lesson45.zip">Dev C++</a> Code For This Lesson. ( Conversion by <a href="mailto:gery.buchgraber@gmx.de">Gerald Buchgraber</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxsdl/lesson45.tar.gz">Linux/SDL</a> Code For This Lesson. ( Conversion by <a href="mailto:enumarator@hotmail.com">Ilias Maratos</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/python/lesson45.tar.gz">Python</a> Code For This Lesson. ( Conversion by <a href="mailto:bleair@comcast.net">Brian Leair</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vs_net/lesson45.zip">Visual Studio .NET</a> Code For This Lesson. ( Conversion by <a href="mailto:webmaster@joachimrohde.de">Joachim Rohde</a> )<br>
+<br><br>
+<table border="0" width="100%">
+<tbody><tr><td align="left" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=44">&lt; Lesson 44</a></font></b></td>
+<td align="right" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=46">Lesson 46 &gt;</a></font></b></td>
+</tr></tbody></table>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table>
+
+</body></html>

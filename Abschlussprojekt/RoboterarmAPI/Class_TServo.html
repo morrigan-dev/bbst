@@ -1,0 +1,249 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title>Class TServo - Roboterarm Simulation - JADD - Just Another DelphiDoc</title>
+  <meta name="keywords" content="TServo">
+  <meta name="Generator" content="JADD - Just Another DelphiDoc">
+  <link rel="stylesheet" type="text/css" href="DelphiDoc.css" title="Style">
+</head>
+<body>
+<table width="100%" class="headerlinks"><tbody><tr>
+<td align="center"><a href="index.html">Index</a></td>
+<td align="center"><a href="FileList.html">Files</a></td>
+<td align="center"><a href="RecordList.html">Records</a></td>
+<td align="center"><a href="ObjectList.html">Objects</a></td>
+<td align="center"><a href="ClassList.html">Classes</a></td>
+<td align="center"><a href="InterfaceList.html">Interfaces</a></td>
+<td align="center"><a href="DispInterfaceList.html">Dispatch-Interfaces</a></td>
+</tr></tbody></table>
+<hr>
+<h1 class="class">Class TServo</h1>
+TObject &lt;-- ... &lt;-- TPersistent &lt;-- <a href="Class_TElement.html">TElement</a> &lt;-- <strong>TServo</strong><br>
+Declared in <b class="resword">Unit</b> <a href="File_uniTServo.html">uniTServo</a><br>
+<h2 class="class">No known Subclasses</h2>
+<h2 class="class">Used by Classes:</h2>
+<a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>
+<hr>
+<h2 class="classcomment">Description:</h2>
+Diese Klasse ist lediglich für die Schnittstelle im Object Inspector verantwortlich. Sie stellt verschiedene Properties zur Verfügung und reicht deren Inhalte an die Zeichenmethoden weiter bzw. holt sich die aktuellen Werte.
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_AfterConstruction">AfterConstruction</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a></dd>
+</dl>
+<hr>
+<h2 class="methodlist">List of Constructors:</h2>
+<dl class="funclist">
+  <dt><img src="public.gif" alt="public" title="public"> <b class="resword">constructor</b> <a href="#I_Create">Create</a></dt>
+  <dd></dd>
+</dl>
+<hr>
+<h2 class="methodlist">List of Methods:</h2>
+<dl class="funclist">
+  <dt><img src="private.gif" alt="private" title="private"> <b class="resword">procedure</b> <a href="#I_correctGrad">correctGrad</a></dt>
+  <dd>********************************************************************************************************************* * P R O C E D U R E : correctGrad *-------------------------------------------------------------------------------------------------------------------- * Version : 1.0 * Autor : Thomas Gattinger * Aufgabe : Diese Prozedur korrigiert Gradwerte, indem nur ein Bereich von 0 bis 360 zugelassen wird.</dd>
+  <dt><img src="private.gif" alt="private" title="private"> <b class="resword">procedure</b> <a href="#I_correctProzent">correctProzent</a></dt>
+  <dd>********************************************************************************************************************* * P R O C E D U R E : correctProzent *-------------------------------------------------------------------------------------------------------------------- * Version : 1.0 * Autor : Thomas Gattinger * Aufgabe : Diese Prozedur korrigiert Prozentwerte, indem nur ein Bereich von 0 bis 100 zugelassen wird.</dd>
+  <dt><img src="public.gif" alt="public" title="public"> <b class="resword">function</b> <a href="#I_GetAktGrad">GetAktGrad</a></dt>
+  <dd></dd>
+  <dt><img src="public.gif" alt="public" title="public"> <b class="resword">function</b> <a href="#I_isHighlighted">isHighlighted</a></dt>
+  <dd></dd>
+  <dt><img src="private.gif" alt="private" title="private"> <b class="resword">procedure</b> <a href="#I_SetAktPosProperty">SetAktPosProperty</a></dt>
+  <dd>********************************************************************************************************************* * P R O C E D U R E : SetAktGradProperty *-------------------------------------------------------------------------------------------------------------------- * Version : 1.0 * Autor : Thomas Gattinger * Aufgabe : Diese Setter-Prozedur setzt die Gradzahl des Servo 0.</dd>
+  <dt><img src="private.gif" alt="private" title="private"> <b class="resword">procedure</b> <a href="#I_SetHighlightColorProperty">SetHighlightColorProperty</a></dt>
+  <dd></dd>
+  <dt><img src="public.gif" alt="public" title="public"> <b class="resword">procedure</b> <a href="#I_SetHighlighted">SetHighlighted</a></dt>
+  <dd></dd>
+  <dt><img src="private.gif" alt="private" title="private"> <b class="resword">procedure</b> <a href="#I_SetMaxGradProperty">SetMaxGradProperty</a></dt>
+  <dd></dd>
+  <dt><img src="private.gif" alt="private" title="private"> <b class="resword">procedure</b> <a href="#I_SetMinGradProperty">SetMinGradProperty</a></dt>
+  <dd></dd>
+</dl>
+<hr>
+<h2 class="member">Fields:</h2>
+<dl class="member">
+
+<dt class="member"><br>
+<a name="I_aktGrad"><img src="private.gif" alt="private" title="private"></a> aktGrad: Real</dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_GetAktGrad">GetAktGrad</a>, <a href="#I_SetAktPosProperty">SetAktPosProperty</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_FaktPos"><img src="private.gif" alt="private" title="private"></a> FaktPos: Real</dt>
+<dd class="member">Properties
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_Create">Create</a>, <a href="#I_SetAktPosProperty">SetAktPosProperty</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_FhighlightColor"><img src="private.gif" alt="private" title="private"></a> FhighlightColor: TColor</dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_Create">Create</a>, <a href="#I_SetHighlightColorProperty">SetHighlightColorProperty</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_FmaxGrad"><img src="private.gif" alt="private" title="private"></a> FmaxGrad: Real</dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_SetAktPosProperty">SetAktPosProperty</a>, <a href="#I_SetMaxGradProperty">SetMaxGradProperty</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_FminGrad"><img src="private.gif" alt="private" title="private"></a> FminGrad: Real</dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_Create">Create</a>, <a href="#I_SetAktPosProperty">SetAktPosProperty</a>, <a href="#I_SetMinGradProperty">SetMinGradProperty</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_highlighted"><img src="private.gif" alt="private" title="private"></a> highlighted: Boolean</dt>
+<dd class="member">Interne Eigenschaften
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="#I_Create">Create</a>, <a href="#I_isHighlighted">isHighlighted</a>, <a href="#I_SetHighlighted">SetHighlighted</a></dd>
+</dl>
+</dd>
+</dl>
+<h3 class="member">Inherited Fields:</h3>
+<b class="member">Fields in TElement:</b><br>
+<img src="private.gif" alt="private" title="private">&nbsp;<a href="Class_TElement.html#I_Fcolor">Fcolor</a>, <img src="private.gif" alt="private" title="private">&nbsp;<a href="Class_TElement.html#I_Fdepth">Fdepth</a>, <img src="private.gif" alt="private" title="private">&nbsp;<a href="Class_TElement.html#I_Fheight">Fheight</a>, <img src="private.gif" alt="private" title="private">&nbsp;<a href="Class_TElement.html#I_Fwidth">Fwidth</a>, <img src="protected.gif" alt="protected" title="protected">&nbsp;<a href="Class_TElement.html#I_owner">owner</a>, <img src="protected.gif" alt="protected" title="protected">&nbsp;<a href="Class_TElement.html#I_texture">texture</a>
+<h3 class="member">Inherited Fields by Name:</h3>
+<img src="private.gif" alt="private" title="private">&nbsp;<a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Fcolor">Fcolor</a>, <img src="private.gif" alt="private" title="private">&nbsp;<a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Fdepth">Fdepth</a>, <img src="private.gif" alt="private" title="private">&nbsp;<a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Fheight">Fheight</a>, <img src="private.gif" alt="private" title="private">&nbsp;<a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Fwidth">Fwidth</a>, <img src="protected.gif" alt="protected" title="protected">&nbsp;<a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_owner">owner</a>, <img src="protected.gif" alt="protected" title="protected">&nbsp;<a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_texture">texture</a>
+<hr>
+<h2 class="member">Properties:</h2>
+<dl class="member">
+
+<dt class="member"><br>
+<a name="I_AktPos"><img src="published.gif" alt="published" title="published"></a> <b class="resword">property</b> AktPos: Real <b class="resword">read</b> <a href="#I_FaktPos">FaktPos</a> <b class="resword">write</b> <a href="#I_SetAktPosProperty">SetAktPosProperty</a></dt>
+<dd class="member">Properties
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_FormCreate">FormCreate</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo0Change">tbarServo0Change</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo12Change">tbarServo12Change</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo3Change">tbarServo3Change</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo4Change">tbarServo4Change</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo5Change">tbarServo5Change</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo6Change">tbarServo6Change</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_initServos">initServos</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_HighlightColor"><img src="published.gif" alt="published" title="published"></a> <b class="resword">property</b> HighlightColor: TColor <b class="resword">read</b> <a href="#I_FhighlightColor">FhighlightColor</a> <b class="resword">write</b> <a href="#I_SetHighlightColorProperty">SetHighlightColorProperty</a></dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_initServos">initServos</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo0">RenderServo0</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo12">RenderServo12</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo3">RenderServo3</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo4">RenderServo4</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo5">RenderServo5</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo6">RenderServo6</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo7">RenderServo7</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_MaxGrad"><img src="published.gif" alt="published" title="published"></a> <b class="resword">property</b> MaxGrad: Real <b class="resword">read</b> <a href="#I_FmaxGrad">FmaxGrad</a> <b class="resword">write</b> <a href="#I_SetMaxGradProperty">SetMaxGradProperty</a></dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_edtServo0MaxGradChange">edtServo0MaxGradChange</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_edtServo12MaxGradChange">edtServo12MaxGradChange</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_edtServo3MaxGradChange">edtServo3MaxGradChange</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_edtServo4MaxGradChange">edtServo4MaxGradChange</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_edtServo5MaxGradChange">edtServo5MaxGradChange</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_edtServo6MaxGradChange">edtServo6MaxGradChange</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_FormCreate">FormCreate</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_initServos">initServos</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_MinGrad"><img src="published.gif" alt="published" title="published"></a> <b class="resword">property</b> MinGrad: Real <b class="resword">read</b> <a href="#I_FminGrad">FminGrad</a> <b class="resword">write</b> <a href="#I_SetMinGradProperty">SetMinGradProperty</a></dt>
+<dd class="member">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_edtServo0MinGradChange">edtServo0MinGradChange</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_edtServo12MinGradChange">edtServo12MinGradChange</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_edtServo3MinGradChange">edtServo3MinGradChange</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_edtServo4MinGradChange">edtServo4MinGradChange</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_edtServo5MinGradChange">edtServo5MinGradChange</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_edtServo6MinGradChange">edtServo6MinGradChange</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_FormCreate">FormCreate</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_initServos">initServos</a></dd>
+</dl>
+</dd>
+</dl>
+<h3 class="member">Inherited Properties:</h3>
+<b class="member">Properties in TElement:</b><br>
+<img src="published.gif" alt="published" title="published">&nbsp;<a href="Class_TElement.html#I_Color">Color</a>, <img src="published.gif" alt="published" title="published">&nbsp;<a href="Class_TElement.html#I_Depth">Depth</a>, <img src="published.gif" alt="published" title="published">&nbsp;<a href="Class_TElement.html#I_Height">Height</a>, <img src="published.gif" alt="published" title="published">&nbsp;<a href="Class_TElement.html#I_Width">Width</a>
+<h3 class="member">Inherited Properties by Name:</h3>
+<img src="published.gif" alt="published" title="published">&nbsp;<a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Color">Color</a>, <img src="published.gif" alt="published" title="published">&nbsp;<a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Depth">Depth</a>, <img src="published.gif" alt="published" title="published">&nbsp;<a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Height">Height</a>, <img src="published.gif" alt="published" title="published">&nbsp;<a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Width">Width</a>
+<hr>
+<h2 class="member">Constructors:</h2>
+<dl class="member">
+
+<dt class="member"><br>
+<a name="I_Create"><img src="public.gif" alt="public" title="public"></a> <b class="resword">constructor</b> Create(owner: <a href="Interface_IOpenGL.html">IOpenGL</a>)</dt>
+<dd class="member">
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_FaktPos">FaktPos</a>, <a href="#I_FhighlightColor">FhighlightColor</a>, <a href="#I_FminGrad">FminGrad</a>, <a href="#I_highlighted">highlighted</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Create">Create</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_AfterConstruction">AfterConstruction</a></dd>
+</dl>
+</dd>
+</dl>
+<h3 class="member">Inherited Constructors:</h3>
+<b class="member">Constructors in TElement:</b><br>
+<img src="public.gif" alt="public" title="public">&nbsp;<a href="Class_TElement.html#I_Create">Create</a>
+<h3 class="member">Inherited Constructors by Name:</h3>
+<img src="public.gif" alt="public" title="public">&nbsp;<a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_Create">Create</a>
+<hr>
+<h2 class="member">Methods:</h2>
+<dl class="member">
+
+<dt class="member"><br>
+<a name="I_correctGrad"><img src="private.gif" alt="private" title="private"></a> <b class="resword">procedure</b> correctGrad(<b class="resword">var</b> grad: Real)</dt>
+<dd class="member">********************************************************************************************************************* * P R O C E D U R E : correctGrad *-------------------------------------------------------------------------------------------------------------------- * Version : 1.0 * Autor : Thomas Gattinger * Aufgabe : Diese Prozedur korrigiert Gradwerte, indem nur ein Bereich von 0 bis 360 zugelassen wird. * Ein Vielfaches dieses Bereiches wird auf diesen Bereich reduziert. * Parameter : grad - Der zu korrigierende Gradwert * Aenderung : 18.04.2010 *********************************************************************************************************************
+<dl><dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="#I_SetMaxGradProperty">SetMaxGradProperty</a>, <a href="#I_SetMinGradProperty">SetMinGradProperty</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_correctProzent"><img src="private.gif" alt="private" title="private"></a> <b class="resword">procedure</b> correctProzent(<b class="resword">var</b> prozent: Real)</dt>
+<dd class="member">********************************************************************************************************************* * P R O C E D U R E : correctProzent *-------------------------------------------------------------------------------------------------------------------- * Version : 1.0 * Autor : Thomas Gattinger * Aufgabe : Diese Prozedur korrigiert Prozentwerte, indem nur ein Bereich von 0 bis 100 zugelassen wird. * Ein Vielfaches dieses Bereiches wird auf diesen Bereich reduziert. * Parameter : prozent - Der zu korrigierende Prozendwert * Aenderung : 18.04.2010 *********************************************************************************************************************
+<dl><dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="#I_SetAktPosProperty">SetAktPosProperty</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_GetAktGrad"><img src="public.gif" alt="public" title="public"></a> <b class="resword">function</b> GetAktGrad: Real</dt>
+<dd class="member">
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_aktGrad">aktGrad</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_Render">Render</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo6">RenderServo6</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo7">RenderServo7</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_isHighlighted"><img src="public.gif" alt="public" title="public"></a> <b class="resword">function</b> isHighlighted: Boolean</dt>
+<dd class="member">
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_highlighted">highlighted</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo0">RenderServo0</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo12">RenderServo12</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo3">RenderServo3</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo4">RenderServo4</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo5">RenderServo5</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo6">RenderServo6</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo7">RenderServo7</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_SetAktPosProperty"><img src="private.gif" alt="private" title="private"></a> <b class="resword">procedure</b> SetAktPosProperty(prozent: Real)</dt>
+<dd class="member">********************************************************************************************************************* * P R O C E D U R E : SetAktGradProperty *-------------------------------------------------------------------------------------------------------------------- * Version : 1.0 * Autor : Thomas Gattinger * Aufgabe : Diese Setter-Prozedur setzt die Gradzahl des Servo 0. * Unter oder überschreitet der übergebene Gradwert den zulässig Wert, so wird dieser automatisch * korrigiert. * Parameter : prozent - Ein Wert zwischen 0 und 100, der den prozentualen Anteil vom maximalen Gradwert angibt. * Aenderung : 23.04.2010 *********************************************************************************************************************
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_aktGrad">aktGrad</a>, <a href="#I_FaktPos">FaktPos</a>, <a href="#I_FmaxGrad">FmaxGrad</a>, <a href="#I_FminGrad">FminGrad</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_owner">owner</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="#I_correctProzent">correctProzent</a>, <a href="Interface_IOpenGL.html">IOpenGL</a>.<a href="Interface_IOpenGL.html#I_Render">Render</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_SetHighlightColorProperty"><img src="private.gif" alt="private" title="private"></a> <b class="resword">procedure</b> SetHighlightColorProperty(color: TColor)</dt>
+<dd class="member">
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_FhighlightColor">FhighlightColor</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_owner">owner</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="Interface_IOpenGL.html">IOpenGL</a>.<a href="Interface_IOpenGL.html#I_Render">Render</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_SetHighlighted"><img src="public.gif" alt="public" title="public"></a> <b class="resword">procedure</b> SetHighlighted(highlighted: Boolean)</dt>
+<dd class="member">
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_highlighted">highlighted</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_owner">owner</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="Interface_IOpenGL.html">IOpenGL</a>.<a href="Interface_IOpenGL.html#I_Render">Render</a></dd>
+<dt class="called"><strong>Called by</strong></dt><dd class="called"><a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo0Enter">tbarServo0Enter</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo0Exit">tbarServo0Exit</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo12Enter">tbarServo12Enter</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo12Exit">tbarServo12Exit</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo3Enter">tbarServo3Enter</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo3Exit">tbarServo3Exit</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo4Enter">tbarServo4Enter</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo4Exit">tbarServo4Exit</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo5Enter">tbarServo5Enter</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo5Exit">tbarServo5Exit</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo6Enter">tbarServo6Enter</a>, <a href="Class_TfrmReglerPanel.html">TfrmReglerPanel</a>.<a href="Class_TfrmReglerPanel.html#I_tbarServo6Exit">tbarServo6Exit</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_initServos">initServos</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_SetMaxGradProperty"><img src="private.gif" alt="private" title="private"></a> <b class="resword">procedure</b> SetMaxGradProperty(grad: Real)</dt>
+<dd class="member">
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_FmaxGrad">FmaxGrad</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_owner">owner</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="#I_correctGrad">correctGrad</a>, <a href="Interface_IOpenGL.html">IOpenGL</a>.<a href="Interface_IOpenGL.html#I_Render">Render</a></dd>
+</dl>
+</dd>
+
+<dt class="member"><br>
+<a name="I_SetMinGradProperty"><img src="private.gif" alt="private" title="private"></a> <b class="resword">procedure</b> SetMinGradProperty(grad: Real)</dt>
+<dd class="member">
+<dl><dt class="globals"><strong>Globals</strong></dt><dd class="globals"><a href="#I_FminGrad">FminGrad</a>, <a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_owner">owner</a></dd>
+<dt class="calls"><strong>Calls</strong></dt><dd class="calls"><a href="#I_correctGrad">correctGrad</a>, <a href="Interface_IOpenGL.html">IOpenGL</a>.<a href="Interface_IOpenGL.html#I_Render">Render</a></dd>
+</dl>
+</dd>
+</dl>
+<h3 class="member">Inherited Methods:</h3>
+<b class="member">Methods in TElement:</b><br>
+<img src="public.gif" alt="public" title="public">&nbsp;<a href="Class_TElement.html#I_GetTexture">GetTexture</a>, <img src="protected.gif" alt="protected" title="protected">&nbsp;<a href="Class_TElement.html#I_SetColorProperty">SetColorProperty</a>, <img src="protected.gif" alt="protected" title="protected">&nbsp;<a href="Class_TElement.html#I_SetDepthProperty">SetDepthProperty</a>, <img src="protected.gif" alt="protected" title="protected">&nbsp;<a href="Class_TElement.html#I_SetHeightProperty">SetHeightProperty</a>, <img src="public.gif" alt="public" title="public">&nbsp;<a href="Class_TElement.html#I_SetTexture">SetTexture</a>, <img src="protected.gif" alt="protected" title="protected">&nbsp;<a href="Class_TElement.html#I_SetWidthProperty">SetWidthProperty</a>
+<h3 class="member">Inherited Methods by Name:</h3>
+<img src="public.gif" alt="public" title="public">&nbsp;<a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_GetTexture">GetTexture</a>, <img src="protected.gif" alt="protected" title="protected">&nbsp;<a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_SetColorProperty">SetColorProperty</a>, <img src="protected.gif" alt="protected" title="protected">&nbsp;<a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_SetDepthProperty">SetDepthProperty</a>, <img src="protected.gif" alt="protected" title="protected">&nbsp;<a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_SetHeightProperty">SetHeightProperty</a>, <img src="public.gif" alt="public" title="public">&nbsp;<a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_SetTexture">SetTexture</a>, <img src="protected.gif" alt="protected" title="protected">&nbsp;<a href="Class_TElement.html">TElement</a>.<a href="Class_TElement.html#I_SetWidthProperty">SetWidthProperty</a>
+<hr>
+</body>
+</html>

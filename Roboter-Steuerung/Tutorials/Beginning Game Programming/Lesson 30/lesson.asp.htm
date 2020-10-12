@@ -1,0 +1,792 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+<title>NeHe Productions: OpenGL Lesson #30</title>
+<meta name="author" content="Jeff Molofee">
+<meta name="description" content="OpenGL Tutorials, Demos, Games and More...">
+<meta name="keywords" content="opengl, tutorial, article, demo, game, blend, texturemap, lighting, contest, 3D">
+<link rel="stylesheet" type="text/css" href="lesson.asp-Dateien/rgb.css">
+</head><body bgcolor="black" link="#aaccff" text="white" vlink="#aaccff">
+
+<table border="0" width="100%"><tbody><tr><td align="center">
+<!-- Begin -  Site: GameDev.net Zone: NeHe 728x90 -->
+<script language="javascript" type="text/javascript">
+<!--
+var browName = navigator.appName;
+var SiteID = 1;
+var ZoneID = 4;
+var browDateTime = (new Date()).getTime();
+if (browName=='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;Browser=NETSCAPE4&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+if (browName!='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+// --> 
+</script><script language="javascript" src="lesson.asp-Dateien/a.js"></script><a href="http://www.gamedev.net/banman/a.aspx?Task=Click&amp;ZoneID=4&amp;CampaignID=291&amp;AdvertiserID=83&amp;BannerID=386&amp;SiteID=1&amp;RandomNumber=1384486870&amp;Keywords=" target="_Blank"><img src="lesson.asp-Dateien/MSBonline728x90.jpg" alt="" align="Center" border="0" height="90" width="728"></a><br>
+<noscript> <a
+href="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Click&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+target="_blank"> <img
+src="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Get&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+width="728" height="90" border="0" alt=""></a>
+</noscript>
+<!-- End -  Site: GameDev.net Zone: NeHe 728x90 --></td></tr></tbody></table><br>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tinylogo" height="130" width="326"><img src="lesson.asp-Dateien/blank.gif" alt="NeHe Productions" height="130" width="326"></td><td class="indexheading" align="center" valign="middle"><font class="text"><font class="theme" size="+3"><b><i>Lesson: 30</i></b></font></font></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Collision Detection and Physically Based Modeling Tutorial by Dimitrios Christopoulos (christop@fhw.gr).
+<br><br>
+The source code upon which this tutorial is based, is from an older contest entry of mine (at OGLchallenge.dhs.org). The
+theme was Collision Crazy and my entry (which by the way took the 1st place :)) was called Magic Room. It features
+collision detection, physically based modeling and effects.
+<br><br>
+<b><u>Collision Detection</u></b>
+<br><br>
+A difficult subject and to be honest as far as I have seen up until now, there has been no easy solution for it. For
+every application there is a different way of finding and testing for collisions. Of course there are brute force
+algorithms which are very general and would work with any kind of objects, but they are expensive.
+<br><br>
+We are going to investigate algorithms which are very fast, easy to understand and to some extent quite flexible.
+Furthermore importance must be given on what to do once a collision is detected and how to move the objects, in
+accordance to the laws of physics.  We have a lot stuff to cover. Lets review what we are going to learn:
+<br><br>
+1) Collision Detection
+<ul>
+<li>Moving Sphere - Plane</li>
+<li>Moving Sphere - Cylinder</li>
+<li>Moving Sphere - Moving Sphere</li>
+</ul>
+2) Physically Based Modeling
+<ul>
+<li>Collision Response</li>
+<li>Moving Under Gravity Using Euler Equations</li>
+</ul>
+3) Special Effects
+<ul>
+<li>Explosion Modeling Using A Fin-Tree Billboard Method</li>
+<li>Sounds Using The Windows Multimedia Library (Windows Only)</li>
+</ul>
+4) Explanation Of The Code
+<ul>
+<li>The Code Is Divided Into 5 Files</li>
+</ul>
+<table border="0">
+<tbody><tr><td><font size="-1">Lesson30.cpp</font></td><td>&nbsp;</td><td><font size="-1">: Main Code For This Tutorial</font></td></tr>
+<tr><td><font size="-1">Image.cpp,</font></td><td><font size="-1">Image.h</font></td><td><font size="-1">: Code To Load Bitmaps</font></td></tr>
+<tr><td><font size="-1">Tmatrix.cpp,</font></td><td><font size="-1">Tmatrix.h</font></td><td><font size="-1">: Classes To Handle Rotations</font></td></tr>
+<tr><td><font size="-1">Tray.cpp,</font></td><td><font size="-1">Tray.h</font></td><td><font size="-1">: Classes To Handle Ray Operations</font></td></tr>
+<tr><td><font size="-1">Tvector.cpp,</font></td><td><font size="-1">Tvector.h</font></td><td><font size="-1">: Classes To Handle Vector Operations</font></td></tr>
+</tbody></table><br>
+A lot of handy code!  The Vector, Ray and Matrix classes are very useful. I used them until now for personal projects
+of my own.
+<br><br>
+<font size="+1">1) Collision Detection</font>
+<br><br>
+For the collision detection we are going to use algorithms which are mostly used in ray tracing.  Lets first define a ray.
+<br><br>
+A ray using vector representation is represented using a vector which denotes the start and a vector (usually normalized)
+which is the direction in which the ray travels. Essentially a ray starts from the start point and travels in the
+direction of the direction vector. So our ray equation is:
+<br><br>
+<i>PointOnRay = Raystart + t * Raydirection</i>
+<br><br>
+t is a float which takes values from [0, infinity).
+<br><br>
+With 0 we get the start point and substituting other values we get the corresponding points along the ray.
+PointOnRay, Raystart, Raydirection, are 3D Vectors with values (x,y,z). Now we can use this ray representation
+and calculate the intersections with plane or cylinders.
+<br><br>
+<font size="+1">Ray - Plane Intersection Detection</font>
+<br><br>
+A plane is represented using its Vector representation as:
+<br><br>
+<i>Xn dot X = d</i>
+<br><br>
+Xn, X are vectors and d is a floating point value.<br>
+Xn is its normal.<br>
+X is a point on its surface.<br>
+d is a float representing the distance of the plane along the normal, from the center of the coordinate system.
+<br><br>
+Essentially a plane represents a half space. So all that we need to define a plane is a 3D point and a normal from that
+point which is perpendicular to that plane. These two vectors form a plane, ie. if we take for the 3D point the vector
+(0,0,0) and for the normal (0,1,0) we essentially define a plane across x,z axes.  Therefore defining a point and a
+normal is enough to compute the Vector representation of a plane.
+<br><br>
+Using the vector equation of the plane the normal is substituted as Xn and the 3D point from which the normal originates
+is substituted as X. The only value that is missing is d which can easily be computed using a dot product (from the
+vector equation).
+<br><br>
+(Note: This Vector representation is equivalent to the widely known parametric form of the plane Ax + By + Cz + D=0
+just take the three x,y,z values of the normal as A,B,C and set D=-d).
+<br><br>
+The two equations we have so far are:
+<br><br>
+<i>PointOnRay = Raystart + t * Raydirection<br>
+Xn dot X = d</i>
+<br><br>
+If a ray intersects the plane at some point then there must be some point on the ray which satisfies the plane equation
+as follows:
+<br><br>
+<i>Xn dot PointOnRay = d</i> or <i>(Xn dot Raystart) + t * (Xn dot Raydirection) = d</i>
+<br><br>
+solving for t:
+<br><br>
+<i>t = (d - Xn dot Raystart) / (Xn dot Raydirection)</i>
+<br><br>
+replacing d:
+<br><br>
+<i>t= (Xn dot PointOnPLANE - Xn dot Raystart) / (Xn dot Raydirection)</i>
+<br><br>
+summing it up:
+<br><br>
+<i>t= (Xn dot (PointOnPLANE - Raystart)) / (Xn dot Raydirection)</i>
+<br><br>
+t represents the distance from the start until the intersection point along the direction of the ray. Therefore
+substituting t into the ray equation we can get the collision point. There are a few special cases though.  If Xn dot
+Raydirection = 0 then these two vectors are perpendicular (ray runs parallel to plane) and there will be no collision.
+If t is negative the collision takes place behind the starting point of the ray along the opposite direction and again
+there is no intersection.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int TestIntersionPlane(const Plane&amp; plane,const TVector&amp; position,const TVector&amp; direction, double&amp; lamda, TVector&amp; pNormal)
+{
+	double DotProduct=direction.dot(plane._Normal);			<font class="theme">// Dot Product Between Plane Normal And Ray Direction</font>
+	double l2;
+
+	<font class="theme">// Determine If Ray Parallel To Plane</font>
+	if ((DotProduct&lt;ZERO)&amp;&amp;(DotProduct&gt;-ZERO))
+		return 0;
+
+	l2=(plane._Normal.dot(plane._Position-position))/DotProduct;	<font class="theme">// Find Distance To Collision Point</font>
+
+	if (l2&lt;-ZERO)							<font class="theme">// Test If Collision Behind Start</font>
+		return 0;
+
+	pNormal=plane._Normal;
+	lamda=l2;
+	return 1;
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The code above calculates and returns the intersection. It returns 1 if there is an intersection otherwise it returns 0.
+The parameters are the plane, the start and direction of the vector, a double (lamda) where the collision distance is
+stored if there was any, and the returned normal at the collision point.
+<br><br>
+<font size="+1"><u>Ray - Cylinder Intersection</u></font>
+<br><br>
+Computing the intersection between an infinite cylinder and a ray is much more complicated that is why I won't explain
+it here. There is way too much math involved too easily explain and my goal is primarily to give you tools how to do it
+without getting into alot of detail (this is not a geometry class). If anyone is interested in the theory behind the
+intersection code, please look at the Graphic Gems II Book (pp 35, intersection of a with a cylinder).  A
+cylinder is represented as a ray, using a start and direction (here it represents the axis) vector
+and a radius (radius around the axis of the cylinder).  The relevant function is:
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int TestIntersionCylinder(const Cylinder&amp; cylinder,const TVector&amp; position,const TVector&amp; direction, double&amp; lamda, TVector&amp; pNormal,TVector&amp; newposition)
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Returns 1 if an intersection was found and 0 otherwise.
+<br><br>
+The parameters are the cylinder structure (look at the code explanation further down), the start, direction vectors of
+the ray. The values returned through the parameters are the distance, the normal at the intersection point and the
+intersection point itself.
+<br><br>
+<font size="+1"><u>Sphere - Sphere Collision</u></font>
+<br><br>
+A sphere is represented using its center and its radius. Determining if two spheres collide is easy.  By finding the
+distance between the two centers (dist method of the TVector class) we can determine if they intersect, if the distance
+is less than the sum of their two radius.
+<br><br>
+The problem lies in determining if 2 MOVING spheres collide. Below is an example where 2 sphere move during a time step
+from one point to another. Their paths cross in-between but this is not enough to prove that an intersection occurred
+(they could pass at a different time) nor can the collision point be determined.
+<br><br>
+<center><img src="lesson.asp-Dateien/figure1.jpg"><br>Figure 1</center>
+<br><br>
+The previous intersection methods were solving the equations of the objects to determine the intersection.  When using
+complex shapes or when these equations are not available or can not be solved, a different method has to be used. The
+start points, endpoints, time step, velocity (direction of the sphere + speed) of the sphere and a method of how to
+compute intersections of static spheres is already known. To compute the intersection, the time step has to be sliced
+up into smaller pieces. Then we move the spheres according to that sliced time step using its velocity, and check for
+collisions. If at any point collision is found (which means the spheres have already penetrated each other) then we take
+the previous position as the intersection point (we could start interpolating between these points to find the exact
+intersection position, but that is mostly not required).
+<br><br>
+The smaller the time steps, the more slices we use the more accurate the method is. As an example lets say the time step
+is 1 and our slices are 3.  We would check the two balls for collision at time 0 , 0.33, 0.66, 1. Easy !!!!
+<br><br>
+The code which performs this is:
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>/*****************************************************************************************/
+/***                         Find if any of the current balls                          ***/
+/***                intersect with each other in the current timestep                  ***/
+/*** Returns the index of the 2 intersecting balls, the point and time of intersection ***/
+/*****************************************************************************************/
+
+int FindBallCol(TVector&amp; point, double&amp; TimePoint, double Time2, int&amp; BallNr1, int&amp; BallNr2)
+{
+	TVector RelativeV;
+	TRay rays;
+	double MyTime=0.0, Add=Time2/150.0, Timedummy=10000, Timedummy2=-1;
+	TVector posi;							<font class="theme">// Test All Balls Against Eachother In 150 Small Steps</font>
+	for (int i=0;i&lt;NrOfBalls-1;i++)
+	{
+		for (int j=i+1;j&lt;NrOfBalls;j++)
+		{
+			RelativeV=ArrayVel[i]-ArrayVel[j];		<font class="theme">// Find Distance</font>
+			rays=TRay(OldPos[i],TVector::unit(RelativeV));
+			MyTime=0.0;
+
+			if ( (rays.dist(OldPos[j])) &gt; 40) continue; 	<font class="theme">// If Distance Between Centers Greater Than 2*radius</font>
+									<font class="theme">// An Intersection Occurred</font>
+			while (MyTime&lt;Time2)				<font class="theme">// Loop To Find The Exact Intersection Point</font>
+			{
+				MyTime+=Add;
+				posi=OldPos[i]+RelativeV*MyTime;
+				if (posi.dist(OldPos[j])&lt;=40)
+				{
+					point=posi;
+					if (Timedummy&gt;(MyTime-Add)) Timedummy=MyTime-Add;
+					BallNr1=i;
+					BallNr2=j;
+					break;
+				}
+			}
+		}
+	}
+
+	if (Timedummy!=10000)
+	{
+		TimePoint=Timedummy;
+		return 1;
+	}
+	return 0;
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+<font size="+1"><u>How To Use What We Just Learned</u></font>
+<br><br>
+So now that we can determine the intersection point between a ray and a plane/cylinder we have to use it somehow to
+determine the collision between a sphere and one of these primitives. What we can do so far is determine the exact
+collision point between a particle and a plane/cylinder. The start position of the ray is the position of the particle
+and the direction of the ray is its velocity (speed and direction). To make it usable for spheres is quite easy. Look at
+Figure 2a to see how this can be accomplished.
+<br><br>
+<center><img src="lesson.asp-Dateien/figure2.jpg"><br>Figure 2a
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Figure
+2b</center>
+<br><br>
+Each sphere has a radius, take the center of the sphere as the particle and offset the surface along the normal of each
+plane/cylinder of interest. In Figure 2a these new primitives are represented with dotted lines. Your actual primitives of
+interest are the ones represented by continuous lines, but the collision testing is done with the offset primitives
+(represented with dotted lines). In essence we perform the intersection test with a little offset plane and a larger
+in radius cylinder. Using this little trick the ball does not penetrate the surface if an intersection is determined with
+its center. Otherwise we get a situation as in Figure 2b, where the sphere penetrates the surface.  This happens because
+we determine the intersection between its center and the primitives, which means we did not modify our original code!
+<br><br>
+Having determined where the collision takes place we have to determine if the intersection takes place in our current
+time step. Timestep is the time we move our sphere from its current point according to its velocity. Because we are
+testing with infinite rays there is always the possibility that the collision point is after the new position of the
+sphere. To determine this we move the sphere, calculate its new position and find the distance between the start and end
+point. From our collision detection procedure we also get the distance from the start point to its collision point. If
+this distance is less than the distance between start and end point then there is a collision. To calculate the exact
+time we solve the following simple equation. Represent the distance between start - end point with Dst, the distance
+between start - collision point Dsc, and the time step as T. The time where the collision takes place (Tc) is:
+<br><br>
+Tc= Dsc*T / Dst
+<br><br>
+All this is performed of course if an intersection is determined. The returned time is a fraction of the whole time step,
+so if the time step was 1 sec, and we found an intersection exactly in the middle of the distance, the calculated
+collision time would be 0.5 sec. This is interpreted as "0.5 sec after the start there is an intersection". Now the
+intersection point can be calculated by just multiplying Tc with the current velocity and adding it to the start point.
+<br><br>
+Collision point= Start + Velocity*Tc
+<br><br>
+This is the collision point on the offset primitive, to find the collision point on the real primitive we add to that
+point the reverse of the normal at that point (which is also returned by the intersection routines) by the radius of the
+sphere. Note that the cylinder intersection routine returns the intersection point if there is one so it does not need to
+be calculated.
+<br><br>
+<font size="+1">2) Physically Based Modeling</font>
+<br><br>
+<font size="+1"><u>Collision Response</u></font>
+<br><br>
+To determine how to respond after hitting Static Objects like Planes, Cylinders is as important as finding the collision
+point itself. Using the algorithms and functions described, the exact collision point, the normal at the collision point
+and the time within a time step in which the collision occurs can be found.
+<br><br>
+To determine how to respond to a collision, laws of physics have to be applied. When an object collides with the surface
+its direction changes i.e.. it bounces off. The angle of the new direction (or reflection vector) with the normal
+at the collision point is the same as the original direction vector. Figure 3 shows a collision with a sphere.
+<br><br>
+<center><img src="lesson.asp-Dateien/figure3.jpg"><br>Figure 3</center>
+<br><br>
+R is the new direction vector<br>
+I is the old direction vector before the collision<br>
+N is the Normal at the collision point
+<br><br>
+The new vector R is calculated as follows:
+<br><br>
+R= 2*(-I dot N)*N + I
+<br><br>
+The restriction is that the I and N vectors have to be unit vectors. The velocity vector as used in our examples
+represents speed and direction. Therefore it can not be plugged into the equation in the place of I, without any
+transformation.  The speed has to be extracted. The speed for such a velocity vector is extracted finding the magnitude
+of the vector. Once the magnitude is found, the vector can be transformed to a unit vector and plugged into the equation
+giving the reflection vector R. R shows us now the direction, of the reflected ray, but in order to be used as a velocity
+vector it must also incorporate the speed. Therefore it gets, multiplied with the magnitude of the original ray, thus
+resulting in the correct velocity vector.
+<br><br>
+In the example this procedure is applied to compute the collision response if a ball hits a plane or a cylinder. But it
+works also for arbitrary surfaces, it does not matter what the shape of the surface is. As long as a collision point and
+a normal can be found the collision response method is always the same. The code which does these operations is:
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>rt2=ArrayVel[BallNr].mag();						<font class="theme">// Find Magnitude Of Velocity</font>
+ArrayVel[BallNr].unit();						<font class="theme">// Normalize It</font>
+
+<font class="theme">// Compute Reflection</font>
+ArrayVel[BallNr]=TVector::unit( (normal*(2*normal.dot(-ArrayVel[BallNr]))) + ArrayVel[BallNr] );
+ArrayVel[BallNr]=ArrayVel[BallNr]*rt2;					<font class="theme">// Muliply With Magnitude To Obtain Final Velocity Vector</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+<font size="+1"><u>When Spheres Hit Other Spheres</u></font>
+<br><br>
+Determining the collision response, if two balls hit each other is much more difficult. Complex equations of particle
+dynamics have to be solved and therefore I will just post the final solution without any proof. Just trust me on this
+one :) During the collision of 2 balls we have a situation as it is depicted in Figure 4.
+<br><br>
+<center><img src="lesson.asp-Dateien/figure4.jpg"><br>Figure 4</center>
+<br><br>
+U1 and U2 are the velocity vectors of the two spheres at the time of impact. There is an axis (X_Axis) vector which joins
+the 2 centers of the spheres, and U1x, U2x are the projected vectors of the velocity vectors U1,U2 onto the axis (X_Axis)
+vector.
+<br><br>
+U1y and U2y are the projected vectors of the velocity vectors U1,U2 onto the axis which is perpendicular to the X_Axis.
+To find these vectors a few simple dot products are needed.  M1, M2 is the mass of the two spheres respectively. V1,V2
+are the new velocities after the impact, and V1x, V1y, V2x, V2y are the projections of the velocity vectors onto the
+X_Axis.
+<br><br>
+In More Detail:
+<br><br>
+a) Find X_Axis
+<br><br>
+X_Axis = (center2 - center1);<br>
+Unify X_Axis, X_Axis.unit();
+<br><br>
+b) Find Projections
+<br><br>
+U1x= X_Axis * (X_Axis dot U1)<br>
+U1y= U1 - U1x<br>
+U2x =-X_Axis * (-X_Axis dot U2)<br>
+U2y =U2 - U2x
+<br><br>
+c) Find New Velocities
+<br><br>
+(U1x * M1)+(U2x*M2)-(U1x-U2x)*M2<br>
+V1x= --------------------------------<br>
+M1+M2<br>
+(U1x * M1)+(U2x*M2)-(U2x-U1x)*M1<br>
+V2x= --------------------------------<br>
+M1+M2
+<br><br>
+In our application we set the M1=M2=1, so the equations get even simpler.
+<br><br>
+d) Find The Final Velocities
+<br><br>
+V1y=U1y<br>
+V2y=U2y<br>
+V1=V1x+V1y<br>
+V2=V2x+V2y
+<br><br>
+The derivation of that equations has a lot of work, but once they are in a form like the above they can be used quite
+easily. The code which does the actual collision response is:
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>TVector pb1,pb2,xaxis,U1x,U1y,U2x,U2y,V1x,V1y,V2x,V2y;
+double a,b;
+pb1=OldPos[BallColNr1]+ArrayVel[BallColNr1]*BallTime;			<font class="theme">// Find Position Of Ball1</font>
+pb2=OldPos[BallColNr2]+ArrayVel[BallColNr2]*BallTime;			<font class="theme">// Find Position Of Ball2</font>
+xaxis=(pb2-pb1).unit();							<font class="theme">// Find X-Axis</font>
+a=xaxis.dot(ArrayVel[BallColNr1]);					<font class="theme">// Find Projection</font>
+U1x=xaxis*a;								<font class="theme">// Find Projected Vectors</font>
+U1y=ArrayVel[BallColNr1]-U1x;
+xaxis=(pb1-pb2).unit();							<font class="theme">// Do The Same As Above</font>
+b=xaxis.dot(ArrayVel[BallColNr2]);					<font class="theme">// To Find Projection</font>
+U2x=xaxis*b;								<font class="theme">// Vectors For The Other Ball</font>
+U2y=ArrayVel[BallColNr2]-U2x;
+V1x=(U1x+U2x-(U1x-U2x))*0.5;						<font class="theme">// Now Find New Velocities</font>
+V2x=(U1x+U2x-(U2x-U1x))*0.5;
+V1y=U1y;
+V2y=U2y;
+for (j=0;j&lt;NrOfBalls;j++)						<font class="theme">// Update All Ball Positions</font>
+ArrayPos[j]=OldPos[j]+ArrayVel[j]*BallTime;
+ArrayVel[BallColNr1]=V1x+V1y;						<font class="theme">// Set New Velocity Vectors</font>
+ArrayVel[BallColNr2]=V2x+V2y;						<font class="theme">// To The Colliding Balls</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+<font size="+1"><u>Moving Under Gravity Using Euler Equations</u></font>
+<br><br>
+To simulate realistic movement with collisions, determining the collision point and computing the response is not
+enough. Movement based upon physical laws also has to be simulated.
+<br><br>
+The most widely used method for doing this is using Euler equations. As indicated all the computations are going to be
+performed using time steps. This means that the whole simulation is advanced in certain time steps during which all the
+movement, collision and response tests are performed. As an example we can advanced a simulation 2 sec. on each frame.
+Based on Euler equations, the velocity and position at each new time step is computed as follows:
+<br><br>
+Velocity_New = Velocity_Old + Acceleration*TimeStep<br>
+Position_New = Position_Old + Velocity_New*TimeStep
+<br><br>
+Now the objects are moved and tested angainst collision using this new velocity. The acceleration for each object is
+determined by accumulating the forces which are acted upon it and divide by its mass according to this equation:
+<br><br>
+Force = mass * acceleration
+<br><br>
+A lot of physics formulas :)
+<br><br>
+But in our case the only force the objects get is the gravity, which can be represented right away as a vector indicating
+acceleration. In our case something negative in the Y direction like (0,-0.5,0). This means that at the beginning of each
+time step, we calculate the new velocity of each sphere and move them testing for collisions. If a collision occurs during
+a time step (say after 0.5 sec with a time step equal to 1 sec.) we advance the object to this position, compute the
+reflection (new velocity vector) and move the object for the remaining time (which is 0.5 in our example) testing again
+for collisions during this time. This procedure gets repeated until the time step is completed.
+<br><br>
+When multiple moving objects are present, each moving object is tested with the static geometry for intersections and the
+nearest intersection is recorded. Then the intersection test is performed for collisions among moving objects, where each
+object is tested with everyone else. The returned intersection is compared with the intersection returned by the static
+objects and the closest one is taken. The whole simulation is updated to that point, (i.e. if the closest intersection
+would be after 0.5 sec. we would move all the objects for 0.5 seconds), the reflection vector is calculated for the
+colliding object and the loop is run again for the remaining time.
+<br><br>
+<font size="+1">3) Special Effects</font>
+<br><br>
+<font size="+1"><u>Explosions</u></font>
+<br><br>
+Every time a collision takes place an explosion is triggered at the collision point. A nice way to model explosions is to
+alpha blend two polygons which are perpendicular to each other and have as the center the point of interest (here
+intersection point).  The polygons are scaled and disappear over time. The disappearing is done by changing the alpha
+values of the vertices from 1 to 0, over time. Because a lot of alpha blended polygons can cause problems and overlap
+each other (as it is stated in the Red Book in the chapter about transparency and blending) because of the Z buffer, we
+borrow a technique used in particle rendering. To be correct we had to sort the polygons from back to front according to
+their eye point distance, but disabling the Depth buffer writes (not reads) also does the trick (this is also documented
+in the red book).  Notice that we limit our number of explosions to maximum 20 per frame, if additional explosions occur
+and the buffer is full, the explosion is discarded. The source which updates and renders the explosions is:
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// Render / Blend Explosions</font>
+glEnable(GL_BLEND);							<font class="theme">// Enable Blending</font>
+glDepthMask(GL_FALSE);							<font class="theme">// Disable Depth Buffer Writes</font>
+glBindTexture(GL_TEXTURE_2D, texture[1]);				<font class="theme">// Upload Texture</font>
+for(i=0; i&lt;20; i++)							<font class="theme">// Update And Render Explosions</font>
+{
+	if(ExplosionArray[i]._Alpha&gt;=0)
+	{
+		glPushMatrix();
+		ExplosionArray[i]._Alpha-=0.01f;			<font class="theme">// Update Alpha</font>
+		ExplosionArray[i]._Scale+=0.03f;			<font class="theme">// Update Scale</font>
+		<font class="theme">// Assign Vertices Colour Yellow With Alpha</font>
+		<font class="theme">// Colour Tracks Ambient And Diffuse</font>
+		glColor4f(1,1,0,ExplosionArray[i]._Alpha);		<font class="theme">// Scale</font>
+		glScalef(ExplosionArray[i]._Scale,ExplosionArray[i]._Scale,ExplosionArray[i]._Scale);
+		<font class="theme">// Translate Into Position Taking Into Account The Offset Caused By The Scale</font>
+		glTranslatef((float)ExplosionArray[i]._Position.X()/ExplosionArray[i]._Scale,
+			(float)ExplosionArray[i]._Position.Y()/ExplosionArray[i]._Scale,
+			(float)ExplosionArray[i]._Position.Z()/ExplosionArray[i]._Scale);
+		glCallList(dlist);					<font class="theme">// Call Display List</font>
+		glPopMatrix();
+	}
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+<font size="+1"><u>Sound</u></font>
+<br><br>
+For the sound the windows multimedia function PlaySound() is used. This is a quick and dirty way to play wav files
+quickly and without trouble.
+<br><br>
+<font size="+1">4) Explaining the Code</font>
+<br><br>
+Congratulations...
+<br><br>
+If you are still with me you have survived successfully the theory section ;) Before having fun playing around with the
+demo, some further explanations about the source code are necessary.  The main flow and steps of the simulation are as
+follows (in pseudo code):
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>While (Timestep!=0)
+{
+	For each ball
+	{
+		compute nearest collision with planes;
+		compute nearest collision with cylinders;
+		Save and replace if it the nearest intersection;
+		in time computed until now;
+	}
+	Check for collision among moving balls;
+	Save and replace if it the nearest intersection;
+	in time computed until now;
+	If (Collision occurred)
+	{
+		Move All Balls for time equal to collision time;
+		(We already have computed the point, normal and collision time.)
+		Compute Response;
+		Timestep-=CollisonTime;
+	}
+	else
+		Move All Balls for time equal to Timestep
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The actual code which implements the above pseudo code is much harder to read but essentially is an exact implementation
+of the pseudo code above.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// While Time Step Not Over</font>
+while (RestTime&gt;ZERO)
+{
+	lamda=10000;							<font class="theme">// Initialize To Very Large Value</font>
+	<font class="theme">// For All The Balls Find Closest Intersection Between Balls And Planes / Cylinders</font>
+	for (int i=0;i&lt;NrOfBalls;i++)
+	{
+		<font class="theme">// Compute New Position And Distance</font>
+		OldPos[i]=ArrayPos[i];
+		TVector::unit(ArrayVel[i],uveloc);
+		ArrayPos[i]=ArrayPos[i]+ArrayVel[i]*RestTime;
+		rt2=OldPos[i].dist(ArrayPos[i]);
+		<font class="theme">// Test If Collision Occured Between Ball And All 5 Planes</font>
+		if (TestIntersionPlane(pl1,OldPos[i],uveloc,rt,norm))
+		{
+			<font class="theme">// Find Intersection Time</font>
+			rt4=rt*RestTime/rt2;
+			<font class="theme">// If Smaller Than The One Already Stored Replace In Timestep</font>
+			if (rt4&lt;=lamda)
+			{
+				<font class="theme">// If Intersection Time In Current Time Step</font>
+				if (rt4&lt;=RestTime+ZERO)
+					if (! ((rt&lt;=ZERO)&amp;&amp;(uveloc.dot(norm)&gt;ZERO)) )
+					{
+						normal=norm;
+						point=OldPos[i]+uveloc*rt;
+						lamda=rt4;
+						BallNr=i;
+					}
+			}
+		}
+
+		if (TestIntersionPlane(pl2,OldPos[i],uveloc,rt,norm))
+		{
+
+			<font class="theme">// ...The Same As Above Omitted For Space Reasons</font>
+		}
+
+		if (TestIntersionPlane(pl3,OldPos[i],uveloc,rt,norm))
+		{
+
+			<font class="theme">// ...The Same As Above Omitted For Space Reasons</font>
+		}
+
+		if (TestIntersionPlane(pl4,OldPos[i],uveloc,rt,norm))
+		{
+
+			<font class="theme">// ...The Same As Above Omitted For Space Reasons</font>
+		}
+
+		if (TestIntersionPlane(pl5,OldPos[i],uveloc,rt,norm))
+		{
+
+			<font class="theme">// ...The Same As Above Omitted For Space Reasons</font>
+		}
+
+		<font class="theme">// Now Test Intersection With The 3 Cylinders</font>
+		if (TestIntersionCylinder(cyl1,OldPos[i],uveloc,rt,norm,Nc))
+		{
+			rt4=rt*RestTime/rt2;
+			if (rt4&lt;=lamda)
+			{
+				if (rt4&lt;=RestTime+ZERO)
+					if (! ((rt&lt;=ZERO)&amp;&amp;(uveloc.dot(norm)&gt;ZERO)) )
+					{
+						normal=norm;
+						point=Nc;
+						lamda=rt4;
+						BallNr=i;
+					}
+			}
+		}
+
+		if (TestIntersionCylinder(cyl2,OldPos[i],uveloc,rt,norm,Nc))
+		{
+			<font class="theme">// ...The Same As Above Omitted For Space Reasons</font>
+		}
+
+		if (TestIntersionCylinder(cyl3,OldPos[i],uveloc,rt,norm,Nc))
+		{
+			<font class="theme">// ...The Same As Above Omitted For Space Reasons</font>
+		}
+
+	}
+
+	<font class="theme">// After All Balls Were Tested With Planes / Cylinders Test For Collision</font>
+	<font class="theme">// Between Them And Replace If Collision Time Smaller</font>
+	if (FindBallCol(Pos2,BallTime,RestTime,BallColNr1,BallColNr2))
+	{
+		if (sounds)
+			PlaySound("Explode.wav",NULL,SND_FILENAME|SND_ASYNC);
+
+		if ( (lamda==10000) || (lamda&gt;BallTime) )
+		{
+			RestTime=RestTime-BallTime;
+			TVector pb1,pb2,xaxis,U1x,U1y,U2x,U2y,V1x,V1y,V2x,V2y;
+			double a,b;
+			.
+			.
+			Code Omitted For Space Reasons
+			The Code Is Described In The Physically Based Modeling
+			Section Under Sphere To Sphere Collision
+			.
+			.
+			//Update Explosion Array And Insert Explosion
+			for(j=0;j&lt;20;j++)
+			{
+				if (ExplosionArray[j]._Alpha&lt;=0)
+				{
+					ExplosionArray[j]._Alpha=1;
+					ExplosionArray[j]._Position=ArrayPos[BallColNr1];
+					ExplosionArray[j]._Scale=1;
+					break;
+				}
+			}
+
+			continue;
+		}
+	}
+
+	<font class="theme">// End Of Tests</font>
+	<font class="theme">// If Collision Occured Move Simulation For The Correct Timestep</font>
+	<font class="theme">// And Compute Response For The Colliding Ball</font>
+	if (lamda!=10000)
+	{
+		RestTime-=lamda;
+		for (j=0;j&lt;NrOfBalls;j++)
+		ArrayPos[j]=OldPos[j]+ArrayVel[j]*lamda;
+		rt2=ArrayVel[BallNr].mag();
+		ArrayVel[BallNr].unit();
+		ArrayVel[BallNr]=TVector::unit( (normal*(2*normal.dot(-ArrayVel[BallNr]))) + ArrayVel[BallNr] );
+		ArrayVel[BallNr]=ArrayVel[BallNr]*rt2;
+
+		<font class="theme">// Update Explosion Array And Insert Explosion</font>
+		for(j=0;j&lt;20;j++)
+		{
+			if (ExplosionArray[j]._Alpha&lt;=0)
+			{
+				ExplosionArray[j]._Alpha=1;
+				ExplosionArray[j]._Position=point;
+				ExplosionArray[j]._Scale=1;
+				break;
+			}
+		}
+	}
+	else RestTime=0;
+}									<font class="theme">// End Of While Loop</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The Main Global Variables Of Importance Are:
+<br><br>
+<table border="1" cols="2" width="100%">
+<tbody><tr>
+<td><font size="-1">Represent the direction and position of the camera.
+The camera is moved using the LookAt function. As you will probably
+notice,
+if not in hook mode (which I will explain later), the whole scene
+rotates around, the degree of rotation is handled with camera_rotation.</font></td>
+<td><font size="-1">TVector dir<br>
+TVector pos(0,-50,1000);<br>
+float camera_rotation=0;</font></td>
+</tr>
+<tr>
+<td><font size="-1">Represent the acceleration applied to the moving balls. Acts as gravity in the application.</font></td>
+<td><font size="-1">TVector accel(0,-0.05,0);</font></td>
+</tr>
+<tr>
+<td><font size="-1">Arrays which hold the New and old ball positions and the velocity vector of each ball. The number of balls is hard coded to 10.</font></td>
+<td><font size="-1">TVector ArrayVel[10];<br>
+TVector ArrayPos[10];<br>
+TVector OldPos[10];<br>
+int NrOfBalls=3;</font></td>
+</tr>
+<tr>
+<td><font size="-1">The time step we use.</font></td>
+<td><font size="-1">double Time=0.6;</font></td>
+</tr>
+<tr>
+<td><font size="-1">If 1 the camera view changes and a (the ball with
+index 0 in the array) ball is followed. For making the camera following
+the
+ball we used its position and velocity vector to position the camera
+exactly behind the ball and make it look along the velocity vector of
+the
+ball.</font></td>
+<td><font size="-1">int hook_toball1=0;</font></td>
+</tr>
+<tr>
+<td><font size="-1">Self explanatory structures for holding data about explosions, planes and cylinders.</font></td>
+<td><font size="-1">struct Plane<br>
+struct Cylinder<br>
+struct Explosion</font></td>
+</tr>
+<tr>
+<td><font size="-1">The explosions are stored in a array, of fixed length.</font></td>
+<td><font size="-1">Explosion ExplosionArray[20];</font></td>
+</tr>
+</tbody></table>
+<br><br>
+The Main Functions Of Interest Are:
+<br><br>
+<table border="1" cols="2" width="100%">
+<tbody><tr>
+<td><font size="-1">Perform Intersection tests with primitives</font></td>
+<td><font size="-1">int TestIntersionPlane(....);<br>
+int TestIntersionCylinder(...);</font></td>
+</tr>
+<tr>
+<td><font size="-1">Loads Textures from bmp files</font></td>
+<td><font size="-1">void LoadGLTextures();</font></td>
+</tr>
+<tr>
+<td><font size="-1">Has the rendering code. Renders the balls, walls, columns and explosions</font></td>
+<td><font size="-1">void DrawGLScene();</font></td>
+</tr>
+<tr>
+<td><font size="-1">Performs the main simulation logic</font></td>
+<td><font size="-1">void idle();</font></td>
+</tr>
+<tr>
+<td><font size="-1">Sets Up OpenGL state</font></td>
+<td><font size="-1">void InitGL();</font></td>
+</tr>
+<tr>
+<td><font size="-1">Find if any balls collide again each other in current time step</font></td>
+<td><font size="-1">int FindBallCol(...);</font></td>
+</tr>
+</tbody></table>
+<br><br>
+For more information look at the source code. I tried to comment it as best as I could. Once the collision detection and
+response logic is understood, the source should become very clear. For any more info don't hesitate to contact me.
+<br><br>
+As I stated at the beginning of this tutorial, the subject of collision detection is a very difficult subject to cover
+in one tutorial.  You will learn a lot in this tutorial, enough to create some pretty impressive demos of your own,
+but there is still alot more to learn on this subject.  Now that you have the basics, all the other sources on Collision
+Detection and Physically Based Modeling out there should become easier to understand. With this said, I send you on your
+way and wish you happy collisions!!!
+<br><br>
+Some information about Dimitrios Christopoulos: He is currently working as a Virtual Reality software engineer at the
+Foundation of the Hellenic World in Athens/Greece (www.fhw.gr).  Although Born in Germany, he studied in Greece at the
+University of Patras for a B.Sc. in Computer Engineering and Informatics. He holds also a MSc degree (honours) from the
+University of Hull (UK) in Computer Graphics and Virtual Environments.  He did his first steps in game programming using
+Basic on an Commodore 64, and switched to C/C++/Assembly on the PC platform after the start of his studium. During the
+last few years OpenGL has become his graphics API of choice.  For more information visit his site at:
+http://members.xoom.com/D_Christop.
+<br><br>
+<b>Dimitrios Christopoulos</b>
+<br><br>
+<b>Jeff Molofee</b> (<b>NeHe</b>)
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vc/lesson30.zip">Visual C++</a> Code For This Lesson.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/bcb6/lesson30_bcb6.zip">Borland C++ Builder 6</a> Code For This Lesson. ( Conversion by <a href="mailto:christian@tugzip.com">Christian Kindahl</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cwarrior/lesson30.zip">Code Warrior 5.3</a> Code For This Lesson. ( Conversion by <a href="mailto:DelusionalBeing@hotmail.com">Scott Lupton</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/delphi/lesson30.zip">Delphi</a> Code For This Lesson. ( Conversion by <a href="mailto:michal_praha@seznam.cz">Michal Tucek</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/devc/lesson30.zip">Dev C++</a> Code For This Lesson. ( Conversion by <a href="mailto:conrado@buhrer.net">Conrado</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/jogl/lesson30.jar">JoGL</a> Code For This Lesson. ( Conversion by <a href="mailto:abezrati@hotmail.com">Abdul Bezrati</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxglx/lesson30.tar.gz">Linux/GLX</a> Code For This Lesson. ( Conversion by <a href="mailto:rodolphe.suescun@wanadoo.fr">Rodolphe Suescun</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/macosxcocoa/lesson30.zip">Mac OS X/Cocoa</a> Code For This Lesson. ( Conversion by <a href="mailto:blb@pobox.com">Bryan Blackburn</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vs_net/lesson30.zip">Visual Studio .NET</a> Code For This Lesson. ( Conversion by <a href="mailto:ultimatezeus@hotmail.com">Grant James</a> )<br>
+<br><br>
+<br><br>
+<table border="0" width="100%">
+<tbody><tr><td align="left" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=29">&lt; Lesson 29</a></font></b></td>
+<td align="right" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=31">Lesson 31 &gt;</a></font></b></td>
+</tr></tbody></table>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table>
+
+</body></html>

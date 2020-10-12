@@ -1,0 +1,43 @@
+Schiffstyp: Tanker (Typ 45)
+Techlevel: 14
+Module: 23
+Kommandopunkte: 20
+Angriffswert: 0
+Schilde: 1570
+Panzerung: 1948
+Struktur: 368
+Wendigkeit: 1782
+Reaktor: 4048
+Laderaum: 0
+Sensor: 1
+Tarnung: 0
+Min Crew: 34
+Max Crew: 75
+Sprung Sektor: 22
+Sprung-Zeit: 64
+Angriffs-Zeit: 9
+Angriffsenergie: 41
+
+Verwendete Forschungen: 
+6x Kybernetik (Lvl 22)
+4x Leiterbahnen (Lvl 28)
+1x Photovoltaik (Lvl 29)
+6x Photovoltaik (Lvl 28)
+4x Ionenverhalten (Lvl 42)
+2x Kybernetik (Lvl 31)
+
+Baukosten: 
+Iso: 0
+Eg: 170
+Es: 76
+Rad: 540
+Em: 1185
+Sm: 800
+Lm: 2955
+Fe: 1905
+Syn: 420
+Org: 1280
+Erz: 2000
+Rek: 0
+Nrg: 11530
+Cr: 9295

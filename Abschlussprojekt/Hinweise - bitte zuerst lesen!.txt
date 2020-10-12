@@ -1,0 +1,33 @@
+Roboerarm API
+=============
+
+In diesem Verzeichnis beindet sich die die automatisch generierte Schnittstellendokumentantion des Roboterarms. Die startdatei ist die index.html, die auch noch eine kleine Einleitung einen einen groben Überblick über verschiedene Funktionalitäten bietet.
+
+
+Roboterarm Demo
+===============
+
+In diesem Verzeichnis  befindet sich der komplette Quellcode der Roboterarm Demo Version.
+
+
+Hinweis zu den Versionen
+========================
+
+Da die beiden Versionen RoboterarmDemo und RoboterarmV1_0 die gleiche RoboterarmPanel Klasse registrieren wollen, ist dies in Delphi 7 leider nicht möglich!
+
+Es kann somit immer nur eine der beiden Versionen in einer Delphi Umgebung registriert und somit benutzt werden. Um auf die andere Version zu wechseln muss die installierte erst entfernt werden.
+
+
+Hinweis zu der OpenGL Lib
+=========================
+
+Beide Komponenten basieren auf einer OpenGL Lib für Delphi. Diese Library Komponenten müssen Delphi zur Verfügung stehen, bevor die Komponenten benutzt werden können.
+Hierzu einfach das Archiv Lib.zip komplett in das Lib Verzeichnis von Delphi (C:\Programme\Borland\Delphi 7\Lib\) entpacken. Da Delphi bereits veraltete OpenGL Headerdateien besitzt müssen manche Dateien überschrieben werden. Dies sollte auch bei jedem Vorkommen getan werden.
+Das Ersetzen geschieht jedoch auf eigene Gefahr! Wurden die entsprechenden Dateien durch ein früheres Update verändert, so werden diese Änderungen beim Überschreiben verloren gehen!
+
+Anschließend muss Delphi neu gestartet werden.
+Nun kann eine Version installiert und benutzt werden.
+
+
+
+Viel Spaß beim Ausprobieren!

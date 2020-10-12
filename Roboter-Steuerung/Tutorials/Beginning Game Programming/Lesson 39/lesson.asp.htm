@@ -1,0 +1,617 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+<title>NeHe Productions: OpenGL Lesson #39</title>
+<meta name="author" content="Jeff Molofee">
+<meta name="description" content="OpenGL Tutorials, Demos, Games and More...">
+<meta name="keywords" content="opengl, tutorial, article, demo, game, blend, texturemap, lighting, contest, 3D">
+<link rel="stylesheet" type="text/css" href="lesson.asp-Dateien/rgb.css">
+</head><body bgcolor="black" link="#aaccff" text="white" vlink="#aaccff">
+
+<table border="0" width="100%"><tbody><tr><td align="center">
+<!-- Begin -  Site: GameDev.net Zone: NeHe 728x90 -->
+<script language="javascript" type="text/javascript">
+<!--
+var browName = navigator.appName;
+var SiteID = 1;
+var ZoneID = 4;
+var browDateTime = (new Date()).getTime();
+if (browName=='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;Browser=NETSCAPE4&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+if (browName!='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+// --> 
+</script><script language="javascript" src="lesson.asp-Dateien/a.js"></script><a href="http://www.gamedev.net/banman/a.aspx?Task=Click&amp;ZoneID=4&amp;CampaignID=609&amp;AdvertiserID=11&amp;BannerID=673&amp;SiteID=1&amp;RandomNumber=1751779694&amp;Keywords=" target="_Blank"><img src="lesson.asp-Dateien/BGPleader.png" alt="" align="Center" border="0" height="90" width="728"></a><br>
+<noscript> <a
+href="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Click&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+target="_blank"> <img
+src="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Get&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+width="728" height="90" border="0" alt=""></a>
+</noscript>
+<!-- End -  Site: GameDev.net Zone: NeHe 728x90 --></td></tr></tbody></table><br>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tinylogo" height="130" width="326"><img src="lesson.asp-Dateien/blank.gif" alt="NeHe Productions" height="130" width="326"></td><td class="indexheading" align="center" valign="middle"><font class="text"><font class="theme" size="+3"><b><i>Lesson: 39</i></b></font></font></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text"><font size="+1"><u>Introduction To Physical Simulations</u></font>
+<br><br>If you are familiar to physics and want to start implementing
+code of physical simulations, this tutorial could help you. In order to
+benefit from this
+tutorial you should be familiar to vectoral operations in 3D as well as
+physical concepts such as force and velocity.
+<br><br>
+In this tutorial you will find a very simple physical simulation engine. Contents of the tutorial is as follows:
+<br><br>
+<font size="+1"><u>Contents:</u></font>
+<br><br>
+<table border="0">
+<tbody><tr><th align="left"><font size="-1">The Design:</font></th></tr>
+<tr><td><font class="theme" size="-1"><b>* class Vector3D</b></font></td><td><font size="-1"> ---&gt; </font></td><td><font size="-1"><b>An Object To Represent A 3D Vector Or A 3D Point In Space.</b></font></td></tr>
+<tr></tr>
+<tr><th align="left"><font size="-1">Force and Motion:</font></th></tr>
+<tr><td><font class="theme" size="-1"><b>* class Mass</b></font></td><td><font size="-1"> ---&gt; </font></td><td><font size="-1"><b>An Object To Represent A Mass.</b></font></td></tr>
+<tr></tr>
+<tr><th align="left"><font size="-1">How A Simulation Should Operate:</font></th></tr>
+<tr><td><font class="theme" size="-1"><b>* class Simulation</b></font></td><td><font size="-1"> ---&gt; </font></td><td><font size="-1"><b>A Container Object For Simulating Masses.</b></font></td></tr>
+<tr></tr>
+<tr><th align="left"><font size="-1">Operating A Simulation By An Application:</font></th></tr>
+<tr><td><font class="theme" size="-1"><b>* class ConstantVelocity : public Simulation</b></font></td><td><font size="-1"> ---&gt; </font></td><td><font size="-1"><b>A Simulation Object That Creates A Mass With A Constant Velocity.</b></font></td></tr>
+<tr></tr>
+<tr><th align="left"><font size="-1">Applying Force:</font></th></tr>
+<tr><td><font class="theme" size="-1"><b>* class MotionUnderGravitation : public Simulation</b></font></td><td><font size="-1"> ---&gt; </font></td><td><font size="-1"><b>A Simulation Object That Creates A Mass Which Moves Under Gravitation.</b></font></td></tr>
+<tr><td><font class="theme" size="-1"><b>* class MassConnectedWithSpring : public Simulation</b></font></td><td><font size="-1"> ---&gt; </font></td><td><font size="-1"><b>A Simulation Object That Creates A Mass Connected To A Point By A Spring.</b></font></td></tr>
+</tbody></table>
+<br>
+<font size="+1"><u>The Design:</u></font>
+<br><br>Design of physical simulation engines is not always simple. But
+there is a simple order of dependency; application depends on
+simulation toolkit and the
+simulation toolkit depends on math libraries. Here, we will make use of
+this simple order. Our purpose is to obtain a container to simulate
+motion of
+masses. The simulation toolkit will include an object "class Mass" and
+an object "class Simulation". "class Simulation" will be our container.
+When we
+obtain the Simulation class, we will be able to develop applications.
+But before that, we need a math library. The library includes only one
+class
+"class Vector3D". Vector3D class will be used to represent points,
+vectors, position, velocity, and force in 3 dimensional space.
+<br><br>
+<b><font class="theme" size="-1">*	class Vector3D</font> ---&gt; <font size="-1">An Object To Represent A 3D Vector Or A 3D Point In Space.</font></b>
+<br><br>Vector3D class is the only member of our modest math library.
+Vector3D holds x, y, and z values and it implements operators for
+vector arithmetics in
+3D. Addition, subtraction, multiplication, and division operators are
+coded in Vector3D. Since this tutorial focuses on physics, I will not
+go into
+details of Vector3D. If you have a look at Physics1.h you will see how
+simple Vector3D is.
+<br><br>
+<font size="+1"><u>Force And Motion:</u></font>
+<br><br>For implementing physical simulations, we should know what a
+mass is. A mass has a position and a velocity. A mass has weight on
+Earth, Moon, Mars, and
+at any place where gravitation exists. Weight is different on different
+gravitations of different places. But there is one common value for a
+mass,
+which is the same in all conditions. This value is also called mass.
+Mass value of a mass! Mass value represents "how much a mass exists in
+space"! For
+example a book is a mass with a weight of say 1 kg on The Earth and
+with a weight of 0.17 kg on The Moon and has a mass value of 1 kg
+everywhere. The
+mass value is designated to be equal to its mass on The Earth.
+<br><br>After having understood the mass of a mass, we should go on
+with force and motion. A mass, with a non-zero velocity in space, moves
+in the direction of
+the velocity. Therefore, one reason of the change in position is the
+velocity. Passing of time is another reason. Change in position depends
+on how fast
+a mass moves and how much time has passed. You should have understood
+until here to go on to the next paragraph. If not, spend some time
+thinking on the
+relation between position, velocity and time.
+<br><br>Velocity of a mass changes if there is force acting on it.
+Velocity tends to the direction of the force. This tending is
+proportional to the force and
+inversly proportional to mass. The change in velocity per unit time is
+called acceleration. More the force on a mass, more its acceleration.
+More the mass
+value of a mass, less its acceleration. When acceleration is formulated
+it is:
+<br><br>
+<font class="theme" size="-1"><b>acceleration = force / mass</b></font>
+<br><br>
+From here we obtain the famous equation:
+<br><br>
+<font class="theme" size="-1"><b>force = mass * acceleration</b></font>
+<br><br>
+(We will mostly use the acceleration formula)
+<br><br>For preparing a physical medium to simulate, you should be
+aware of the environment that the simulation takes place. The
+environment in this tutorial is
+simply empty space waiting to be filled by masses we create. The units
+of the values to represent masses and time shall be decided firstly. I
+have
+decided to use the time unit as seconds and units of position values as
+meters. Accordingly, unit of velocity becomes meters per second (m/s).
+And the
+unit of acceleration becomes meters per second per second (m/s/s) =
+((m/s)/s) = (m / (s*s))! (this means velocity per second since velocity
+is meters
+per second) I have decided the unit of mass values as kilograms (kg).
+<br><br>
+<b><font class="theme" size="-1">*	class Mass</font> ---&gt; <font size="-1">An Object To Represent A Mass.</font></b>
+<br><br>Now we are starting to use the theory! We have to write a class
+to represent a mass. It should hold the mass value, the position, the
+velocity, and the
+force applied at an instance.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>class Mass
+{
+public:
+	float m;								<font class="theme">// The Mass Value.</font>
+	Vector3D pos;								<font class="theme">// Position In Space.</font>
+	Vector3D vel;								<font class="theme">// Velocity.</font>
+	Vector3D force;								<font class="theme">// Force Applied On This Mass At An Instance.</font>
+
+	Mass(float m)								<font class="theme">// Constructor.</font>
+	{
+		this-&gt;m = m;
+	}
+
+	...
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">We
+want to apply force to this mass. At an instance in time, there might
+be several sources of external forces acting on the mass. The vector
+sum of
+these forces gives the net force on the mass at that instance. Before
+starting to apply forces, we should reset the force on the mass. Then
+we can add
+external forces on the mass.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	(class Mass continued)
+
+	void applyForce(Vector3D force)
+	{
+		this-&gt;force += force;						<font class="theme">// The External Force Is Added To The Force On The Mass.</font>
+	}
+
+	void init()								<font class="theme">// This Method Sets The Force Values To Zero.</font>
+	{
+		force.x = 0;
+		force.y = 0;
+		force.z = 0;
+	}
+	
+	...
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+There is a simple order of things to do in a simulation:
+<ol>
+<li>Reset the force (see the init() method())</li>
+<li>Apply external forces</li>
+<li>Iterate time by "the change in time"</li>
+</ol>Here, iterating the time is implemented with "The Euler Method".
+The Euler Method is a simple simulation method. There are more
+sophisticated methods
+for simulations. But Euler is good enough for lots of applications.
+Most of computer and video games use The Euler Method. What this method
+does is that
+it calculates the next velocity and next position of a mass according
+to the force applied and time passed. The iteration is done in void
+simulate(float dt):
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	(class Mass continued)
+
+	void simulate(float dt)
+	{
+		vel += (force / m) * dt;					<font class="theme">// Change In Velocity Is Added To The Velocity.</font>
+										<font class="theme">// The Change Is Proportinal With The Acceleration (force / m) And Change In Time.</font>
+
+		pos += vel * dt;						<font class="theme">// Change In Position Is Added To The Position.</font>
+										<font class="theme">// Change In Position Is Velocity Times The Change In Time.</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+<font size="+1"><u>How A Simulation Should Operate:</u></font>
+<br><br>In a physical simulation, at every iteration, the same process
+takes place. Forces are set to zero, forces are applied, new positions
+and new velocities
+are calculated. This process cycles as long as we want the time to
+pass. This process is implemented in "class Simulation".
+<br><br>
+<b><font class="theme" size="-1">*	class Simulation</font> ---&gt; <font size="-1">A Container Object For Simulating Masses.</font></b>
+<br><br>Simulation class holds masses as its members. The role of the
+class is to create and delete masses, and maintain the simulation
+procedure.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>class Simulation
+{
+public:
+	int numOfMasses;							<font class="theme">// Number Of Masses In This Container.</font>
+	Mass** masses;								<font class="theme">// Masses Are Held By Array Of Pointers. (Here Mass** Represents A 1 Dimensional Array).</font>
+	
+	Simulation(int numOfMasses, float m)					<font class="theme">// Constructor Creates Some Masses With Mass Values m.</font>
+	{
+		this-&gt;numOfMasses = numOfMasses;
+		
+		masses = new Mass*[numOfMasses];				<font class="theme">// Create An Array Of Pointers.</font>
+
+		for (int a = 0; a &lt; numOfMasses; ++a)				<font class="theme">// We Will Step To Every Pointer In The Array.</font>
+			masses[a] = new Mass(m);				<font class="theme">// Create A Mass As A Pointer And Put It In The Array.</font>
+	}
+
+	virtual void release()							<font class="theme">// Delete The Masses Created.</font>
+	{
+		for (int a = 0; a &lt; numOfMasses; ++a)				<font class="theme">// We Will Delete All Of Them.</font>
+		{
+			delete(masses[a]);
+			masses[a] = NULL;
+		}
+			
+		delete(masses);
+		masses = NULL;
+	}
+
+	Mass* getMass(int index)
+	{
+		if (index &lt; 0 || index &gt;= numOfMasses)				<font class="theme">// If The index Is Not In The Array.</font>
+			return NULL;						<font class="theme">// Then Return NULL.</font>
+
+		return masses[index];						<font class="theme">// Get The Mass At The index.</font>
+	}
+
+...
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The simulation procedure has three steps:
+<ol>
+<li>init() to set forces to zero</li>
+<li>solve() to apply forces</li>
+<li>simulate(float dt) to iterate masses by the change in time</li>
+</ol>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	(class Simulation continued)
+
+	virtual void init()							<font class="theme">// This Method Will Call The init() Method Of Every Mass.</font>
+	{
+		for (int a = 0; a &lt; numOfMasses; ++a)				<font class="theme">// We Will init() Every Mass.</font>
+			masses[a]-&gt;init();					<font class="theme">// Call init() Method Of The Mass.</font>
+	}
+
+	virtual void solve()							<font class="theme">// No Implementation Because No Forces Are Wanted In This Basic Container.</font>
+	{
+										<font class="theme">// In Advanced Containers, This Method Will Be Overridden And Some Forces Will Act On Masses.</font>
+	}
+
+	virtual void simulate(float dt)						<font class="theme">// Iterate The Masses By The Change In Time.</font>
+	{
+		for (int a = 0; a &lt; numOfMasses; ++a)				<font class="theme">// We Will Iterate Every Mass.</font>
+			masses[a]-&gt;simulate(dt);				<font class="theme">// Iterate The Mass And Obtain New Position And New Velocity.</font>
+	}
+	
+	...
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The simulation procedure is packed into one method:
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	(class Simulation continued)
+
+	virtual void operate(float dt)						<font class="theme">// The Complete Procedure Of Simulation.</font>
+	{
+		init();								<font class="theme">// Step 1: Reset Forces To Zero.</font>
+		solve();							<font class="theme">// Step 2: Apply Forces.</font>
+		simulate(dt);							<font class="theme">// Step 3: Iterate The Masses By The Change In Time.</font>
+	}
+};
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">By
+now, we have a simple physical simulation engine. It is based on a math
+library. It contains Mass and Simulation classes. It uses a very common
+pattern of simulation procedure and it uses The Euler Method. Now we
+are ready to develop applications. The applications that we will
+develop are:
+<ol>
+<li>Mass with constant velocity</li>
+<li>Mass under gravitational force</li>
+<li>Mass connected to a still point by a spring</li>
+</ol>
+<font size="+1"><u>Operating A Simulation By An Application:</u></font>
+<br><br>
+Before we write a specific simulation, we should know how to operate simulations by 
+applications. In this tutorial, the simulation engine and the application to operate the simulations are 
+seperated in two files. In the application file there is a function as:
+<br><br>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void Update (DWORD milliseconds)						<font class="theme">// Perform Motion Updates Here.</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">This
+function is called repeatedly at every frame update. The "DWORD
+milliseconds" is the time period from the previous frame to the current
+frame. From
+this, we can say that we should iterate simulations according to the
+"milliseconds". If the simulations follow this time period, they should
+go parallel
+with the real world's time. To iterate a simulation, we simply call the
+"void operate(float dt)" method. To call this method, we should know
+"dt". Since
+we take the time unit as seconds we firstly convert milliseconds to
+seconds (see below in the code). Then we use a value "slowMotionRatio"
+which means,
+how slow we want to run the simulation relative to the real world time.
+We divide dt by this value and we obtain a new dt. Now we can add dt to
+"timeElapsed". "timeElapsed" is the time of the simulation, not the
+time of the real world.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void Update (DWORD milliseconds)
+{
+	...
+	...
+	...
+
+	float dt = milliseconds / 1000.0f;					<font class="theme">// Let's Convert milliseconds To Seconds.</font>
+
+	dt /= slowMotionRatio;							<font class="theme">// Divide dt By slowMotionRatio And Obtain The New dt.</font>
+
+	timeElapsed += dt;							<font class="theme">// Iterate Elapsed Time.</font>
+
+	...
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Now
+dt is almost ready for operating the simulation. But... There is one
+very important thing that we should know: dt is the detail of
+precision. If dt
+is not small enough, your simulation would show instability and the
+motion would not be calculated precisely. Stability analysis is used
+for physical
+simulations to find the maximum dt value that a simulation can handle.
+In this tutorial we will not go into the details and if you are just
+developing
+a game but not a scientific application, it is always valid to find the
+value of maximum dt by trial and error.
+<br><br>As an example, in a car racing game, it is convenient to use
+dt as about 2 to 5 milliseconds for regular car, and 1 to 3
+milliseconds for a formula car.
+In an arcade car simulation it is possible to use dt as about 10 to 200
+milliseconds. Less the value of dt, more the CPU ticks we need to catch
+up the
+real world time. That is why physical simulations are rarely used in
+older games.
+<br><br>In the code below we define the maximum possible dt as 0.1
+seconds (100 milliseconds). With this value we will calculate the
+number iterations to be
+made at the current update. We write a formula:
+<br><br>
+<font class="theme" size="-1"><b>int numOfIterations = (int)(dt / maxPossible_dt) + 1;</b></font>
+<br><br>numOfIterations is the number of iterations to be made for a
+simulation. Say that the application is running with 20 frames per
+second, which gives
+dt = 0.05 seconds. Then numOfIterations becomes 1. The simulation will
+be iterated once by 0.05 seconds. Say dt was 0.12 seconds. Then
+numOfIterations
+is 2. Below, just after "int numOfIterations = (int)(dt /
+maxPossible_dt) + 1;", you should see that dt is calculated once again.
+There, dt is divided
+by numOfIterations and it becomes dt = 0.12 / 2 = 0.06. dt was
+originally more than the maximum possible value 0.1. Now we have dt as
+0.06 but we will
+operate the simulation twice so that we catch up 0.12 seconds as a
+result. Examine the code below and be sure that you understand the
+paragraph above.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	...
+
+	float maxPossible_dt = 0.1f;						<font class="theme">// Say That The Maximum Possible dt Is 0.1 Seconds.</font>
+										<font class="theme">// This Is Needed So We Do Not Pass Over A Non Precise dt Value.</font>
+
+  	int numOfIterations = (int)(dt / maxPossible_dt) + 1;			<font class="theme">// Calculate Number Of Iterations To Be Made At This Update Depending On maxPossible_dt And dt.</font>
+	if (numOfIterations != 0)						<font class="theme">// Avoid Division By Zero.</font>
+		dt = dt / numOfIterations;					<font class="theme">// dt Should Be Updated According To numOfIterations.</font>
+
+	for (int a = 0; a &lt; numOfIterations; ++a)				<font class="theme">// We Need To Iterate Simulations "numOfIterations" Times.</font>
+	{
+		constantVelocity-&gt;operate(dt);					<font class="theme">// Iterate constantVelocity Simulation By dt Seconds.</font>
+		motionUnderGravitation-&gt;operate(dt);				<font class="theme">// Iterate motionUnderGravitation Simulation By dt Seconds.</font>
+		massConnectedWithSpring-&gt;operate(dt);				<font class="theme">// Iterate massConnectedWithSpring Simulation By dt Seconds.</font>
+	}
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Let's begin to write the applications:
+<br><br>
+1. Mass with constant velocity<br>
+<b><font class="theme" size="-1">*	class ConstantVelocity : public Simulation</font> ---&gt; <font size="-1">A Simulation Object That Creates A Mass With A Constant Velocity.</font></b>
+<br><br>Mass with constant velocity does not need any external force.
+We just have to create 1 mass and set its velocity to (1.0f, 0.0f,
+0.0f) so that it moves
+in the x direction with a velocity of 1 m/s. We will derive a class
+from Simulation. This class is "class ConstantVelocity":
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>class ConstantVelocity : public Simulation
+{
+public:
+	ConstantVelocity() : Simulation(1, 1.0f)				<font class="theme">// Constructor Firstly Constructs Its Super Class With 1 Mass And 1 Kg.</font>
+	{
+		masses[0]-&gt;pos = Vector3D(0.0f, 0.0f, 0.0f);			<font class="theme">// A Mass Was Created And We Set Its Position To The Origin.</font>
+		masses[0]-&gt;vel = Vector3D(1.0f, 0.0f, 0.0f);			<font class="theme">// We Set The Mass's Velocity To (1.0f, 0.0f, 0.0f) m/s.</font>
+	}
+};
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">When
+the operate(float dt) method of ConstantVelocity class is called, it
+calculates the next state of the mass. This method is called by the
+main
+application, before every re-draw of the window. Say that your
+application is running with 10 frames per second. If the exact time
+change was passed
+to operate(float dt) at every frame, then dt would be 0.1 seconds. When
+the simulation calls simulate(float dt) of the mass, its new position
+will be
+incremented by velocity * dt which is
+<br><br>
+<font class="theme" size="-1"><b>Vector3D(1.0f, 0.0f, 0.0f) * 0.1 = Vector3D(0.1f, 0.0f, 0.0f)</b></font>
+<br><br>At every iteration, the mass moves 0.1 meters to the right.
+After 10 frames, it will have moved 1.0 meter to the right. The
+velocity was 1.0 m/s and
+it moves 1.0 meter in one second. Was that a coincidental or a logical
+result? If you can't answer this question spend some time thinking
+about the
+relation above.
+<br><br>When you run the application, you see the mass with constant
+velocity moving in the x direction. The application provides two modes
+of motion flow.
+By pressing F2 you get time flow parallel to the real world. And by
+pressing F3 you get time flow 10 times slower than the real world time.
+On the
+screen you will see lines to represent the coordinate plane. The
+spacing between these lines is 1 meter. By the use of the lines, you
+can observe that
+the mass moves 1 meter in a second when it is set to the real world
+time mode. And in the slow mode it moves 1 meter in ten seconds. The
+techique
+described above is a common one to make the real-time simulations flow
+parallel to the real world time. To use this technique, you must have
+strictly
+decided on the units of your simulation.
+<br><br>
+<font size="+1"><u>Applying Force:</u></font>
+<br><br>In the constant velocity simulation, we did not apply any force
+to the mass. Because we know that if a force acts on a body, it
+accelerates. When we
+want accelerating motion, we apply forces. At one operation of a
+simulation, we apply forces in the "solve" method. When the operation
+comes to the
+"simulate" phase, the net force results as the total of forces. The net
+force determines the motion.
+<br><br>
+Say that you want to apply 1 N force on a mass in the x direction. Then you should write:
+<br><br>
+<font class="theme" size="-1"><b>mass-&gt;applyForce(Vector3D(1.0f, 0.0f, 0.0f));</b></font>
+<br><br>
+in the "solve" method. If you want to add another force say 2 N in the y direction you should write:
+<br><br>
+<font class="theme" size="-1"><b>mass-&gt;applyForce(Vector3D(1.0f, 0.0f, 0.0f));</b></font><br>
+<font class="theme" size="-1"><b>mass-&gt;applyForce(Vector3D(0.0f, 2.0f, 0.0f));</b></font>
+<br><br>in the "solve" method. You can add any force in any formulated
+way and you obtain the motion. In the next application you will see a
+single force in a
+formulated way.
+<br><br>
+2. Mass under gravitational force<br>
+<b><font class="theme" size="-1">*	class MotionUnderGravitation : public Simulation</font> ---&gt; <font size="-1">A Simulation Object That Creates A Mass Which Moves Under Gravitation.</font></b>
+<br><br>MotionUnderGravitation class creates a mass and it applies a
+force to it. This force is the force of gravitation. Force of
+gravitation is equal to the
+mass times the gravitational acceleration:
+<br><br>
+<font class="theme" size="-1"><b>F = m * g</b></font>
+<br><br>Gravitational acceleration is the acceleration of free body. On
+the earth, when you drop an object, it gains 9.81 m/s velocity every
+second, unless
+it experiences a force other than the gravitational force. Therefore
+the gravitational acceleration is constant for all masses on the earth
+and it is
+9.81 m/s/s. (This is independent of the mass. All masses fall with the
+same acceleration.)
+<br><br>
+MotionUnderGravitation class has such a constructor:
+<br><br>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>class MotionUnderGravitation : public Simulation
+{
+	Vector3D gravitation;							<font class="theme">// The Gravitational Acceleration.</font>
+
+	MotionUnderGravitation(Vector3D gravitation) : Simulation(1, 1.0f)	<font class="theme">// Constructor Firstly Constructs Its Super Class With 1 Mass And 1 Kg.</font>
+	{									<font class="theme">// Vector3D Gravitation, Is The Gravitational Acceleration.</font>
+		this-&gt;gravitation = gravitation;				<font class="theme">// Set This Class's Gravitation.</font>
+		masses[0]-&gt;pos = Vector3D(-10.0f, 0.0f, 0.0f);			<font class="theme">// Set The Position Of The Mass.</font>
+		masses[0]-&gt;vel = Vector3D(10.0f, 15.0f, 0.0f);			<font class="theme">// Set The Velocity Of The Mass.</font>
+	}
+
+	...
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">The
+constructor gets a Vector3D gravitation, which is the gravitational
+acceleration and the simulation uses that in the force to be applied.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	virtual void solve()							<font class="theme">// Gravitational Force Will Be Applied Therefore We Need A "Solve" Method.</font>
+	{
+		for (int a = 0; a &lt; numOfMasses; ++a)				<font class="theme">// We Will Apply Force To All Masses (Actually We Have 1 Mass, But We Can Extend It In The Future).</font>
+			masses[a]-&gt;applyForce(gravitation * masses[a]-&gt;m);	<font class="theme">// Gravitational Force Is As F = m * g. (Mass Times The Gravitational Acceleration).</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Above,
+in the code, you should see the force formula as F = m * g. The
+application creates MotionUnderGravitation with a Vector3D value as
+"Vector3D(0.0f, -9.81f, 0.0f)". -9.81 means an acceleration in the
+negative y direction so that the mass falls down when displayed on the
+window.
+Run the application and observe what's happening. Write 9.81 instead of
+-9.81 and observe the difference.
+<br><br>
+3. Mass connected to a still point by a spring
+<b><font class="theme" size="-1">*	class MassConnectedWithSpring : public Simulation</font> ---&gt; <font size="-1">A Simulation Object That Creates A Mass Connected To A Point By A Spring.</font></b>
+<br><br>In this example, we want to connect a mass to a still point by
+a spring. The spring should pull the mass towards the connection
+position, so that it
+oscillates. In the constructor, MassConnectedWithSpring class sets the
+connection position and sets the position of the mass.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>class MassConnectedWithSpring : public Simulation
+{
+public:
+	float springConstant;							<font class="theme">// The More springConstant, The Stiffer The Spring Force.</font>
+	Vector3D connectionPos;							<font class="theme">// The Arbitrary Still Point That The Mass Is Connected.</font>
+
+	MassConnectedWithSpring(float springConstant) : Simulation(1, 1.0f)	<font class="theme">// Constructor Firstly Constructs Its Super Class With 1 Mass And 1 Kg.</font>
+	{
+		this-&gt;springConstant = springConstant;				<font class="theme">// Set The springConstant.</font>
+
+		connectionPos = Vector3D(0.0f, -5.0f, 0.0f);			<font class="theme">// Set The connectionPos.</font>
+
+		masses[0]-&gt;pos = connectionPos + Vector3D(10.0f, 0.0f, 0.0f);	<font class="theme">// Set The Position Of The Mass 10 Meters To The Right Side Of The connectionPos.</font>
+		masses[0]-&gt;vel = Vector3D(0.0f, 0.0f, 0.0f);			<font class="theme">// Set The Velocity Of The Mass To Zero.</font>
+	}
+
+	...
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Velocity
+of the mass is set to zero and its position is set to 10 meters to the
+right side of the connectionPos so that it can be pulled towards left
+at the beginning. Force of a spring is formulated as <br><br>
+<font class="theme" size="-1"><b>F = -k * x</b></font>
+<br><br>
+k is a value to represent how stiff the spring should be. And x is the
+distance from the mass to the connection position. The negative sign at
+the
+formula indicates that this is an attractive force. If it was positive,
+the spring would push the mass which is not something that we would
+expect
+to see.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>virtual void solve()								<font class="theme">// The Spring Force Will Be Applied.</font>
+{
+	for (int a = 0; a &lt; numOfMasses; ++a)					<font class="theme">// We Will Apply Force To All Masses (Actually We Have 1 Mass, But We Can Extend It In The Future).</font>
+	{
+		Vector3D springVector = masses[a]-&gt;pos - connectionPos;		<font class="theme">// Find A Vector From The Position Of The Mass To The connectionPos.</font>
+		masses[a]-&gt;applyForce(-springVector * springConstant);		<font class="theme">// Apply The Force According To The Famous Spring Force Formulation.</font>
+	}
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">The
+spring force in the code above is the same as the spring formula (F =
+-k * x). Here instead of x we use a Vector3D because we want to use 3D
+space.
+"springVector" gives the difference of the mass position and the
+connectionPos and springConstant stands for k. More the value of
+springConstant, more
+the force, and faster the mass oscillates.
+<br><br>In this tutorial, I tried to point to the key concepts of
+physical simulations. If you are interested in physics, you will not
+have hard time to create
+new simulations of your own. You can try complicated interactions and
+obtain very attractive demos and games. The next steps to take will be
+rigid body
+simulations, simple mechanisms and advanced simulation methods.
+<br><br>
+For any comments or questions please contact me:
+<br><br>
+<b>Erkin Tunca</b> (<a href="mailto:erkintunca@icqmail.com">erkintunca@icqmail.com</a>)
+<br><br>
+<b>Jeff Molofee</b> (<b>NeHe</b>)
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vc/lesson39.zip">Visual C++</a> Code For This Lesson.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/bcb6/lesson39_bcb6.zip">Borland C++ Builder 6</a> Code For This Lesson. ( Conversion by <a href="mailto:conglth@hotmail.com">Le Thanh Cong</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cwarrior/lesson39.zip">Code Warrior 5.3</a> Code For This Lesson. ( Conversion by <a href="mailto:DelusionalBeing@hotmail.com">Scott Lupton</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/delphi/lesson39.zip">Delphi</a> Code For This Lesson. ( Conversion by <a href="mailto:michal_praha@seznam.cz">Michal Tucek</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/devc/lesson39.zip">Dev C++</a> Code For This Lesson. ( Conversion by <a href="mailto:zealouselixir@mchsi.com">Warren Moore</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linux/lesson39.tar.gz">Linux/GLut</a> Code For This Lesson. ( Conversion by <a href="mailto:laks@imag.fr">Laks Raghupathi</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vs_net/lesson39.zip">Visual Studio .NET</a> Code For This Lesson. ( Conversion by <a href="mailto:ultimatezeus@hotmail.com">Grant James</a> )<br>
+<br><br>
+<br><br>
+<table border="0" width="100%">
+<tbody><tr><td align="left" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=38">&lt; Lesson 38</a></font></b></td>
+<td align="right" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=40">Lesson 40 &gt;</a></font></b></td>
+</tr></tbody></table>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table>
+
+</body></html>

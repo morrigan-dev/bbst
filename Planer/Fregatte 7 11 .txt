@@ -1,0 +1,47 @@
+Schiffstyp: Fregatte (Typ 17)
+Techlevel: 7
+Module: 11
+Kommandopunkte: 55
+Angriffswert: 359
+Schilde: 211
+Panzerung: 985
+Struktur: 81
+Wendigkeit: 967
+Reaktor: 181
+Laderaum: 0
+Sensor: 25
+Tarnung: 8
+Min Crew: 88
+Max Crew: 108
+Sprung Sektor: 9
+Sprung-Zeit: 32
+Angriffs-Zeit: 8
+Angriffsenergie: 14
+
+Kampfwert (Taktik 100): 655,26
+KW/KP: 17,400
+AW/KP: 6,527
+Sch/P: 0,21
+
+Verwendete Forschungen: 
+1x Energieverdichtung (Lvl 15)
+4x Computertechnik (Lvl 18)
+3x Photovoltaik (Lvl 13)
+1x Strahlungstechnik (Lvl 12)
+2x Protonenverhalten (Lvl 17)
+
+Baukosten: 
+Iso: 0
+Eg: 30
+Es: 5
+Rad: 134
+Em: 347
+Sm: 372
+Lm: 745
+Fe: 680
+Syn: 185
+Org: 140
+Erz: 1976
+Rek: 0
+Nrg: 2126
+Cr: 2165

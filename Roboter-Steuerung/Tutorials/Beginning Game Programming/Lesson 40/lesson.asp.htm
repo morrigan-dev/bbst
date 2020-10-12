@@ -1,0 +1,689 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+<title>NeHe Productions: OpenGL Lesson #40</title>
+<meta name="author" content="Jeff Molofee">
+<meta name="description" content="OpenGL Tutorials, Demos, Games and More...">
+<meta name="keywords" content="opengl, tutorial, article, demo, game, blend, texturemap, lighting, contest, 3D">
+<link rel="stylesheet" type="text/css" href="lesson.asp-Dateien/rgb.css">
+</head><body bgcolor="black" link="#aaccff" text="white" vlink="#aaccff">
+
+<table border="0" width="100%"><tbody><tr><td align="center">
+<!-- Begin -  Site: GameDev.net Zone: NeHe 728x90 -->
+<script language="javascript" type="text/javascript">
+<!--
+var browName = navigator.appName;
+var SiteID = 1;
+var ZoneID = 4;
+var browDateTime = (new Date()).getTime();
+if (browName=='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;Browser=NETSCAPE4&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+if (browName!='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+// --> 
+</script><script language="javascript" src="lesson.asp-Dateien/a.js"></script><script type="text/javascript"><!--
+google_ad_client = "pub-3167291168602081";
+google_alternate_ad_url = "http://www.gamedev.net/banman/banman.asp?ZoneID=21&Task=Get";
+google_ad_width = 728;
+google_ad_height = 90;
+google_ad_format = "728x90_as";
+google_ad_type = "text_image";
+google_ad_channel ="";
+google_color_border = "336699";
+google_color_bg = "FFFFFF";
+google_color_link = "0000FF";
+google_color_url = "008000";
+google_color_text = "000000";
+//--></script>
+<script type="text/javascript" src="lesson.asp-Dateien/show_ads.js">
+</script>
+<noscript> <a
+href="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Click&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+target="_blank"> <img
+src="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Get&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+width="728" height="90" border="0" alt=""></a>
+</noscript>
+<!-- End -  Site: GameDev.net Zone: NeHe 728x90 --></td></tr></tbody></table><br>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tinylogo" height="130" width="326"><img src="lesson.asp-Dateien/blank.gif" alt="NeHe Productions" height="130" width="326"></td><td class="indexheading" align="center" valign="middle"><font class="text"><font class="theme" size="+3"><b><i>Lesson: 40</i></b></font></font></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text"><font size="+1"><u>Rope Simulation</u></font>
+<br><br>In this tutorial, you will find a simulation of a rope. This
+simulation is based on the simple physical simulation engine in Lesson
+39. In order to
+benefit from this tutorial, you should know how forces are applied to
+masses in simulations, how position and velocity of a mass is iterated
+while
+the simulation runs, and how 3D vectoral operations are used in
+physics. If you hesitate on any one of those subjects, read about them
+from Lesson
+39 and other sources, and develop several applications.
+<br><br>In physical simulations, the purpose is to form a physical
+setting, which acts the same as in the natural environment. Motion in
+simulations cannot
+always be exactly the same as in the nature. A model to cover the
+motion, that we aim to simulate, must be put forward to form the
+physical setting.
+The model that we create must state, how precise and detailed the
+motion should be observed from the simulation. Are we aiming to observe
+the atoms,
+the electrons or the photons, or are we aiming to observe the
+approximate motion of a cluster of particles? What is the scale that we
+want to see?
+What is the scale of space and time?
+<br><br>
+The scale of space and time to observe is related to:
+<br><br>
+<b>1. Mathematics of motion<br>
+2. Performance of the computer we use for the simulation</b>
+<br><br>
+<font size="+1"><u>1. Mathematics Of Motion:</u></font>
+<br><br>Here, the mathematics of motion is called "classical
+mechanics", which is simply representing masses as particles in space
+and accelerating these
+masses by forces as the time passes. In the scale that we can observe
+by naked eye, classical mechanics is valid to use. Therefore, we can
+use
+classical mechanics for simulating objects and mechanisms from our
+daily lives. In Lesson 39, force of gravitation and spring were applied
+to masses
+of 1 kg by the use of classical mechanics. In this tutorial, we will
+use classical mechanics in a rope simulation.
+<br><br>
+<font size="+1"><u>2. Performance Of The Computer We Use For The Simulation:</u></font>
+<br><br>Performance of the computer to run the simulation, determines
+how detailed we could observe. For example, when simulating a walking
+man on a slow
+computer, we would think of eliminating the simulation of fingers.
+Fingers of the feet surely have an important role. Eventhough, without
+using the
+fingers in the simulation, we could obtain a walking human. Maybe the
+quality of motion would be low, but the calculations would cost less.
+In the
+walking human example, performance of the computer forces us to choose
+the scale as feet and leg and forces us to omit the fingers.
+<br><br>
+<font size="+1"><u>Designing The Physical Setting For The Rope:</u></font>
+<br><br>Having classical mechanics (as the mathematics of motion) and a
+computer with 500 mhz CPU speed (let's choose this as a minimum
+requirement), we
+will design the physical setting of a rope simulation. Firstly we have
+to determine how much detail we want to observe. While implementing the
+code,
+we will use Physics1.h from Lesson 39. From Physics1.h, we have a
+"class Mass" which represents a mass as a point particle. We can make
+use of that
+Mass class. If we bind these point-like masses by springs to each
+other, we can form a physical model to represent a rope. From the
+model, we can
+examine how detailed the observed motion of the rope would be. We can
+deduce that the rope will show the swinging and waving motion, but it
+would
+not show the swirling motion. (Imagine swirling like this; say you have
+a thin rope in between two fingers and you are rubbing your fingers so
+that
+the rope gets curly.) We cannot observe swirling because we use
+point-like particles in the model. Point-like particles cannot turn
+around an axis,
+therefore the rope does not get curly. Let's decide to use the model
+described above and state that our detail is limited as the swinging
+and waving
+motion. Let's also state that we want to observe the rope's waving
+motion as detailed as about 10 cm. This means the rope will show
+discontinuity
+under 10 cm. I have chosen these constraints because I want use about
+50 or 100 particles (due to performance) in the rope and I want this
+rope to
+be about 3 to 4 meters long. Which means there is about 3 to 8 cm
+between the particles of the rope which is under the discontinuity
+level we chose
+(10 cm).
+<br><br>
+<font size="+1"><u>Determining The Motion Of Equation:</u></font>
+<br><br>Motion of equation mathematically means a second order
+differential equation and conceptually means the forces acting in a
+physical setting. Let's
+use the conceptual meaning because it sounds better. Determining the
+motion of equation means determining the forces. In the rope model, the
+forces
+will act on the particles which make up the rope. The first force will
+be the spring tension between these particles. Below, each particle is
+shown
+by "O" and the springs are shown as "----":
+<b><pre>O----O----O----O
+1    2    3    4
+</pre></b>Particle 1 is bounded to 2, 2 to 3, and 3 to 4. We have 4
+particles in this rope and 3 springs. The springs are the sources of
+the force between
+two particles. Remember that the spring force is formulated as:
+<br><br>
+<font class="theme"><b>force = -k * x</b></font><br>
+<b>k: a constant to represent the stiffness of the spring<br>
+x: distance of the mass from the point it is bound to</b>
+<br><br>The spring formula we will use will be very similar to the one
+above. If we use the above formula as it is, it would cause the rope to
+wrinkle!
+Because unless x is zero (x is the distance between two bound masses in
+our rope model), there is force. Therefore all the particles of the
+rope
+would be pulled to each other until x was zero. This is not what we
+want. Imagine a rope put on a table. We want our rope to stay steady
+like the
+rope on the table. Somehow we have to maintain a constant length. To
+do, the force shall be zero when x was a positive value. Let's write
+the
+formula as:
+<br><br>
+<font class="theme"><b>force = -k * (x - d)</b></font><br>
+<b>k: a constant to represent the stiffness of the spring<br>
+x: distance of the mass from the point it is bound to<br>
+d: a constant positive distance value that a spring stays steady</b>
+<br><br>With this formula, it is clear that if the distance between two
+masses is equal to d, no force will be applied. Let's say that we have
+100
+particles. If we choose d as 5 cm (0.05 meters), we would have a steady
+rope of 5 meters when put on a table. When x is more than d, the spring
+would stretch and when it was less, it would shrink.
+<br><br>Now, the formula gives a proper motion, but it needs more. It
+needs some friction. Unless there is friction, a physical system
+conserves its
+energy. If we don't use a friction factor, the rope would never stop
+swinging. Before going into details of the friction factor let's have a
+look
+at the code.
+<br><br>
+<font size="+1"><u>Class Spring:</u></font>
+<br><br>
+The spring class binds two masses and exerts force to each of these masses.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>class Spring									<font class="theme">// An Object To Represent A Spring With Inner Friction Binding Two Masses. The Spring</font>
+{										<font class="theme">// Has A Normal Length (The Length That The Spring Does Not Exert Any Force)</font>
+public:
+	Mass* mass1;								<font class="theme">// The First Mass At One Tip Of The Spring</font>
+	Mass* mass2;								<font class="theme">// The Second Mass At The Other Tip Of The Spring</font>
+
+	float springConstant;							<font class="theme">// A Constant To Represent The Stiffness Of The Spring</font>
+	float springLength;							<font class="theme">// The Length That The spring Does Not Exert Any Force</font>
+	float frictionConstant;							<font class="theme">// A Constant To be Used For The Inner Friction Of The Spring</font>
+
+	Spring(Mass* mass1, Mass* mass2,
+		<font class="theme">// Constructor</font>
+		float springConstant, float springLength, float frictionConstant)
+	{
+		this-&gt;springConstant = springConstant;				<font class="theme">// Set The springConstant</font>
+		this-&gt;springLength = springLength;				<font class="theme">// Set The springLength</font>
+		this-&gt;frictionConstant = frictionConstant;			<font class="theme">// Set The frictionConstant</font>
+
+		this-&gt;mass1 = mass1;						<font class="theme">// Set mass1</font>
+		this-&gt;mass2 = mass2;						<font class="theme">// Set mass2</font>
+	}
+
+	void solve()								<font class="theme">// solve() Method: The Method Where Forces Can Be Applied</font>
+	{
+		Vector3D springVector = mass1-&gt;pos - mass2-&gt;pos;		<font class="theme">// Vector Between The Two Masses</font>
+		
+		float r = springVector.length();				<font class="theme">// Distance Between The Two Masses</font>
+
+		Vector3D force;							<font class="theme">// Force Initially Has A Zero Value</font>
+		
+		if (r != 0)							<font class="theme">// To Avoid A Division By Zero... Check If r Is Zero</font>
+			<font class="theme">// The Spring Force Is Added To The Force		</font>
+			force += -(springVector / r) * (r - springLength) * springConstant;
+		...
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">In
+the constructor, mass1, mass2, and the constants are set. The thrilling
+part is the solve() method. In this method forces are applied. To apply
+force we have to write the spring formula that we obtained:
+<br><br>
+<font class="theme"><b>force = -k * (x - d)</b></font>
+<br><br>
+A vector to represent the distance between the masses in 3D;
+<br><br>
+<b><font class="theme">Vector3D springVector = mass1-&gt;pos - mass2-&gt;pos;</font></b>&nbsp;&nbsp;&nbsp;<b>(Vector Between The Two Masses)</b>
+<br><br>
+is found. Then a zero force is created:
+<br><br>
+<font class="theme"><b>Vector3D force;</b></font>
+<br><br>
+Then, the spring force is added to that:
+<br><br>
+<font class="theme"><b>force += (springVector / r) * (r - springLength) * (-springConstant);</b></font>
+<br><br>
+To reach the formula above, we firstly obtain a unit vector for representing just the directional vector between the masses:
+<br><br>
+<font class="theme"><b>(springVector / r)</b></font>
+<br><br>
+Then, with the use of this unit vector we obtain (x - d) part of the formula in 3D by:
+<br><br>
+<font class="theme"><b>(springVector / r) * (r - springLength)</b></font>
+<br><br>
+And we multiply the above 3D vector by;
+<br><br>
+<font class="theme"><b>(-springConstant)</b></font>
+<br><br>which stands for -k in the original formula (the negative sign
+means pull rather than repel). We already have finished the spring
+tension part of
+the force. Let's go on to the friction part. This friction is in the
+spring. The spring tends to loose energy by this force. If you apply
+force to
+a mass in the opposite direction that the mass moves, you make the mass
+get slower. Therefore, the friction force can be stated in terms of the
+velocity of a mass:
+<br><br>
+<font class="theme"><b>friction force = -k * velocity</b></font><br>
+<b>k: a constant to represent how much friction there is<br>
+velocity: velocity of the mass that is under the friction force</b>
+<br><br>A friction formula could be written differently but this one
+works fine for our rope model. In this formula only one mass is
+considered. In the
+spring we consider two. We can take the difference of the velocities of
+the two masses and obtain a relative velocity. This will provide an
+inner
+friction.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		(void solve() continued)
+
+		force += -(mass1-&gt;vel - mass2-&gt;vel) * frictionConstant;		<font class="theme">// The Friction Force Is Added To The force</font>
+										<font class="theme">// With This Addition We Obtain The Net Force Of The Spring</font>
+		mass1-&gt;applyForce(force);					<font class="theme">// Force Is Applied To mass1</font>
+		mass2-&gt;applyForce(-force);					<font class="theme">// The Opposite Of Force Is Applied To mass2</font>
+	}									<font class="theme">// Void Solve() Ends Here</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+force += -(mass1-&gt;vel - mass2-&gt;vel) * frictionConstant;
+<br><br>Above, the friction force obtained by the relative velocities
+of the masses is added to the force of the spring. The force is applied
+to mass1 as
+it is:
+<br><br>
+<font color="#aaffaa">mass1-&gt;applyForce(force);</font>
+<br><br>
+and the opposite of the force is applied to mass2:
+<br><br>
+<font color="#aaffaa">mass2-&gt;applyForce(-force);</font>
+<br><br>In physics, all interactions occur between two particles. A
+force always acts on two masses in opposite directions. In simulations,
+if one mass
+is negligible when compared with the other, force acting on the larger
+mass can be neglected since the larger mass's acceleration will be
+small.
+For example while a gravitational force pulls a small mass down, the
+mass pulls the earth up, but we neglect the force on the earth.
+<br><br>By now, we have written an equation of motion, which is
+actually the spring forces in the rope. To complete the simulation, we
+should create an
+environment, which contains the rope, and consider the external forces
+acting on the rope. Let's have a gravitational field in this
+environment.
+When there is gravitation, masses experience the gravitational force. I
+would also like to have air friction which is as simple as:
+<br><br>
+<font class="theme"><b>friction force = -k * velocity</b></font><br>
+<b>k: a constant to represent how much friction there is<br>
+velocity: velocity of the mass that is under the friction force</b>
+<br><br>Let's also have a planer surface that we can drag the rope on.
+So, our equation of motion extends. Gravitation, air friction and the
+forces from
+the ground (planer surface) must be added. Gravitational force is
+simply: <br><br>
+<font class="theme"><b>force = (gravitational acceleration) * mass</b></font>
+<br><br>
+Gravitation and air friction will act on every particle on the rope.
+What about the force from the ground? Force from the ground will act on
+every
+mass as well. We should think of a model to represent the ground - rope
+interaction. My model is an easy one: the ground pushes a mass upwards
+and
+exerts a friction force. The force should act on a mass whenever that
+mass touches the ground. So we will check for that.
+<br><br>
+<font size="+1"><u>Setting The Initial Values Of The Simulation</u></font>
+<br><br>By now, our environment is ready for simulating. The units will
+be meters (for position), seconds (for time), and kg (for weight).
+<br><br>To set the initial values, we should define the orientation of
+the rope before the simulation starts and define the constants. Let's
+define that
+the gravity acts in negative y direction by 9.81 m/s/s. Let's place a
+rope of 4 meters long with 80 particles. Let's have this rope stand
+horizontal just before the simulation starts. To do, we should put each
+particle with a 5 cm distance to its neighbor (4 meters / 80 = 0.05
+meters = 5 cm). Let's define that the normal spring length (the length
+that a spring does not exert any force) is 5 cm so that that rope is
+left
+without tension at the begining of the simulation. Let's define the
+total mass of the rope as 4 kg (this is a heavy rope). This gives 0.05
+kg
+(50 grams) for each of the masses. Before going further let's see what
+we have in hand:
+<br><br>
+<b>1. gravitational acceleration: 9.81 m/s/s in negative y direction<br>
+2. number of masses: 80<br>
+3. normal distance between two neighbor masses: 5 cm (0.05 meters)<br>
+4. weight of a mass: 50 grams (0.05 kg)<br>
+5. orientation of the rope: horizontally placed without tension</b>
+<br><br>Next, we could find the spring constant. When we hang the rope
+from one tip, it would surely stretch. The spring at the top of the
+rope would
+stretch the most. I wouldn't like this spring to stretch more than 1 cm
+(0.01cm). The weight that this spring carries is almost all the rope
+(the particle at the tip is exclusive). The force is:
+<br><br>
+<font class="theme"><b>f = (mass of the rope) * (gravitational acceleration) = (4 kg) * (9.81) ~= 40 N</b></font>
+<br><br>
+Spring force should balance 40 N:
+<br><br>
+<font class="theme"><b>spring force = -k * x = -k * 0.01 meters</b></font>
+<br><br>
+Total of these forces should be zero:
+<br><br>
+<font class="theme"><b>40 N + (-k * 0.01 meters) = 0</b></font>
+<br><br>
+From here we obtain k as:
+<br><br>
+<font class="theme"><b>k = 4000 N / m</b></font>
+<br><br>
+To remember more easily, let's assume k as 10000 N / m, which gives a stiffer rope with about 4 mm stretch at the top spring.
+<br><br>To find the friction constant in the springs, we should do
+calculations more complicated than the above. Therefore, I will use the
+value that I
+found by trial and error. Which is:
+<br><br>
+<font class="theme"><b>springFrictionConstant = 0.2 N/(m/s)</b></font>
+<br><br>
+0.2 N/(m/s) springFrictionConstant is fine for our rope to look realistic (this was my opinion after I watched the simulation).
+<br><br>Before going on to the air friction and forces from the ground,
+let's have a look at the RopeSimulation class. This class is derived
+from the
+"class Simulation" from Physics1.h which was explained in Lesson 39.
+class Simulation has four methods to run a simulation. These are:
+<br><br>
+<table border="0">
+<tbody><tr><td><font class="theme" size="-1"><b>1. virtual void init()</b></font></td><td><font size="-1"> ---&gt; </font></td><td><font size="-1"><b>Resets The Forces.</b></font></td></tr>
+<tr></tr>
+<tr><td><font class="theme" size="-1"><b>2. virtual void solve()</b></font></td><td><font size="-1"> ---&gt; </font></td><td><font size="-1"><b>Intended Forces Are Applied.</b></font></td></tr>
+<tr></tr>
+<tr><td><font class="theme" size="-1"><b>3. virtual void simulate(float dt)</b></font></td><td><font size="-1"> ---&gt; </font></td><td><font size="-1"><b>Position And Velocity Are Iterated.</b></font></td></tr>
+<tr></tr>
+<tr><td><font class="theme" size="-1"><b>4. virtual void operate(float dt)</b></font></td><td><font size="-1"> ---&gt; </font></td><td><font size="-1"><b>Method 1., 2., And 3. Are Packed So That They Are Called In A Series.</b></font></td></tr>
+</tbody></table><br>In the RopeSimulation class, we will override
+solve() and simulate(float dt) because we have a special implementation
+for the rope. We will
+apply forces in solve() method, and stabilize one tip of the rope in
+simulate(float dt) method.
+<br><br>class RopeSimulation is derived from class Simulation (from
+Physics1.h). It simulates a rope with point-like particles bound with
+springs.
+The springs have inner friction and normal length. One tip of the rope
+is stabilized at a point in space called "Vector3D ropeConnectionPos".
+This point can be moved externally by a method "void
+setRopeConnectionVel(Vector3D ropeConnectionVel)". RopeSimulation
+creates air friction
+and a planer surface (or ground) with a normal in +y direction.
+RopeSimulation implements the force applied by this surface. In the
+code,
+the surface is refered as "ground".
+<br><br>
+The RopeSimulation class starts as follows:
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>class RopeSimulation : public Simulation					<font class="theme">// An Object To Simulate A Rope Interacting With A Planer Surface And Air</font>
+{
+public:
+	Spring** springs;							<font class="theme">// Springs Binding The Masses (There Shall Be [numOfMasses - 1] Of Them)</font>
+
+	Vector3D gravitation;							<font class="theme">// Gravitational Acceleration (Gravity Will Be Applied To All Masses)</font>
+
+	Vector3D ropeConnectionPos;						<font class="theme">// A Point In Space That Is Used To Set The Position Of The </font>
+										<font class="theme">// First Mass In The System (Mass With Index 0)</font>
+	
+	Vector3D ropeConnectionVel;						<font class="theme">// A Variable To Move The ropeConnectionPos (By This, We Ccan Swing The Rope)</font>
+
+	float groundRepulsionConstant;						<font class="theme">// A Constant To Represent How Much The Ground Shall Repel The Masses</font>
+	
+	float groundFrictionConstant;						<font class="theme">// A Constant Of Friction Applied To Masses By The Ground</font>
+										<font class="theme">// (Used For Sliding Of Rope On The Ground)</font>
+	
+	float groundAbsorptionConstant;						<font class="theme">// A Constant Of Absorption Friction Applied To Masses By The Ground</font>
+										<font class="theme">// (Used For Vertical Collisions Of The Rope With The Ground)</font>
+	
+	float groundHeight;							<font class="theme">// A Value To Represent The Y Value Of The Ground</font>
+										<font class="theme">// (The Ground Is A Planer Surface Facing +Y Direction)</font>
+
+	float airFrictionConstant;						<font class="theme">// A Constant Of Air Friction Applied To Masses</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+And the class has a constructor with 11 parameters to take:
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	RopeSimulation(								<font class="theme">// A Long Long Constructor With 11 Parameters Starts Here</font>
+		int numOfMasses,						<font class="theme">// 1. The Number Of Masses</font>
+		float m,							<font class="theme">// 2. Weight Of Each Mass</font>
+		float springConstant,						<font class="theme">// 3. How Stiff The Springs Are</font>
+		float springLength,						<font class="theme">// 4. The Length That A Spring Does Not Exert Any Force</font>
+		float springFrictionConstant,					<font class="theme">// 5. Inner Friction Constant Of Spring</font>
+		Vector3D gravitation,						<font class="theme">// 6. Gravitational Acceleration</font>
+		float airFrictionConstant,					<font class="theme">// 7. Air Friction Constant</font>
+		float groundRepulsionConstant,					<font class="theme">// 8. Ground Repulsion Constant</font>
+		float groundFrictionConstant,					<font class="theme">// 9. Ground Friction Constant</font>
+		float groundAbsorptionConstant,					<font class="theme">// 10. Ground Absorption Constant</font>
+		float groundHeight						<font class="theme">// 11. Height Of The Ground (Y Position)</font>
+		) : Simulation(numOfMasses, m)					<font class="theme">// The Super Class Creates Masses With Weights m Of Each</font>
+	{
+		this-&gt;gravitation = gravitation;
+		
+		this-&gt;airFrictionConstant = airFrictionConstant;
+
+		this-&gt;groundFrictionConstant = groundFrictionConstant;
+		this-&gt;groundRepulsionConstant = groundRepulsionConstant;
+		this-&gt;groundAbsorptionConstant = groundAbsorptionConstant;
+		this-&gt;groundHeight = groundHeight;
+
+		for (int a = 0; a &lt; numOfMasses; ++a)				<font class="theme">// To Set The Initial Positions Of Masses Loop With For(;;)</font>
+		{
+			masses[a]-&gt;pos.x = a * springLength;			<font class="theme">// Set X-Position Of masses[a] With springLength Distance To Its Neighbor</font>
+			masses[a]-&gt;pos.y = 0;					<font class="theme">// Set Y-Position As 0 So That It Stand Horizontal With Respect To The Ground</font>
+			masses[a]-&gt;pos.z = 0;					<font class="theme">// Set Z-Position As 0 So That It Looks Simple</font>
+		}
+
+		springs = new Spring*[numOfMasses - 1];				<font class="theme">// Create [numOfMasses - 1] Pointers For springs</font>
+										<font class="theme">// ([numOfMasses - 1] Springs Are Necessary For numOfMasses)</font>
+		
+		for (a = 0; a &lt; numOfMasses - 1; ++a)				<font class="theme">// To Create Everyone Of Each Start A Loop</font>
+		{
+			<font class="theme">// Create The Spring With Index "a" By The Mass With Index "a" And Another Mass With Index "a + 1".</font>
+			springs[a] = new Spring(masses[a], masses[a + 1], 
+				springConstant, springLength, springFrictionConstant);
+		}
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">[numOfMasses
+- 1] springs are created (remember the figure: O----O----O----O). The
+masses are initially placed in a horizontal orientation. When
+the forces applied are implemented in the solve method, the equation of
+motion will be solved while the simulation runs. The solve method looks
+like this:
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	void solve()								<font class="theme">// solve() Is Overriden Because We Have Forces To Be Applied</font>
+	{
+		for (int a = 0; a &lt; numOfMasses - 1; ++a)			<font class="theme">// Apply Force Of All Springs</font>
+		{
+			springs[a]-&gt;solve();					<font class="theme">// Spring With Index "a" Should Apply Its Force</font>
+		}
+
+		for (a = 0; a &lt; numOfMasses; ++a)				<font class="theme">// Start A Loop To Apply Forces Which Are Common For All Masses</font>
+		{
+			masses[a]-&gt;applyForce(gravitation * masses[a]-&gt;m);	<font class="theme">// The Gravitational Force</font>
+			<font class="theme">// The air friction</font>
+			masses[a]-&gt;applyForce(-masses[a]-&gt;vel * airFrictionConstant);
+
+			if (masses[a]-&gt;pos.y &lt; groundHeight)			<font class="theme">// Forces From The Ground Are Applied If A Mass Collides With The Ground</font>
+			{
+				Vector3D v;					<font class="theme">// A Temporary Vector3D</font>
+
+				v = masses[a]-&gt;vel;				<font class="theme">// Get The Velocity</font>
+				v.y = 0;					<font class="theme">// Omit The Velocity Component In Y-Direction</font>
+
+				<font class="theme">// The Velocity In Y-Direction Is Omited Because We Will Apply A Friction Force To Create </font>
+				<font class="theme">// A Sliding Effect. Sliding Is Parallel To The Ground. Velocity In Y-Direction Will Be Used</font>
+				<font class="theme">// In The Absorption Effect.</font>
+
+				<font class="theme">// Ground Friction Force Is Applied				</font>
+				masses[a]-&gt;applyForce(-v * groundFrictionConstant);
+
+				v = masses[a]-&gt;vel;				<font class="theme">// Get The Velocity</font>
+				v.x = 0;					<font class="theme">// Omit The x And z Components Of The Velocity</font>
+				v.z = 0;					<font class="theme">// We Will Use v In The Absorption Effect</font>
+				
+				<font class="theme">// Above, We Obtained A Velocity Which Is Vertical To The Ground And It Will Be Used In </font>
+				<font class="theme">// The Absorption Force</font>
+
+				if (v.y &lt; 0)					<font class="theme">// Let's Absorb Energy Only When A Mass Collides Towards The Ground</font>
+
+					<font class="theme">// The Absorption Force Is Applied				</font>
+					masses[a]-&gt;applyForce(-v * groundAbsorptionConstant);
+				
+				<font class="theme">// The Ground Shall Repel A Mass Like A Spring. </font>
+				<font class="theme">// By "Vector3D(0, groundRepulsionConstant, 0)" We Create A Vector In The Plane Normal Direction </font>
+				<font class="theme">// With A Magnitude Of groundRepulsionConstant.</font>
+				<font class="theme">// By (groundHeight - masses[a]-&gt;pos.y) We Repel A Mass As Much As It Crashes Into The Ground.</font>
+				Vector3D force = Vector3D(0, groundRepulsionConstant, 0) * 
+					(groundHeight - masses[a]-&gt;pos.y);
+
+				masses[a]-&gt;applyForce(force);			<font class="theme">// The Ground Repulsion Force Is Applied</font>
+			}
+		}
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">In
+the code above, firstly springs are solved (the order has no
+importance). Then the forces that are common for all masses are solved
+in a for(;;)
+loop. These forces are the gravity, air friction and forces from the
+ground. Forces from the ground looks a bit complicated, but it actually
+is as
+simple as the others. The rope's sliding effect on the ground is
+povided by a friction force which omits the velocity in y direction. y
+is the
+direction that the ground faces up. A sliding effect shall not be in
+the direction of the face. That's why y direction is omited. This is
+just the
+opposite for the absoption effect. The absorption force is applied only
+in the direction of the face of the ground. There is an exceptional
+case for
+the absorption effect: it does not exert force when a mass is moving
+away from the ground. Otherwise the rope would tend to stick to the
+ground
+while we pull it upwards. We implement this exceptional case with "if
+(v.y &lt; 0)". Lastly there is the repelling force from the ground. The
+ground repels masses just like there was a spring pushing the mass
+upwards.
+<br><br>RopeSimulation class simulates the particle at the begining
+index of the rope. The purpose is to create a medium to swing the rope
+from one tip.
+The mass with index "0" is simulated seperately with ropeConnectionPos
+and ropeConnectionVel values.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	void simulate(float dt)							<font class="theme">// simulate(float dt) Is Overriden Because We Want To Simulate </font>
+										<font class="theme">// The Motion Of The ropeConnectionPos</font>
+	{
+		Simulation::simulate(dt);					<font class="theme">// The Super Class Shall Simulate The Masses</font>
+
+		ropeConnectionPos += ropeConnectionVel * dt;			<font class="theme">// Iterate The Positon Of ropeConnectionPos</font>
+
+		if (ropeConnectionPos.y &lt; groundHeight)				<font class="theme">// ropeConnectionPos Shall Not Go Under The Ground</font>
+		{
+			ropeConnectionPos.y = groundHeight;
+			ropeConnectionVel.y = 0;
+		}
+
+		masses[0]-&gt;pos = ropeConnectionPos;				<font class="theme">// Mass With Index "0" Shall Position At ropeConnectionPos</font>
+		masses[0]-&gt;vel = ropeConnectionVel;				<font class="theme">// The Mass's Velocity Is Set To Be Equal To ropeConnectionVel</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We set the value of ropeConnectionVel by a method:
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	void setRopeConnectionVel(Vector3D ropeConnectionVel)			<font class="theme">// The Method To Set ropeConnectionVel</font>
+	{
+		this-&gt;ropeConnectionVel = ropeConnectionVel;
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">ropeConnectionVel
+is used in the simulation. By using the keys we set ropeConnectionVel
+and we can move the rope like we were holding from one tip.
+<br><br>There are some constants which are not easy to estimate before
+we run the simulation. The constants I found appropriate are below
+(taken from
+Physics2Application.cpp):
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>RopeSimulation* ropeSimulation =
+	new RopeSimulation(
+		80,								<font class="theme">// 80 Particles (Masses)</font>
+		0.05f,								<font class="theme">// Each Particle Has A Weight Of 50 Grams</font>
+		10000.0f,							<font class="theme">// springConstant In The Rope</font>
+		0.05f,								<font class="theme">// Normal Length Of Springs In The Rope</font>
+		0.2f,								<font class="theme">// Spring Inner Friction Constant</font>
+		Vector3D(0, -9.81f, 0),						<font class="theme">// Gravitational Acceleration</font>
+		0.02f,								<font class="theme">// Air Friction Constant</font>
+		100.0f,								<font class="theme">// Ground Repel Constant</font>
+		0.2f,								<font class="theme">// Ground Slide Friction Constant</font>
+		2.0f,								<font class="theme">// Ground Absoption Constant</font>
+		-1.5f);								<font class="theme">// Height Of Ground</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">By
+changing the values above, you can obtain different motions for the
+rope. Notice that "height of ground" is -1.5 meters. The rope was
+initialized at y = 0. This gives us a rope swinging down towards the
+ground and then colliding, which looks cool. From Lesson 39, remember
+that there is a maximum possible dt value for a simulation. With the
+parameters above, I found that this maximum dt was about 0.002 seconds.
+If your changes in the parameters decreases the maximum dt, your
+simulation would show instability and the rope would not work. To make
+it work
+you have to find the new maximum possible dt. Greater forces and/or
+smaller masses means more instability because acceleration is more in
+that case
+(remember "acceleration = force / mass").
+<br><br>
+Same as Lesson 39, the simulation is operated from the application file (Physics2Application.cpp):
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>float dt = milliseconds / 1000.0f;						<font class="theme">// Let's Convert Milliseconds To Seconds</font>
+
+float maxPossible_dt = 0.002f;							<font class="theme">// Maximum Possible dt Is 0.002 Seconds</font>
+										<font class="theme">// This Is Needed To Prevent Passing Over A Non-Precise dt Value</font>
+
+int numOfIterations = (int)(dt / maxPossible_dt) + 1;				<font class="theme">// Calculate Number Of Iterations To Be Made At This Update Depending On maxPossible_dt And dt</font>
+if (numOfIterations != 0)							<font class="theme">// Avoid Division By Zero</font>
+	dt = dt / numOfIterations;						<font class="theme">// dt Should Be Updated According To numOfIterations</font>
+
+for (int a = 0; a &lt; numOfIterations; ++a)					<font class="theme">// We Need To Iterate Simulations "numOfIterations" Times</font>
+	ropeSimulation-&gt;operate(dt);
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">When
+you run the application, use the arrow keys, and the HOME and END keys
+to move the rope around. Try playing with the rope. Observe the waving
+and the swinging motion.
+<br><br>Simulation procedure loads onto the CPU. Therefore, it is
+recommended to optimize your compiler. In default Visual C++ Release
+settings, the rope
+simulation runs more than 10 times faster than Debug. In Debug, the
+minimum requirement is 500 mhz of CPU speed. In Release, the minimum
+requirement
+is much less than that.
+<br><br>In this tutorial, a complete simulation is presented. Its
+physical setting, theory, design, and implementation are mentioned.
+More advanced
+simulations look like the one above. The most frequently used concepts
+are covered with the rope example. This is true for physical
+simulations
+in game development as well. Try using physics in your applications and
+create demos and games of your own.
+<br><br>
+For any comments or questions please contact me:
+<br><br>
+<b>Erkin Tunca</b> (<a href="mailto:erkintunca@icqmail.com">erkintunca@icqmail.com</a>)
+<br><br>
+<b>Jeff Molofee</b> (<b>NeHe</b>)
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vc/lesson40.zip">Visual C++</a> Code For This Lesson.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/bcb6/lesson40_bcb6.zip">Borland C++ Builder 6</a> Code For This Lesson. ( Conversion by <a href="mailto:conglth@hotmail.com">Le Thanh Cong</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cwarrior/lesson40.zip">Code Warrior 5.3</a> Code For This Lesson. ( Conversion by <a href="mailto:DelusionalBeing@hotmail.com">Scott Lupton</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/delphi/lesson40.zip">Delphi</a> Code For This Lesson. ( Conversion by <a href="mailto:michal_praha@seznam.cz">Michal Tucek</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/devc/lesson40.zip">Dev C++</a> Code For This Lesson. ( Conversion by <a href="mailto:zealouselixir@mchsi.com">Warren Moore</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxsdl/lesson40.tar.gz">Linux/SDL</a> Code For This Lesson. ( Conversion by <a href="mailto:mailto:cestarigianni@libero.it">Gianni Cestari</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vs_net/lesson40.zip">Visual Studio .NET</a> Code For This Lesson. ( Conversion by <a href="mailto:ultimatezeus@hotmail.com">Grant James</a> )<br>
+<br><br>
+<br><br>
+<table border="0" width="100%">
+<tbody><tr><td align="left" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=39">&lt; Lesson 39</a></font></b></td>
+<td align="right" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=41">Lesson 41 &gt;</a></font></b></td>
+</tr></tbody></table>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table>
+
+</body></html>

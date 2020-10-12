@@ -1,0 +1,546 @@
+/** 
+     gesamtlayout (c) 2004-2005 pablo hoch
+	  spaltenlayout enthält teile von csscreator.com
+**/
+
+body {
+	font-family: "Bitstream Vera Sans", "Lucida Grande", Tahoma, Verdana, Arial, sans-serif;
+	background: #769A32 url(img/slimspring-pattern1.png) repeat scroll;
+}
+
+p, td, ul, ol, ul, li, dl, dt, dd{
+	font-family: "Bitstream Vera Sans", "Lucida Grande", Tahoma, Verdana, Arial, sans-serif;
+}
+
+a, a:link, a:visited {
+	color: #2D328B;
+	text-decoration: underline;
+}
+
+a:hover, a:active, a:focus {
+	color: #DB0000;
+}
+
+a img {
+	border: 0;
+}
+
+abbr, acronym, span.abbr {
+	cursor: help;
+	border-bottom: 1px dotted black;
+}
+
+#bigbox {
+	width: 700px;
+	text-align: left;
+	border: 1px solid black;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#topbox {
+	background-color: #B3D377;
+	width: 100%;
+	height: 130px;
+	text-align: right;
+	font-size: 0.7em;
+	border-bottom: 1px solid #304A00;
+	margin: 0;
+	padding: 0;
+}
+
+#outer {
+	width: auto;
+	border: solid white 0px; 
+	/*/*/ border-left-width: 140px;  /* left column width. NN4 hack to hide borders */ 
+	border-left-color: #769A32;	/* links */ 
+	border-left-style: solid; 
+	background-color: #9AC44A;		/* rechts */
+}
+
+#inner{
+	margin: 0;
+	width: 100%;
+}
+
+#outer>#inner {
+	border-bottom: 1px solid #9AC44A;
+}
+
+#leftbox {
+	width: 140px;
+	float: left;
+	font-size: 0.7em;
+	position: relative; 
+ 	margin-left: -140px;
+ 	margin-right: 1px; 
+}
+
+#rightbox {
+	width: 100%;
+	height: 100%;
+	float: left;
+	text-align: left; /*justify*/
+	color: black;
+	position: relative;
+	border-left: 1px dotted #406300;
+	margin: 0 -8px 0 -2px;
+	font-size: 0.9em;
+}
+
+#footer {
+	background-color: #406300;
+	border-top: 1px solid #9DD434;
+	padding: 3px;
+	font-size: 0.7em;
+	color: #EFF5E5;
+}
+
+#footer address{
+	text-align: center;
+	font-style: italic;
+}
+
+#buttons {
+	background-color: #406300;
+	border-top: 1px dotted #9DD434;
+	padding: 3px;
+	font-size: 0.7em;
+	text-align: center;
+}
+
+#menubuttons {
+	text-align: center;
+	margin-top: 10px;
+}
+
+#menubuttons img{
+	margin-bottom: 1px;
+}
+
+.clr {
+	clear:both;
+}
+
+.content {
+	padding: 5px;
+}
+
+#location {
+	font-size: 0.8em;
+	font-weight: bolder;
+	border-bottom: 1px solid black;
+	margin-bottom: 5px;
+	color: black;
+}
+
+#location a, #leftbox a:visited {
+	color: black;
+	text-decoration: none;
+}
+
+#location a:hover, #leftbox a:focus, #leftbox a:active {
+	color: #2E556B;
+}
+
+/* Menue */
+
+#leftbox ul {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+#leftbox ul li {
+	font-weight: bold;
+	color: #101800;
+}
+
+#leftbox ul ul li {
+	font-weight: normal;
+}
+
+#leftbox ul ul {
+	margin-left: 5px;
+}
+
+
+#leftbox a, #leftbox a:link, #leftbox a:visited {
+	color: #21215E;
+	text-decoration: underline;
+}
+
+#leftbox a:hover, #leftbox a:focus, #leftbox a:active {
+	color: #B53E3B;
+}
+
+.submenu {
+	font-weight: normal;
+	margin-bottom: 10px;
+}
+
+#skyscraper, #adsense-button {
+	text-align: center;
+	margin: 10px auto 10px auto;
+}
+
+/* Blog */
+.entrybox {
+    margin: 10px;
+    padding: 5px;
+    background-color: #B3D377;
+    border: 1px dotted #EFF5E5;
+}
+
+.entrytitle {
+    font-weight: bold;
+    border-bottom: 1px solid #517B00;
+    margin-bottom: 10px;
+    font-size: 1.3em;
+    font-family: "Book Antiqua", Georgia, "Times New Roman", serif;
+}
+
+.entrytitle a {
+	text-decoration: none;
+	color: #304A00;
+}
+
+.entrybottom {
+    border-top: 1px solid #517B00;
+    margin-top: 10px;
+    text-align: left;
+}
+
+.entrytext {
+    text-align: left;
+    overflow: hidden;
+    padding-bottom: 1px;
+}
+
+.entrytext img{
+	margin: 2px;
+}
+
+.entrytext p {
+	margin-top: 0;
+}
+
+/* Photos */
+
+.albumsbox {
+	margin: 10px;
+    padding: 5px;
+	background-color: #B3D377;
+	border: 1px dotted #9DD434;
+}
+
+.albumsbox h3 {
+	margin: 0 0 5px 0;
+	font-size: 1.0em;
+	font-weight: bold;
+	border-bottom: 1px solid black;
+}
+
+.photosbox {
+	margin: 10px;
+    padding: 5px;
+	background-color: #B3D377;
+	border: 1px dotted #9DD434;
+}
+
+.photosbox table {
+	border: 0;
+	width: 100%;
+}
+
+.photosbox td {
+	width: 33%;
+	text-align: center;
+}
+
+.photobox {
+	text-align: center;
+	border: 0;
+}
+
+.photoinfobox {
+	margin: 10px;
+    padding: 5px;
+	background-color: #B3D377;
+	border: 1px dotted #9DD434;
+}
+
+.photoinfobox table {
+	border: 0;
+}
+
+.pileft{
+	vertical-align: top;
+	font-weight: bold;
+}
+
+.piright{
+	vertical-align: top;
+}
+
+/* Poll */
+
+.quickpoll {
+    padding: 2px;
+    background-color: #B3D377;
+    border: 1px dotted #9DD434;
+}
+
+.quickpoll strong {
+	font-weight: bold;
+	font-size: 1.0em;
+}
+
+.quickpoll form {
+	margin: 2px 0 0 0;
+}
+
+.quickpoll p {
+	margin: 0 0 2px 0;
+}
+
+.pollbutton {
+	background-color: #406300;
+	border: 1px solid white;
+	color: white;
+	width: 100%;
+	margin-top: 2px;
+}
+
+/* QuickLinkBloq */
+
+.linkbloqbox {
+    margin: 2px;
+    padding: 5px;
+    background-color: #B3D377;
+    border: 1px solid #619400;
+	 overflow: hidden;
+}
+
+.linkbloqtitle {
+    border-bottom: 1px solid #517B00;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+    font-family: "Book Antiqua", Georgia, "Times New Roman", serif;
+    font-style: italic;
+}
+
+/* Impressum */
+
+.impbox {
+	margin: 10px;
+	padding: 5px;
+	background-color: #B3D377;
+	border: 1px dotted #9DD434;
+	font-size: 0.8em;
+}
+
+/* Links */
+
+.linkbox {
+	padding: 5px;
+	/*border: 1px dotted #9DD434;*/
+	text-align: left;
+}
+
+.linktitle {
+	font-weight: bold;
+	border-bottom: 1px solid #9DD434;
+}
+
+.linknote {}
+
+/* Quotes */
+
+.quotebox {
+	margin: 10px;
+	padding: 5px;
+	background-color: #B3D377;
+	border: 1px dotted #9DD434;
+}
+
+.quotecaption {
+	font-weight: bold;
+	border-bottom: 1px solid #9DD434;
+	margin-bottom: 5px;
+}
+
+.quotetext {
+	font-family: "Courier New", Courier, monospace;
+	text-align: left;
+}
+
+/* Quelltexte */
+
+.srcbox {
+	padding: 5px;
+	/*border: 1px dotted #9DD434;*/
+	text-align: left;
+}
+
+.srctitle {
+	font-weight: bold;
+	border-bottom: 1px solid #517B00;
+}
+
+.srcdesc {}
+
+/* Formulare */
+
+.ipb {
+	font-family: "Courier New", Courier, monospace;
+	background-color: #406300;
+	border: 1px solid white;
+	color: white;
+}
+
+.button {
+	background-color: #406300;
+	border: 1px solid white;
+	color: white;
+	text-align: center;
+	width: 100%;
+}
+
+.searchbutton {
+	background-color: #406300;
+	border: 1px solid white;
+	color: white;
+	width: 3em;
+}
+
+label.left
+{
+	float:left;
+	text-align:right;
+	width:8em;
+	margin-right:.3em;
+	line-height:2em;
+}
+
+input[type=text].left, select.left
+{
+	float:left;
+}
+
+input.right
+{
+	float:left;
+	width:auto;
+	clear:both;
+	margin-left:5.3em;
+	margin-right:.3em;
+}
+
+input[type=checkbox].right, input[type=radio].right, input[type=submit].right
+{
+    margin-left:6.3em;
+}
+
+form br
+{
+    clear:both;
+}
+
+label, select, input[type=checkbox], input[type=radio], input[type=button], input[type=submit]
+{
+    cursor:pointer;
+}
+
+form
+{
+    line-height:140%;
+}
+
+/* Tabellen */
+
+table
+{
+	padding: 0;
+	margin: 0;
+	border-spacing: 0;
+	border-collapse: collapse;
+	width: 99%;
+	text-align: left;
+}
+
+th
+{
+	border-bottom: 3px solid black;
+	text-align: left;
+}
+
+td.underline
+{
+	border-bottom: 1px solid black;
+	padding: 3px 5px 3px 5px;
+	vertical-align: top;
+}
+
+.row0
+{
+	background-color: #CBEA92;
+	border-bottom: 1px solid black;
+	padding: 3px 5px 3px 5px;
+	vertical-align: top;
+}
+
+.row1
+{
+	background-color: #ACDB52;
+	border-bottom: 1px solid black;
+	padding: 3px 5px 3px 5px;
+	vertical-align: top;
+}
+
+.nobr
+{
+	white-space: nowrap;
+}
+
+.searchresult
+{
+	background-color: #F3E97F;
+}
+
+/* Gaestebuch */
+
+#bsubmit
+{
+	background-color: #406300;
+	border: 1px solid white;
+	color: white;
+	width: 100%;
+	margin-top: 10px;
+}
+
+#gbentries .entrytitle
+{
+    font-size: 1.1em;
+}
+
+#gbentries .entrytitle a
+{
+	text-decoration: none;
+}
+
+#gbentries .entrybottom
+{
+	font-style: italic;
+}
+
+#gbentries .entrytext
+{
+    text-align: left;
+}
+
+#gbentries h3
+{
+	font-size: 1.3em;
+	text-align: center;
+}

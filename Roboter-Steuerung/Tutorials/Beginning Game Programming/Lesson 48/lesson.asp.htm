@@ -1,0 +1,229 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+<title>NeHe Productions: OpenGL Lesson #48</title>
+<meta name="author" content="Jeff Molofee">
+<meta name="description" content="OpenGL Tutorials, Demos, Games and More...">
+<meta name="keywords" content="opengl, tutorial, article, demo, game, blend, texturemap, lighting, contest, 3D">
+<link rel="stylesheet" type="text/css" href="lesson.asp-Dateien/rgb.css">
+</head><body bgcolor="black" link="#aaccff" text="white" vlink="#aaccff">
+
+<table border="0" width="100%"><tbody><tr><td align="center">
+<!-- Begin -  Site: GameDev.net Zone: NeHe 728x90 -->
+<script language="javascript" type="text/javascript">
+<!--
+var browName = navigator.appName;
+var SiteID = 1;
+var ZoneID = 4;
+var browDateTime = (new Date()).getTime();
+if (browName=='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;Browser=NETSCAPE4&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+if (browName!='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+// --> 
+</script><script language="javascript" src="lesson.asp-Dateien/a.js"></script><a href="http://www.gamedev.net/banman/a.aspx?Task=Click&amp;ZoneID=4&amp;CampaignID=324&amp;AdvertiserID=91&amp;BannerID=424&amp;SiteID=1&amp;RandomNumber=1418738407&amp;Keywords=" target="_Blank"><img src="lesson.asp-Dateien/GI_468x60v1.gif" alt="" align="Center" border="0" height="60" width="468"></a><br>
+<noscript> <a
+href="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Click&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+target="_blank"> <img
+src="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Get&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+width="728" height="90" border="0" alt=""></a>
+</noscript>
+<!-- End -  Site: GameDev.net Zone: NeHe 728x90 --></td></tr></tbody></table><br>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tinylogo" height="130" width="326"><img src="lesson.asp-Dateien/blank.gif" alt="NeHe Productions" height="130" width="326"></td><td class="indexheading" align="center" valign="middle"><font class="text"><font class="theme" size="+3"><b><i>Lesson: 48</i></b></font></font></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">ArcBall Rotation Control, Revisited<br>
+By Terence J. Grant (tjgrant@tatewake.com)
+<br><br>
+Wouldn�t it be great to rotate your model at will, just by using the mouse? With an ArcBall you can
+do just that. In this document, I�ll touch on my implementation, and considerations for adding it
+to your own projects.
+<br><br>
+My implementation of the ArcBall class is based on Bretton Wade�s, which is based on Ken Shoemake�s
+from the Graphic Gems series of books. However, I did a little bug fixing and optimization for
+our purposes.
+<br><br>
+The ArcBall works by mapping click coordinates in a window directly into the ArcBall�s sphere
+coordinates, as if it were directly in front of you.
+<br><br>
+To accomplish this, first we simply scale down the mouse coordinates from the range of [0...width),
+[0...height) to [-1...1], [1...-1] � (Keep in mind that we flip the sign of Y so that we get the
+correct results in OpenGL.) And this essentially looks like:
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>MousePt.X  =  ((MousePt.X / ((Width  � 1) / 2)) � 1);
+MousePt.Y  = -((MousePt.Y / ((Height � 1) / 2)) � 1);
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The only reason we scale the coordinates down to the range of [-1...1] is to make the math simpler;
+by happy coincidence this also lets the compiler do a little optimization.
+<br><br>
+Next we calculate the length of the vector and determine whether or not it�s inside or outside of
+the sphere bounds. If it is within the bounds of the sphere, we return a vector from within the
+inside the sphere, else we normalize the point and return the closest point to outside of the sphere.
+<br><br>
+Once we have both vectors, we can then calculate a vector perpendicular to the start and end vectors
+with an angle, which turns out to be a quaternion. With this in hand we have enough information to
+generate a rotation matrix from, and we�re home free.
+<br><br>
+The ArcBall is instantiated using the following constructor. NewWidth and NewHeight are essentially
+the width and height of the window.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>ArcBall_t::ArcBall_t(GLfloat NewWidth, GLfloat NewHeight)
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+When the user clicks the mouse, the start vector is calculated based on where the click occurred.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void    ArcBall_t::click(const Point2fT* NewPt)
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+When the user drags the mouse, the end vector is updated via the drag method, and if a quaternion
+output parameter is provided, this is updated with the resultant rotation.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void    ArcBall_t::drag(const Point2fT* NewPt, Quat4fT* NewRot)
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+If the window size changes, we simply update the ArcBall with that information:
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void    ArcBall_t::setBounds(GLfloat NewWidth, GLfloat NewHeight)
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+When using this in your own project, you�ll want some member variables of your own.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// Final Transform</font>
+Matrix4fT	Transform = {  1.0f,  0.0f,  0.0f,  0.0f,
+			       0.0f,  1.0f,  0.0f,  0.0f,
+			       0.0f,  0.0f,  1.0f,  0.0f,
+			       0.0f,  0.0f,  0.0f,  1.0f };
+
+Matrix3fT	LastRot   = {  1.0f,  0.0f,  0.0f,					<font class="theme">// Last Rotation</font>
+			       0.0f,  1.0f,  0.0f,
+			       0.0f,  0.0f,  1.0f };
+
+Matrix3fT	ThisRot   = {  1.0f,  0.0f,  0.0f,					<font class="theme">// This Rotation</font>
+			       0.0f,  1.0f,  0.0f,
+			       0.0f,  0.0f,  1.0f };
+
+ArcBallT	ArcBall(640.0f, 480.0f);						<font class="theme">// ArcBall Instance</font>
+Point2fT	MousePt;								<font class="theme">// Current Mouse Point</font>
+bool		isClicked  = false;							<font class="theme">// Clicking The Mouse?</font>
+bool		isRClicked = false;							<font class="theme">// Clicking The Right Mouse Button?</font>
+bool		isDragging = false;							<font class="theme">// Dragging The Mouse?</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Transform is our final transform- our rotation and any optional translation you may want to provide.
+LastRot is the last rotation we experienced at the end of a drag. ThisRot is the rotation we
+experience while dragging. All are initialized to identity.
+<br><br>
+When we click, we start from an identity rotation state. When we drag, we are then calculating the
+rotation from the initial click point to the drag point. Even though we use this information to
+rotate the objects on screen, it is important to note that we are not actually rotating the ArcBall
+itself. Therefore to have cumulative rotations, we must handle this ourselves.
+<br><br>
+This is where LastRot and ThisRot come into play. LastRot can be defined as �all rotations up till
+now�, whereas ThisRot can be defined by �the current rotation.� Every time a drag is started, ThisRot
+is modified by the original rotation. It is then updated to the product of itself * LastRot. (Then
+the final transformation is also updated.) Once a drag is stopped, LastRot is then assigned the
+value of ThisRot.
+<br><br>
+If we didn�t accumulate the rotations ourselves, the model would appear to snap to origin each time
+that we clicked. For instance if we rotate around the X-axis 90 degrees, then 45 degrees, we would
+want to see 135 degrees of rotation, not just the last 45.
+<br><br>
+For the rest of the variables (except for isDragged), all you need to do is update them at the
+proper times based on your system. ArcBall needs its bounds reset whenever your window size changes.
+MousePt gets updated whenever your mouse moves, or just when the mouse button is down. isClicked /
+isRClicked whenever the left/right mouse button is clicked, respectively. isClicked is used to
+determine clicks and drags. We�ll use isRClicked to reset all rotations to identity.
+<br><br>
+The additional system update code under NeHeGL/Windows looks something like this:
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void ReshapeGL (int width, int height)
+{
+	. . .
+	ArcBall.setBounds((GLfloat)width, (GLfloat)height);				<font class="theme">// Update Mouse Bounds For ArcBall</font>
+}
+
+<font class="theme">// Process Window Message Callbacks</font>
+LRESULT CALLBACK WindowProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	. . .
+	<font class="theme">// Mouse Based Messages For ArcBall</font>
+	case WM_MOUSEMOVE:
+		MousePt.s.X = (GLfloat)LOWORD(lParam);
+		MousePt.s.Y = (GLfloat)HIWORD(lParam);
+		isClicked   = (LOWORD(wParam) &amp; MK_LBUTTON) ? true : false;
+		isRClicked  = (LOWORD(wParam) &amp; MK_RBUTTON) ? true : false;
+		break;
+
+	case WM_LBUTTONUP:   isClicked  = false; break;
+	case WM_RBUTTONUP:   isRClicked = false; break;
+	case WM_LBUTTONDOWN: isClicked  = true;  break;
+	case WM_RBUTTONDOWN: isRClicked = true;  break;
+	. . .
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Once we have the system update code in place, its time to put the click logic in place. This
+is very self-explanatory once you know everything above.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>if (isRClicked)										<font class="theme">// If Right Mouse Clicked, Reset All Rotations</font>
+{
+	<font class="theme">// Reset Rotation</font>
+	Matrix3fSetIdentity(&amp;LastRot);
+
+	<font class="theme">// Reset Rotation</font>
+	Matrix3fSetIdentity(&amp;ThisRot);
+
+	<font class="theme">// Reset Rotation</font>
+	Matrix4fSetRotationFromMatrix3f(&amp;Transform, &amp;ThisRot);
+}
+
+if (!isDragging)									<font class="theme">// Not Dragging</font>
+{
+	if (isClicked)									<font class="theme">// First Click</font>
+	{
+		isDragging = true;							<font class="theme">// Prepare For Dragging</font>
+		LastRot = ThisRot;							<font class="theme">// Set Last Static Rotation To Last Dynamic One</font>
+		ArcBall.click(&amp;MousePt);						<font class="theme">// Update Start Vector And Prepare For Dragging</font>
+	}
+}
+else
+{
+	if (isClicked)  //Still clicked, so still dragging
+	{
+		Quat4fT     ThisQuat;
+
+		ArcBall.drag(&amp;MousePt, &amp;ThisQuat);					<font class="theme">// Update End Vector And Get Rotation As Quaternion</font>
+		Matrix3fSetRotationFromQuat4f(&amp;ThisRot, &amp;ThisQuat);			<font class="theme">// Convert Quaternion Into Matrix3fT</font>
+		Matrix3fMulMatrix3f(&amp;ThisRot, &amp;LastRot);				<font class="theme">// Accumulate Last Rotation Into This One</font>
+		Matrix4fSetRotationFromMatrix3f(&amp;Transform, &amp;ThisRot);			<font class="theme">// Set Our Final Transform's Rotation From This One</font>
+	}
+	else										<font class="theme">// No Longer Dragging</font>
+		isDragging = false;
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+This takes care of everything for us. Now all we need to do is apply the transformation to
+our models and we�re done. It�s really simple:
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glPushMatrix();									<font class="theme">// Prepare Dynamic Transform</font>
+	glMultMatrixf(Transform.M);							<font class="theme">// Apply Dynamic Transform</font>
+
+	glBegin(GL_TRIANGLES);								<font class="theme">// Start Drawing Model</font>
+	. . .
+	glEnd();									<font class="theme">// Done Drawing Model</font>
+
+	glPopMatrix();									<font class="theme">// Unapply Dynamic Transform</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+I have included a sample, which demonstrates everything above. You�re not locked in to using my
+math types or functions; in fact I would suggest fitting this in to your own math system if you�re
+confident enough. However, everything is self-contained otherwise and should work on its own.
+<br><br>
+Now after seeing how simple this is, you should be well on your way to adding ArcBall to your
+own projects. Enjoy!
+<br><br>
+<a href="mailto:tjgrant@tatewake.com">Terence J. Grant</a>
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vc/lesson48.zip">Visual C++</a> Code For This Lesson.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/bcb6/lesson48_bcb6.zip">Borland C++ Builder 6</a> Code For This Lesson. ( Conversion by <a href="mailto:conglth@hotmail.com">Le Thanh Cong</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/delphi/lesson48.zip">Delphi</a> Code For This Lesson. ( Conversion by <a href="mailto:michal_praha@seznam.cz">Michal Tucek</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/devc/lesson48.zip">Dev C++</a> Code For This Lesson. ( Conversion by <a href="mailto:robohog_64@hotmail.com">Victor Andr�e</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxglx/lesson48.tar.gz">Linux/GLX</a> Code For This Lesson. ( Conversion by <a href="mailto:werkt@csh.rit.edu">George Gensure</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/python/lesson48.tar.gz">Python</a> Code For This Lesson. ( Conversion by <a href="mailto:bleair@comcast.net">Brian Leair</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vs_net/lesson48.zip">Visual Studio .NET</a> Code For This Lesson. ( Conversion by <a href="mailto:webmaster@joachimrohde.de">Joachim Rohde</a> )<br>
+<br><br>
+<table border="0" width="100%">
+<tbody><tr><td align="left" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=47">&lt; Lesson 47</a></font></b></td>
+<td align="right" width="50%"><b><font size="-1">&nbsp;</font></b></td>
+</tr></tbody></table>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table>
+
+</body></html>

@@ -1,0 +1,40 @@
+Schiffstyp: Tanker (Typ 4)
+Techlevel: 3
+Module: 7
+Kommandopunkte: 22
+Angriffswert: 0
+Schilde: 241
+Panzerung: 472
+Struktur: 215
+Wendigkeit: 580
+Reaktor: 1680
+Laderaum: 0
+Sensor: 1
+Tarnung: 0
+Min Crew: 18
+Max Crew: 21
+Sprung Sektor: 10
+Sprung-Zeit: 39
+Angriffs-Zeit: 15
+Angriffsenergie: 26
+
+Verwendete Forschungen: 
+4x Quantenmechanik (Lvl 8)
+1x Photovoltaik (Lvl 10)
+2x Photovoltaik (Lvl 9)
+
+Baukosten: 
+Iso: 0
+Eg: 20
+Es: 0
+Rad: 90
+Em: 160
+Sm: 40
+Lm: 420
+Fe: 270
+Syn: 560
+Org: 0
+Erz: 0
+Rek: 0
+Nrg: 1180
+Cr: 430

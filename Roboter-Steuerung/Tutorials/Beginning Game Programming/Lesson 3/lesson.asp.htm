@@ -1,0 +1,185 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+<title>NeHe Productions: OpenGL Lesson #03</title>
+<meta name="author" content="Jeff Molofee">
+<meta name="description" content="OpenGL Tutorials, Demos, Games and More...">
+<meta name="keywords" content="opengl, tutorial, article, demo, game, blend, texturemap, lighting, contest, 3D">
+<link rel="stylesheet" type="text/css" href="lesson.asp-Dateien/rgb.css">
+</head><body bgcolor="black" link="#aaccff" text="white" vlink="#aaccff">
+
+<table border="0" width="100%"><tbody><tr><td align="center">
+<!-- Begin -  Site: GameDev.net Zone: NeHe 728x90 -->
+<script language="javascript" type="text/javascript">
+<!--
+var browName = navigator.appName;
+var SiteID = 1;
+var ZoneID = 4;
+var browDateTime = (new Date()).getTime();
+if (browName=='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;Browser=NETSCAPE4&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+if (browName!='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+// --> 
+</script><script language="javascript" src="lesson.asp-Dateien/a.js"></script><script type="text/javascript"><!--
+google_ad_client = "pub-3167291168602081";
+google_alternate_ad_url = "http://www.gamedev.net/banman/banman.asp?ZoneID=21&Task=Get";
+google_ad_width = 728;
+google_ad_height = 90;
+google_ad_format = "728x90_as";
+google_ad_type = "text_image";
+google_ad_channel ="";
+google_color_border = "336699";
+google_color_bg = "FFFFFF";
+google_color_link = "0000FF";
+google_color_url = "008000";
+google_color_text = "000000";
+//--></script>
+<script type="text/javascript" src="lesson.asp-Dateien/show_ads.js">
+</script>
+<noscript> <a
+href="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Click&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+target="_blank"> <img
+src="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Get&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+width="728" height="90" border="0" alt=""></a>
+</noscript>
+<!-- End -  Site: GameDev.net Zone: NeHe 728x90 --></td></tr></tbody></table><br>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tinylogo" height="130" width="326"><img src="lesson.asp-Dateien/blank.gif" alt="NeHe Productions" height="130" width="326"></td><td class="indexheading" align="center" valign="middle"><font class="text"><font class="theme" size="+3"><b><i>Lesson: 03</i></b></font></font></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">In the last tutorial I taught you how to display Triangles and Quads on the screen.  In this tutorial I will teach you how to
+add 2 different types of coloring to the triangle and quad.  Flat coloring will make the quad one solid color.  Smooth coloring
+will blend the 3 colors specified at each point (vertex) of the triangle together, creating a nice blend of colors.
+<br><br>
+Using the code from the last tutorial, we will be adding to the DrawGLScene procedure.  I will rewrite the entire procedure
+below, so if you plan to modify the last lesson, you can replace the DrawGLScene procedure with the code below, or just add
+code to the DrawGLScene procedure that is not already in the last tutorial.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int DrawGLScene(GLvoid)						<font class="theme">// Here's Where We Do All The Drawing</font>
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	<font class="theme">// Clear The Screen And The Depth Buffer</font>
+	glLoadIdentity();					<font class="theme">// Reset The Current Modelview Matrix</font>
+
+	glTranslatef(-1.5f,0.0f,-6.0f);				<font class="theme">// Left 1.5 Then Into Screen Six Units</font>
+
+	glBegin(GL_TRIANGLES);					<font class="theme">// Begin Drawing Triangles</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+If you remember from the last tutorial, this is the section of code to draw the triangle on the left half of the screen.
+The next line of code will be the first time we use the command glColor3f(r,g,b).  The three parameters in the brackets are red,
+green and blue intensity values.  The values can be from 0.0f to 1.0f.  It works the same way as the color values we use to
+clear the background of the screen.
+<br><br>We are setting the color to red (full red intensity, no green,
+no blue). The line of code right after that is the first vertex (the
+top of the
+triangle), and will be drawn using the current color which is red.
+Anything we draw from now on will be red until
+we change the color to something other than red.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		glColor3f(1.0f,0.0f,0.0f);			<font class="theme">// Set The Color To Red</font>
+		glVertex3f( 0.0f, 1.0f, 0.0f);			<font class="theme">// Move Up One Unit From Center (Top Point)</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We've placed the first vertex on the screen, setting it's color to red.  Now before we set the second vertex we'll change
+the color to green.  That way the second vertex which is the left corner of the triangle will be set to green.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		glColor3f(0.0f,1.0f,0.0f);			<font class="theme">// Set The Color To Green</font>
+		glVertex3f(-1.0f,-1.0f, 0.0f);			<font class="theme">// Left And Down One Unit (Bottom Left)</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we're on the third and final vertex.  Just before we draw it, we set the color to blue.  This will be the right corner
+of the triangle.  As soon as the glEnd() command is issued, the polygon will be filled in.  But because it has a different
+color at each vertex, rather than one solid color throughout, the color will spread out from each corner, eventually meeting
+in the middle, where the colors will blend together.  This is smooth coloring.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		glColor3f(0.0f,0.0f,1.0f);			<font class="theme">// Set The Color To Blue</font>
+		glVertex3f( 1.0f,-1.0f, 0.0f);			<font class="theme">// Right And Down One Unit (Bottom Right)</font>
+	glEnd();						<font class="theme">// Done Drawing A Triangle</font>
+
+	glTranslatef(3.0f,0.0f,0.0f);				<font class="theme">// From Right Point Move 3 Units Right</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we will draw a solid blue colored square.  It's important to remember that anything drawn after the color has been
+set will be drawn in that color.  Every project you create down the road will use coloring in one way or another.  Even
+in scenes where everything is texture mapped, glColor3f can still be used to tint the color of textures, etc.  More on
+that later.
+<br><br>
+So to draw our square all one color, all we have to do is set the color once to a color we like (blue in this example),
+then draw the square.  The color blue will be used for each vertex because we're not telling OpenGL to change the color at
+each vertex.  The final result... a solid blue square.  Again, the square (quad) is drawn in a clockwise order meaning
+we start off looking at the back of the quad.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glColor3f(0.5f,0.5f,1.0f);				<font class="theme">// Set The Color To Blue One Time Only</font>
+	glBegin(GL_QUADS);					<font class="theme">// Start Drawing Quads</font>
+		glVertex3f(-1.0f, 1.0f, 0.0f);			<font class="theme">// Left And Up 1 Unit (Top Left)</font>
+		glVertex3f( 1.0f, 1.0f, 0.0f);			<font class="theme">// Right And Up 1 Unit (Top Right)</font>
+		glVertex3f( 1.0f,-1.0f, 0.0f);			<font class="theme">// Right And Down One Unit (Bottom Right)</font>
+		glVertex3f(-1.0f,-1.0f, 0.0f);			<font class="theme">// Left And Down One Unit (Bottom Left)</font>
+	glEnd();						<font class="theme">// Done Drawing A Quad</font>
+	return TRUE;						<font class="theme">// Keep Going</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Finally change the code to toggle window / fullscreen mode so that the title at the top of the window is proper.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>			if (keys[VK_F1])			<font class="theme">// Is F1 Being Pressed?</font>
+			{
+				keys[VK_F1]=FALSE;		<font class="theme">// If So Make Key FALSE</font>
+				KillGLWindow();			<font class="theme">// Kill Our Current Window</font>
+				fullscreen=!fullscreen;		<font class="theme">// Toggle Fullscreen / Windowed Mode</font>
+				<font class="theme">// Recreate Our OpenGL Window ( Modified )</font>
+				if (!CreateGLWindow("NeHe's Color Tutorial",640,480,16,fullscreen))
+				{
+					return 0;		<font class="theme">// Quit If Window Was Not Created</font>
+				}
+			}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+In this tutorial I have tried to explain in as much detail, how to add flat and smooth coloring to your OpenGL polygons.
+Play around with the code, try changing the red, green and blue values to different numbers.  See what colors you can come
+up with.  If you have comments or questions please email me.  If you feel I have incorrectly commented something or that
+the code could be done better in some sections, please let me know.  I want to make the best OpenGL tutorials I can.  I'm
+interested in hearing your feedback.
+<br><br>
+<b>Jeff Molofee</b> (<b>NeHe</b>)
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vc/lesson03.zip">Visual C++</a> Code For This Lesson.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/asm/lesson03.zip">ASM</a> Code For This Lesson. ( Conversion by Foolman )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/bcb6/lesson03_bcb6.zip">Borland C++ Builder 6</a> Code For This Lesson. ( Conversion by Christian Kindahl )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/beos/lesson03.zip">BeOS</a> Code For This Lesson. ( Conversion by Rene Manqueros )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/c_sharp/lesson03.zip">C#</a> Code For This Lesson. ( Conversion by Joachim Rohde )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/csgl/lesson03.zip">VB.Net CsGL</a> Code For This Lesson. ( Conversion by X )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cwarrior/lesson03.zip">Code Warrior 5.3</a> Code For This Lesson. ( Conversion by Scott Lupton )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cygwin/lesson03.tar.gz">Cygwin</a> Code For This Lesson. ( Conversion by Stephan Ferraro )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/d/lesson03.zip">D Language</a> Code For This Lesson. ( Conversion by Familia Pineda Garcia )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/delphi/lesson03.zip">Delphi</a> Code For This Lesson. ( Conversion by Michal Tucek )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/devc/lesson03.zip">Dev C++</a> Code For This Lesson. ( Conversion by Dan )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/euphoria/lesson03.zip">Euphoria</a> Code For This Lesson. ( Conversion by Evan Marshall )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/gameglut/lesson03.zip">Game GLUT</a> Code For This Lesson. ( Conversion by Milikas Anastasios )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/glut/lesson03.zip">GLUT</a> Code For This Lesson. ( Conversion by Andy Restad )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/irix/lesson03.zip">Irix</a> Code For This Lesson. ( Conversion by Lakmal Gunasekara )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/java/lesson03.zip">Java</a> Code For This Lesson. ( Conversion by Jeff Kirby )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/java_swt/lesson03.zip">Java/SWT</a> Code For This Lesson. ( Conversion by Victor Gonzalez )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/jedisdl/lesson03.zip">Jedi-SDL</a> Code For This Lesson. ( Conversion by Dominique Louis )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/jogl/lesson03.jar">JoGL</a> Code For This Lesson. ( Conversion by Kevin J. Duling )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/lccwin32/lccwin32_lesson03.zip">LCC Win32</a> Code For This Lesson. ( Conversion by Robert Wishlaw )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linux/lesson03.tar.gz">Linux</a> Code For This Lesson. ( Conversion by Richard Campbell )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxglx/lesson03.tar.gz">Linux/GLX</a> Code For This Lesson. ( Conversion by Mihael Vrbanec )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxsdl/lesson03.tar.gz">Linux/SDL</a> Code For This Lesson. ( Conversion by Ti Leggett )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/lwjgl/lesson03.jar">LWJGL</a> Code For This Lesson. ( Conversion by Mark Bernard )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/mac/lesson03.sit">Mac OS</a> Code For This Lesson. ( Conversion by Anthony Parker )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/macosxcocoa/lesson03.zip">Mac OS X/Cocoa</a> Code For This Lesson. ( Conversion by Bryan Blackburn )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/masm/lesson03.zip">MASM</a> Code For This Lesson. ( Conversion by Nico (Scalp) )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/pbasic/lesson03.zip">Power Basic</a> Code For This Lesson. ( Conversion by Angus Law )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/pelles_c/lesson03.zip">Pelles C</a> Code For This Lesson. ( Conversion by Pelle Orinius )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/perl/lesson03.zip">Perl</a> Code For This Lesson. ( Conversion by Cora Hussey )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/python/lesson03.tar.gz">Python</a> Code For This Lesson. ( Conversion by John Ferguson )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/realbasic/RBlesson03.zip">REALbasic</a> Code For This Lesson. ( Conversion by Thomas J. Cunningham )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/ruby/lesson03.zip">Ruby</a> Code For This Lesson. ( Conversion by Manolo Padron Martinez )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/scheme/lesson03.zip">Scheme</a> Code For This Lesson. ( Conversion by Jon DuBois )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/solaris/lesson03.zip">Solaris</a> Code For This Lesson. ( Conversion by Lakmal Gunasekara )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vb/lesson03.zip">Visual Basic</a> Code For This Lesson. ( Conversion by Ross Dawson )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vfortran/lesson03.zip">Visual Fortran</a> Code For This Lesson. ( Conversion by Jean-Philippe Perois )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vs_net/lesson03.zip">Visual Studio .NET</a> Code For This Lesson. ( Conversion by Grant James )<br>
+<br><br>
+<br><br>
+<table border="0" width="100%">
+<tbody><tr><td align="left" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=02">&lt; Lesson 02</a></font></b></td>
+<td align="right" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=04">Lesson 04 &gt;</a></font></b></td>
+</tr></tbody></table>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table>
+
+</body></html>

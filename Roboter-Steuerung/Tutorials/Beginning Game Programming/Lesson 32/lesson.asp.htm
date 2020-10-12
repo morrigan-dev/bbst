@@ -1,0 +1,1237 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+<title>NeHe Productions: OpenGL Lesson #32</title>
+<meta name="author" content="Jeff Molofee">
+<meta name="description" content="OpenGL Tutorials, Demos, Games and More...">
+<meta name="keywords" content="opengl, tutorial, article, demo, game, blend, texturemap, lighting, contest, 3D">
+<link rel="stylesheet" type="text/css" href="lesson.asp-Dateien/rgb.css">
+</head><body bgcolor="black" link="#aaccff" text="white" vlink="#aaccff">
+
+<table border="0" width="100%"><tbody><tr><td align="center">
+<!-- Begin -  Site: GameDev.net Zone: NeHe 728x90 -->
+<script language="javascript" type="text/javascript">
+<!--
+var browName = navigator.appName;
+var SiteID = 1;
+var ZoneID = 4;
+var browDateTime = (new Date()).getTime();
+if (browName=='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;Browser=NETSCAPE4&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+if (browName!='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+// --> 
+</script><script language="javascript" src="lesson.asp-Dateien/a.js"></script><iframe class=" uvzqlqxrluylsowwolzs" src="lesson.asp-Dateien/B3794521.htm" marginwidth="0" marginheight="0" hspace="0" vspace="0" bordercolor="#000000" frameborder="0" height="90" scrolling="no" width="728">
+&lt;SCRIPT language='JavaScript1.1'
+SRC="http://ad.doubleclick.net/adj/N5621.gamedev.com/B3794521.5;abr=!ie;sz=728x90;ord=717946142?"&gt;
+&lt;/SCRIPT&gt;
+&lt;NOSCRIPT&gt;
+&lt;A
+HREF="http://www.gamedev.net/banman/a.aspx?Task=Click&amp;ZoneID=4&amp;CampaignID=727&amp;AdvertiserID=123&amp;BannerID=783&amp;SiteID=1&amp;RandomNumber=717946142&amp;Keywords="&gt;
+&lt;IMG
+SRC="http://ad.doubleclick.net/ad/N5621.gamedev.com/B3794521.5;abr=!ie4;abr=!ie5;sz=728x90;ord=717946142?"
+BORDER=0 WIDTH=728 HEIGHT=90 ALT="Click Here"&gt;&lt;/A&gt;
+&lt;/NOSCRIPT&gt;
+</iframe>
+<noscript> <a
+href="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Click&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+target="_blank"> <img
+src="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Get&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+width="728" height="90" border="0" alt=""></a>
+</noscript>
+<!-- End -  Site: GameDev.net Zone: NeHe 728x90 --></td></tr></tbody></table><br>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tinylogo" height="130" width="326"><img src="lesson.asp-Dateien/blank.gif" alt="NeHe Productions" height="130" width="326"></td><td class="indexheading" align="center" valign="middle"><font class="text"><font class="theme" size="+3"><b><i>Lesson: 32</i></b></font></font></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Welcome to Tutorial 32.  This tutorial is probably the largest tutorial I have written to date.  Over 1000
+lines of Code and more than 1540 lines of HTML.  This is also the first tutorial to use my new NeHeGL
+basecode.  This tutorial took a long time to write, but I think it was worth the wait.  Some of the topics I
+cover in this tutorial are:  Alpha Blending, Alpha Testing, Reading The Mouse, Using Both Ortho And Perspective
+At The Same Time, Displaying A Custom Cursor, Manually Sorting Objects By Depth, Animating Frames From A Single
+Texture and most important, you will learn all about PICKING!
+<br><br>
+The original version of this tutorial displayed three objects on the screen that would change color when you
+clicked on them.  How exciting is that!?!  Not exciting at all!  As always, I wanted to impress you guys with
+a super cool tutorial.  I wanted the tutorial to be exciting, packed full of information and of course... nice
+to look at.  So, after weeks of coding, the tutorial is done!  Even if you don't code you might enjoy this
+tutorial.  It's a complete game.  The object of the game is to shoot as many targets as you can before your
+morale hits rock bottom or your hand cramps up and you can no longer click the mouse button.
+<br><br>
+I'm sure there will be critics, but I'm very happy with this tutorial!  I've taken dull topics such as picking
+and sorting object by depth and turned them into something fun!
+<br><br>
+Some quick notes about the code.  I will only discuss the code in lesson32.cpp.  There have been a few minor
+changes in the NeHeGL code.  The most important change is that I have added mouse support to
+WindowProc().  I also added int mouse_x, mouse_y to store mouse movement.  In NeHeGL.h the
+following two lines of code were added:  extern int mouse_x; &amp; extern int mouse_y;
+<br><br>
+The textures used in this tutorial were made in Adobe Photoshop.  Each .TGA file is a 32 bit image with an
+alpha channel.  If you are not sure how to add an alpha channel to an image buy yourself a good book, browse
+the net or read the built in help in Adobe Photoshop.  The entire process is very similar to the way I created
+masks in the masking tutorial.  Load your object into Adobe Photoshop (or some other art program that supports
+the alpha channel).  Use select by color range to select the area around your object.  Copy that area.  Create
+a new image.  Paste the selection into the new image.  Negate the image so the area where your image should be
+is black.  Make the area around it white.  Select the entire image and copy it.  Go back to the original image
+and create an alpha channel.  Paste the black and white mask that you just created into the alpha channel.
+Save the image as a 32 bit .TGA file.  Make sure preserve transparency is checked, and make sure you save it
+uncompressed!
+<br><br>
+As always I hope you enjoy the tutorial.  I'm interested to hear what you think of it.  If you have any
+questions or you find any mistakes, let me know.  I rushed through parts of the tutorial, so if you find any
+part really hard to understand, send me some email and I'll try to explain things differently or in more
+detail!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>#include &lt;windows.h&gt;								<font class="theme">// Header File For Windows</font>
+#include &lt;stdio.h&gt;								<font class="theme">// Header File For Standard Input / Output</font>
+#include &lt;stdarg.h&gt;								<font class="theme">// Header File For Variable Argument Routines</font>
+#include &lt;gl\gl.h&gt;								<font class="theme">// Header File For The OpenGL32 Library</font>
+#include &lt;gl\glu.h&gt;								<font class="theme">// Header File For The GLu32 Library</font>
+#include &lt;time.h&gt;								<font class="theme">// For Random Seed</font>
+#include "NeHeGL.h"								<font class="theme">// Header File For NeHeGL</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+In lesson 1, I preached about the proper way to link to the OpenGL libraries.  In Visual C++ click on project,
+settings and then the link tab.  Move down to object/library modules and add OpenGL32.lib,
+GLu32.lib and GLaux.lib.  Failing to include a required library will cause the compiler to spout out
+error after error.  Something you don't want happening!  To make matters worse, if you only include the libaries
+in debug mode, and someone tries to build your code in release mode... more errors.  There are alot of people
+looking for code.  Most of them are new to programming.  They grab your code, and try to compile it.  They get
+errors, delete the code and move on.
+<br><br>
+The code below tells the compiler to link to the required libraries.  A little more typing, but alot less
+headache in the long run.  For this tutorial, we will link to the OpenGL32 library, the GLu32 library and the
+WinMM library (for playing sound).  In this tutorial we will be loading .TGA files so we don't need the GLaux
+library.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>#pragma comment( lib, "opengl32.lib" )						<font class="theme">// Search For OpenGL32.lib While Linking</font>
+#pragma comment( lib, "glu32.lib" )						<font class="theme">// Search For GLu32.lib While Linking</font>
+#pragma comment( lib, "winmm.lib" )						<font class="theme">// Search For WinMM Library While Linking</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The 3 lines below check to see if CDS_FULLSCREEN has been defined by your compiler.  If it has not been defined,
+we manually give CDS_FULLSCREEN a value of 4.  For those of you that are completely lost right now... Some
+compilers do not give CDS_FULLSCREEN a value and will return an error message if CDS_FULLSCREEN is
+used!  To prevent an error message, we check to see if CDS_FULLSCREEN has been defined and if not, we
+manually define it.  Makes life easier for everyone.
+<br><br>
+We then declare DrawTargets, and set up variables for our window and keyboard handling.  If you don't understand
+declarations, read through the MSDN glossary.  Keep in mind, I'm not teaching C/C++, buy a good book if you need
+help with the NON GL code!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>#ifndef		CDS_FULLSCREEN							<font class="theme">// CDS_FULLSCREEN Is Not Defined By Some</font>
+#define		CDS_FULLSCREEN 4						<font class="theme">// Compilers. By Defining It This Way,</font>
+#endif										<font class="theme">// We Can Avoid Errors</font>
+
+void DrawTargets();								<font class="theme">// Declaration</font>
+
+GL_Window*	g_window;
+Keys*		g_keys;
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The following section of code sets up our user defined variables.  base will be used for our font display
+lists.  roll will be used to move the ground and create the illusion of rolling clouds.  level
+should be pretty straight forward (we start off on level 1).  miss keeps track of how many objects were
+missed.  It's also used to show the players morale (no misses means a high morale).  kills keeps track
+of how many targets were hit each level.  score will keep a running total of the number of objects hit,
+and game will be used to signal game over!
+<br><br>
+The last line lets us pass structures to our compare function.  The qsort routine expects the last parameter to
+be type type (const *void, const *void).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// User Defined Variables</font>
+GLuint		base;								<font class="theme">// Font Display List</font>
+GLfloat		roll;								<font class="theme">// Rolling Clouds</font>
+GLint		level=1;							<font class="theme">// Current Level</font>
+GLint		miss;								<font class="theme">// Missed Targets</font>
+GLint		kills;								<font class="theme">// Level Kill Counter</font>
+GLint		score;								<font class="theme">// Current Score</font>
+bool		game;								<font class="theme">// Game Over?</font>
+
+typedef int (*compfn)(const void*, const void*);				<font class="theme">// Typedef For Our Compare Function</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now for our objects structure.  This structure holds all the information about an object.  The direction
+it's rotating, if it's been hit, it's location on the screen, etc.
+<br><br>
+A quick rundown of the variables... rot specifies the direction we want to rotate the object.  hit
+will be FALSE if the object has not yet been hit.  If the object was hit or manually flagged as being hit, the
+value of hit will be TRUE.
+<br><br>
+The variable frame is used to cycle through the frames of animation for our explosion.  As frame
+is increased the explosion texture changes.  More on this later in the tutorial.
+<br><br>
+To keep track of which direction our object is moving, we have a variable called dir.  dir can
+be one of 4 values:  0 - object is moving Left, 1 - object is moving right, 2 - object is moving up and finally
+3 - object is moving down.
+<br><br>
+texid can be any number from 0 to 4.  Zero represents the BlueFace texture, 1 is the Bucket texture,
+2 is the Target texture , 3 is the Coke can texture and 4 is the Vase texture.  Later in the load texture code,
+you will see that the first 5 textures are the target images.
+<br><br>
+Both x and y are used to position the object on the screen.  x represents where the object
+is on the x-axis, and y the location of the object on the y-axis.
+<br><br>
+The objects rotate on the z-axis based on the value of spin.  Later in the code, we will increase or
+decrease spin based on the direction the object is travelling.
+<br><br>
+Finally, distance keeps track of how far into the screen our object is.  distance is an extremely
+important variable, we will use it to calculate the left and right sides of the screen, and to sort the objects
+so the objects in the distance are drawn before the objects up close.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>struct objects {
+	GLuint	rot;								<font class="theme">// Rotation (0-None, 1-Clockwise, 2-Counter Clockwise)</font>
+	bool	hit;								<font class="theme">// Object Hit?</font>
+	GLuint	frame;								<font class="theme">// Current Explosion Frame</font>
+	GLuint	dir;								<font class="theme">// Object Direction (0-Left, 1-Right, 2-Up, 3-Down)</font>
+	GLuint	texid;								<font class="theme">// Object Texture ID</font>
+	GLfloat	x;								<font class="theme">// Object X Position</font>
+	GLfloat y;								<font class="theme">// Object Y Position</font>
+	GLfloat	spin;								<font class="theme">// Object Spin</font>
+	GLfloat	distance;							<font class="theme">// Object Distance</font>
+};
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+No real reason to explain the code below.  We are loading TGA images in this tutorial instead of bitmaps.  The
+structure below is used to store image data, as well as information about the TGA image.  Read the tutorial
+on loading TGA files if you need a detailed explanation of the code below.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>typedef struct									<font class="theme">// Create A Structure</font>
+{
+	GLubyte	*imageData;							<font class="theme">// Image Data (Up To 32 Bits)</font>
+	GLuint	bpp;								<font class="theme">// Image Color Depth In Bits Per Pixel.</font>
+	GLuint	width;								<font class="theme">// Image Width</font>
+	GLuint	height;								<font class="theme">// Image Height</font>
+	GLuint	texID;								<font class="theme">// Texture ID Used To Select A Texture</font>
+} TextureImage;									<font class="theme">// Structure Name</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The following code sets aside room for our 10 textures and 30 objects.  If you plan to add more objects to the
+game make sure you increase the value from 30 to however many objects you want.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>TextureImage textures[10];							<font class="theme">// Storage For 10 Textures</font>
+
+objects	object[30];								<font class="theme">// Storage For 30 Objects</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+I didn't want to limit the size of each object.  I wanted the vase to be taller than the can, I wanted the
+bucket to be wider than the vase.  To make life easy, I create a structure that holds the objects width (w)
+and height (h).
+<br><br>
+I then set the width and height of each object in the last line of code.  To get the coke cans width, I would
+check size[3].w.  The Blueface is 0, the Bucket is 1, and the Target is 2, etc.  The width is represented by
+w.  Make sense?
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>struct dimensions {								<font class="theme">// Object Dimensions</font>
+	GLfloat	w;								<font class="theme">// Object Width</font>
+	GLfloat h;								<font class="theme">// Object Height</font>
+};
+
+<font class="theme">// Size Of Each Object: Blueface,     Bucket,      Target,       Coke,         Vase</font>
+dimensions size[5] = { {1.0f,1.0f}, {1.0f,1.0f}, {1.0f,1.0f}, {0.5f,1.0f}, {0.75f,1.5f} };
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The following large section of code loads our TGA images and converts them to textures.  It's the same code I
+used in lesson 25 so if you need a detailed description go back and read lesson 25.  
+<br><br>
+I use TGA images because they are capable of having an alpha channel.  The alpha channel tells OpenGL which
+parts of the image are transparent and which parts are opaque.  The alpha channel is created in an art program,
+and is saved inside the .TGA image.  OpenGL loads the image, and uses the alpha channel to set the amount of
+transparency for each pixel in the image.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>bool LoadTGA(TextureImage *texture, char *filename)				<font class="theme">// Loads A TGA File Into Memory</font>
+{    
+	GLubyte		TGAheader[12]={0,0,2,0,0,0,0,0,0,0,0,0};		<font class="theme">// Uncompressed TGA Header</font>
+	GLubyte		TGAcompare[12];						<font class="theme">// Used To Compare TGA Header</font>
+	GLubyte		header[6];						<font class="theme">// First 6 Useful Bytes From The Header</font>
+	GLuint		bytesPerPixel;						<font class="theme">// Holds Number Of Bytes Per Pixel Used In The TGA File</font>
+	GLuint		imageSize;						<font class="theme">// Used To Store The Image Size When Setting Aside Ram</font>
+	GLuint		temp;							<font class="theme">// Temporary Variable</font>
+	GLuint		type=GL_RGBA;						<font class="theme">// Set The Default GL Mode To RBGA (32 BPP)</font>
+
+	FILE *file = fopen(filename, "rb");					<font class="theme">// Open The TGA File</font>
+
+	if(	file==NULL ||							<font class="theme">// Does File Even Exist?</font>
+		fread(TGAcompare,1,sizeof(TGAcompare),file)!=sizeof(TGAcompare) ||	<font class="theme">// Are There 12 Bytes To Read?</font>
+		memcmp(TGAheader,TGAcompare,sizeof(TGAheader))!=0 ||		<font class="theme">// Does The Header Match What We Want?</font>
+		fread(header,1,sizeof(header),file)!=sizeof(header))		<font class="theme">// If So Read Next 6 Header Bytes</font>
+	{
+		if (file == NULL)						<font class="theme">// Does The File Even Exist? *Added Jim Strong*</font>
+			return FALSE;						<font class="theme">// Return False</font>
+		else								<font class="theme">// Otherwise</font>
+		{
+			fclose(file);						<font class="theme">// If Anything Failed, Close The File</font>
+			return FALSE;						<font class="theme">// Return False</font>
+		}
+	}
+
+	texture-&gt;width  = header[1] * 256 + header[0];				<font class="theme">// Determine The TGA Width	(highbyte*256+lowbyte)</font>
+	texture-&gt;height = header[3] * 256 + header[2];				<font class="theme">// Determine The TGA Height	(highbyte*256+lowbyte)</font>
+    
+ 	if(	texture-&gt;width	&lt;=0 ||						<font class="theme">// Is The Width Less Than Or Equal To Zero</font>
+		texture-&gt;height	&lt;=0 ||						<font class="theme">// Is The Height Less Than Or Equal To Zero</font>
+		(header[4]!=24 &amp;&amp; header[4]!=32))				<font class="theme">// Is The TGA 24 or 32 Bit?</font>
+	{
+		fclose(file);							<font class="theme">// If Anything Failed, Close The File</font>
+		return FALSE;							<font class="theme">// Return False</font>
+	}
+
+	texture-&gt;bpp	= header[4];						<font class="theme">// Grab The TGA's Bits Per Pixel (24 or 32)</font>
+	bytesPerPixel	= texture-&gt;bpp/8;					<font class="theme">// Divide By 8 To Get The Bytes Per Pixel</font>
+	imageSize		= texture-&gt;width*texture-&gt;height*bytesPerPixel;	<font class="theme">// Calculate The Memory Required For The TGA Data</font>
+
+	texture-&gt;imageData=(GLubyte *)malloc(imageSize);			<font class="theme">// Reserve Memory To Hold The TGA Data</font>
+
+	if(	texture-&gt;imageData==NULL ||					<font class="theme">// Does The Storage Memory Exist?</font>
+		fread(texture-&gt;imageData, 1, imageSize, file)!=imageSize)	<font class="theme">// Does The Image Size Match The Memory Reserved?</font>
+	{
+		if(texture-&gt;imageData!=NULL)					<font class="theme">// Was Image Data Loaded</font>
+			free(texture-&gt;imageData);				<font class="theme">// If So, Release The Image Data</font>
+
+		fclose(file);							<font class="theme">// Close The File</font>
+		return FALSE;							<font class="theme">// Return False</font>
+	}
+
+	for(GLuint i=0; i&lt;int(imageSize); i+=bytesPerPixel)			<font class="theme">// Loop Through The Image Data</font>
+	{									<font class="theme">// Swaps The 1st And 3rd Bytes ('R'ed and 'B'lue)</font>
+		temp=texture-&gt;imageData[i];					<font class="theme">// Temporarily Store The Value At Image Data 'i'</font>
+		texture-&gt;imageData[i] = texture-&gt;imageData[i + 2];		<font class="theme">// Set The 1st Byte To The Value Of The 3rd Byte</font>
+		texture-&gt;imageData[i + 2] = temp;				<font class="theme">// Set The 3rd Byte To The Value In 'temp' (1st Byte Value)</font>
+	}
+
+	fclose (file);								<font class="theme">// Close The File</font>
+
+	<font class="theme">// Build A Texture From The Data</font>
+	glGenTextures(1, &amp;texture[0].texID);					<font class="theme">// Generate OpenGL texture IDs</font>
+
+	glBindTexture(GL_TEXTURE_2D, texture[0].texID);				<font class="theme">// Bind Our Texture</font>
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);	<font class="theme">// Linear Filtered</font>
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);	<font class="theme">// Linear Filtered</font>
+	
+	if (texture[0].bpp==24)							<font class="theme">// Was The TGA 24 Bits</font>
+	{
+		type=GL_RGB;							<font class="theme">// If So Set The 'type' To GL_RGB</font>
+	}
+
+	glTexImage2D(GL_TEXTURE_2D, 0, type, texture[0].width, texture[0].height, 0, type, GL_UNSIGNED_BYTE, texture[0].imageData);
+
+	return true;								<font class="theme">// Texture Building Went Ok, Return True</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The 2D texture font code is the same code I have used in previous tutorials.  However, there are a few small
+changes.  The thing you will notice is that we are only generating 95 display lists.  If you look at the font
+texture, you will see there are only 95 characters counting the space at the top left of the image.  The
+second thing you will notice is we divide by 16.0f for cx and we only divide by 8.0f for cy.
+The reason we do this is because the font texture is 256 pixels wide, but only half as tall (128 pixels).  So
+to calculate cx we divide by 16.0f and to calculate cy we divide by half that (8.0f).
+<br><br>
+If you do not understand the code below, go back and read through Lesson 17.  The font building code is
+explained in detail in lesson 17!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>GLvoid BuildFont(GLvoid)							<font class="theme">// Build Our Font Display List</font>
+{
+	base=glGenLists(95);							<font class="theme">// Creating 95 Display Lists</font>
+	glBindTexture(GL_TEXTURE_2D, textures[9].texID);			<font class="theme">// Bind Our Font Texture</font>
+	for (int loop=0; loop&lt;95; loop++)					<font class="theme">// Loop Through All 95 Lists</font>
+	{
+		float cx=float(loop%16)/16.0f;					<font class="theme">// X Position Of Current Character</font>
+		float cy=float(loop/16)/8.0f;					<font class="theme">// Y Position Of Current Character</font>
+
+		glNewList(base+loop,GL_COMPILE);				<font class="theme">// Start Building A List</font>
+			glBegin(GL_QUADS);					<font class="theme">// Use A Quad For Each Character</font>
+				glTexCoord2f(cx,         1.0f-cy-0.120f); glVertex2i(0,0);	<font class="theme">// Texture / Vertex Coord (Bottom Left)</font>
+				glTexCoord2f(cx+0.0625f, 1.0f-cy-0.120f); glVertex2i(16,0);	<font class="theme">// Texutre / Vertex Coord (Bottom Right)</font>
+				glTexCoord2f(cx+0.0625f, 1.0f-cy);	  glVertex2i(16,16);	<font class="theme">// Texture / Vertex Coord (Top Right)</font>
+				glTexCoord2f(cx,         1.0f-cy);	  glVertex2i(0,16);	<font class="theme">// Texture / Vertex Coord (Top Left)</font>
+			glEnd();						<font class="theme">// Done Building Our Quad (Character)</font>
+			glTranslated(10,0,0);					<font class="theme">// Move To The Right Of The Character</font>
+		glEndList();							<font class="theme">// Done Building The Display List</font>
+	}									<font class="theme">// Loop Until All 256 Are Built</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The printing code is the code is also from lesson 17, but has been modified to allow us to print the score,
+level and morale to the screen (variables that continually change).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>GLvoid glPrint(GLint x, GLint y, const char *string, ...)			<font class="theme">// Where The Printing Happens</font>
+{
+	char		text[256];						<font class="theme">// Holds Our String</font>
+	va_list		ap;							<font class="theme">// Pointer To List Of Arguments</font>
+
+	if (string == NULL)							<font class="theme">// If There's No Text</font>
+		return;								<font class="theme">// Do Nothing</font>
+
+	va_start(ap, string);							<font class="theme">// Parses The String For Variables</font>
+	    vsprintf(text, string, ap);						<font class="theme">// And Converts Symbols To Actual Numbers</font>
+	va_end(ap);								<font class="theme">// Results Are Stored In Text</font>
+
+	glBindTexture(GL_TEXTURE_2D, textures[9].texID);			<font class="theme">// Select Our Font Texture</font>
+	glPushMatrix();								<font class="theme">// Store The Modelview Matrix</font>
+	glLoadIdentity();							<font class="theme">// Reset The Modelview Matrix</font>
+	glTranslated(x,y,0);							<font class="theme">// Position The Text (0,0 - Bottom Left)</font>
+	glListBase(base-32);							<font class="theme">// Choose The Font Set</font>
+	glCallLists(strlen(text), GL_UNSIGNED_BYTE, text);			<font class="theme">// Draws The Display List Text</font>
+	glPopMatrix();								<font class="theme">// Restore The Old Projection Matrix</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+This code will be called later in the program by qsort.  It compares the distance in two structures and
+return -1 if the first structures distance was less than the seconds structures distance, 1 if
+the first structures distance is greater than the second structures distance and 0 if the
+distance is the same in both structures.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int Compare(struct objects *elem1, struct objects *elem2)			<font class="theme">// Compare Function *** MSDN CODE MODIFIED FOR THIS TUT ***</font>
+{
+   if ( elem1-&gt;distance &lt; elem2-&gt;distance)					<font class="theme">// If First Structure distance Is Less Than The Second</font>
+      return -1;								<font class="theme">// Return -1</font>
+   else if (elem1-&gt;distance &gt; elem2-&gt;distance)					<font class="theme">// If First Structure distance Is Greater Than The Second</font>
+      return 1;									<font class="theme">// Return 1</font>
+   else										<font class="theme">// Otherwise (If The distance Is Equal)</font>
+      return 0;									<font class="theme">// Return 0</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The InitObject() code is where we set up each object.  We start off by setting rot to 1.  This gives the
+object clockwise rotation.  Then we set the explosion animation to frame 0 (we don't want the explosion to start
+halfway through the animation).  Next we set hit to FALSE, meaning the object has not yet been hit or
+set to self destruct.  To select an object texture, texid is assigned a random value from 0 to 4.  Zero
+is the blueface texture and 4 is the vase texture.  This gives us one of 5 random objects.
+<br><br>
+The variable distance will be a random number from -0.0f to -40.0f (4000/100 is 40).  When we actually
+draw the object, we translate another 10 units into the screen.  So when the objects are drawn, they will be
+drawn from -10.0f to -50.0f units into the screen (not to close, and not too far).  I divide the random number
+by 100.0f to get a more accurate floating point value.
+<br><br>
+After assigning a random distance, we then give the object a random y value.  We don't want the object
+any lower than -1.5f, otherwise it will be under the ground, and we dont want the object any higher than 3.0f.
+So to stay in that range our random number can not be any higher than 4.5f (-1.5f+4.5f=3.0f).
+<br><br>
+To calculate the x position, we use some tricky math.  We take our distance and we subtract
+15.0f from it.  Then we divide the result by 2 and subtract 5*level.  Finally, we subtract a random
+amount from 0.0f to 5 multiplied by the current level.  We subtract the 5*level and the random
+amount from 0.0f to 5*level so that our object appears further off the screen on higher levels.  If we
+didn't, the objects would appear one after another, making it even more difficult to hit all the targets than
+it already is.
+<br><br>
+Finally we choose a random direction (dir) from 0 (left) to 1 (right).
+<br><br>
+To make things easier to understand in regards to the x position, I'll write out a quick example.  Say
+our distance is -30.0f and the current level is 1:
+<br><br>
+object[num].x=((-30.0f-15.0f)/2.0f)-(5*1)-float(rand()%(5*1));<br>
+object[num].x=(-45.0f/2.0f)-5-float(rand()%5);<br>
+object[num].x=(-22.5f)-5-{lets say 3.0f};<br>
+object[num].x=(-22.5f)-5-{3.0f};<br>
+object[num].x=-27.5f-{3.0f};<br>
+object[num].x=-30.5f;
+<br><br>
+Now keeping in mind that we move 10 units into the screen before we draw our objects, and the distance
+in the example above is -30.0f.  It's safe to say our actual distance into the screen will be -40.0f.  Using
+the perspective code in the NeHeGL.cpp file, it's safe to assume that if the distance is -40.0f, the far left
+edge of the screen will be -20.0f and the far right will be +20.0f.  In the code above our x value is
+-22.5f (which would be JUST off the left side of the screen).  We then subtract 5 and our random value of 3
+which guarantees the object will start off the screen (at -30.5f) which means the object would have to move
+roughly 8 units to the right before it even appeared on the screen.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>GLvoid InitObject(int num)							<font class="theme">// Initialize An Object</font>
+{
+	object[num].rot=1;							<font class="theme">// Clockwise Rotation</font>
+	object[num].frame=0;							<font class="theme">// Reset The Explosion Frame To Zero</font>
+	object[num].hit=FALSE;							<font class="theme">// Reset Object Has Been Hit Status To False</font>
+	object[num].texid=rand()%5;						<font class="theme">// Assign A New Texture</font>
+	object[num].distance=-(float(rand()%4001)/100.0f);			<font class="theme">// Random Distance</font>
+	object[num].y=-1.5f+(float(rand()%451)/100.0f);				<font class="theme">// Random Y Position</font>
+	<font class="theme">// Random Starting X Position Based On Distance Of Object And Random Amount For A Delay (Positive Value)</font>
+	object[num].x=((object[num].distance-15.0f)/2.0f)-(5*level)-float(rand()%(5*level));
+	object[num].dir=(rand()%2);						<font class="theme">// Pick A Random Direction</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we check to see which direction the object is going to be travelling.  The code below checks to see if the
+object is moving left.  If it is, we have to change the rotation so that the object is spinning counter clockwise.
+We do this by changing the value of rot to 2.
+<br><br>
+Our x value by default is going to be a negative number.  However, the right side of the screen would
+be a positive value.  So the last thing we do is negate the current x value.  In english, we make the
+x value a positive value instead of a negative value.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>
+	if (object[num].dir==0)							<font class="theme">// Is Random Direction Right</font>
+	{
+		object[num].rot=2;						<font class="theme">// Counter Clockwise Rotation</font>
+		object[num].x=-object[num].x;					<font class="theme">// Start On The Left Side (Negative Value)</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we check the texid to find out what object the computer has randomly picked.  If texid is
+equal to 0, the computer has picked the Blueface object.  The blueface guys always roll across the ground.
+To make sure they start off at ground level, we manually set the y value to -2.0f.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>
+	if (object[num].texid==0)						<font class="theme">// Blue Face</font>
+		object[num].y=-2.0f;						<font class="theme">// Always Rolling On The Ground</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Next we check to see if texid is 1.  If so, the computer has selected the Bucket.  The bucket doesn't
+travel from left to right, it falls from the sky.  The first thing we have to do is set dir to 3.  This
+tells the computer that our bucket is falling or moving down.
+<br><br>
+Our initial code assumes the object will be travelling from left to right.  Because the bucket is falling down,
+we have to give it a new random x value.  If we didn't, the bucket would never be visible.  It would fall
+either far off the left side of the screen or far off the right side of the screen.  To assign a new value we
+randomly choose a value based on the distance into the screen.  Instead of subtracting 15, we only subtract 10.
+This gives us a little less range, and keeps the object ON the screen instead of off the side of the screen.
+Assuming our distance was -30.0f, we would end up with a random value from 0.0f to 40.0f.  If you're
+asking yourself, why from 0.0f to 40.0f?  Shouldn't it be from 0.0f to -40.0f?  The answer is easy.  The rand()
+function always returns a positive number.  So whatever number we get back will be a positive value.  Anyways...
+back to the story.  So we have a positive number from 0.0f to 40.0f.  We then add the distance (a negative value)
+minus 10.0f divided by 2.  As an example... assuming the random value returned is say 15 and the distance
+is -30.0f:
+<br><br>
+object[num].x=float(rand()%int(-30.0f-10.0f))+((-30.0f-10.0f)/2.0f);
+<br><br>
+object[num].x=float(rand()%int(-40.0f)+(-40.0f)/2.0f);
+<br><br>
+object[num].x=float(15 {assuming 15 was returned))+(-20.0f);
+<br><br>
+object[num].x=15.0f-20.0f;
+<br><br>
+object[num].x=-5.0f;
+<br><br>
+The last thing we have to do is set the y value.  We want the bucket to drop from the sky.  We don't want
+it falling through the clouds though.  So we set the y value to 4.5f.  Just a little below the clouds.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>
+	if (object[num].texid==1)						<font class="theme">// Bucket</font>
+	{
+		object[num].dir=3;						<font class="theme">// Falling Down</font>
+		object[num].x=float(rand()%int(object[num].distance-10.0f))+((object[num].distance-10.0f)/2.0f);
+		object[num].y=4.5f;						<font class="theme">// Random X, Start At Top Of The Screen</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We want the target to pop out of the ground and up into the air.  We check to make sure the object is indeed a
+target (texid is 2).  If so, we set the direction (dir) to 2 (up).  We use the exact same code
+as above to get a random x location.
+<br><br>
+We don't want the target to start above ground.  So we set it's initial y value to -3.0f (under the ground).
+We then subtract a random value from 0.0f to 5 multiplied by the current level.  We do this so that the
+target doesn't INSTANTLY appear.  On higher levels we want a delay before the target appears.  Without a delay,
+the targets would pop out one after another, giving you very little time to hit them.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	if (object[num].texid==2)						<font class="theme">// Target</font>
+	{
+		object[num].dir=2;						<font class="theme">// Start Off Flying Up</font>
+		object[num].x=float(rand()%int(object[num].distance-10.0f))+((object[num].distance-10.0f)/2.0f);
+		object[num].y=-3.0f-float(rand()%(5*level));			<font class="theme">// Random X, Start Under Ground + Random Value</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+All of the other objects travel from left to right, so there is no need to assign any values to the remaining
+objects.  They should work just fine with the random values they were assigned.
+<br><br>
+Now for the fun stuff!  <i>"For the alpha blending technique to work correctly, the transparent primitives
+must be drawn in back to front order and must not intersect"</i>.  When drawing alpha blended objects, it
+is very important that objects in the distance are drawn first, and objects up close are drawn last.
+<br><br>
+The reason is simple...  The Z buffer prevents OpenGL from drawing pixels that are behind things that have
+already been drawn.  So what ends up happening is objects drawn behind transparent objects do not show up.
+What you end up seeing is a square shape around overlapping objects... Not pretty!
+<br><br>
+We already know the depth of each object.  So after initializing a new object, we can get around this problem
+by sorting the objects using the qsort function (quick sort).  By sorting the objects, we can be sure that the
+first object drawn is the object furthest away.  That way when we draw the objects, starting at the first
+object, the objects in the distance will be drawn first.  Objects that are closer (drawn later) will see the
+previously drawn objects behind them, and will blend properly!
+<br><br>
+As noted in the line comments I found this code in the MSDN after searching the net for hours looking for a
+solution.  It works good and allows you to sort entire structures.  qsort takes 4 parameters.  The first
+parameter points to the object array (the array to be sorted).  The second parameter is the number of
+arrays we want to sort... of course we want to sort through all the object currently being displayed (which is
+level).  The third parameter specifies the size of our objects structure and the fourth parameter
+points to our Compare() function.
+<br><br>
+There is probably a better way to sort structures, but qsort() works...  It's quick, convenient and easy to use!
+<br><br>
+It's important to note, that if you wanted to use the glAlphaFunc() and glEnable(GL_ALPHA_TEST), sorting is not
+necessary.  However, using the Alpha Function you are restricted to completely transparent or completely opaque
+blending, there is no in between.  Sorting and using the Blendfunc() is a little more work, but it allows for
+semi-transparent objects.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Sort Objects By Distance:	Beginning Address Of Our object Array	*** MSDN CODE MODIFIED FOR THIS TUT ***</font>
+	//								Number Of Elements To Sort
+	//								Size Of Each Element
+	//								Pointer To Our Compare Function
+	qsort((void *) &amp;object, level, sizeof(struct objects), (compfn)Compare );
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The init code is same as always.  The first two lines grab information about our window and our keyboard handler.
+We then use srand() to create a more random game based on the time.  After that we load our TGA images and
+convert them to textures using LoadTGA().  The first 5 images are objects that will streak across the screen.
+Explode is our explosion animation, ground and sky make up the background scene, crosshair is the crosshair you
+see on the screen representing your current mouse location, and finally, the font image is the font used to
+display the score, title, and morale.  If any of the images fail to load FALSE is returned, and the program
+shuts down.  It's important to note that this base code will not return an INIT FAILED error message.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>BOOL Initialize (GL_Window* window, Keys* keys)					<font class="theme">// Any OpenGL Initialization Goes Here</font>
+{
+	g_window	= window;
+	g_keys		= keys;
+
+	srand( (unsigned)time( NULL ) );					<font class="theme">// Randomize Things</font>
+
+	if ((!LoadTGA(&amp;textures[0],"Data/BlueFace.tga")) ||			<font class="theme">// Load The BlueFace Texture</font>
+		(!LoadTGA(&amp;textures[1],"Data/Bucket.tga")) ||			<font class="theme">// Load The Bucket Texture</font>
+		(!LoadTGA(&amp;textures[2],"Data/Target.tga")) ||			<font class="theme">// Load The Target Texture</font>
+		(!LoadTGA(&amp;textures[3],"Data/Coke.tga")) ||			<font class="theme">// Load The Coke Texture</font>
+		(!LoadTGA(&amp;textures[4],"Data/Vase.tga")) ||			<font class="theme">// Load The Vase Texture</font>
+		(!LoadTGA(&amp;textures[5],"Data/Explode.tga")) ||			<font class="theme">// Load The Explosion Texture</font>
+		(!LoadTGA(&amp;textures[6],"Data/Ground.tga")) ||			<font class="theme">// Load The Ground Texture</font>
+		(!LoadTGA(&amp;textures[7],"Data/Sky.tga")) ||			<font class="theme">// Load The Sky Texture</font>
+		(!LoadTGA(&amp;textures[8],"Data/Crosshair.tga")) ||		<font class="theme">// Load The Crosshair Texture</font>
+		(!LoadTGA(&amp;textures[9],"Data/Font.tga")))			<font class="theme">// Load The Crosshair Texture</font>
+	{
+		return FALSE;							<font class="theme">// If Loading Failed, Return False</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+If all of the images loaded and were successfully turned into textures, we can continue with initialization.
+The font texture is loaded, so it's safe to build our font.  We do this by jumping to BuildFont().
+<br><br>
+We then set up OpenGL.  The background color is set to black, the alpha is also set to 0.0f.  The depth buffer
+is set up and enabled with less than or equal testing.
+<br><br>
+The glBlendFunc() is a VERY important line of code.  We set the blend function to (GL_SRC_ALPHA,
+GL_ONE_MINUS_SRC_ALPHA).  This blends the object with what's on the screen using the alpha values stored in the
+objects texture.  After setting the blend mode, we enable blending.  We then enable 2D texture mapping, and
+finally, we enable GL_CULL_FACE.  This removes the back face from each object ( no point in wasting cycles
+drawing something we can't see ).  We draw all of our quads with a counter clockwise winding so the proper
+face is culled.
+<br><br>
+Earlier in the tutorial I talked about using the glAlphaFunc() instead of alpha blending.  If you want to use
+the Alpha Function, comment out the 2 lines of blending code and uncomment the 2 lines under glEnable(GL_BLEND).
+You can also comment out the qsort() function in the InitObject() section of code.
+<br><br>
+The program should run ok, but the sky texture will not be there.  The reason is because the sky texture has an
+alpha value of 0.5f.  When I was talking about the Alpha Function earlier on, I mentioned that it only works
+with alpha values of 0 or 1.  You will have to modify the alpha channel for the sky texture if you want it to
+appear!  Again, if you decide to use the Alpha Function instead, you don't have to sort the objects.  Both
+methods have the good points!  Below is a quick quote from the SGI site:
+<br><br>
+<i>"The alpha function discards fragments instead of drawing them into the frame buffer. Therefore sorting
+of the primitives is not necessary (unless some other mode like alpha blending is enabled). The disadvantage is
+that pixels must be completely opaque or completely transparent"</i>.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	BuildFont();								<font class="theme">// Build Our Font Display List</font>
+
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);					<font class="theme">// Black Background</font>
+	glClearDepth(1.0f);							<font class="theme">// Depth Buffer Setup</font>
+	glDepthFunc(GL_LEQUAL);							<font class="theme">// Type Of Depth Testing</font>
+	glEnable(GL_DEPTH_TEST);						<font class="theme">// Enable Depth Testing</font>
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);			<font class="theme">// Enable Alpha Blending (disable alpha testing)</font>
+	glEnable(GL_BLEND);							<font class="theme">// Enable Blending       (disable alpha testing)</font>
+//	glAlphaFunc(GL_GREATER,0.1f);						<font class="theme">// Set Alpha Testing     (disable blending)</font>
+//	glEnable(GL_ALPHA_TEST);						<font class="theme">// Enable Alpha Testing  (disable blending)</font>
+	glEnable(GL_TEXTURE_2D);						<font class="theme">// Enable Texture Mapping</font>
+	glEnable(GL_CULL_FACE);							<font class="theme">// Remove Back Face</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+At this point in the program, none of the objects have been defined.  So we loop through all thirty objects
+calling InitObject() for each object.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	for (int loop=0; loop&lt;30; loop++)					<font class="theme">// Loop Through 30 Objects</font>
+		InitObject(loop);						<font class="theme">// Initialize Each Object</font>
+	
+	return TRUE;								<font class="theme">// Return TRUE (Initialization Successful)</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+In our init code, we called BuildFont() which builds our 95 display lists.  The following line of code
+deletes all 95 display lists before the program quits.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void Deinitialize (void)							<font class="theme">// Any User DeInitialization Goes Here</font>
+{
+	glDeleteLists(base,95);							<font class="theme">// Delete All 95 Font Display Lists</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now for the tricky stuff... The code that does the actual selecting of the objects.  The first line of code
+below allocates a buffer that we can use to store information about our selected objects into.  The variable
+hits will hold the number of hits detected while in selection mode.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void Selection(void)								<font class="theme">// This Is Where Selection Is Done</font>
+{
+	GLuint	buffer[512];							<font class="theme">// Set Up A Selection Buffer</font>
+	GLint	hits;								<font class="theme">// The Number Of Objects That We Selected</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+In the code below, we check to see if the game is over (FALSE).  If it is, there is no point in selecting
+anything, so we return (exit).  If the game is still active (TRUE), we play a gunshot sound using the Playsound()
+command.  The only time Selection() is called is when the mouse button has been pressed, and every time
+the button is pressed, we want to play the gunshot sound.  The sound is played in async mode so that it doesn't
+halt the program while the sound is playing.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	if (game)								<font class="theme">// Is Game Over?</font>
+		return;								<font class="theme">// If So, Don't Bother Checking For Hits</font>
+	
+	PlaySound("data/shot.wav",NULL,SND_ASYNC);				<font class="theme">// Play Gun Shot Sound</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we set up a viewport.  viewport[] will hold the current x, y, length and width of the current
+viewport (OpenGL Window).
+<br><br>
+glGetIntegerv(GL_VIEWPORT, viewport) gets the current viewport boundries and stores them in viewport[].
+Initially, the boundries are equal the the OpenGL window dimensions.  glSelectBuffer(512, buffer) tells OpenGL
+to use buffer for it's selection buffer.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>
+	<font class="theme">// The Size Of The Viewport. [0] Is &lt;x&gt;, [1] Is &lt;y&gt;, [2] Is &lt;length&gt;, [3] Is &lt;width&gt;</font>
+	GLint	viewport[4];
+
+	<font class="theme">// This Sets The Array &lt;viewport&gt; To The Size And Location Of The Screen Relative To The Window</font>
+	glGetIntegerv(GL_VIEWPORT, viewport);
+	glSelectBuffer(512, buffer);						<font class="theme">// Tell OpenGL To Use Our Array For Selection</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+All of the code below is very important.  The first line puts OpenGL in selection mode.  In selection mode,
+nothing is drawn to the screen.  Instead, information about objects rendered while in selection mode will
+be stored in the selection buffer.
+<br><br>
+Next we initialize the name stack by calling glInitNames() and glPushName(0).  It's important to note that if
+the program is not in selection mode, a call to glPushName() will be ignored.  Of course we are in selection
+mode, but it's something to keep in mind.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>
+	<font class="theme">// Puts OpenGL In Selection Mode. Nothing Will Be Drawn. Object ID's and Extents Are Stored In The Buffer.</font>
+	(void) glRenderMode(GL_SELECT);
+
+	glInitNames();								<font class="theme">// Initializes The Name Stack</font>
+	glPushName(0);								<font class="theme">// Push 0 (At Least One Entry) Onto The Stack</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+After preparing the name stack, we have to to restrict drawing to the area just under our crosshair.  In order
+to do this we have to select the projection matrix.  After selecting the projection matrix we push it onto the
+stack.  We then reset the projection matrix using glLoadIdentity().
+<br><br>
+We restrict drawing using gluPickMatrix().  The first parameter is our current mouse position on the x-axis,
+the second parameter is the current mouse position on the y-axis, then the width and height of the picking
+region.  Finally the current viewport[].  The viewport[] indicates the current viewport
+boundaries.  mouse_x and mouse_y will be the center of the picking region.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glMatrixMode(GL_PROJECTION);						<font class="theme">// Selects The Projection Matrix</font>
+	glPushMatrix();								<font class="theme">// Push The Projection Matrix</font>
+	glLoadIdentity();							<font class="theme">// Resets The Matrix</font>
+
+	<font class="theme">// This Creates A Matrix That Will Zoom Up To A Small Portion Of The Screen, Where The Mouse Is.</font>
+	gluPickMatrix((GLdouble) mouse_x, (GLdouble) (viewport[3]-mouse_y), 1.0f, 1.0f, viewport);
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Calling gluPerspective() multiplies the perspective matrix by the pick matrix which restricts the drawing to
+the area requested by gluPickMatrix().
+<br><br>
+We then switch to the modelview matrix and draw our targets by calling DrawTargets().  We draw the
+targets in DrawTargets() and not in Draw() because we only want selection to check for hits with
+objects (targets) and not the sky, ground or crosshair.
+<br><br>
+After drawing our targets, we switch back to the projection matrix and pop the stored matrix off the stack.  We
+then switch back to the modelview matrix.
+<br><br>
+The last line of code below switches back to render mode so that objects we draw actually appear on the screen.
+hits will hold the number of objects that were rendered in the viewing area requested by gluPickMatrix().
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Apply The Perspective Matrix</font>
+	gluPerspective(45.0f, (GLfloat) (viewport[2]-viewport[0])/(GLfloat) (viewport[3]-viewport[1]), 0.1f, 100.0f);
+	glMatrixMode(GL_MODELVIEW);						<font class="theme">// Select The Modelview Matrix</font>
+	DrawTargets();								<font class="theme">// Render The Targets To The Selection Buffer</font>
+	glMatrixMode(GL_PROJECTION);						<font class="theme">// Select The Projection Matrix</font>
+	glPopMatrix();								<font class="theme">// Pop The Projection Matrix</font>
+	glMatrixMode(GL_MODELVIEW);						<font class="theme">// Select The Modelview Matrix</font>
+	hits=glRenderMode(GL_RENDER);						<font class="theme">// Switch To Render Mode, Find Out How Many</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we check to see if there were more than 0 hits recorded.  If so, we set choose to equal the name of
+the first object drawn into the picking area.  depth holds how deep into the screen, the object is.
+<br><br>
+Each hit takes 4 items in the buffer.  The first item is the number of names on the name stack when the hit
+occured.  The second item is the minimum z value of all the verticies that intersected the viewing area at the
+time of the hit.  The third item is the maximum z value of all the vertices that intersected the viewing area
+at the time of the hit and the last item is the content of the name stack at the time of the hit (name of the
+object).  We are only interested in the minimum z value and the object name in this tutorial.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	if (hits &gt; 0)								<font class="theme">// If There Were More Than 0 Hits</font>
+	{
+		int	choose = buffer[3];					<font class="theme">// Make Our Selection The First Object</font>
+		int	depth = buffer[1];					<font class="theme">// Store How Far Away It Is</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We then loop through all of the hits to make sure none of the objects are closer than the first object
+hit.  If we didn't do this, and two objects were overlapping, the first object hit might behind another object,
+and clicking the mouse would take away the first object, even though it was behind another object.  When you
+shoot at something, the closest object should be the object that gets hit.
+<br><br>
+So, we check through all of the hits.  Remember that each object takes 4 items in the buffer, so to search
+through each hit we have to multiply the current loop value by 4.  We add 1 to get the depth of each
+object hit.  If the depth is less than the the current selected objects depth, we store the name of the closer
+object in choose and we store the depth of the closer object in depth.  After we have looped
+through all of our hits, choose will hold the name of the closest object hit, and depth will hold
+the depth of the closest object hit.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		for (int loop = 1; loop &lt; hits; loop++)				<font class="theme">// Loop Through All The Detected Hits</font>
+		{
+			<font class="theme">// If This Object Is Closer To Us Than The One We Have Selected</font>
+			if (buffer[loop*4+1] &lt; GLuint(depth))
+			{
+				choose = buffer[loop*4+3];			<font class="theme">// Select The Closer Object</font>
+				depth = buffer[loop*4+1];			<font class="theme">// Store How Far Away It Is</font>
+			}       
+		}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+All we have to do is mark the object as being hit.  We check to make sure the object has not already been hit.
+If it has not been hit, we mark it as being hit by setting hit to TRUE.  We increase the players
+score by 1 point, and we increase the kills counter by 1.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>
+		if (!object[choose].hit)					<font class="theme">// If The Object Hasn't Already Been Hit</font>
+		{
+			object[choose].hit=TRUE;				<font class="theme">// Mark The Object As Being Hit</font>
+			score+=1;						<font class="theme">// Increase Score</font>
+			kills+=1;						<font class="theme">// Increase Level Kills</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+I use kills to keep track of how many objects have been destroyed on each level.  I wanted each level to
+have more objects (making it harder to get through the level).  So I check to see if the players kills
+is greater than the current level multiplied by 5.  On level 1, the player only has to kill 5 objects
+(1*5).  On level 2 the player has to kill 10 objects (2*5), progressively getting harder each level.
+<br><br>
+So, the first line of code checks to see if kills is higher than the level multiplied by 5.
+If so, we set miss to 0.  This sets the player morale back to 10 out of 10 (the morale is 10-miss).
+We then set kills to 0 (which starts the counting process over again).
+<br><br>
+Finally, we increase the value of level by 1 and check to see if we've hit the last level.  I have set
+the maximum level to 30 for the following two reasons... Level 30 is insanely difficult.  I am pretty sure no
+one will ever have that good of a game.  The second reason... At the top of the code, we only set up 30 objects.
+If you want more objects, you have to increase the value accordingly.
+<br><br>
+It is VERY important to note that you can have a maximum of 64 objects on the screen (0-63).  If you try to
+render 65 or more objects, picking becomes confused, and odd things start to happen.  Everything from objects
+randomly exploding to your computer crashing.  It's a physical limit in OpenGL (just like the 8 lights limit).
+<br><br>
+If by some chance you are a god, and you finish level 30, the level will no longer increase, but your score will.
+Your morale will also reset to 10 every time you finish the 30th level.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>			if (kills&gt;level*5)					<font class="theme">// New Level Yet?</font>
+			{
+				miss=0;						<font class="theme">// Misses Reset Back To Zero</font>
+				kills=0;					<font class="theme">// Reset Level Kills</font>
+				level+=1;					<font class="theme">// Increase Level</font>
+				if (level&gt;30)					<font class="theme">// Higher Than 30?</font>
+					level=30;				<font class="theme">// Set Level To 30 (Are You A God?)</font>
+			}
+		}
+	}
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Update() is where I check for key presses, and update object movement.  One of the nice things about Update() is
+the milliseconds timer.  You can use the milliseconds timer to move objects based on the amount of time
+that has passed since Update() was last called.  It's important to note that moving object based on time keeps
+the objects moving at the same speed on any processor... BUT there are drawbacks!  Lets say you have an object
+moving 5 units in 10 seconds.  On a fast system, the computer will move the object half a unit every second.  On
+a slow system, it could be 2 seconds before the update procedure is even called.  So when the object moves, it
+will appear to skip a spot.  The animation will not be as smooth on a slower system.  (Note: this is just an
+exaggerated example... computers update ALOT faster than once every two seconds).
+<br><br>
+Anyways... with that out of the way... on to the code.  The code below checks to see if the escape key is being
+pressed.  If it is, we quit the application by calling TerminateApplication().  g_window holds the
+information about our window.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void Update(DWORD milliseconds)							<font class="theme">// Perform Motion Updates Here</font>
+{
+	if (g_keys-&gt;keyDown[VK_ESCAPE])						<font class="theme">// Is ESC Being Pressed?</font>
+	{
+		TerminateApplication (g_window);				<font class="theme">// Terminate The Program</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The code below checks to see if the space bar is pressed and the game is over.  If both conditions are true,
+we initialize all 30 object (give them new directions, textures, etc).  We set game to FALSE, telling
+the program the game is no longer over.  We set the score back to 0, the level back to 1, the
+player kills to 0 and finally we set the miss variable back to zero.  This restarts the game
+on the first level with full morale and a score of 0.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	if (g_keys-&gt;keyDown[' '] &amp;&amp; game)					<font class="theme">// Space Bar Being Pressed After Game Has Ended?</font>
+	{
+		for (int loop=0; loop&lt;30; loop++)				<font class="theme">// Loop Through 30 Objects</font>
+			InitObject(loop);					<font class="theme">// Initialize Each Object</font>
+
+		game=FALSE;							<font class="theme">// Set game (Game Over) To False</font>
+		score=0;							<font class="theme">// Set score To 0</font>
+		level=1;							<font class="theme">// Set level Back To 1</font>
+		kills=0;							<font class="theme">// Zero Player Kills</font>
+		miss=0;								<font class="theme">// Set miss (Missed Shots) To 0</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The code below checks to see if the F1 key has been pressed.  If F1 is being pressed, ToggleFullscreen will
+switch from windowed to fullscreen mode or fullscreen mode to windowed mode.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>
+	if (g_keys-&gt;keyDown[VK_F1])						<font class="theme">// Is F1 Being Pressed?</font>
+	{
+		ToggleFullscreen (g_window);					<font class="theme">// Toggle Fullscreen Mode</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+To create the illusion of rolling clouds and moving ground, we decrease roll by .00005f multiplied by the
+number of milliseconds that have passed.  This keeps the clouds moving at the same speed on all systems (fast
+or slow).
+<br><br>
+We then set up a loop to loop through all of the objects on the screen.  Level 1 has one object, level
+10 has 10 objects, etc.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	roll-=milliseconds*0.00005f;						<font class="theme">// Roll The Clouds</font>
+
+	for (int loop=0; loop&lt;level; loop++)					<font class="theme">// Loop Through The Objects</font>
+	{
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We need to find out which way the object should be spinning.  We do this by checking the value of rot.
+If rot equals 1, we need to spin the object clockwise.  To do this, we decrease the value of spin.
+We decrease spin by 0.2f multiplied by value of loop plus the number of milliseconds that have passed.  By
+using milliseconds the objects will rotate the same speed on all systems.  Adding loop makes each
+NEW object spin a little faster than the last object.  So object 2 will spin faster than object 1 and object 3
+will spin faster than object 2.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		if (object[loop].rot==1)					<font class="theme">// If Rotation Is Clockwise</font>
+			object[loop].spin-=0.2f*(float(loop+milliseconds));	<font class="theme">// Spin Clockwise</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Next we check to see if rot equals 2.  If rot equals 2, we need to spin counter clockwise.  The
+only difference from the code above is that we are increasing the value of spin instead of decreasing it.
+This causes the object to spin in the opposite direction.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		if (object[loop].rot==2)					<font class="theme">// If Rotation Is Counter Clockwise</font>
+			object[loop].spin+=0.2f*(float(loop+milliseconds));	<font class="theme">// Spin Counter Clockwise</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now for the movement code.  We check the value of dir if it's equal to 1, we increase the objects x
+value based on the milliseconds passed multiplied by 0.012f.  This moves the object right.  Because we
+use milliseconds the objects should move the same speed on all systems.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		if (object[loop].dir==1)					<font class="theme">// If Direction Is Right</font>
+			object[loop].x+=0.012f*float(milliseconds);		<font class="theme">// Move Right</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+If dir equals 0, the object is moving left.  We move the object left by decreasing the objects x
+value.  Again we decrease x based on the amount of time that has passed in milliseconds multiplied
+by our fixed value of 0.012f.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		if (object[loop].dir==0)					<font class="theme">// If Direction Is Left</font>
+			object[loop].x-=0.012f*float(milliseconds);		<font class="theme">// Move Left</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Only two more directions to watch for.  This time we check to see if dir equals 2.  If so, we increase
+the objects y value.  This causes the object to move UP the screen.  Keep in mind the positive y axis
+is at the top of the screen and the negative y axis is at the bottom.  So increasing y moves from the
+bottom to the top.  Again movement is based on time passed.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		if (object[loop].dir==2)					<font class="theme">// If Direction Is Up</font>
+			object[loop].y+=0.012f*float(milliseconds);		<font class="theme">// Move Up</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The last direction our object can travel is down.  If dir equals three, we want to move the object
+down the screen.  We do this by increasing the objects y value based on the amount of time that has
+passed.  Notice we move down slower than we move up.  When an object is falling, our fixed falling rate is
+0.0025f.  When we move up, the fixed rate is 0.012f.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		if (object[loop].dir==3)					<font class="theme">// If Direction Is Down</font>
+			object[loop].y-=0.0025f*float(milliseconds);		<font class="theme">// Move Down</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+After moving our objects we have to check if they are still in view.  The code below first checks to see where
+our object is on the screen.  We can roughly calculate how far left an object can travel by taking the objects
+distance into the screen minus 15.0f (to make sure it's a little past the screen) and dividing it by
+2.  For those of you that don't already know... If you are 20 units into the screen, depending on the way you
+set up the perspective, you have roughly 10 units from the left of the screen to the center and 10 from the
+center to the right.  so -20.0f(distance)-15.0f(extra padding)=-35.0f... divide that by 2 and you get -17.5f.
+That's roughly 7.5 units off the left side of the screen.  Meaning our object is completely out of view.
+<br><br>
+Anyways... after making sure the object is far off the left side of the screen, we check to see if it was
+moving left (dir=0).  If it's not moving left, we don't care if it's off the left side of the screen!
+<br><br>
+Finally, we check to see if the object was hit.  If the object is off the left of the screen, it's travelling
+left and it wasn't hit, it's too late for the player to hit it.  So we increase the value of miss.
+This lowers morale and increases the number of missed targets.  We set the objects hit value to TRUE
+so the computer thinks it's been hit.  This forces the object to self destruct (allowing us to give the object
+a new texture, directions, spin, etc).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		<font class="theme">// If We Are To Far Left, Direction Is Left And The Object Was Not Hit</font>
+		if ((object[loop].x&lt;(object[loop].distance-15.0f)/2.0f) &amp;&amp; (object[loop].dir==0) &amp;&amp; !object[loop].hit)
+		{
+			miss+=1;						<font class="theme">// Increase miss (Missed Object)</font>
+			object[loop].hit=TRUE;					<font class="theme">// Set hit To True To Manually Blow Up The Object</font>
+		}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The following code does the exact same thing as the code above, but instead of checking to see if we've gone
+off the left side of the screen, we check to see if it's gone off the right side of the screen.  We also check
+to make sure the object is moving right and not some other direction.  If the object is off the screen, we
+increase the value of miss and self destruct the object by telling our program it's been hit.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>
+		<font class="theme">// If We Are To Far Right, Direction Is Left And The Object Was Not Hit</font>
+		if ((object[loop].x&gt;-(object[loop].distance-15.0f)/2.0f) &amp;&amp; (object[loop].dir==1) &amp;&amp; !object[loop].hit)
+		{
+			miss+=1;						<font class="theme">// Increase miss (Missed Object)</font>
+			object[loop].hit=TRUE;					<font class="theme">// Set hit To True To Manually Blow Up The Object</font>
+		}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The falling code is pretty straight forward.  We check to see if the object has just about hit the ground.  We
+don't want it to fall through the ground which is at -3.0f.  Instead, we check to see if the object is below
+-2.0f.  We then check to make sure the object is indeed falling (dir=3) and that the object has not yet
+been hit.  If the object is below -2.0f on the y axis, we increase miss and set the objects
+hit variable to TRUE (causing it to self destruct as it hits the ground... nice effect).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>
+		<font class="theme">// If We Are To Far Down, Direction Is Down And The Object Was Not Hit</font>
+		if ((object[loop].y&lt;-2.0f) &amp;&amp; (object[loop].dir==3) &amp;&amp; !object[loop].hit)
+		{
+			miss+=1;						<font class="theme">// Increase miss (Missed Object)</font>
+			object[loop].hit=TRUE;					<font class="theme">// Set hit To True To Manually Blow Up The Object</font>
+		}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Unlike the previous code, the going up code is a little different.  We don't want the object to go through the
+clouds!  We check to see if the objects y variable is greater than 4.5f (close to the clouds).  We also
+make sure the object is travelling up (dir=2).  If the objects y value is greater than 4.5f,
+instead of destroying the object, we change it's direction.  That way the object will quickly pop out of the
+ground (remember, it goes up faster than it comes down) and once it gets to high we change its direction so it
+starts to fall toward the ground.
+<br><br>
+There is no need to destroy the object, or increase the miss variable.  If you miss the object as it's
+flying into the sky, there's always a chance to hit it as it falls.  The falling code will handle the final
+destruction of the object.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		if ((object[loop].y&gt;4.5f) &amp;&amp; (object[loop].dir==2))		<font class="theme">// If We Are To Far Up And The Direction Is Up</font>
+			object[loop].dir=3;					<font class="theme">// Change The Direction To Down</font>
+	}
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Next we have the object drawing code.  I wanted a quick and easy way to draw the game objects, along with the
+crosshair with as little code as possible.  Object takes 3 parameters.  First we have the width.  The
+width controls how wide the object will be when it's drawn.  Then we have the height.  The
+height controls how tall the object will be when it's drawn.  Finally, we have the texid.  The
+texid selects the texture we want to use.  If we wanted to draw a bucket, which is texture 1, we would
+pass a value of 1 for the texid.  Pretty simple!
+<br><br>
+A quick breakdown.  We select the texture, and then draw a quad.  We use standard texture coordinates so the
+entire textue is mapped to the face of the quad.  The quad is drawn in a counter-clockwise direction (required
+for culling to work).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void Object(float width,float height,GLuint texid)				<font class="theme">// Draw Object Using Requested Width, Height And Texture</font>
+{
+	glBindTexture(GL_TEXTURE_2D, textures[texid].texID);			<font class="theme">// Select The Correct Texture</font>
+	glBegin(GL_QUADS);							<font class="theme">// Start Drawing A Quad</font>
+		glTexCoord2f(0.0f,0.0f); glVertex3f(-width,-height,0.0f);	<font class="theme">// Bottom Left</font>
+		glTexCoord2f(1.0f,0.0f); glVertex3f( width,-height,0.0f);	<font class="theme">// Bottom Right</font>
+		glTexCoord2f(1.0f,1.0f); glVertex3f( width, height,0.0f);	<font class="theme">// Top Right</font>
+		glTexCoord2f(0.0f,1.0f); glVertex3f(-width, height,0.0f);	<font class="theme">// Top Left</font>
+	glEnd();								<font class="theme">// Done Drawing Quad</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The explosion code takes one parameter.  num is the object identifier.  In order to create the explosion
+we need to grab a portion of the explosion texture similar to the way we grab each letter from the font texture.
+The two lines below calculate the column (ex) and row (ey) from a single number (frame).
+<br><br>
+The first line below grabs the current frame and divides it by 4.  The division by 4 is to slow down the
+animation.  %4 keeps the value in the 0-3 range.  If the value is higher than 3 it would wrap around and become
+0.  If the value is 5 it would become 1.  A value of 9 would be 0,1,2,3,0,1,2,3,0.  We divide the final
+result by 4.0f because texture coordinates are in the 0.0f to 1.0f range.  Our explosion texture has 4 explosion
+images from left to right and 4 up and down.
+<br><br>
+Hopefully you're not completely confused.  So if our number before division can only be 0,1,2 or 3 our number
+after we divide it by 4.0f can only be 0.0f, 0.25f (1/4), 0.50f (2/4) or 0.75f (3/4).  This gives us our left
+to right texture coordinate (ex).
+<br><br>
+Next we calculate the row (ey).  We grab the current object frame and divide it by 4 to slow the
+animation down a little.  We then divide by 4 again to eliminate an entire row.  Finally we divide by 4 one last
+time to get our vertical texture coordinate.
+<br><br>
+A quick example.  If our current frame was 16.  ey=((16/4)/4)/4 or 4/4/4 or 0.25f.  One row down.  If our
+current frame was 60.  ey=((60/4)/4)/4 or 15/4/4 or 3/4 or 0.75f.  The reason 15/4 isn't 3.75 is because
+we are working with integers up until we do the final division.  With that in mind, the value of ey can
+only be one of 4 values... 0.0f, 0.25f, 0.50f or 0.75f.  Assuming we stay inside our texture (prevent frame
+from going over a value of 63).
+<br><br>
+Hope that made sense... it's simple, but intimidating math.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void Explosion(int num)								<font class="theme">// Draws An Animated Explosion For Object "num"</font>
+{
+	float ex = (float)((object[num].frame/4)%4)/4.0f;			<font class="theme">// Calculate Explosion X Frame (0.0f - 0.75f)</font>
+	float ey = (float)((object[num].frame/4)/4)/4.0f;			<font class="theme">// Calculate Explosion Y Frame (0.0f - 0.75f)</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now that we have the texture coordinates, all that's left to do is draw our textured quad.  The vertex coordinates
+are fixed at -1.0f and 1.0f.  You will notice we subract ey from 1.0f.  If we didn't, the animation would
+be drawn in the reverse order... The explosion would get bigger, rather than fade out.  The effect won't look right!
+<br><br>
+We bind the explosion texture before we draw the textured quad.  Again, the quad is drawn counter-clockwise.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glBindTexture(GL_TEXTURE_2D, textures[5].texID);			<font class="theme">// Select The Explosion Texture</font>
+	glBegin(GL_QUADS);							<font class="theme">// Begin Drawing A Quad</font>
+		glTexCoord2f(ex      ,1.0f-(ey      )); glVertex3f(-1.0f,-1.0f,0.0f);	<font class="theme">// Bottom Left</font>
+		glTexCoord2f(ex+0.25f,1.0f-(ey      )); glVertex3f( 1.0f,-1.0f,0.0f);	<font class="theme">// Bottom Right</font>
+		glTexCoord2f(ex+0.25f,1.0f-(ey+0.25f)); glVertex3f( 1.0f, 1.0f,0.0f);	<font class="theme">// Top Right</font>
+		glTexCoord2f(ex      ,1.0f-(ey+0.25f)); glVertex3f(-1.0f, 1.0f,0.0f);	<font class="theme">// Top Left</font>
+	glEnd();								<font class="theme">// Done Drawing Quad</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+As I mentioned above, the value of frame should not exceed 63 otherwise the animation will start over
+again.  So we increase the value of frame and then we check to see if the value is greater than 63.  If
+it is, we call InitObject(num) which destroys the object and gives it new values to create an entirely new object.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>
+	object[num].frame+=1;							<font class="theme">// Increase Current Explosion Frame</font>
+	if (object[num].frame&gt;63)						<font class="theme">// Have We Gone Through All 16 Frames?</font>
+	{
+		InitObject(num);						<font class="theme">// Init The Object (Assign New Values)</font>
+	}
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+This section of code draws all of the targets (objects) to the screen.  We start off by resetting the modelview
+matrix.  We then translate 10 units into the screen and set up a loop from 0 to the players current level.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void DrawTargets(void)								<font class="theme">// Draws The Targets (Needs To Be Seperate)</font>
+{
+	glLoadIdentity();							<font class="theme">// Reset The Modelview Matrix</font>
+	glTranslatef(0.0f,0.0f,-10.0f);						<font class="theme">// Move Into The Screen 20 Units</font>
+	for (int loop=0; loop&lt;level; loop++)					<font class="theme">// Loop Through 9 Objects</font>
+	{
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The first line of code is the secret to picking individual objects.  What it does is assigns a name (number) to
+each object.  The first object drawn will be 0.  The second object will be 1, etc...  If the loop was to hit
+29, the last object drawn would be given the name 29.  After assigning a name to the object, we push the
+modelview matrix onto the stack.  It's important to note the calls to glLoadName() are ignored if the program
+is not in selection mode.
+<br><br>
+We then move to the location on the screen where we want our object to be drawn.  We use
+object[loop].x to position on the x-axis, object[loop].y to position on the y-axis and
+object[loop].distance to position the object on the z-axis (depth into the screen).  We have already
+translated 10 units into the screen, so the actual distance at which the object will be drawn is going to be
+object[loop].distance-10.0f.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		glLoadName(loop);						<font class="theme">// Assign Object A Name (ID)</font>
+		glPushMatrix();							<font class="theme">// Push The Modelview Matrix</font>
+		glTranslatef(object[loop].x,object[loop].y,object[loop].distance);	<font class="theme">// Position The Object (x,y)</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Before we draw the object, we have to check if it's been hit or not.  We do this by checking to see if
+object[loop].hit is TRUE.  If it is, we jump to Explosion(loop) which will draw the explosion
+animation instead of the actual object.  If the object was not hit, we spin the object on it's z-axis by
+object[loop].spin degrees before we call Object().
+<br><br>
+Object takes 3 parameters.  The first one is the width, the second one is the height and the third one is the
+number of the texture to use.  To get the width and height, we use the array size[object[loop].texid].w
+and size[object[loop].texid].h.  This looks up the width and height from our predefined object size array
+at the beginning of this program.  The reason we use object[loop].texid is because it represents the
+type of object we are drawing.  A texid of 0 is always the blueface... a texid of 3 is always the
+coke can, etc.
+<br><br>
+After drawing an object, we pop the matrix resetting the view, so our next object is drawn at the proper
+location on the screen.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		if (object[loop].hit)						<font class="theme">// If Object Has Been Hit</font>
+		{
+			Explosion(loop);					<font class="theme">// Draw An Explosion</font>
+		}
+		else								<font class="theme">// Otherwise</font>
+		{
+			glRotatef(object[loop].spin,0.0f,0.0f,1.0f);		<font class="theme">// Rotate The Object</font>
+			Object(size[object[loop].texid].w,size[object[loop].texid].h,object[loop].texid);	<font class="theme">// Draw The Object</font>
+		}
+		glPopMatrix();							<font class="theme">// Pop The Modelview Matrix</font>
+	}
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+This is where the drawing occurs.  We start off by clearing the screen, and resetting our modelview matrix.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void Draw(void)									<font class="theme">// Draw Our Scene</font>
+{
+	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);			<font class="theme">// Clear Screen And Depth Buffer</font>
+	glLoadIdentity();							<font class="theme">// Reset The Modelview Matrix</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Next we push the modelview matrix onto the stack and select the sky texture (texture 7).  The sky is made up of
+4 textured quads.  The first 4 vertices draw the sky way in the distance from the ground straight up.  The
+texture on this quad will roll fairly slowly.  The next 4 vertices draw the sky again at the exact same
+location but the sky texture will roll faster.  The two textures will blend together in alpha blending mode to
+create a neat multilayered effect.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glPushMatrix();								<font class="theme">// Push The Modelview Matrix</font>
+	glBindTexture(GL_TEXTURE_2D, textures[7].texID);			<font class="theme">// Select The Sky Texture</font>
+	glBegin(GL_QUADS);							<font class="theme">// Begin Drawing Quads</font>
+		glTexCoord2f(1.0f,roll/1.5f+1.0f); glVertex3f( 28.0f,+7.0f,-50.0f);	<font class="theme">// Top Right</font>
+		glTexCoord2f(0.0f,roll/1.5f+1.0f); glVertex3f(-28.0f,+7.0f,-50.0f);	<font class="theme">// Top Left</font>
+		glTexCoord2f(0.0f,roll/1.5f+0.0f); glVertex3f(-28.0f,-3.0f,-50.0f);	<font class="theme">// Bottom Left</font>
+		glTexCoord2f(1.0f,roll/1.5f+0.0f); glVertex3f( 28.0f,-3.0f,-50.0f);	<font class="theme">// Bottom Right</font>
+
+		glTexCoord2f(1.5f,roll+1.0f); glVertex3f( 28.0f,+7.0f,-50.0f);		<font class="theme">// Top Right</font>
+		glTexCoord2f(0.5f,roll+1.0f); glVertex3f(-28.0f,+7.0f,-50.0f);		<font class="theme">// Top Left</font>
+		glTexCoord2f(0.5f,roll+0.0f); glVertex3f(-28.0f,-3.0f,-50.0f);		<font class="theme">// Bottom Left</font>
+		glTexCoord2f(1.5f,roll+0.0f); glVertex3f( 28.0f,-3.0f,-50.0f);		<font class="theme">// Bottom Right</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+To give the illusion that the sky is coming towards the viewer, we draw two more quads, but this time we draw
+them from way in the distance coming toward the viewer.  The first 4 verticies draw slow rolling clouds and the
+remaining 4 draw faster moving clouds.  The two layers will blend together in alpha blending mode to create a
+multilayered effect.  The second layer of clouds is offset by 0.5f so that the two textures don't line up.
+Same with the two layers of clouds above.  The second layer is offset by 0.5f.
+<br><br>
+The final effect of all 4 quads is a sky that appears to move up way out in the distance and then toward the
+viewer up high.  I could have used a textured half sphere for the sky, but I was too lazy, and the effect is
+still pretty good as is.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		glTexCoord2f(1.0f,roll/1.5f+1.0f); glVertex3f( 28.0f,+7.0f,0.0f);	<font class="theme">// Top Right</font>
+		glTexCoord2f(0.0f,roll/1.5f+1.0f); glVertex3f(-28.0f,+7.0f,0.0f);	<font class="theme">// Top Left</font>
+		glTexCoord2f(0.0f,roll/1.5f+0.0f); glVertex3f(-28.0f,+7.0f,-50.0f);	<font class="theme">// Bottom Left</font>
+		glTexCoord2f(1.0f,roll/1.5f+0.0f); glVertex3f( 28.0f,+7.0f,-50.0f);	<font class="theme">// Bottom Right</font>
+
+		glTexCoord2f(1.5f,roll+1.0f); glVertex3f( 28.0f,+7.0f,0.0f);		<font class="theme">// Top Right</font>
+		glTexCoord2f(0.5f,roll+1.0f); glVertex3f(-28.0f,+7.0f,0.0f);		<font class="theme">// Top Left</font>
+		glTexCoord2f(0.5f,roll+0.0f); glVertex3f(-28.0f,+7.0f,-50.0f);		<font class="theme">// Bottom Left</font>
+		glTexCoord2f(1.5f,roll+0.0f); glVertex3f( 28.0f,+7.0f,-50.0f);		<font class="theme">// Bottom Right</font>
+	glEnd();								<font class="theme">// Done Drawing Quads</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+With the sky out of the way, it's time to draw the ground.  We draw the ground starting where the sky texture
+is the lowest coming towards the viewer.  The ground texture rolls at the same speed as the fast moving clouds.
+<br><br>
+The texture is repeated 7 times from left to right and 4 times from back to front to add a little more detail
+and to prevent the texture from getting all blocky looking.  This is done by increasing the texture coordinates
+from 0.0f - 1.0f to 0.0f - 7.0f (left to right) and 0.0f - 4.0f (up and down).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glBindTexture(GL_TEXTURE_2D, textures[6].texID);			<font class="theme">// Select The Ground Texture</font>
+	glBegin(GL_QUADS);							<font class="theme">// Draw A Quad</font>
+		glTexCoord2f(7.0f,4.0f-roll); glVertex3f( 27.0f,-3.0f,-50.0f);	<font class="theme">// Top Right</font>
+		glTexCoord2f(0.0f,4.0f-roll); glVertex3f(-27.0f,-3.0f,-50.0f);	<font class="theme">// Top Left</font>
+		glTexCoord2f(0.0f,0.0f-roll); glVertex3f(-27.0f,-3.0f,0.0f);	<font class="theme">// Bottom Left</font>
+		glTexCoord2f(7.0f,0.0f-roll); glVertex3f( 27.0f,-3.0f,0.0f);	<font class="theme">// Bottom Right</font>
+	glEnd();								<font class="theme">// Done Drawing Quad</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+After drawing the sky and the ground, we jump to the section of code that draws all of our targets (objects)
+called none other than DrawTargets().
+<br><br>
+After drawing out targets, we pop the modelview matrix off the stack (restoring it to it's previous state).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>
+	DrawTargets();								<font class="theme">// Draw Our Targets</font>
+	glPopMatrix();								<font class="theme">// Pop The Modelview Matrix</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The code below draws the crosshair.  We start off by grabbing our current window dimensions.  We do this in case
+the window was resized in windowed mode.  GetClientRect grabs the dimensions and stores them in window.
+We then select our projection matrix and push it onto the stack.  We reset the view with glLoadIdentity() and
+then set the screen up in ortho mode instead of perspective.  The window will go from 0 to window.right
+from left to right, and from 0 to window.bottom from the bottom to the top of the screen.
+<br><br>
+The third parameter of glOrtho() is supposed to be the bottom value, instead I swapped the bottom and top values.
+I did this so that the crosshair would be rendered in a counter clockwise direction.  With 0 at the top and
+window.bottom at the bottom, the winding would go the opposite direction and the crosshair and text would
+not appear.
+<br><br>
+After setting up the ortho view, we select the modelview matrix, and position the crosshair.  Because the screen
+is upside down, we have to invert the mouse as well.  Otherwise our crosshair would move down if we moved the
+mouse up and up if we moved the mouse down.  To do this we subtract the current mouse_y value from the
+bottom of the window (window.bottom).
+<br><br>
+After translating to the current mouse position, we draw the crosshair.  We do this by calling Object().
+Instead of units, we are going to specify the width and height in pixels.  The crosshair will be 16x16 pixels
+wide and tall and the texture used to draw the object is texture 8 (the crosshair texture).
+<br><br>
+I decided to use a custom cursor for two reasons... first and most important, it looks cool, and it can be
+modified using any art program that supports the alpha channel.  Secondly, some video cards do not display a
+cursor in fullscreen mode.  Playing the game without a cursor in fullscreen mode is not easy :)
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>
+	<font class="theme">// Crosshair (In Ortho View)</font>
+	RECT window;								<font class="theme">// Storage For Window Dimensions</font>
+	GetClientRect (g_window-&gt;hWnd,&amp;window);					<font class="theme">// Get Window Dimensions</font>
+	glMatrixMode(GL_PROJECTION);						<font class="theme">// Select The Projection Matrix</font>
+	glPushMatrix();								<font class="theme">// Store The Projection Matrix</font>
+	glLoadIdentity();							<font class="theme">// Reset The Projection Matrix</font>
+	glOrtho(0,window.right,0,window.bottom,-1,1);				<font class="theme">// Set Up An Ortho Screen</font>
+	glMatrixMode(GL_MODELVIEW);						<font class="theme">// Select The Modelview Matrix</font>
+	glTranslated(mouse_x,window.bottom-mouse_y,0.0f);			<font class="theme">// Move To The Current Mouse Position</font>
+	Object(16,16,8);							<font class="theme">// Draw The Crosshair</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+This section of code put the title at the top of the screen, and displays the level and score in the bottom left
+and right corners of the screen.  The reason I put this code here is because it's easier to position the text
+accurately in ortho mode.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>
+	<font class="theme">// Game Stats / Title</font>
+	glPrint(240,450,"NeHe Productions");					<font class="theme">// Print Title</font>
+	glPrint(10,10,"Level: %i",level);					<font class="theme">// Print Level</font>
+	glPrint(250,10,"Score: %i",score);					<font class="theme">// Print Score</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+This section checks to see if the player has missed more than 10 objects.  If so, we set the number of misses
+(miss) to 9 and we set game to TRUE.  Setting the game to TRUE means the game is over!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	if (miss&gt;9)								<font class="theme">// Have We Missed 10 Objects?</font>
+	{
+		miss=9;								<font class="theme">// Limit Misses To 10</font>
+		game=TRUE;							<font class="theme">// Game Over TRUE</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+In the code below, we check to see if game is TRUE.  If game is TRUE, we print the GAME OVER
+messages.  If game is false, we print the players morale (out of 10).  The morale is calculated by
+subtracting the players misses (miss) from 10.  The more the player misses, the lower his morale.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	if (game)								<font class="theme">// Is Game Over?</font>
+		glPrint(490,10,"GAME OVER");					<font class="theme">// Game Over Message</font>
+	else
+		glPrint(490,10,"Morale: %i/10",10-miss);			<font class="theme">// Print Morale #/10</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The last thing we do is select the projection matrix, restore (pop) our matrix back to it's previous state,
+set the matrix mode to modelview and flush the buffer to make sure all objects have been rendered.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glMatrixMode(GL_PROJECTION);						<font class="theme">// Select The Projection Matrix</font>
+	glPopMatrix();								<font class="theme">// Restore The Old Projection Matrix</font>
+	glMatrixMode(GL_MODELVIEW);						<font class="theme">// Select The Modelview Matrix</font>
+
+	glFlush();								<font class="theme">// Flush The GL Rendering Pipeline</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+This tutorial is the result of many late nights, and many many hours of coding &amp; writing HTML.  By the end of
+this tutorial you should have a good understanding of how picking, sorting, alpha blending and alpha testing
+works.  Picking allows you to create interactive point and click software.  Everything from games, to fancy
+GUI's.  The best feature of picking is that you don't have to keep track of where your objects are.  You assign
+a name and check for hits.  It's that easy!  With alpha blending and alpha testing you can make your objects
+completely solid, or full of holes.  The results are great, and you don't have to worry about objects showing
+through your textures, unless you want them to!  As always, I hope you have enjoyed this tutorial, and hope to
+see some cool games, or projects based on code from this tutorial.  If you have any questions or you find
+mistakes in the tutorial please let me know... I'm only human :)
+<br><br>
+I could have spent alot more time adding things like physics, more graphics, more sound, etc.  This is just a
+tutorial though!  I didn't write it to impress you with bells and whistles.  I wrote it to teach you OpenGL
+with as little confusion as possible.  I hope to see some cool modifications to the code.  If you add something
+cool the the tutorial send me the demo.  If it's a cool modification I'll post it to the downloads page.  If I
+get enough modifications I may set up a page dedicated to modified versions of this tutorial!  I am here to give
+you a starting point.  The rest is up to you :)
+<br><br>
+<b>NOTE:</b>  It is VERY important that in the call to glTexImage2D you set both the format and the internal format to GL_RGBA.
+Otherwise alpha blending will not work!
+<br><br>
+<b>Jeff Molofee</b> (<b>NeHe</b>)
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vc/lesson32.zip">Visual C++</a> Code For This Lesson.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/bcb6/lesson32_bcb6.zip">Borland C++ Builder 6</a> Code For This Lesson. ( Conversion by <a href="mailto:christian@tugzip.com">Christian Kindahl</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cwarrior/lesson32.zip">Code Warrior 5.3</a> Code For This Lesson. ( Conversion by <a href="mailto:DelusionalBeing@hotmail.com">Scott Lupton</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/delphi/lesson32.zip">Delphi</a> Code For This Lesson. ( Conversion by <a href="mailto:michal_praha@seznam.cz">Michal Tucek</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/devc/lesson32.zip">Dev C++</a> Code For This Lesson. ( Conversion by <a href="mailto:danprogram@hotmail.com">Dan</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/euphoria/lesson32.zip">Euphoria</a> Code For This Lesson. ( Conversion by <a href="mailto:1evan@sbcglobal.net">Evan Marshall</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxsdl/lesson32.tar.gz">Linux/SDL</a> Code For This Lesson. ( Conversion by <a href="mailto:edgarcostanzo@tiscalinet.it">Edgar Costanzo</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/lwjgl/lesson32.jar">LWJGL</a> Code For This Lesson. ( Conversion by <a href="mailto:mark.bernard@rogers.com">Mark Bernard</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/macosxcocoa/lesson32.zip">Mac OS X/Cocoa</a> Code For This Lesson. ( Conversion by <a href="mailto:blb@pobox.com">Bryan Blackburn</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vs_net/lesson32.zip">Visual Studio .NET</a> Code For This Lesson. ( Conversion by <a href="mailto:ultimatezeus@hotmail.com">Grant James</a> )<br>
+<br><br>
+<br><br>
+<table border="0" width="100%">
+<tbody><tr><td align="left" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=31">&lt; Lesson 31</a></font></b></td>
+<td align="right" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=33">Lesson 33 &gt;</a></font></b></td>
+</tr></tbody></table>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table>
+
+</body></html>

@@ -1,0 +1,47 @@
+Schiffstyp: Frachtschiff (Typ 61)
+Techlevel: 11
+Module: 19
+Kommandopunkte: 21
+Angriffswert: 0
+Schilde: 434
+Panzerung: 1134
+Struktur: 392
+Wendigkeit: 0
+Reaktor: 192
+Laderaum: 3435
+Sensor: 1
+Tarnung: 0
+Min Crew: 1
+Max Crew: 62
+Sprung Sektor: 20
+Sprung-Zeit: 97
+Angriffs-Zeit: 30
+Angriffsenergie: 60
+
+Kampfwert (Taktik 100): 0,00
+KW/KP: 37,333
+AW/KP: 0,000
+Sch/P: 0,38
+
+Verwendete Forschungen: 
+1x Leiterbahnen (Lvl 21)
+10x Verbundstoffe (Lvl 23)
+3x Photovoltaik (Lvl 28)
+1x Strahlungstechnik (Lvl 12)
+4x Kybernetik (Lvl 31)
+
+Baukosten: 
+Iso: 0
+Eg: 2
+Es: 25
+Rad: 150
+Em: 499
+Sm: 0
+Lm: 1312
+Fe: 815
+Syn: 4805
+Org: 1930
+Erz: 0
+Rek: 0
+Nrg: 3955
+Cr: 3380

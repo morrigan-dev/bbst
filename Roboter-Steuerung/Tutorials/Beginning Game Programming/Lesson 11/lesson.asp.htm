@@ -1,0 +1,233 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+<title>NeHe Productions: OpenGL Lesson #11</title>
+<meta name="author" content="Jeff Molofee">
+<meta name="description" content="OpenGL Tutorials, Demos, Games and More...">
+<meta name="keywords" content="opengl, tutorial, article, demo, game, blend, texturemap, lighting, contest, 3D">
+<link rel="stylesheet" type="text/css" href="lesson.asp-Dateien/rgb.css">
+</head><body bgcolor="black" link="#aaccff" text="white" vlink="#aaccff">
+
+<table border="0" width="100%"><tbody><tr><td align="center">
+<!-- Begin -  Site: GameDev.net Zone: NeHe 728x90 -->
+<script language="javascript" type="text/javascript">
+<!--
+var browName = navigator.appName;
+var SiteID = 1;
+var ZoneID = 4;
+var browDateTime = (new Date()).getTime();
+if (browName=='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;Browser=NETSCAPE4&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+if (browName!='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+// --> 
+</script><script language="javascript" src="lesson.asp-Dateien/a.js"></script><a href="http://www.gamedev.net/banman/a.aspx?Task=Click&amp;ZoneID=4&amp;CampaignID=609&amp;AdvertiserID=11&amp;BannerID=673&amp;SiteID=1&amp;RandomNumber=566134857&amp;Keywords=" target="_Blank"><img src="lesson.asp-Dateien/BGPleader.png" alt="" align="Center" border="0" height="90" width="728"></a><br>
+<noscript> <a
+href="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Click&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+target="_blank"> <img
+src="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Get&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+width="728" height="90" border="0" alt=""></a>
+</noscript>
+<!-- End -  Site: GameDev.net Zone: NeHe 728x90 --></td></tr></tbody></table><br>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tinylogo" height="130" width="326"><img src="lesson.asp-Dateien/blank.gif" alt="NeHe Productions" height="130" width="326"></td><td class="indexheading" align="center" valign="middle"><font class="text"><font class="theme" size="+3"><b><i>Lesson: 11</i></b></font></font></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Well greetings all. For those of you that want to see what we are doing here, you can check it out 
+at the end of my demo/hack Worthless! I am bosco and I will do my best to teach you guys how to do 
+the animated, sine-wave picture. This tutorial is based on NeHe's tutorial #6 and you should have at
+least that much knowledge. You should download the source package and place the bitmap I've included
+in a directory called data where your source code is. Or use your own texture if it's an appropriate
+size to be used as a texture with OpenGL.
+<br><br>
+First things first. Open Tutorial #6 in Visual C++ and add the following include statement right after
+the other #include statements.  The #include below allows us to work with complex math such as sine
+and cosine.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>#include &lt;math.h&gt;						<font class="theme">// For The Sin() Function</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We'll use the array points to store the individual x, y &amp; z coordinates of our grid. The grid is 45 points by
+45 points, which in turn makes 44 quads x 44 quads. wiggle_count will be used to keep track of how fast the
+texture waves.  Every second frame looks pretty good, and the variable hold will store a floating point value to
+smooth out the waving of the flag.  These lines can be added at the top of the program, somewhere under the last
+#include line, and before the GLuint texture[1] line.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>float points[ 45 ][ 45 ][3];					<font class="theme">// The Array For The Points On The Grid Of Our "Wave"</font>
+int wiggle_count = 0;						<font class="theme">// Counter Used To Control How Fast Flag Waves</font>
+GLfloat hold;							<font class="theme">// Temporarily Holds A Floating Point Value</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Move down to the LoadGLTextures() procedure.  We want to use the texture called Tim.bmp.  Find LoadBMP("Data/NeHe.bmp")
+and replace it with LoadBMP("Data/Tim.bmp").
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	if (TextureImage[0]=LoadBMP("Data/Tim.bmp"))		<font class="theme">// Load The Bitmap</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now add the following code to the bottom of the InitGL() function before return TRUE.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glPolygonMode( GL_BACK, GL_FILL );			<font class="theme">// Back Face Is Filled In</font>
+	glPolygonMode( GL_FRONT, GL_LINE );			<font class="theme">// Front Face Is Drawn With Lines</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+These simply specify that we want back facing polygons to be filled completely and that we want front facing polygons
+to be outlined only. Mostly personal preference at this point. Has to do with the orientation of the polygon or the
+direction of the vertices. See the Red Book for more information on this. Incidentally, while I'm at it, let me plug
+the book by saying it's one of the driving forces behind me learning OpenGL, not to mention NeHe's site! Thanks NeHe.
+Buy The Programmer's Guide to OpenGL from Addison-Wesley. It's an invaluable resource as far as I'm concerned. Ok, back
+to the tutorial.
+Right below the code above, and above return TRUE, add the following lines.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Loop Through The X Plane</font>
+	for(int x=0; x&lt;45; x++)
+	{
+		<font class="theme">// Loop Through The Y Plane</font>
+		for(int y=0; y&lt;45; y++)
+		{
+			<font class="theme">// Apply The Wave To Our Mesh</font>
+			points[x][y][0]=float((x/5.0f)-4.5f);
+			points[x][y][1]=float((y/5.0f)-4.5f);
+			points[x][y][2]=float(sin((((x/5.0f)*40.0f)/360.0f)*3.141592654*2.0f));
+		}
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Thanks to Graham Gibbons for suggesting an integer loop to get rid of the spike in the ripple.
+<br><br>
+The two loops above initialize the points on our grid. I initialize variables in my loop to localize them in my mind
+as merely loop variables. Not sure it's kosher. We use integer loops to prevent odd graphical glitches that appear when
+floating point calculations are used.  We divide the x and y variables by 5 ( i.e. 45 / 9 = 5 ) and subtract 4.5 from each
+of them to center the "wave". The same effect could be accomplished with a translate, but I prefer this method.
+<br><br>
+The final value points[x][y][2] statement is our sine value. The sin() function requires radians. We take our degree
+value, which is our float_x multiplied by 40.0f. Once we have that, to convert to radians we take the degree, divide
+by 360.0f, multiply by pi, or an approximation and then multiply by 2.0f.
+<br><br>
+I'm going to re-write the DrawGLScene function from scratch so clean it out and it replace with the  following code.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int DrawGLScene(GLvoid)						<font class="theme">// Draw Our GL Scene</font>
+{
+	int x, y;						<font class="theme">// Loop Variables</font>
+	float float_x, float_y, float_xb, float_yb;		<font class="theme">// Used To Break The Flag Into Tiny Quads</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Different variables used for controlling the loops. See the code below but most of these serve no "specific" purpose
+other than controlling loops and storing temporary values.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	<font class="theme">// Clear The Screen And Depth Buffer	</font>
+	glLoadIdentity();					<font class="theme">// Reset The Current Matrix</font>
+
+	glTranslatef(0.0f,0.0f,-12.0f);				<font class="theme">// Translate 12 Units Into The Screen</font>
+
+	glRotatef(xrot,1.0f,0.0f,0.0f);				<font class="theme">// Rotate On The X Axis</font>
+	glRotatef(yrot,0.0f,1.0f,0.0f);				<font class="theme">// Rotate On The Y Axis  </font>
+	glRotatef(zrot,0.0f,0.0f,1.0f);				<font class="theme">// Rotate On The Z Axis</font>
+
+	glBindTexture(GL_TEXTURE_2D, texture[0]);		<font class="theme">// Select Our Texture</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+You've seen all of this before as well. Same as in tutorial #6 except I merely push my scene back away from the camera
+a bit more.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glBegin(GL_QUADS);					<font class="theme">// Start Drawing Our Quads</font>
+	for( x = 0; x &lt; 44; x++ )				<font class="theme">// Loop Through The X Plane (44 Points)</font>
+	{
+		for( y = 0; y &lt; 44; y++ )			<font class="theme">// Loop Through The Y Plane (44 Points)</font>
+		{
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Merely starts the loop to draw our polygons. I use integers here to keep from having to use the int() function as I
+did earlier to get the array reference returned as an integer. 
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>			float_x = float(x)/44.0f;		<font class="theme">// Create A Floating Point X Value</font>
+			float_y = float(y)/44.0f;		<font class="theme">// Create A Floating Point Y Value</font>
+			float_xb = float(x+1)/44.0f;		<font class="theme">// Create A Floating Point Y Value+0.0227f</font>
+			float_yb = float(y+1)/44.0f;		<font class="theme">// Create A Floating Point Y Value+0.0227f</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We use the four variables above for the texture coordinates. Each of our polygons (square in the grid), has a
+1/44 x 1/44 section of the texture mapped on it. The loops will specify the lower left vertex and then we just add to
+it accordingly to get the other three ( i.e. x+1 or y+1 ).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>			glTexCoord2f( float_x, float_y);	<font class="theme">// First Texture Coordinate (Bottom Left)</font>
+			glVertex3f( points[x][y][0], points[x][y][1], points[x][y][2] );
+			
+			glTexCoord2f( float_x, float_yb );	<font class="theme">// Second Texture Coordinate (Top Left)</font>
+			glVertex3f( points[x][y+1][0], points[x][y+1][1], points[x][y+1][2] );
+			
+			glTexCoord2f( float_xb, float_yb );	<font class="theme">// Third Texture Coordinate (Top Right)</font>
+			glVertex3f( points[x+1][y+1][0], points[x+1][y+1][1], points[x+1][y+1][2] );
+			
+			glTexCoord2f( float_xb, float_y );	<font class="theme">// Fourth Texture Coordinate (Bottom Right)</font>
+			glVertex3f( points[x+1][y][0], points[x+1][y][1], points[x+1][y][2] );
+		}
+	}
+	glEnd();						<font class="theme">// Done Drawing Our Quads</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The lines above merely make the OpenGL calls to pass all the data we talked about. Four separate calls
+to each glTexCoord2f() and glVertex3f(). Continue with the following.  Notice the quads are drawn clockwise.  This
+means the face you see initially will be the back.  The back is filled in.  The front is made up of lines.
+<br><br>
+If you drew in a counter clockwise order the face you'd initially see would be the front face, meaning you would
+see the grid type texture instead of the filled in face.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	if( wiggle_count == 2 )					<font class="theme">// Used To Slow Down The Wave (Every 2nd Frame Only)</font>
+	{
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+If we've drawn two scenes, then we want to cycle our sine values giving us "motion".
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		for( y = 0; y &lt; 45; y++ )			<font class="theme">// Loop Through The Y Plane</font>
+		{
+			hold=points[0][y][2];			<font class="theme">// Store Current Value One Left Side Of Wave</font>
+			for( x = 0; x &lt; 44; x++)		<font class="theme">// Loop Through The X Plane</font>
+			{
+				<font class="theme">// Current Wave Value Equals Value To The Right</font>
+				points[x][y][2] = points[x+1][y][2];
+			}
+			points[44][y][2]=hold;			<font class="theme">// Last Value Becomes The Far Left Stored Value</font>
+		}
+		wiggle_count = 0;				<font class="theme">// Set Counter Back To Zero</font>
+	}
+	wiggle_count++;						<font class="theme">// Increase The Counter</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+What we do here is store the first value of each line, we then move the wave to the left one, causing the image to
+wave.  The value we stored is then added to the end to create a never ending wave across the face of the texture.
+Then we reset the counter wiggle_count to keep our animation going.
+<br><br>
+The above code was modified by NeHe (Feb 2000), to fix a flaw in the ripple going across the surface of the texture.
+The ripple is now smooth.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	xrot+=0.3f;						<font class="theme">// Increase The X Rotation Variable</font>
+	yrot+=0.2f;						<font class="theme">// Increase The Y Rotation Variable</font>
+	zrot+=0.4f;						<font class="theme">// Increase The Z Rotation Variable</font>
+
+	return TRUE;						<font class="theme">// Jump Back</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Standard NeHe rotation values. :) And that's it folks. Compile and you should have a nice rotating bitmapped "wave".
+I'm not sure what else to say except, whew.. This was LONG! But I hope you guys can follow it/get something out of it.
+If you have any questions, want me to clear something up or tell me how god awful, lol, I code, then send me a note.
+<br><br>
+This was a blast, but very energy/time consuming.  It makes me appreciate the likes of NeHe ALOT more now. Thanks all.
+<br><br>
+<b>Bosco</b> (<b>bosco4@home.com</b>)
+<br><br>
+<b>Jeff Molofee</b> (<b>NeHe</b>)
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vc/lesson11.zip">Visual C++</a> Code For This Lesson.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/bcb6/lesson11_bcb6.zip">Borland C++ Builder 6</a> Code For This Lesson. ( Conversion by <a href="mailto:christian@tugzip.com">Christian Kindahl</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/c_sharp/lesson11.zip">C#</a> Code For This Lesson. ( Conversion by <a href="mailto:bholley@unlnotes.unl.edu">Brian Holley</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cwarrior/lesson11.zip">Code Warrior 5.3</a> Code For This Lesson. ( Conversion by <a href="mailto:DelusionalBeing@hotmail.com">Scott Lupton</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cygwin/lesson11.tar.gz">Cygwin</a> Code For This Lesson. ( Conversion by <a href="mailto:stephan@lazyfellow.com">Stephan Ferraro</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/delphi/lesson11.zip">Delphi</a> Code For This Lesson. ( Conversion by <a href="mailto:michal_praha@seznam.cz">Michal Tucek</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/devc/lesson11.zip">Dev C++</a> Code For This Lesson. ( Conversion by <a href="mailto:danprogram@hotmail.com">Dan</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/euphoria/lesson11.zip">Euphoria</a> Code For This Lesson. ( Conversion by <a href="mailto:1evan@sbcglobal.net">Evan Marshall</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/gameglut/lesson11.zip">Game GLUT</a> Code For This Lesson. ( Conversion by <a href="mailto:milix_gr@hotmail.com">Milikas Anastasios</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/irix/lesson11.zip">Irix</a> Code For This Lesson. ( Conversion by <a href="mailto:rpf1@york.ac.uk">Rob Fletcher</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/java/lesson11.zip">Java</a> Code For This Lesson. ( Conversion by <a href="mailto:jeff@consunet.com.au">Jeff Kirby</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/jedisdl/lesson11.zip">Jedi-SDL</a> Code For This Lesson. ( Conversion by <a href="mailto:Dominique@SavageSoftware.com.au">Dominique Louis</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/jogl/lesson11.jar">JoGL</a> Code For This Lesson. ( Conversion by <a href="mailto:pepijn.vaneeckhoudt@luciad.com">Pepijn Van Eeckhoudt</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/lccwin32/lccwin32_lesson11.zip">LCC Win32</a> Code For This Lesson. ( Conversion by <a href="mailto:rwishlaw@shaw.ca">Robert Wishlaw</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linux/lesson11.tar.gz">Linux</a> Code For This Lesson. ( Conversion by <a href="mailto:ulmont@bellsouth.net">Richard Campbell</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxglx/lesson11.tar.gz">Linux/GLX</a> Code For This Lesson. ( Conversion by <a href="mailto:Mihael.Vrbanec@stud.uni-karlsruhe.de">Mihael Vrbanec</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxsdl/lesson11.tar.gz">Linux/SDL</a> Code For This Lesson. ( Conversion by <a href="mailto:leggett@eecs.tulane.edu">Ti Leggett</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/lwjgl/lesson11.jar">LWJGL</a> Code For This Lesson. ( Conversion by <a href="mailto:mark.bernard@rogers.com">Mark Bernard</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/mac/lesson11.sit">Mac OS</a> Code For This Lesson. ( Conversion by <a href="mailto:asp@usc.edu">Anthony Parker</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/macosxcocoa/lesson11.zip">Mac OS X/Cocoa</a> Code For This Lesson. ( Conversion by <a href="mailto:blb@pobox.com">Bryan Blackburn</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/masm/lesson11.zip">MASM</a> Code For This Lesson. ( Conversion by <a href="mailto:scalp@bigfoot.com">Nico (Scalp)</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/openil/lesson11.zip">Visual C++ / OpenIL</a> Code For This Lesson. ( Conversion by <a href="mailto:doomwiz@ticnet.com">Denton Woods</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/pbasic/lesson11.zip">Power Basic</a> Code For This Lesson. ( Conversion by <a href="mailto:anguslaw@net.ntl.com">Angus Law</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/pelles_c/lesson11.zip">Pelles C</a> Code For This Lesson. ( Conversion by <a href="mailto:pelle@smorgasbordet.com">Pelle Orinius</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vb/lesson11.zip">Visual Basic</a> Code For This Lesson. ( Conversion by <a href="mailto:rosscogl@email.com">Ross Dawson</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vs_net/lesson11.zip">Visual Studio .NET</a> Code For This Lesson. ( Conversion by <a href="mailto:ultimatezeus@hotmail.com">Grant James</a> )<br>
+<br><br>
+<br><br>
+<table border="0" width="100%">
+<tbody><tr><td align="left" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=10">&lt; Lesson 10</a></font></b></td>
+<td align="right" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=12">Lesson 12 &gt;</a></font></b></td>
+</tr></tbody></table>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table>
+
+</body></html>

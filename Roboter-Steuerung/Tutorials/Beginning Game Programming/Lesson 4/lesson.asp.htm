@@ -1,0 +1,241 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+<title>NeHe Productions: OpenGL Lesson #04</title>
+<meta name="author" content="Jeff Molofee">
+<meta name="description" content="OpenGL Tutorials, Demos, Games and More...">
+<meta name="keywords" content="opengl, tutorial, article, demo, game, blend, texturemap, lighting, contest, 3D">
+<link rel="stylesheet" type="text/css" href="lesson.asp-Dateien/rgb.css">
+</head><body bgcolor="black" link="#aaccff" text="white" vlink="#aaccff">
+
+<table border="0" width="100%"><tbody><tr><td align="center">
+<!-- Begin -  Site: GameDev.net Zone: NeHe 728x90 -->
+<script language="javascript" type="text/javascript">
+<!--
+var browName = navigator.appName;
+var SiteID = 1;
+var ZoneID = 4;
+var browDateTime = (new Date()).getTime();
+if (browName=='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;Browser=NETSCAPE4&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+if (browName!='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+// --> 
+</script><script language="javascript" src="lesson.asp-Dateien/a.js"></script><a href="http://www.gamedev.net/banman/a.aspx?Task=Click&amp;ZoneID=4&amp;CampaignID=609&amp;AdvertiserID=11&amp;BannerID=673&amp;SiteID=1&amp;RandomNumber=1113974881&amp;Keywords=" target="_Blank"><img src="lesson.asp-Dateien/BGPleader.png" alt="" align="Center" border="0" height="90" width="728"></a><br>
+<noscript> <a
+href="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Click&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+target="_blank"> <img
+src="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Get&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+width="728" height="90" border="0" alt=""></a>
+</noscript>
+<!-- End -  Site: GameDev.net Zone: NeHe 728x90 --></td></tr></tbody></table><br>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tinylogo" height="130" width="326"><img src="lesson.asp-Dateien/blank.gif" alt="NeHe Productions" height="130" width="326"></td><td class="indexheading" align="center" valign="middle"><font class="text"><font class="theme" size="+3"><b><i>Lesson: 04</i></b></font></font></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">In the last tutorial I taught you how to add color to triangles and quads.  In this tutorial I will teach you how to rotate
+these colored objects around an axis.
+<br><br>
+Using the code from the last tutorial, we will be adding to a few places in the code.  I will rewrite the entire section of
+code below so it's easy for you to figure out what's been added, and what needs to be replaced.
+<br><br>We'll start off by adding the two variables to keep track of
+the rotation for each object. We do this at the top of our program,
+underneath the other variables. You will notice two new lines after
+'bool fullscreen=TRUE;'. These lines set up two floating
+point variables that we can use to spin the objects with very fine
+accuracy. Floating point allows decimal numbers. Meaning
+we're not stuck using 1, 2, 3 for the angle, we can use 1.1, 1.7, 2.3,
+or even 1.015 for fine accuracy. You will find that
+floating point numbers are essential to OpenGL programming. The new
+variables are called rtri which will rotate the
+triangle and rquad which will rotate the quad.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>#include	&lt;windows.h&gt;					<font class="theme">// Header File For Windows</font>
+#include	&lt;gl\gl.h&gt;					<font class="theme">// Header File For The OpenGL32 Library</font>
+#include	&lt;gl\glu.h&gt;					<font class="theme">// Header File For The GLu32 Library</font>
+#include	&lt;gl\glaux.h&gt;					<font class="theme">// Header File For The GLaux Library</font>
+
+HDC		hDC=NULL;					<font class="theme">// Private GDI Device Context</font>
+HGLRC		hRC=NULL;					<font class="theme">// Permanent Rendering Context</font>
+HWND		hWnd=NULL;					<font class="theme">// Holds Our Window Handle</font>
+HINSTANCE	hInstance;					<font class="theme">// Holds The Instance Of The Application</font>
+
+bool		keys[256];					<font class="theme">// Array Used For The Keyboard Routine</font>
+bool		active=TRUE;					<font class="theme">// Window Active Flag</font>
+bool		fullscreen=TRUE;				<font class="theme">// Fullscreen Flag Set To TRUE By Default</font>
+
+GLfloat		rtri;						<font class="theme">// Angle For The Triangle ( NEW )</font>
+GLfloat		rquad;						<font class="theme">// Angle For The Quad     ( NEW )</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we need to modify the DrawGLScene() code.  I will rewrite the entire procedure.  This should make it easier for you
+to see what changes I have made to the original code.  I'll explain why lines have been modified, and what exactly it is
+that the new lines do.  The next section of code is exactly the same as in the last tutorial.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int DrawGLScene(GLvoid)						<font class="theme">// Here's Where We Do All The Drawing</font>
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	<font class="theme">// Clear The Screen And The Depth Buffer</font>
+	glLoadIdentity();					<font class="theme">// Reset The View</font>
+	glTranslatef(-1.5f,0.0f,-6.0f);				<font class="theme">// Move Into The Screen And Left</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The next line of code is new.  glRotatef(Angle,Xvector,Yvector,Zvector) is responsible for rotating the object around an axis.
+You will get alot of use out of this command.  Angle is some number (usually stored in a variable) that represents how much
+you would like to spin the object.  Xvector, Yvector and Zvector parameters together represent the vector about which the
+rotation will occur.  If you use values (1,0,0), you are describing a vector which travels in a direction of 1 unit along the
+x axis towards the right.  Values (-1,0,0) describes a vector that travels in a direction of 1 unit along the x axis, but this
+time towards the left.
+<br><br>
+D. Michael Traub:
+has supplied the above explanation of the Xvector, Yvector and Zvector parameters.
+<br><br>
+To better understand X, Y and Z rotation I'll explain using examples...
+<br><br>
+X Axis - You're working on a table saw.  The bar going through the center of 
+the blade runs left to right (just like the x axis in OpenGL).  The sharp teeth 
+spin around the x axis (bar running through the center of the blade), and 
+appear to be cutting towards or away from you depending on which way the 
+blade is being spun.  When we spin something on the x axis in OpenGL it will 
+spin the same way.
+<br><br>
+Y Axis - Imagine that you are standing in the middle of a field.  There is a 
+huge tornado coming straight at you.  The center of a tornado runs from the 
+sky to the ground (up and down, just like the y axis in OpenGL).  The dirt and 
+debris in the tornado spins around the y axis (center of the tornado) from left 
+to right or right to left.  When you spin something on the y axis in OpenGL it 
+will spin the same way.
+<br><br>
+Z Axis - You are looking at the front of a fan.  The center of the fan points 
+towards you and away from you (just like the z axis in OpenGL).  The blades 
+of the fan spin around the z axis (center of the fan) in a clockwise or 
+counterclockwise direction.  When You spin something on the z axis in 
+OpenGL it will spin the same way.
+<br><br>
+So in the following line of code, if rtri was equal to 7, we would spin 7 on the Y axis (left to right).  You can try
+experimenting with the code.  Change the 0.0f's to 1.0f's, and the 1.0f to a 0.0f to spin the triangle on the X and
+Y axes at the same time.
+<br><br>
+It's important to note that rotations are done in degrees.  If rtri had a value of 10, we would be rotating
+10 degrees on the y-axis.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glRotatef(rtri,0.0f,1.0f,0.0f);				<font class="theme">// Rotate The Triangle On The Y axis ( NEW )</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The next section of code has not changed.  It draws a colorful smooth blended triangle.  The triangle will be drawn
+on the left side of the screen, and will be rotated on it's Y axis causing it to spin left to right.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glBegin(GL_TRIANGLES);					<font class="theme">// Start Drawing A Triangle</font>
+		glColor3f(1.0f,0.0f,0.0f);			<font class="theme">// Set Top Point Of Triangle To Red</font>
+		glVertex3f( 0.0f, 1.0f, 0.0f);			<font class="theme">// First Point Of The Triangle</font>
+		glColor3f(0.0f,1.0f,0.0f);			<font class="theme">// Set Left Point Of Triangle To Green</font>
+		glVertex3f(-1.0f,-1.0f, 0.0f);			<font class="theme">// Second Point Of The Triangle</font>
+		glColor3f(0.0f,0.0f,1.0f);			<font class="theme">// Set Right Point Of Triangle To Blue</font>
+		glVertex3f( 1.0f,-1.0f, 0.0f);			<font class="theme">// Third Point Of The Triangle</font>
+	glEnd();						<font class="theme">// Done Drawing The Triangle</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+You'll notice in the code below, that we've added another glLoadIdentity().  We do this to reset the view.  If we didn't
+reset the view.  If we translated after the object had been rotated, you would get very unexpected results.  Because the
+axis has been rotated, it may not be pointing in the direction you think.  So if we translate left on the X axis, we
+may end up moving up or down instead, depending on how much we've rotated on each axis.  Try taking the glLoadIdentity()
+line out to see what I mean.
+<br><br>
+Once the scene has been reset, so X is running left to right, Y up and down, and Z in and out, we translate.  You'll
+notice we're only moving 1.5 to the right instead of 3.0 like we did in the last lesson.  When we reset the screen, our
+focus moves to the center of the screen.  meaning we're no longer 1.5 units to the left, we're back at 0.0.  So to get to
+1.5 on the right side of zero we dont have to move 1.5 from left to center then 1.5 to the right (total of 3.0) we only
+have to move from center to the right which is just 1.5 units.
+<br><br>
+After we have moved to our new location on the right side of the screen, we rotate the quad, on the X axis.  This will
+cause the square to spin up and down.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glLoadIdentity();					<font class="theme">// Reset The Current Modelview Matrix</font>
+	glTranslatef(1.5f,0.0f,-6.0f);				<font class="theme">// Move Right 1.5 Units And Into The Screen 6.0</font>
+	glRotatef(rquad,1.0f,0.0f,0.0f);			<font class="theme">// Rotate The Quad On The X axis ( NEW )</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+This section of code remains the same.  It draws a blue square made from one quad.  It will draw the square on the
+right side of the screen in it's rotated position.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glColor3f(0.5f,0.5f,1.0f);				<font class="theme">// Set The Color To A Nice Blue Shade</font>
+	glBegin(GL_QUADS);					<font class="theme">// Start Drawing A Quad</font>
+		glVertex3f(-1.0f, 1.0f, 0.0f);			<font class="theme">// Top Left Of The Quad</font>
+		glVertex3f( 1.0f, 1.0f, 0.0f);			<font class="theme">// Top Right Of The Quad</font>
+		glVertex3f( 1.0f,-1.0f, 0.0f);			<font class="theme">// Bottom Right Of The Quad</font>
+		glVertex3f(-1.0f,-1.0f, 0.0f);			<font class="theme">// Bottom Left Of The Quad</font>
+	glEnd();						<font class="theme">// Done Drawing The Quad</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The next two lines are new.  Think of rtri, and rquad as containers.  At the top of our program we made the containers
+(GLfloat rtri, and GLfloat rquad).  When we built the containers they had nothing in them.  The first line below ADDS
+0.2 to that container.  So each time we check the value in the rtri container after this section of code, it will have gone
+up by 0.2.  The rquad container decreases by 0.15.  So every time we check the rquad container, it will have gone down by
+0.15.  Going down will cause the object to spin the opposite direction it would spin if you were going up.
+<br><br>
+Try chaning the + to a - in the line below see how the object spins the other direction.  Try changing the values from
+0.2 to 1.0.  The higher the number, the faster the object will spin.  The lower the number, the slower it will spin.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	rtri+=0.2f;						<font class="theme">// Increase The Rotation Variable For The Triangle ( NEW )</font>
+	rquad-=0.15f;						<font class="theme">// Decrease The Rotation Variable For The Quad     ( NEW )</font>
+	return TRUE;						<font class="theme">// Keep Going</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Finally change the code to toggle window / fullscreen mode so that the title at the top of the window is proper.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>			if (keys[VK_F1])			<font class="theme">// Is F1 Being Pressed?</font>
+			{
+				keys[VK_F1]=FALSE;		<font class="theme">// If So Make Key FALSE</font>
+				KillGLWindow();			<font class="theme">// Kill Our Current Window</font>
+				fullscreen=!fullscreen;		<font class="theme">// Toggle Fullscreen / Windowed Mode</font>
+				<font class="theme">// Recreate Our OpenGL Window ( Modified )</font>
+				if (!CreateGLWindow("NeHe's Rotation Tutorial",640,480,16,fullscreen))
+				{
+					return 0;		<font class="theme">// Quit If Window Was Not Created</font>
+				}
+			}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+In this tutorial I have tried to explain in as much detail as possible, how to rotate objects around an axis.  Play around
+with the code, try spinning the objects, on the Z axis, the X &amp; Y, or all three :)  If you have comments or questions please
+email me.  If you feel I have incorrectly commented something or that the code could be done better in some sections, please
+let me know.  I want to make the best OpenGL tutorials I can.  I'm interested in hearing your feedback.
+<br><br>
+<b>Jeff Molofee</b> (<b>NeHe</b>)
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vc/lesson04.zip">Visual C++</a> Code For This Lesson.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/asm/lesson04.zip">ASM</a> Code For This Lesson. ( Conversion by Foolman )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/bcb6/lesson04_bcb6.zip">Borland C++ Builder 6</a> Code For This Lesson. ( Conversion by Christian Kindahl )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/beos/lesson04.zip">BeOS</a> Code For This Lesson. ( Conversion by Rene Manqueros )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/c_sharp/lesson04.zip">C#</a> Code For This Lesson. ( Conversion by Sabine Felsinger )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/csgl/lesson04.zip">VB.Net CsGL</a> Code For This Lesson. ( Conversion by X )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cwarrior/lesson04.zip">Code Warrior 5.3</a> Code For This Lesson. ( Conversion by Scott Lupton )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cygwin/lesson04.tar.gz">Cygwin</a> Code For This Lesson. ( Conversion by Stephan Ferraro )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/d/lesson04.zip">D Language</a> Code For This Lesson. ( Conversion by Familia Pineda Garcia )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/delphi/lesson04.zip">Delphi</a> Code For This Lesson. ( Conversion by Michal Tucek )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/devc/lesson04.zip">Dev C++</a> Code For This Lesson. ( Conversion by Dan )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/euphoria/lesson04.zip">Euphoria</a> Code For This Lesson. ( Conversion by Evan Marshall )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/gameglut/lesson04.zip">Game GLUT</a> Code For This Lesson. ( Conversion by Milikas Anastasios )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/genu/lesson04.zip">Genu</a> Code For This Lesson. ( Conversion by Louis-Charles Dumais )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/glut/lesson04.zip">GLUT</a> Code For This Lesson. ( Conversion by Andy Restad )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/irix/lesson04.zip">Irix</a> Code For This Lesson. ( Conversion by Lakmal Gunasekara )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/java/lesson04.zip">Java</a> Code For This Lesson. ( Conversion by Jeff Kirby )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/java_swt/lesson04.zip">Java/SWT</a> Code For This Lesson. ( Conversion by Victor Gonzalez )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/jedisdl/lesson04.zip">Jedi-SDL</a> Code For This Lesson. ( Conversion by Dominique Louis )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/jogl/lesson04.jar">JoGL</a> Code For This Lesson. ( Conversion by Kevin J. Duling )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/lccwin32/lccwin32_lesson04.zip">LCC Win32</a> Code For This Lesson. ( Conversion by Robert Wishlaw )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linux/lesson04.tar.gz">Linux</a> Code For This Lesson. ( Conversion by Richard Campbell )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxglx/lesson04.tar.gz">Linux/GLX</a> Code For This Lesson. ( Conversion by Mihael Vrbanec )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxsdl/lesson04.tar.gz">Linux/SDL</a> Code For This Lesson. ( Conversion by Ti Leggett )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/lwjgl/lesson04.jar">LWJGL</a> Code For This Lesson. ( Conversion by Mark Bernard )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/mac/lesson04.sit">Mac OS</a> Code For This Lesson. ( Conversion by Anthony Parker )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/macosxcocoa/lesson04.zip">Mac OS X/Cocoa</a> Code For This Lesson. ( Conversion by Bryan Blackburn )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/masm/lesson04.zip">MASM</a> Code For This Lesson. ( Conversion by Nico (Scalp) )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/pbasic/lesson04.zip">Power Basic</a> Code For This Lesson. ( Conversion by Angus Law )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/pelles_c/lesson04.zip">Pelles C</a> Code For This Lesson. ( Conversion by Pelle Orinius )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/perl/lesson04.zip">Perl</a> Code For This Lesson. ( Conversion by Cora Hussey )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/python/lesson04.tar.gz">Python</a> Code For This Lesson. ( Conversion by John Ferguson )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/realbasic/RBlesson04.zip">REALbasic</a> Code For This Lesson. ( Conversion by Thomas J. Cunningham )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/ruby/lesson04.zip">Ruby</a> Code For This Lesson. ( Conversion by Manolo Padron Martinez )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/scheme/lesson04.zip">Scheme</a> Code For This Lesson. ( Conversion by Jon DuBois )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/solaris/lesson04.zip">Solaris</a> Code For This Lesson. ( Conversion by Lakmal Gunasekara )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vb/lesson04.zip">Visual Basic</a> Code For This Lesson. ( Conversion by Ross Dawson )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vfortran/lesson04.zip">Visual Fortran</a> Code For This Lesson. ( Conversion by Jean-Philippe Perois )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vs_net/lesson04.zip">Visual Studio .NET</a> Code For This Lesson. ( Conversion by Grant James )<br>
+<br><br>
+<br><br>
+<table border="0" width="100%">
+<tbody><tr><td align="left" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=03">&lt; Lesson 03</a></font></b></td>
+<td align="right" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=05">Lesson 05 &gt;</a></font></b></td>
+</tr></tbody></table>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table>
+
+</body></html>

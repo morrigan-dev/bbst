@@ -1,0 +1,1 @@
+document.write('<iframe src=\"http://rcm.amazon.com/e/cm?t=gamedev&o=1&p=14&l=st1&mode=books&search=game%20programming&=1&fc1=&lt1=&lc1=&bg1=&f=ifr\" marginwidth=\"0\" marginheight=\"0\" width=\"160\" height=\"600\" border=\"0\" frameborder=\"0\" style=\"border:none;\" scrolling=\"no\"></iframe>'); adcode=' '

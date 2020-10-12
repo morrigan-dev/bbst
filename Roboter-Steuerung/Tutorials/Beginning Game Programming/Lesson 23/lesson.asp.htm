@@ -1,0 +1,313 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+<title>NeHe Productions: OpenGL Lesson #23</title>
+<meta name="author" content="Jeff Molofee">
+<meta name="description" content="OpenGL Tutorials, Demos, Games and More...">
+<meta name="keywords" content="opengl, tutorial, article, demo, game, blend, texturemap, lighting, contest, 3D">
+<link rel="stylesheet" type="text/css" href="lesson.asp-Dateien/rgb.css">
+</head><body bgcolor="black" link="#aaccff" text="white" vlink="#aaccff">
+
+<table border="0" width="100%"><tbody><tr><td align="center">
+<!-- Begin -  Site: GameDev.net Zone: NeHe 728x90 -->
+<script language="javascript" type="text/javascript">
+<!--
+var browName = navigator.appName;
+var SiteID = 1;
+var ZoneID = 4;
+var browDateTime = (new Date()).getTime();
+if (browName=='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;Browser=NETSCAPE4&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+if (browName!='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+// --> 
+</script><script language="javascript" src="lesson.asp-Dateien/a.js"></script><iframe class=" uvzqlqxrluylsowwolzs" src="lesson.asp-Dateien/B3794521.htm" marginwidth="0" marginheight="0" hspace="0" vspace="0" bordercolor="#000000" frameborder="0" height="90" scrolling="no" width="728">
+&lt;SCRIPT language='JavaScript1.1'
+SRC="http://ad.doubleclick.net/adj/N5621.gamedev.com/B3794521.5;abr=!ie;sz=728x90;ord=2062410392?"&gt;
+&lt;/SCRIPT&gt;
+&lt;NOSCRIPT&gt;
+&lt;A
+HREF="http://www.gamedev.net/banman/a.aspx?Task=Click&amp;ZoneID=4&amp;CampaignID=727&amp;AdvertiserID=123&amp;BannerID=783&amp;SiteID=1&amp;RandomNumber=2062410392&amp;Keywords="&gt;
+&lt;IMG
+SRC="http://ad.doubleclick.net/ad/N5621.gamedev.com/B3794521.5;abr=!ie4;abr=!ie5;sz=728x90;ord=2062410392?"
+BORDER=0 WIDTH=728 HEIGHT=90 ALT="Click Here"&gt;&lt;/A&gt;
+&lt;/NOSCRIPT&gt;
+</iframe>
+<noscript> <a
+href="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Click&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+target="_blank"> <img
+src="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Get&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+width="728" height="90" border="0" alt=""></a>
+</noscript>
+<!-- End -  Site: GameDev.net Zone: NeHe 728x90 --></td></tr></tbody></table><br>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tinylogo" height="130" width="326"><img src="lesson.asp-Dateien/blank.gif" alt="NeHe Productions" height="130" width="326"></td><td class="indexheading" align="center" valign="middle"><font class="text"><font class="theme" size="+3"><b><i>Lesson: 23</i></b></font></font></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Sphere Environment Mapping is a quick way to add a reflection to a metallic or reflective object in your scene.
+Although it is not as accurate as real life or as a Cube Environment Map, it is a whole lot faster! We'll be using the
+code from lesson eighteen (Quadrics) for the base of this tutorial. Also we're not using any of the same texture maps,
+we're going to use one sphere map, and one background image.
+<br><br>
+Before we start... The "red book" defines a Sphere map as a picture of the scene on a metal ball from infinite distance
+away and infinite focal point. Well that is impossible to do in real life.  The best way I have found to create a good
+sphere map image without using a Fish eye lens is to use Adobe's Photoshop program.
+<br><br>
+Creating a Sphere Map In Photoshop:
+<br><br>
+First you will need a picture of the environment you want to map onto the sphere.  Open the picture in Adobe Photoshop and
+select the entire image.  Copy the image and create a new PSD (Photoshop Format) the new image should be the same size as
+the image we just copied.  Paste a copy of the image into the new window we've created.  The reason we make a copy is so
+Photoshop can apply its filters.  Instead of copying the image you can select mode from the drop down menu and choose RGB
+mode.  All of the filters should then be available.
+<br><br>
+Next we need to resize the image so that the image dimensions are a power of 2.  Remember that in order to use an image as
+a texture the image needs to be 128x128, 256x256, etc.  Under the image menu, select image size, uncheck the constraint
+proportions checkbox, and resize the image to a valid texture size.  If your image is 100X90, it's better to make the image
+128x128 than 64x64.  Making the image smaller will lose alot of detail.
+<br><br>
+The last thing we do is select the filter menu, select distort and apply a spherize modifier. You should see that the
+center of the picture is blown up like a balloon, now in normal sphere maps the outer area will be blackened out, but it
+doesn't really matter.  Save a copy of the image as a .BMP and you're ready to code!
+<br><br>
+We don't add any new global variables this time but we do modify the texture array to hold 6 textures.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>GLuint	texture[6];								<font class="theme">// Storage For 6 Textures </font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The next thing I did was modify the LoadGLTextures() function so we can load in 2 bitmaps and create 3 filters. (Like we
+did in the original texturing tutorials).  Basically we loop through twice and create 3 textures each time using a
+different filtering mode.  Almost all of this code is new or modified.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int LoadGLTextures()								<font class="theme">// Load Bitmaps And Convert To Textures</font>
+{
+	int Status=FALSE;							<font class="theme">// Status Indicator</font>
+
+	AUX_RGBImageRec *TextureImage[2];					<font class="theme">// Create Storage Space For The Texture</font>
+
+	memset(TextureImage,0,sizeof(void *)*2);  		         	<font class="theme">// Set The Pointer To NULL</font>
+
+	<font class="theme">// Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit</font>
+	if ((TextureImage[0]=LoadBMP("Data/BG.bmp")) &amp;&amp;				<font class="theme">// Background Texture</font>
+		(TextureImage[1]=LoadBMP("Data/Reflect.bmp")))			<font class="theme">// Reflection Texture (Spheremap)</font>
+	{
+		Status=TRUE;							<font class="theme">// Set The Status To TRUE</font>
+
+		glGenTextures(6, &amp;texture[0]);					<font class="theme">// Create Three Textures (For Two Images)</font>
+
+		for (int loop=0; loop&lt;2; loop++)
+		{
+			<font class="theme">// Create Nearest Filtered Texture</font>
+			glBindTexture(GL_TEXTURE_2D, texture[loop]);		<font class="theme">// Gen Tex 0 And 1</font>
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+			glTexImage2D(GL_TEXTURE_2D, 0, 3, TextureImage[loop]-&gt;sizeX, TextureImage[loop]-&gt;sizeY,
+				0, GL_RGB, GL_UNSIGNED_BYTE, TextureImage[loop]-&gt;data);
+
+			<font class="theme">// Create Linear Filtered Texture</font>
+			glBindTexture(GL_TEXTURE_2D, texture[loop+2]);		<font class="theme">// Gen Tex 2, 3 And 4</font>
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+			glTexImage2D(GL_TEXTURE_2D, 0, 3, TextureImage[loop]-&gt;sizeX, TextureImage[loop]-&gt;sizeY,
+				0, GL_RGB, GL_UNSIGNED_BYTE, TextureImage[loop]-&gt;data);
+
+			<font class="theme">// Create MipMapped Texture</font>
+			glBindTexture(GL_TEXTURE_2D, texture[loop+4]);		<font class="theme">// Gen Tex 4 and 5</font>
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST);
+			gluBuild2DMipmaps(GL_TEXTURE_2D, 3, TextureImage[loop]-&gt;sizeX, TextureImage[loop]-&gt;sizeY,
+				GL_RGB, GL_UNSIGNED_BYTE, TextureImage[loop]-&gt;data);
+		}
+		for (loop=0; loop&lt;2; loop++)
+		{
+	        if (TextureImage[loop])						<font class="theme">// If Texture Exists</font>
+		    {
+			        if (TextureImage[loop]-&gt;data)			<font class="theme">// If Texture Image Exists</font>
+				    {
+					        free(TextureImage[loop]-&gt;data);	<font class="theme">// Free The Texture Image Memory</font>
+					}
+					free(TextureImage[loop]);		<font class="theme">// Free The Image Structure</font>
+			}
+		}
+	}
+
+	return Status;								<font class="theme">// Return The Status</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We'll modify the cube drawing code a little.  Instead of using 1.0 and -1.0 for the normal values, we'll use 0.5 and -0.5.
+By changing the value of the normal, you can zoom the reflection map in and out.  If the normal value is high, the image
+being reflected will be bigger, and may appear blocky.  By reducing the normal value to 0.5 and -0.5 the reflected image
+is zoomed out a bit so that the image reflecting off the cube isn't all blocky looking.  Setting the normal value too low
+will create undesirable results.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>GLvoid glDrawCube()
+{
+		glBegin(GL_QUADS);
+		<font class="theme">// Front Face</font>
+		glNormal3f( 0.0f, 0.0f, 0.5f);					
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);
+		<font class="theme">// Back Face</font>
+		glNormal3f( 0.0f, 0.0f,-0.5f);					
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);
+		glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
+		<font class="theme">// Top Face</font>
+		glNormal3f( 0.0f, 0.5f, 0.0f);					
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f,  1.0f,  1.0f);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f,  1.0f,  1.0f);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);
+		<font class="theme">// Bottom Face</font>
+		glNormal3f( 0.0f,-0.5f, 0.0f);					
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
+		glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
+		<font class="theme">// Right Face</font>
+		glNormal3f( 0.5f, 0.0f, 0.0f);					
+		glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);
+		glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);
+		<font class="theme">// Left Face</font>
+		glNormal3f(-0.5f, 0.0f, 0.0f);					
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);
+	glEnd();
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now in InitGL we add two new function calls, these two calls set the texture generation mode for S and T to Sphere Mapping.
+The texture coordinates S, T, R &amp; Q relate in a way to object coordinates x, y, z and w.  If you are using a
+one-dimensional texture (1D) you will use the S coordinate.  If your texture is two dimensional, you will use the S &amp; T
+coordinates.
+<br><br>
+So what the following code does is tells OpenGL how to automatically generate the S and T coordinates for us based on the
+sphere-mapping formula.  The R and Q coordinates are usually ignored.  The Q coordinate can be used for advanced texture
+mapping extensions, and the R coordinate may become useful once 3D texture mapping has been added to OpenGL, but for now
+we will ignore the R &amp; Q Coords.  The S coordinate runs horizontally across the face of our polygon, the T coordinate runs
+vertically across the face of our polygon.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);			<font class="theme">// Set The Texture Generation Mode For S To Sphere Mapping ( NEW )</font>
+	glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);			<font class="theme">// Set The Texture Generation Mode For T To Sphere Mapping ( NEW )</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We're almost done! All we have to do is set up the rendering, I took out a few of the quadratic objects because they
+didn't work well with environment mapping.  The first thing we need to do is enable texture generation.  Then we select the
+reflective texture (sphere map) and draw our object.  After all of the objects you want sphere-mapped have been drawn, you
+will want to disable texture generation, otherwise everything will be sphere mapped.  We disable sphere-mapping before we
+draw the background scene (we don't want the background sphere mapped).  You will notice that the bind texture commands may
+look fairly complex.  All we're doing is selecting the filter to use when drawing our sphere map or the background image.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int DrawGLScene(GLvoid)								<font class="theme">// Here's Where We Do All The Drawing</font>
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);			<font class="theme">// Clear The Screen And The Depth Buffer</font>
+	glLoadIdentity();							<font class="theme">// Reset The View</font>
+
+	glTranslatef(0.0f,0.0f,z);
+
+	glEnable(GL_TEXTURE_GEN_S);						<font class="theme">// Enable Texture Coord Generation For S ( NEW )</font>
+	glEnable(GL_TEXTURE_GEN_T);						<font class="theme">// Enable Texture Coord Generation For T ( NEW )</font>
+
+	glBindTexture(GL_TEXTURE_2D, texture[filter+(filter+1)]);		<font class="theme">// This Will Select A Sphere Map </font>
+	glPushMatrix();
+	glRotatef(xrot,1.0f,0.0f,0.0f);
+	glRotatef(yrot,0.0f,1.0f,0.0f);
+	switch(object)
+	{
+	case 0:
+		glDrawCube();
+		break;
+	case 1:
+		glTranslatef(0.0f,0.0f,-1.5f);					<font class="theme">// Center The Cylinder</font>
+		gluCylinder(quadratic,1.0f,1.0f,3.0f,32,32);			<font class="theme">// A Cylinder With A Radius Of 0.5 And A Height Of 2</font>
+		break;
+	case 2:
+		gluSphere(quadratic,1.3f,32,32);				<font class="theme">// Sphere With A Radius Of 1 And 16 Longitude/Latitude Segments</font>
+		break;
+	case 3:
+		glTranslatef(0.0f,0.0f,-1.5f);					<font class="theme">// Center The Cone</font>
+		gluCylinder(quadratic,1.0f,0.0f,3.0f,32,32);			<font class="theme">// Cone With A Bottom Radius Of .5 And Height Of 2</font>
+		break;
+	};
+
+	glPopMatrix();
+	glDisable(GL_TEXTURE_GEN_S);						<font class="theme">// Disable Texture Coord Generation ( NEW )</font>
+	glDisable(GL_TEXTURE_GEN_T);						<font class="theme">// Disable Texture Coord Generation ( NEW )</font>
+
+	glBindTexture(GL_TEXTURE_2D, texture[filter*2]);			<font class="theme">// This Will Select The BG Texture ( NEW )</font>
+	glPushMatrix();
+		glTranslatef(0.0f, 0.0f, -24.0f);
+		glBegin(GL_QUADS);
+			glNormal3f( 0.0f, 0.0f, 1.0f);
+			glTexCoord2f(0.0f, 0.0f); glVertex3f(-13.3f, -10.0f,  10.0f);
+			glTexCoord2f(1.0f, 0.0f); glVertex3f( 13.3f, -10.0f,  10.0f);
+			glTexCoord2f(1.0f, 1.0f); glVertex3f( 13.3f,  10.0f,  10.0f);
+			glTexCoord2f(0.0f, 1.0f); glVertex3f(-13.3f,  10.0f,  10.0f);
+		glEnd();
+
+	glPopMatrix();
+
+	xrot+=xspeed;
+	yrot+=yspeed;
+	return TRUE;								<font class="theme">// Keep Going</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The last thing we have to do is update the spacebar section of code to reflect (No Pun Intended) the changes we made to the
+Quadratic objects being rendered. (We removed the discs)
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				if (keys[' '] &amp;&amp; !sp)
+				{
+					sp=TRUE;
+					object++;
+					if(object&gt;3)
+						object=0;
+				}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+and at the very end of the program we need to delete the quadric to prevent memory leaks.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Shutdown</font>
+	gluDeleteQuadric(quadratic);
+	KillGLWindow();								<font class="theme">// Kill The Window</font>
+	return (msg.wParam);							<font class="theme">// Exit The Program</font>
+}
+
+gluDeleteQuadric(quadratic);
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We're done! Now you can do some really impressive things with Environment mapping like making an almost accurate reflection
+of a room! I was planning on showing how to do Cube Environment Mapping in this tutorial too but my current video card
+does not support cube mapping.  Maybe in a month or so after I buy a GeForce 2 :)  Also I taught myself environment mapping
+(mostly because I couldnt find too much information on it) so if anything in this tutorial is inaccurate, Email Me or let
+NeHe know.
+<br><br>
+Thanks, and Good Luck!
+<br><br>
+Visit my site: <a href="http://www.tiptup.com/">http://www.tiptup.com/</a>
+<br><br>
+<b>GB Schmick</b> (<b>TipTup</b>)
+<br><br>
+<b>Jeff Molofee</b> (<b>NeHe</b>)
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vc/lesson23.zip">Visual C++</a> Code For This Lesson.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/delphi/lesson23.zip">Delphi</a> Code For This Lesson. ( Conversion by <a href="mailto:Alexandre.Hirzel@nat.unibe.ch">Alexandre Hirzel</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cwarrior/lesson23.zip">Code Warrior 5.3</a> Code For This Lesson. ( Conversion by <a href="mailto:DelusionalBeing@hotmail.com">Scott Lupton</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/delphi/lesson23.zip">Delphi</a> Code For This Lesson. ( Conversion by <a href="mailto:michal_praha@seznam.cz">Michal Tucek</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/devc/lesson23.zip">Dev C++</a> Code For This Lesson. ( Conversion by <a href="mailto:danprogram@hotmail.com">Dan</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/euphoria/lesson23.zip">Euphoria</a> Code For This Lesson. ( Conversion by <a href="mailto:1evan@sbcglobal.net">Evan Marshall</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/gameglut/lesson23.zip">Game GLUT</a> Code For This Lesson. ( Conversion by <a href="">Anonymous</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/java/lesson23.zip">Java</a> Code For This Lesson. ( Conversion by <a href="mailto:chris@interdictor.org">Chris Veenboer</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/lccwin32/lccwin32_lesson23.zip">LCC Win32</a> Code For This Lesson. ( Conversion by <a href="mailto:rwishlaw@shaw.ca">Robert Wishlaw</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxsdl/lesson23.tar.gz">Linux/SDL</a> Code For This Lesson. ( Conversion by <a href="mailto:arkadi@it.lv">Arkadi Shishlov</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/lwjgl/lesson23.jar">LWJGL</a> Code For This Lesson. ( Conversion by <a href="mailto:mark.bernard@rogers.com">Mark Bernard</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/macosx/lesson23.zip">Mac OS X/Cocoa</a> Code For This Lesson. ( Conversion by <a href="mailto:blb@pobox.com">Bryan Blackburn</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/macosxcocoa/lesson23.zip">Mac OS X/Cocoa</a> Code For This Lesson. ( Conversion by <a href="mailto:blb@pobox.com">Bryan Blackburn</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vs_net/lesson23.zip">Visual Studio .NET</a> Code For This Lesson. ( Conversion by <a href="mailto:ultimatezeus@hotmail.com">Grant James</a> )<br>
+<br><br>
+<br><br>
+<table border="0" width="100%">
+<tbody><tr><td align="left" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=22">&lt; Lesson 22</a></font></b></td>
+<td align="right" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=24">Lesson 24 &gt;</a></font></b></td>
+</tr></tbody></table>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table>
+
+</body></html>

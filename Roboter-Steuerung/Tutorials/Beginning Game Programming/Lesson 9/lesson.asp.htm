@@ -1,0 +1,441 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+<title>NeHe Productions: OpenGL Lesson #09</title>
+<meta name="author" content="Jeff Molofee">
+<meta name="description" content="OpenGL Tutorials, Demos, Games and More...">
+<meta name="keywords" content="opengl, tutorial, article, demo, game, blend, texturemap, lighting, contest, 3D">
+<link rel="stylesheet" type="text/css" href="lesson.asp-Dateien/rgb.css">
+</head><body bgcolor="black" link="#aaccff" text="white" vlink="#aaccff">
+
+<table border="0" width="100%"><tbody><tr><td align="center">
+<!-- Begin -  Site: GameDev.net Zone: NeHe 728x90 -->
+<script language="javascript" type="text/javascript">
+<!--
+var browName = navigator.appName;
+var SiteID = 1;
+var ZoneID = 4;
+var browDateTime = (new Date()).getTime();
+if (browName=='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;Browser=NETSCAPE4&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+if (browName!='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+// --> 
+</script><script language="javascript" src="lesson.asp-Dateien/a.js"></script><a href="http://www.gamedev.net/banman/a.aspx?Task=Click&amp;ZoneID=4&amp;CampaignID=609&amp;AdvertiserID=11&amp;BannerID=677&amp;SiteID=1&amp;RandomNumber=1708037937&amp;Keywords=" target="_Blank"><img src="lesson.asp-Dateien/BPleader.png" alt="" align="Center" border="0" height="90" width="728"></a><br>
+<noscript> <a
+href="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Click&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+target="_blank"> <img
+src="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Get&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+width="728" height="90" border="0" alt=""></a>
+</noscript>
+<!-- End -  Site: GameDev.net Zone: NeHe 728x90 --></td></tr></tbody></table><br>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tinylogo" height="130" width="326"><img src="lesson.asp-Dateien/blank.gif" alt="NeHe Productions" height="130" width="326"></td><td class="indexheading" align="center" valign="middle"><font class="text"><font class="theme" size="+3"><b><i>Lesson: 09</i></b></font></font></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Welcome to Tutorial 9.  By now you should have a very good understanding of OpenGL.  You've learned everything
+from setting up an OpenGL Window, to texture mapping a spinning object while using lighting and blending.  This will
+be the first semi-advanced tutorial.  You'll learn the following:  Moving bitmaps around the screen in 3D,
+removing the black pixels around the bitmap (using blending), adding color to a black &amp; white texture and
+finally you'll learn how to create fancy colors and simple animation by mixing different colored textures together.
+<br><br>
+We'll be modifying the code from lesson one for this tutorial.  We'll start off by adding a few new variables
+to the beginning of the program.  I'll rewrite the entire section of code so it's easier to see where the
+changes are being made.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>#include	&lt;windows.h&gt;					<font class="theme">// Header File For Windows</font>
+#include	&lt;stdio.h&gt;					<font class="theme">// Header File For Standard Input/Output</font>
+#include	&lt;gl\gl.h&gt;					<font class="theme">// Header File For The OpenGL32 Library</font>
+#include	&lt;gl\glu.h&gt;					<font class="theme">// Header File For The GLu32 Library</font>
+#include	&lt;gl\glaux.h&gt;					<font class="theme">// Header File For The GLaux Library</font>
+
+HDC		hDC=NULL;					<font class="theme">// Private GDI Device Context</font>
+HGLRC		hRC=NULL;					<font class="theme">// Permanent Rendering Context</font>
+HWND		hWnd=NULL;					<font class="theme">// Holds Our Window Handle</font>
+HINSTANCE	hInstance;					<font class="theme">// Holds The Instance Of The Application</font>
+
+bool		keys[256];					<font class="theme">// Array Used For The Keyboard Routine</font>
+bool		active=TRUE;					<font class="theme">// Window Active Flag Set To TRUE By Default</font>
+bool		fullscreen=TRUE;				<font class="theme">// Fullscreen Flag Set To Fullscreen Mode By Default</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The following lines are new.  twinkle and tp are BOOLean variables meaning they can be TRUE or FALSE.
+twinkle will keep track of whether or not the twinkle effect has been enabled.  tp is used to check if
+the 'T' key has been pressed or released.  (pressed tp=TRUE, relased tp=FALSE).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>BOOL	twinkle;						<font class="theme">// Twinkling Stars</font>
+BOOL	tp;							<font class="theme">// 'T' Key Pressed?</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+num will keep track of how many stars we draw to the screen.  It's defined as a CONSTant.  This means it
+can never change within the code.  The reason we define it as a constant is because you can not redefine
+an array.  So if we've set up an array of only 50 stars and we decided to increase num to 51 somewhere in the
+code, the array can not grow to 51, so an error would occur.  You can change this value to whatever you want it to be
+in this line only.  Don't try to change the value of num later on in the code unless you want disaster to occur.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>const	num=50;							<font class="theme">// Number Of Stars To Draw</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we create a structure.  The word structure sounds intimidating, but it's not really.  A structure is a
+group simple data (variables, etc) representing a larger similar group.  In english :)  We know that we're
+keeping track of stars.  You'll see that the 7th line below is stars;.  We know each star will have 3 values
+for color, and all these values will be integer values.  The 3rd line int r,g,b sets up 3 integer
+values. One for red (r), one for green (g), and one for blue (b).  We know each star will be a
+different distance from the center of the screen, and can be place at one of 360 different angles from the center. If
+you look at the 4th line below, we make a floating point value called dist.  This will keep track of the
+distance.  The 5th line creates a floating point value called angle.  This will keep track of the stars angle.
+<br><br>
+So now we have this group of data that describes the color, distance and angle of a star on the screen.
+Unfortunately we have more than one star to keep track of.  Instead of creating 50 red values, 50 green
+values, 50 blue values, 50 distance values and 50 angle values, we just create an array called star.  Each
+number in the star array will hold all of the information in our structure called stars.  We make the
+star array in the 8th line below.  If we break down the 8th line: stars star[num].  This is what
+we come up with.  The type of array is going to be stars.  stars is a structure.  So the array is going
+to hold all of the information in the structure.  The name of the array is star.  The number of arrays is
+[num].  So because num=50, we now have an array called star.  Our array stores the elements
+of the structure stars.  Alot easier than keeping track of each star with seperate variables.  Which would be
+a very stupid thing to do, and would not allow us to add remove stars by changing the const value of num.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>typedef struct							<font class="theme">// Create A Structure For Star</font>
+{
+	int r, g, b;						<font class="theme">// Stars Color</font>
+	GLfloat dist;						<font class="theme">// Stars Distance From Center</font>
+	GLfloat angle;						<font class="theme">// Stars Current Angle</font>
+}
+stars;								<font class="theme">// Structures Name Is Stars</font>
+stars star[num];						<font class="theme">// Make 'star' Array Of 'num' Using Info From The Structure 'stars'</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Next we set up variables to keep track of how far away from the stars the viewer is (zoom), and what angle
+we're seeing the stars from (tilt).  We make a variable called spin that will spin the twinkling stars on
+the z axis, which makes them look like they are spinning at their current location.
+<br><br>
+loop is a variable we'll use in the program to draw all 50 stars, and texture[1] will be used to store
+the one b&amp;w texture that we load in.  If you wanted more textures, you'd increase the value from one to however many
+textures you decide to use.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>GLfloat	zoom=-15.0f;						<font class="theme">// Viewing Distance Away From Stars</font>
+GLfloat tilt=90.0f;						<font class="theme">// Tilt The View</font>
+GLfloat	spin;							<font class="theme">// Spin Twinkling Stars</font>
+
+GLuint	loop;							<font class="theme">// General Loop Variable</font>
+GLuint	texture[1];						<font class="theme">// Storage For One Texture</font>
+
+LRESULT	CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);		<font class="theme">// Declaration For WndProc</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Right
+after the line above we add code to load in our texture. I shouldn't
+have to explain the code in great detail. It's the same code we used
+to load the textures in lesson 6, 7 and 8. The bitmap we load this time
+is called star.bmp. We generate only one texture using
+glGenTextures(1, &amp;texture[0]). The texture will use linear
+filtering.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>AUX_RGBImageRec *LoadBMP(char *Filename)			<font class="theme">// Loads A Bitmap Image</font>
+{
+	FILE *File=NULL;					<font class="theme">// File Handle</font>
+
+	if (!Filename)						<font class="theme">// Make Sure A Filename Was Given</font>
+	{
+		return NULL;					<font class="theme">// If Not Return NULL</font>
+	}
+
+	File=fopen(Filename,"r");				<font class="theme">// Check To See If The File Exists</font>
+
+	if (File)						<font class="theme">// Does The File Exist?</font>
+	{
+		fclose(File);					<font class="theme">// Close The Handle</font>
+		return auxDIBImageLoad(Filename);		<font class="theme">// Load The Bitmap And Return A Pointer</font>
+	}
+	return NULL;						<font class="theme">// If Load Failed Return NULL</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+This is the section of code that loads the bitmap (calling the code above) and converts it into a textures.  Status
+is used to keep track of whether or not the texture was loaded and created.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int LoadGLTextures()						<font class="theme">// Load Bitmaps And Convert To Textures</font>
+{
+	int Status=FALSE;					<font class="theme">// Status Indicator</font>
+
+	AUX_RGBImageRec *TextureImage[1];			<font class="theme">// Create Storage Space For The Texture</font>
+
+	memset(TextureImage,0,sizeof(void *)*1);		<font class="theme">// Set The Pointer To NULL</font>
+
+	<font class="theme">// Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit</font>
+	if (TextureImage[0]=LoadBMP("Data/Star.bmp"))
+	{
+		Status=TRUE;					<font class="theme">// Set The Status To TRUE</font>
+
+		glGenTextures(1, &amp;texture[0]);			<font class="theme">// Create One Texture</font>
+
+		<font class="theme">// Create Linear Filtered Texture</font>
+		glBindTexture(GL_TEXTURE_2D, texture[0]);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+		glTexImage2D(GL_TEXTURE_2D, 0, 3, TextureImage[0]-&gt;sizeX, TextureImage[0]-&gt;sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, TextureImage[0]-&gt;data);
+	}
+
+	if (TextureImage[0])					<font class="theme">// If Texture Exists</font>
+	{
+		if (TextureImage[0]-&gt;data)			<font class="theme">// If Texture Image Exists</font>
+		{
+			free(TextureImage[0]-&gt;data);		<font class="theme">// Free The Texture Image Memory</font>
+		}
+
+		free(TextureImage[0]);				<font class="theme">// Free The Image Structure</font>
+	}
+
+	return Status;						<font class="theme">// Return The Status</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we set up OpenGL to render the way we want.  We're not going to be using Depth Testing in this project,
+so make sure if you're using the code from lesson one that you remove glDepthFunc(GL_LEQUAL); and
+glEnable(GL_DEPTH_TEST); otherwise you'll see some very bad results.  We're using texture mapping in this
+code however so you'll want to make sure you add any lines that are not in lesson 1.  You'll notice we're enabling
+texture mapping, along with blending.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int InitGL(GLvoid)						<font class="theme">// All Setup For OpenGL Goes Here</font>
+{
+	if (!LoadGLTextures())					<font class="theme">// Jump To Texture Loading Routine</font>
+	{
+		return FALSE;					<font class="theme">// If Texture Didn't Load Return FALSE</font>
+	}
+
+	glEnable(GL_TEXTURE_2D);				<font class="theme">// Enable Texture Mapping</font>
+	glShadeModel(GL_SMOOTH);				<font class="theme">// Enable Smooth Shading</font>
+	glClearColor(0.0f, 0.0f, 0.0f, 0.5f);			<font class="theme">// Black Background</font>
+	glClearDepth(1.0f);					<font class="theme">// Depth Buffer Setup</font>
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);	<font class="theme">// Really Nice Perspective Calculations</font>
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE);			<font class="theme">// Set The Blending Function For Translucency</font>
+	glEnable(GL_BLEND);					<font class="theme">// Enable Blending</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The following code is new.  It sets up the starting angle, distance, and color of each star.  Notice how
+easy it is to change the information in the structure.  The loop will go through all 50 stars.  To change
+the angle of star[1] all we have to do is say star[1].angle={some number} .  It's that simple!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	for (loop=0; loop&lt;num; loop++)				<font class="theme">// Create A Loop That Goes Through All The Stars</font>
+	{
+		star[loop].angle=0.0f;				<font class="theme">// Start All The Stars At Angle Zero</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+I calculate the distance by taking the current star (which is the value of loop) and dividing it by the
+maximum amount of stars there can be.  Then I multiply the result by 5.0f.  Basically what this does is
+moves each star a little bit farther than the previous star.  When loop is 50 (the last star), loop
+divided by num will be 1.0f.  The reason I multiply by 5.0f is because 1.0f*5.0f is 5.0f.  5.0f is the very
+edge of the screen.  I don't want stars going off the screen so 5.0f is perfect.  If you set the zoom further
+into the screen you could use a higher number than 5.0f, but your stars would be alot smaller (because of
+perspective).
+<br><br>
+You'll notice that the colors for each star are made up of random values from 0 to 255.  You might be
+wondering how we can use such large values when normally the colors are from 0.0f to 1.0f.  When we set
+the color we'll use glColor4ub instead of glColor4f.  ub means Unsigned Byte.  A byte can be any value from
+0 to 255.  In this program it's easier to use bytes than to come up with a random floating point value.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		star[loop].dist=(float(loop)/num)*5.0f;		<font class="theme">// Calculate Distance From The Center</font>
+		star[loop].r=rand()%256;			<font class="theme">// Give star[loop] A Random Red Intensity</font>
+		star[loop].g=rand()%256;			<font class="theme">// Give star[loop] A Random Green Intensity</font>
+		star[loop].b=rand()%256;			<font class="theme">// Give star[loop] A Random Blue Intensity</font>
+	}
+	return TRUE;						<font class="theme">// Initialization Went OK</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The Resize code is the same, so we'll jump to the drawing code.  If you're using the code from lesson one,
+delete the DrawGLScene code, and just copy what I have below.  There's only 2 lines of code in lesson one
+anyways, so there's not a lot to delete.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int DrawGLScene(GLvoid)						<font class="theme">// Here's Where We Do All The Drawing</font>
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	<font class="theme">// Clear The Screen And The Depth Buffer</font>
+	glBindTexture(GL_TEXTURE_2D, texture[0]);		<font class="theme">// Select Our Texture</font>
+
+	for (loop=0; loop&lt;num; loop++)				<font class="theme">// Loop Through All The Stars</font>
+	{
+		glLoadIdentity();				<font class="theme">// Reset The View Before We Draw Each Star</font>
+		glTranslatef(0.0f,0.0f,zoom);			<font class="theme">// Zoom Into The Screen (Using The Value In 'zoom')</font>
+		glRotatef(tilt,1.0f,0.0f,0.0f);			<font class="theme">// Tilt The View (Using The Value In 'tilt')</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we move the star.  The star starts off in the middle of the screen.  The first thing we do is spin the
+scene on the x axis.  If we spin 90 degrees, the x axis will no longer run left to right, it will run into
+and out of the screen.  As an example to help clarify.  Imagine you were in the center of a room.  Now
+imagine that the left wall had -x written on it, the front wall had -z written on it, the right wall had +x
+written on it, and the wall behind you had +z written on it.  If the room spun 90 degrees to the right, but
+you did not move, the wall in front of you would no longer say -z it would say -x.  All of the walls would
+have moved.  -z would be on the right, +z would be on the left, -x would be in front, and +x would be behind you.
+Make sense?  By rotating the scene, we change the direction of the x and z planes.
+<br><br>
+The second line of code moves to a positive value on the x plane.  Normally a positive value on x would move us
+to the right side of the screen (where +x usually is), but because we've rotated on the y plane, the +x
+could be anywhere.  If we rotated by 180 degrees, it would be on the left side of the screen instead of the
+right.  So when we move forward on the positive x plane, we could be moving left, right, forward or backward.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		glRotatef(star[loop].angle,0.0f,1.0f,0.0f);	<font class="theme">// Rotate To The Current Stars Angle</font>
+		glTranslatef(star[loop].dist,0.0f,0.0f);	<font class="theme">// Move Forward On The X Plane</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now for some tricky code.  The star is actually a flat texture.  Now if you drew a flat quad in the middle
+of the screen and texture mapped it, it would look fine.  It would be facing you like it should.  But if
+you rotated on the y axis by 90 degrees, the texture would be facing the right and left sides of the screen.
+All you'd see is a thin line.  We don't want that to happen.  We want the stars to face the screen all the time,
+no matter how much we rotate and tilt the screen.
+<br><br>
+We do this by cancelling any rotations that we've made, just before we draw the star.  You cancel the
+rotations in reverse order.  So above we tilted the screen, then we rotated to the stars current angle.
+In reverse order, we'd un-rotate (new word) the stars current angle.  To do this we use the negative value
+of the angle, and rotate by that.  So if we rotated the star by 10 degrees, rotating it back -10 degrees 
+will make the star face the screen once again on that axis.  So the first line below cancels the rotation
+on the y axis.  Then we need to cancel the screen tilt on the x axis.  To do that we just tilt the screen
+by -tilt.  After we've cancelled the x and y rotations, the star will face the screen completely.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		glRotatef(-star[loop].angle,0.0f,1.0f,0.0f);	<font class="theme">// Cancel The Current Stars Angle</font>
+		glRotatef(-tilt,1.0f,0.0f,0.0f);		<font class="theme">// Cancel The Screen Tilt</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+If twinkle is TRUE, we'll draw a non-spinning star on the screen.  To get a different color, we take the
+maximum number of stars (num) and subtract the current stars number (loop), then subtract 1 because our
+loop only goes from 0 to num-1.  If the result was 10 we'd use the color from star number 10.  That way the
+color of the two stars is usually different.  Not a good way to do it, but effective.  The last value is
+the alpha value.  The lower the value, the darker the star is.
+<br><br>
+If twinkle is enabled, each star will be drawn twice.  This will slow down the program a little depending
+on what type of computer you have.  If twinkle is enabled, the colors from the two stars will mix together
+creating some really nice colors.  Also because this star does not spin, it will appear as if the stars
+are animated when twinkling is enabled.  (look for yourself if you don't understand what I mean).
+<br><br>
+Notice how easy it is to add color to the texture.  Even though the texture is black and white, it will
+become whatever color we select before we draw the texture.  Also take note that we're using bytes for
+the color values rather than floating point numbers.  Even the alpha value is a byte.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		if (twinkle)					<font class="theme">// Twinkling Stars Enabled</font>
+		{
+			<font class="theme">// Assign A Color Using Bytes</font>
+			glColor4ub(star[(num-loop)-1].r,star[(num-loop)-1].g,star[(num-loop)-1].b,255);
+			glBegin(GL_QUADS);			<font class="theme">// Begin Drawing The Textured Quad</font>
+				glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f,-1.0f, 0.0f);
+				glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f,-1.0f, 0.0f);
+				glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f, 1.0f, 0.0f);
+				glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f, 1.0f, 0.0f);
+			glEnd();				<font class="theme">// Done Drawing The Textured Quad</font>
+		}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we draw the main star.  The only difference from the code above is that this star is always drawn, and
+this star spins on the z axis.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		glRotatef(spin,0.0f,0.0f,1.0f);			<font class="theme">// Rotate The Star On The Z Axis</font>
+		<font class="theme">// Assign A Color Using Bytes</font>
+		glColor4ub(star[loop].r,star[loop].g,star[loop].b,255);
+		glBegin(GL_QUADS);				<font class="theme">// Begin Drawing The Textured Quad</font>
+			glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f,-1.0f, 0.0f);
+			glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f,-1.0f, 0.0f);
+			glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f, 1.0f, 0.0f);
+			glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f, 1.0f, 0.0f);
+		glEnd();					<font class="theme">// Done Drawing The Textured Quad</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Here's where we do all the movement.  We spin the normal stars by increasing the value of spin.  Then we
+change the angle of each star.  The angle of each star is increased by loop/num.  What this does is spins the
+stars that are farther from the center faster.  The stars closer to the center spin slower.  Finally we
+decrease the distance each star is from the center of the screen.  This makes the stars look as if they
+are being sucked into the middle of the screen.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		spin+=0.01f;					<font class="theme">// Used To Spin The Stars</font>
+		star[loop].angle+=float(loop)/num;		<font class="theme">// Changes The Angle Of A Star</font>
+		star[loop].dist-=0.01f;				<font class="theme">// Changes The Distance Of A Star</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The lines below check to see if the stars have hit the center of the screen or not.  When a star hits the
+center of the screen it's given a new color, and is moved 5 units from the center, so it can start it's
+journey back to the center as a new star.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		if (star[loop].dist&lt;0.0f)			<font class="theme">// Is The Star In The Middle Yet</font>
+		{
+			star[loop].dist+=5.0f;			<font class="theme">// Move The Star 5 Units From The Center</font>
+			star[loop].r=rand()%256;		<font class="theme">// Give It A New Red Value</font>
+			star[loop].g=rand()%256;		<font class="theme">// Give It A New Green Value</font>
+			star[loop].b=rand()%256;		<font class="theme">// Give It A New Blue Value</font>
+		}
+	}
+	return TRUE;						<font class="theme">// Everything Went OK</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we're going to add code to check if any keys are being pressed.  Go down to WinMain().  Look for the line
+SwapBuffers(hDC).  We'll add our key checking code right under that line.
+lines of code.
+<br><br>
+The lines below check to see if the T key has been pressed.  If it has been pressed and it's not being held
+down the following will happen. If twinkle is FALSE, it will become TRUE.  If it was TRUE, it will become
+FALSE.  Once T is pressed tp will become TRUE.  This prevents the code from running over and over again if
+you hold down the T key.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		SwapBuffers(hDC);				<font class="theme">// Swap Buffers (Double Buffering)</font>
+		if (keys['T'] &amp;&amp; !tp)				<font class="theme">// Is T Being Pressed And Is tp FALSE</font>
+		{
+			tp=TRUE;				<font class="theme">// If So, Make tp TRUE</font>
+			twinkle=!twinkle;			<font class="theme">// Make twinkle Equal The Opposite Of What It Is</font>
+		}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The code below checks to see if you've let go of the T key.  If you have, it makes tp=FALSE.  Pressing the
+T key will do nothing unless tp is FALSE, so this section of code is very important.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		if (!keys['T'])					<font class="theme">// Has The T Key Been Released</font>
+		{
+			tp=FALSE;				<font class="theme">// If So, make tp FALSE</font>
+		}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The rest of the code checks to see if the up arrow, down arrow, page up or page down keys are being pressed.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		if (keys[VK_UP])				<font class="theme">// Is Up Arrow Being Pressed</font>
+		{
+			tilt-=0.5f;				<font class="theme">// Tilt The Screen Up</font>
+		}
+
+		if (keys[VK_DOWN])				<font class="theme">// Is Down Arrow Being Pressed</font>
+		{
+			tilt+=0.5f;				<font class="theme">// Tilt The Screen Down</font>
+		}
+
+		if (keys[VK_PRIOR])				<font class="theme">// Is Page Up Being Pressed</font>
+		{
+			zoom-=0.2f;				<font class="theme">// Zoom Out</font>
+		}
+
+		if (keys[VK_NEXT])				<font class="theme">// Is Page Down Being Pressed</font>
+		{
+			zoom+=0.2f;				<font class="theme">// Zoom In</font>
+		}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Like all the previous tutorials, make sure the title at the top of the window is correct.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		if (keys[VK_F1])				<font class="theme">// Is F1 Being Pressed?</font>
+		{
+			keys[VK_F1]=FALSE;			<font class="theme">// If So Make Key FALSE</font>
+			KillGLWindow();				<font class="theme">// Kill Our Current Window</font>
+			fullscreen=!fullscreen;			<font class="theme">// Toggle Fullscreen / Windowed Mode</font>
+			<font class="theme">// Recreate Our OpenGL Window</font>
+			if (!CreateGLWindow("NeHe's Textures, Lighting &amp; Keyboard Tutorial",640,480,16,fullscreen))
+			{
+				return 0;			<font class="theme">// Quit If Window Was Not Created</font>
+			}
+		}
+	}
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+In this tutorial I have tried to explain in as much detail how to load in a gray scale bitmap image, remove
+the black space around the image (using blending), add color to the image, and move the image around the
+screen in 3D.  I've also shown you how to create beautiful colors and animation by overlapping a second copy
+of the bitmap on top of the original bitmap.  Once you have a good understanding of everything I've taught
+you up till now, you should have no problems making 3D demos ofyour own.  All the basics have been covered!
+<br><br>
+<b>Jeff Molofee</b> (<b>NeHe</b>)
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vc/lesson09.zip">Visual C++</a> Code For This Lesson.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/bcb6/lesson09_bcb6.zip">Borland C++ Builder 6</a> Code For This Lesson. ( Conversion by <a href="mailto:christian@tugzip.com">Christian Kindahl</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/c_sharp/lesson09.zip">C#</a> Code For This Lesson. ( Conversion by <a href="mailto:bholley@unlnotes.unl.edu">Brian Holley</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cwarrior/lesson09.zip">Code Warrior 5.3</a> Code For This Lesson. ( Conversion by <a href="mailto:DelusionalBeing@hotmail.com">Scott Lupton</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cygwin/lesson09.tar.gz">Cygwin</a> Code For This Lesson. ( Conversion by <a href="mailto:stephan@lazyfellow.com">Stephan Ferraro</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/d/lesson09.zip">D Language</a> Code For This Lesson. ( Conversion by <a href="mailto:gpineda2013@yahoo.com.mx">Familia Pineda Garcia</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/delphi/lesson09.zip">Delphi</a> Code For This Lesson. ( Conversion by <a href="mailto:michal_praha@seznam.cz">Michal Tucek</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/devc/lesson09.zip">Dev C++</a> Code For This Lesson. ( Conversion by <a href="mailto:danprogram@hotmail.com">Dan</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/euphoria/lesson09.zip">Euphoria</a> Code For This Lesson. ( Conversion by <a href="mailto:1evan@sbcglobal.net">Evan Marshall</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/gameglut/lesson09.zip">Game GLUT</a> Code For This Lesson. ( Conversion by <a href="mailto:milix_gr@hotmail.com">Milikas Anastasios</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/irix/lesson09.zip">Irix</a> Code For This Lesson. ( Conversion by <a href="mailto:lakmal@gunasekara.de">Lakmal Gunasekara</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/java/lesson09.zip">Java</a> Code For This Lesson. ( Conversion by <a href="mailto:jeff@consunet.com.au">Jeff Kirby</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/jedisdl/lesson09.zip">Jedi-SDL</a> Code For This Lesson. ( Conversion by <a href="mailto:Dominique@SavageSoftware.com.au">Dominique Louis</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/jogl/lesson09.jar">JoGL</a> Code For This Lesson. ( Conversion by <a href="mailto:abezrati@hotmail.com">Abdul Bezrati</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/lccwin32/lccwin32_lesson09.zip">LCC Win32</a> Code For This Lesson. ( Conversion by <a href="mailto:rwishlaw@shaw.ca">Robert Wishlaw</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linux/lesson09.tar.gz">Linux</a> Code For This Lesson. ( Conversion by <a href="mailto:ulmont@bellsouth.net">Richard Campbell</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxglx/lesson09.tar.gz">Linux/GLX</a> Code For This Lesson. ( Conversion by <a href="mailto:Mihael.Vrbanec@stud.uni-karlsruhe.de">Mihael Vrbanec</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxsdl/lesson09.tar.gz">Linux/SDL</a> Code For This Lesson. ( Conversion by <a href="mailto:leggett@eecs.tulane.edu">Ti Leggett</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/lwjgl/lesson09.jar">LWJGL</a> Code For This Lesson. ( Conversion by <a href="mailto:mark.bernard@rogers.com">Mark Bernard</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/mac/lesson09.sit">Mac OS</a> Code For This Lesson. ( Conversion by <a href="mailto:asp@usc.edu">Anthony Parker</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/macosxcocoa/lesson09.zip">Mac OS X/Cocoa</a> Code For This Lesson. ( Conversion by <a href="mailto:blb@pobox.com">Bryan Blackburn</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/masm/lesson09.zip">MASM</a> Code For This Lesson. (Conversion by <a href="mailto:scalp@bigfoot.com">Nico (Scalp)</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/openil/lesson09.zip">Visual C++ / OpenIL</a> Code For This Lesson. ( Conversion by <a href="mailto:doomwiz@ticnet.com">Denton Woods</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/pbasic/lesson09.zip">Power Basic</a> Code For This Lesson. ( Conversion by <a href="mailto:anguslaw@net.ntl.com">Angus Law</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/pelles_c/lesson09.zip">Pelles C</a> Code For This Lesson. ( Conversion by <a href="mailto:pelle@smorgasbordet.com">Pelle Orinius</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/python/lesson09.tar.gz">Python</a> Code For This Lesson. ( Conversion by <a href="mailto:tankcoder@warpmail.net">Ryan Showalter</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/solaris/lesson09.zip">Solaris</a> Code For This Lesson. ( Conversion by <a href="mailto:lakmal@gunasekara.de">Lakmal Gunasekara</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vb/lesson09.zip">Visual Basic</a> Code For This Lesson. ( Conversion by <a href="mailto:pdetagyos@cox.net">Peter De Tagyos</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vfortran/lesson09.zip">Visual Fortran</a> Code For This Lesson. ( Conversion by <a href="mailto:Jean-Philippe.Perois@wanadoo.fr">Jean-Philippe Perois</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vs_net/lesson09.zip">Visual Studio .NET</a> Code For This Lesson. ( Conversion by <a href="mailto:ultimatezeus@hotmail.com">Grant James</a> )<br>
+<br><br>
+<br><br>
+<table border="0" width="100%">
+<tbody><tr><td align="left" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=08">&lt; Lesson 08</a></font></b></td>
+<td align="right" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=10">Lesson 10 &gt;</a></font></b></td>
+</tr></tbody></table>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table>
+
+</body></html>

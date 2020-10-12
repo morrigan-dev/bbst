@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+   "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg"
+     xmlns:xlink="http://www.w3.org/1999/xlink"
+>
+  <title>Figure of the Inheritance Tree</title>
+
+  <g font-family="Verdana, Verdana, Helvetica, Arial, sans-serif" font-size="10pt">
+
+    <line x1="480" y1="29" x2="480" y2="116" stroke="black" stroke-width="2" />
+
+    <g>
+      <a xlink:href="Class_TRoboterarmPanel.html">
+        <rect x="0" y="0" width="152" height="29" rx="5" fill="white" stroke="black" stroke-width="2" />
+      </a>
+      <text x="76" y="18" text-anchor="middle">TRoboterarmPanel</text>
+    </g>
+
+    <g>
+      <a xlink:href="Class_TfrmReglerPanel.html">
+        <rect x="202" y="0" width="152" height="29" rx="5" fill="white" stroke="black" stroke-width="2" />
+      </a>
+      <text x="278" y="18" text-anchor="middle">TfrmReglerPanel</text>
+    </g>
+
+    <g>
+      <a xlink:href="Class_TServo.html">
+        <rect x="404" y="116" width="152" height="29" rx="5" fill="white" stroke="black" stroke-width="2" />
+      </a>
+      <text x="480" y="134" text-anchor="middle">TServo</text>
+    </g>
+
+    <g>
+      <a xlink:href="Class_TElement.html">
+        <rect x="404" y="0" width="152" height="29" rx="5" fill="white" stroke="black" stroke-width="2" />
+      </a>
+      <text x="480" y="18" text-anchor="middle">TElement</text>
+    </g>
+
+  </g>
+</svg>

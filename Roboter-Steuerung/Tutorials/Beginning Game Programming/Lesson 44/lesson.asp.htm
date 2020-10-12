@@ -1,0 +1,813 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+<title>NeHe Productions: OpenGL Lesson #44</title>
+<meta name="author" content="Jeff Molofee">
+<meta name="description" content="OpenGL Tutorials, Demos, Games and More...">
+<meta name="keywords" content="opengl, tutorial, article, demo, game, blend, texturemap, lighting, contest, 3D">
+<link rel="stylesheet" type="text/css" href="lesson.asp-Dateien/rgb.css">
+</head><body bgcolor="black" link="#aaccff" text="white" vlink="#aaccff">
+
+<table border="0" width="100%"><tbody><tr><td align="center">
+<!-- Begin -  Site: GameDev.net Zone: NeHe 728x90 -->
+<script language="javascript" type="text/javascript">
+<!--
+var browName = navigator.appName;
+var SiteID = 1;
+var ZoneID = 4;
+var browDateTime = (new Date()).getTime();
+if (browName=='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;Browser=NETSCAPE4&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+if (browName!='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+// --> 
+</script><script language="javascript" src="lesson.asp-Dateien/a.js"></script><a href="http://www.gamedev.net/banman/a.aspx?Task=Click&amp;ZoneID=4&amp;CampaignID=609&amp;AdvertiserID=11&amp;BannerID=680&amp;SiteID=1&amp;RandomNumber=267896838&amp;Keywords=" target="_Blank"><img src="lesson.asp-Dateien/DCleader.png" alt="" align="Center" border="0" height="90" width="728"></a><br>
+<noscript> <a
+href="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Click&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+target="_blank"> <img
+src="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Get&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+width="728" height="90" border="0" alt=""></a>
+</noscript>
+<!-- End -  Site: GameDev.net Zone: NeHe 728x90 --></td></tr></tbody></table><br>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tinylogo" height="130" width="326"><img src="lesson.asp-Dateien/blank.gif" alt="NeHe Productions" height="130" width="326"></td><td class="indexheading" align="center" valign="middle"><font class="text"><font class="theme" size="+3"><b><i>Lesson: 44</i></b></font></font></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Hi
+everyone its me again with another tutorial. In this one I will be
+showing you how to do lens flares by extending the glCamera class. If
+you look at a lens flare you will notice that they all share one thing
+in common. They all seem to move through the center of the screen.
+With this in mind you could actually just throw out the z coordinate
+and make your flares all 2D. The only problem with this approach is
+without a z coordinate how do you find out if the camera is looking at
+the light source or not? In this tutorial we will be making 3D lens
+flares so get ready for a little bit of math. We will need to add a few
+things to the camera class in order to pull this off. First off we
+need a set of functions to see if a point or sphere is inside the
+current viewing volume of the camera. Next we need a set of textures to
+use for the flares and finally we need to do this with out killing the
+processor!
+<br><br>I'm somewhat embarrassed to admit it but there was a bug in
+the last Camera class that needs some fixing. Before we get started
+here is the
+code that fixes the bug. The SetPerspective function needs to be
+changed to the following.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void glCamera::SetPrespective()
+{
+	GLfloat Matrix[16];
+	glVector v;
+
+	<font class="theme">// Going To Use glRotate To Calculate Our Direction Vector</font>
+	glRotatef(m_HeadingDegrees, 0.0f, 1.0f, 0.0f);
+	glRotatef(m_PitchDegrees, 1.0f, 0.0f, 0.0f);
+
+	<font class="theme">// Get The Resulting Matrix From OpenGL It Will Have Our</font>
+	<font class="theme">// Direction Vector In The 3rd Row</font>
+	glGetFloatv(GL_MODELVIEW_MATRIX, Matrix);
+
+	<font class="theme">// Get The Direction Vector From The Matrix. Element 10 Must</font>
+	<font class="theme">// Be Inverted!</font>
+	m_DirectionVector.i = Matrix[8];
+	m_DirectionVector.j = Matrix[9];
+	m_DirectionVector.k = -Matrix[10];
+
+	<font class="theme">// Ok Erase The Results Of The Last Computation</font>
+	glLoadIdentity();
+
+	<font class="theme">// Rotate The Scene To Get The Right Orientation</font>
+	glRotatef(m_PitchDegrees, 1.0f, 0.0f, 0.0f);
+	glRotatef(m_HeadingDegrees, 0.0f, 1.0f, 0.0f);
+
+	<font class="theme">// Scale The Direction By Our Speed</font>
+	v = m_DirectionVector;
+	v *= m_ForwardVelocity;
+
+	<font class="theme">// Increment Our Position By The Vector</font>
+	m_Position.x += v.i;
+	m_Position.y += v.j;
+	m_Position.z += v.k;
+
+	<font class="theme">// Translate To Our New Position</font>
+	glTranslatef(-m_Position.x, -m_Position.y, -m_Position.z);
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Ok
+now we can get down to business. We will be using 4 separate textures
+to make our lens flare. The first texture we need is what I call
+a Big Glow texture. Our light source will be surrounded with a hazy
+glow. This texture will always be located at the light source position.
+The next texture is the Streaks Texture. This texture surrounds our
+light source with streaks moving outwards. This texture will also be
+located at the light source position. The Glow texture (not the Big
+Glow) this is the more solid looking texture and will dynamically move
+across the screen. The Glow texture is similar to the Big Glow texture
+however I have noticed that using a more defined texture here looks
+better than simply using the Big Glow. And finally we will need a Halo
+texture. These are the hollow looking rings for the flare and will
+dynamically move across the screen according to the camera's
+orientation and position. There are a few other types of textures you
+can use
+for lens flares if you like its up to you. See the references at the
+end of the tutorial for additional information. Below are some examples
+of these textures.
+<br><br>
+<table align="center" border="0">
+<tbody><tr><td align="center">Big Glow<br><br><img src="lesson.asp-Dateien/big_glow.jpg"></td><td width="100px">&nbsp;</td><td align="center">Streaks<br><br><img src="lesson.asp-Dateien/streaks.jpg"></td></tr>
+<tr><td align="center">Glow<br><br><img src="lesson.asp-Dateien/glow.jpg"></td><td width="100px">&nbsp;</td><td align="center">Halo<br><br><img src="lesson.asp-Dateien/halo.jpg"></td></tr>
+</tbody></table>
+<br><br>Now that you have an idea of what we will be drawing let's talk
+about when we need to draw the lens flares. Obviously we do not want to
+draw
+the lens flares when we are not looking at the light source so we need
+to find a way to get the viewing volume or frustum from OpenGL. We
+could do this by combining the modelview and projection matrices then
+finding the clipping planes that OpenGL uses. Another approach to
+detecting if a point is in view is to use extensions. We could use
+GL_HP_occlusion_test or GL_NV_occlusion_query extensions to find out if
+a vertex is in view of the camera but not everyone has these extension
+so we will limit ourselves to the old fashioned way in this tutorial.
+Below is the UpdateFrustum Function.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void glCamera::UpdateFrustum()
+{
+	GLfloat	clip[16];
+	GLfloat	proj[16];
+	GLfloat	modl[16];
+	GLfloat	t;
+
+	<font class="theme">// Get The Current PROJECTION Matrix From OpenGL</font>
+	glGetFloatv( GL_PROJECTION_MATRIX, proj );
+
+	<font class="theme">// Get The Current MODELVIEW Matrix From OpenGL</font>
+	glGetFloatv( GL_MODELVIEW_MATRIX, modl );
+
+	<font class="theme">// Combine The Two Matrices (Multiply Projection By Modelview)</font>
+	clip[ 0] = modl[ 0] * proj[ 0] + modl[ 1] * proj[ 4] + modl[ 2] * proj[ 8] + modl[ 3] * proj[12];
+	clip[ 1] = modl[ 0] * proj[ 1] + modl[ 1] * proj[ 5] + modl[ 2] * proj[ 9] + modl[ 3] * proj[13];
+	clip[ 2] = modl[ 0] * proj[ 2] + modl[ 1] * proj[ 6] + modl[ 2] * proj[10] + modl[ 3] * proj[14];
+	clip[ 3] = modl[ 0] * proj[ 3] + modl[ 1] * proj[ 7] + modl[ 2] * proj[11] + modl[ 3] * proj[15];
+
+	clip[ 4] = modl[ 4] * proj[ 0] + modl[ 5] * proj[ 4] + modl[ 6] * proj[ 8] + modl[ 7] * proj[12];
+	clip[ 5] = modl[ 4] * proj[ 1] + modl[ 5] * proj[ 5] + modl[ 6] * proj[ 9] + modl[ 7] * proj[13];
+	clip[ 6] = modl[ 4] * proj[ 2] + modl[ 5] * proj[ 6] + modl[ 6] * proj[10] + modl[ 7] * proj[14];
+	clip[ 7] = modl[ 4] * proj[ 3] + modl[ 5] * proj[ 7] + modl[ 6] * proj[11] + modl[ 7] * proj[15];
+
+	clip[ 8] = modl[ 8] * proj[ 0] + modl[ 9] * proj[ 4] + modl[10] * proj[ 8] + modl[11] * proj[12];
+	clip[ 9] = modl[ 8] * proj[ 1] + modl[ 9] * proj[ 5] + modl[10] * proj[ 9] + modl[11] * proj[13];
+	clip[10] = modl[ 8] * proj[ 2] + modl[ 9] * proj[ 6] + modl[10] * proj[10] + modl[11] * proj[14];
+	clip[11] = modl[ 8] * proj[ 3] + modl[ 9] * proj[ 7] + modl[10] * proj[11] + modl[11] * proj[15];
+
+	clip[12] = modl[12] * proj[ 0] + modl[13] * proj[ 4] + modl[14] * proj[ 8] + modl[15] * proj[12];
+	clip[13] = modl[12] * proj[ 1] + modl[13] * proj[ 5] + modl[14] * proj[ 9] + modl[15] * proj[13];
+	clip[14] = modl[12] * proj[ 2] + modl[13] * proj[ 6] + modl[14] * proj[10] + modl[15] * proj[14];
+	clip[15] = modl[12] * proj[ 3] + modl[13] * proj[ 7] + modl[14] * proj[11] + modl[15] * proj[15];
+
+	<font class="theme">// Extract The Numbers For The RIGHT Plane</font>
+	m_Frustum[0][0] = clip[ 3] - clip[ 0];
+	m_Frustum[0][1] = clip[ 7] - clip[ 4];
+	m_Frustum[0][2] = clip[11] - clip[ 8];
+	m_Frustum[0][3] = clip[15] - clip[12];
+
+	<font class="theme">// Normalize The Result</font>
+	t = GLfloat(sqrt( m_Frustum[0][0] * m_Frustum[0][0] + m_Frustum[0][1] * m_Frustum[0][1] + m_Frustum[0][2] * m_Frustum[0][2] ));
+	m_Frustum[0][0] /= t;
+	m_Frustum[0][1] /= t;
+	m_Frustum[0][2] /= t;
+	m_Frustum[0][3] /= t;
+
+	<font class="theme">// Extract The Numbers For The LEFT Plane</font>
+	m_Frustum[1][0] = clip[ 3] + clip[ 0];
+	m_Frustum[1][1] = clip[ 7] + clip[ 4];
+	m_Frustum[1][2] = clip[11] + clip[ 8];
+	m_Frustum[1][3] = clip[15] + clip[12];
+
+	<font class="theme">// Normalize The Result</font>
+	t = GLfloat(sqrt( m_Frustum[1][0] * m_Frustum[1][0] + m_Frustum[1][1] * m_Frustum[1][1] + m_Frustum[1][2] * m_Frustum[1][2] ));
+	m_Frustum[1][0] /= t;
+	m_Frustum[1][1] /= t;
+	m_Frustum[1][2] /= t;
+	m_Frustum[1][3] /= t;
+
+	<font class="theme">// Extract The BOTTOM Plane</font>
+	m_Frustum[2][0] = clip[ 3] + clip[ 1];
+	m_Frustum[2][1] = clip[ 7] + clip[ 5];
+	m_Frustum[2][2] = clip[11] + clip[ 9];
+	m_Frustum[2][3] = clip[15] + clip[13];
+
+	<font class="theme">// Normalize The Result</font>
+	t = GLfloat(sqrt( m_Frustum[2][0] * m_Frustum[2][0] + m_Frustum[2][1] * m_Frustum[2][1] + m_Frustum[2][2] * m_Frustum[2][2] ));
+	m_Frustum[2][0] /= t;
+	m_Frustum[2][1] /= t;
+	m_Frustum[2][2] /= t;
+	m_Frustum[2][3] /= t;
+
+	<font class="theme">// Extract The TOP Plane</font>
+	m_Frustum[3][0] = clip[ 3] - clip[ 1];
+	m_Frustum[3][1] = clip[ 7] - clip[ 5];
+	m_Frustum[3][2] = clip[11] - clip[ 9];
+	m_Frustum[3][3] = clip[15] - clip[13];
+
+	<font class="theme">// Normalize The Result</font>
+	t = GLfloat(sqrt( m_Frustum[3][0] * m_Frustum[3][0] + m_Frustum[3][1] * m_Frustum[3][1] + m_Frustum[3][2] * m_Frustum[3][2] ));
+	m_Frustum[3][0] /= t;
+	m_Frustum[3][1] /= t;
+	m_Frustum[3][2] /= t;
+	m_Frustum[3][3] /= t;
+
+	<font class="theme">// Extract The FAR Plane</font>
+	m_Frustum[4][0] = clip[ 3] - clip[ 2];
+	m_Frustum[4][1] = clip[ 7] - clip[ 6];
+	m_Frustum[4][2] = clip[11] - clip[10];
+	m_Frustum[4][3] = clip[15] - clip[14];
+
+	<font class="theme">// Normalize The Result</font>
+	t = GLfloat(sqrt( m_Frustum[4][0] * m_Frustum[4][0] + m_Frustum[4][1] * m_Frustum[4][1] + m_Frustum[4][2] * m_Frustum[4][2] ));
+	m_Frustum[4][0] /= t;
+	m_Frustum[4][1] /= t;
+	m_Frustum[4][2] /= t;
+	m_Frustum[4][3] /= t;
+
+	<font class="theme">// Extract The NEAR Plane</font>
+	m_Frustum[5][0] = clip[ 3] + clip[ 2];
+	m_Frustum[5][1] = clip[ 7] + clip[ 6];
+	m_Frustum[5][2] = clip[11] + clip[10];
+	m_Frustum[5][3] = clip[15] + clip[14];
+
+	<font class="theme">// Normalize The Result</font>
+	t = GLfloat(sqrt( m_Frustum[5][0] * m_Frustum[5][0] + m_Frustum[5][1] * m_Frustum[5][1] + m_Frustum[5][2] * m_Frustum[5][2] ));
+	m_Frustum[5][0] /= t;
+	m_Frustum[5][1] /= t;
+	m_Frustum[5][2] /= t;
+	m_Frustum[5][3] /= t;
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">This
+function is a beast! I'm sure you can see now why there are extensions
+that do this sort of thing! Although the math is really
+straightforward the shear length is what makes it nasty. In the above
+function there are 190 operations (multiplication's, additions,
+subtractions, divisions) plus 6 square roots. Since we will need to
+call this function every time we draw the scene it will be worth the
+effort to optimize it. Below is an optimized version of this function
+that has a couple of trade off's. As long as we do not rotate or
+translate the projection matrix the below function will work for
+getting the clipping planes for the viewing volume / frustum.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void glCamera::UpdateFrustumFaster()
+{
+	GLfloat   clip[16];
+	GLfloat   proj[16];
+	GLfloat   modl[16];
+	GLfloat   t;
+
+	<font class="theme">// Get The Current PROJECTION Matrix From OpenGL</font>
+	glGetFloatv( GL_PROJECTION_MATRIX, proj );
+
+	<font class="theme">// Get The Current MODELVIEW Matrix From OpenGL</font>
+	glGetFloatv( GL_MODELVIEW_MATRIX, modl );
+
+	<font class="theme">// Combine The Two Matrices (Multiply Projection By Modelview) </font>
+	<font class="theme">// But Keep In Mind This Function Will Only Work If You Do NOT</font>
+	<font class="theme">// Rotate Or Translate Your Projection Matrix</font>
+	clip[ 0] = modl[ 0] * proj[ 0];
+	clip[ 1] = modl[ 1] * proj[ 5];
+	clip[ 2] = modl[ 2] * proj[10] + modl[ 3] * proj[14];
+	clip[ 3] = modl[ 2] * proj[11];
+
+	clip[ 4] = modl[ 4] * proj[ 0];
+	clip[ 5] = modl[ 5] * proj[ 5];
+	clip[ 6] = modl[ 6] * proj[10] + modl[ 7] * proj[14];
+	clip[ 7] = modl[ 6] * proj[11];
+
+	clip[ 8] = modl[ 8] * proj[ 0];
+	clip[ 9] = modl[ 9] * proj[ 5];
+	clip[10] = modl[10] * proj[10] + modl[11] * proj[14];
+	clip[11] = modl[10] * proj[11];
+
+	clip[12] = modl[12] * proj[ 0];
+	clip[13] = modl[13] * proj[ 5];
+	clip[14] = modl[14] * proj[10] + modl[15] * proj[14];
+	clip[15] = modl[14] * proj[11];
+
+	<font class="theme">// Extract The Numbers For The RIGHT Plane</font>
+	m_Frustum[0][0] = clip[ 3] - clip[ 0];
+	m_Frustum[0][1] = clip[ 7] - clip[ 4];
+	m_Frustum[0][2] = clip[11] - clip[ 8];
+	m_Frustum[0][3] = clip[15] - clip[12];
+
+	<font class="theme">// Normalize The Result</font>
+	t = GLfloat(sqrt( m_Frustum[0][0] * m_Frustum[0][0] + m_Frustum[0][1] * m_Frustum[0][1] + m_Frustum[0][2] * m_Frustum[0][2] ));
+	m_Frustum[0][0] /= t;
+	m_Frustum[0][1] /= t;
+	m_Frustum[0][2] /= t;
+	m_Frustum[0][3] /= t;
+
+	<font class="theme">// Extract The Numbers For The LEFT Plane</font>
+	m_Frustum[1][0] = clip[ 3] + clip[ 0];
+	m_Frustum[1][1] = clip[ 7] + clip[ 4];
+	m_Frustum[1][2] = clip[11] + clip[ 8];
+	m_Frustum[1][3] = clip[15] + clip[12];
+
+	<font class="theme">// Normalize The Result</font>
+	t = GLfloat(sqrt( m_Frustum[1][0] * m_Frustum[1][0] + m_Frustum[1][1] * m_Frustum[1][1] + m_Frustum[1][2] * m_Frustum[1][2] ));
+	m_Frustum[1][0] /= t;
+	m_Frustum[1][1] /= t;
+	m_Frustum[1][2] /= t;
+	m_Frustum[1][3] /= t;
+
+	<font class="theme">// Extract The BOTTOM Plane</font>
+	m_Frustum[2][0] = clip[ 3] + clip[ 1];
+	m_Frustum[2][1] = clip[ 7] + clip[ 5];
+	m_Frustum[2][2] = clip[11] + clip[ 9];
+	m_Frustum[2][3] = clip[15] + clip[13];
+
+	<font class="theme">// Normalize The Result</font>
+	t = GLfloat(sqrt( m_Frustum[2][0] * m_Frustum[2][0] + m_Frustum[2][1] * m_Frustum[2][1] + m_Frustum[2][2] * m_Frustum[2][2] ));
+	m_Frustum[2][0] /= t;
+	m_Frustum[2][1] /= t;
+	m_Frustum[2][2] /= t;
+	m_Frustum[2][3] /= t;
+
+	<font class="theme">// Extract The TOP Plane</font>
+	m_Frustum[3][0] = clip[ 3] - clip[ 1];
+	m_Frustum[3][1] = clip[ 7] - clip[ 5];
+	m_Frustum[3][2] = clip[11] - clip[ 9];
+	m_Frustum[3][3] = clip[15] - clip[13];
+
+	<font class="theme">// Normalize The Result</font>
+	t = GLfloat(sqrt( m_Frustum[3][0] * m_Frustum[3][0] + m_Frustum[3][1] * m_Frustum[3][1] + m_Frustum[3][2] * m_Frustum[3][2] ));
+	m_Frustum[3][0] /= t;
+	m_Frustum[3][1] /= t;
+	m_Frustum[3][2] /= t;
+	m_Frustum[3][3] /= t;
+
+	<font class="theme">// Extract The FAR Plane</font>
+	m_Frustum[4][0] = clip[ 3] - clip[ 2];
+	m_Frustum[4][1] = clip[ 7] - clip[ 6];
+	m_Frustum[4][2] = clip[11] - clip[10];
+	m_Frustum[4][3] = clip[15] - clip[14];
+
+	<font class="theme">// Normalize The Result</font>
+	t = GLfloat(sqrt( m_Frustum[4][0] * m_Frustum[4][0] + m_Frustum[4][1] * m_Frustum[4][1] + m_Frustum[4][2] * m_Frustum[4][2] ));
+	m_Frustum[4][0] /= t;
+	m_Frustum[4][1] /= t;
+	m_Frustum[4][2] /= t;
+	m_Frustum[4][3] /= t;
+
+	<font class="theme">// Extract The NEAR Plane</font>
+	m_Frustum[5][0] = clip[ 3] + clip[ 2];
+	m_Frustum[5][1] = clip[ 7] + clip[ 6];
+	m_Frustum[5][2] = clip[11] + clip[10];
+	m_Frustum[5][3] = clip[15] + clip[14];
+
+	<font class="theme">// Normalize The Result</font>
+	t = GLfloat(sqrt( m_Frustum[5][0] * m_Frustum[5][0] + m_Frustum[5][1] * m_Frustum[5][1] + m_Frustum[5][2] * m_Frustum[5][2] ));
+	m_Frustum[5][0] /= t;
+	m_Frustum[5][1] /= t;
+	m_Frustum[5][2] /= t;
+	m_Frustum[5][3] /= t;
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">It's
+still a beast but this function has roughly half as many operations as
+the first function (102). The optimization is a simple one. I
+just took out all the multiplication's that are usually zeroed when
+combining the projection and modelview matrices. If you really want to
+optimize this function then use an extension in its place. The
+extension will do the same thing but will do it much faster because the
+calculation will more than likely take place in the video hardware.
+Anyway calling either of the UpdateFrustum functions every time we draw
+the scene is going to give us a performance hit but we will gain one
+nice advantage from it. We can now tell if the camera can see an object
+or point. If you have several different objects in your scene it will
+be to your benefit to only draw the ones that are currently in the
+viewing volume. This is useful when you have a lot of terrain to draw
+so you don't bog OpenGL down by sending it every single vertex. Below
+is a function that checks to see if a point is in the viewing volume.
+There is also a SphereInFrustum function in the class but I will not
+list it here because the two functions are almost identical.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>BOOL glCamera::PointInFrustum(glPoint p)
+{
+	int i;
+	<font class="theme">// The Idea Behind This Algorithum Is That If The Point</font>
+	<font class="theme">// Is Inside All 6 Clipping Planes Then It Is Inside Our</font>
+	<font class="theme">// Viewing Volume So We Can Return True.</font>
+	for(i = 0; i &lt; 6; i++)
+	{
+		if(m_Frustum[i][0] * p.x + m_Frustum[i][1] * p.y + m_Frustum[i][2] * p.z + m_Frustum[i][3] &lt;= 0)
+		{
+			return(FALSE);
+		}
+	}
+	return(TRUE);
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Now
+we will ask OGL to project some geometry for us using the gluProject
+function. Practically we ask OGL to guess where a point in space
+will be projected in our current viewport, using arbitrary viewport and
+transform matrices we pass to the function. If we pass to the
+function the current matrices (retrievede with the glGet funcs) we will
+have the real position on screen where the dot will be drawn.
+The interesting part is that we also get a Z value back, this means
+that reading the REAL buffer for Z values we can discover if the flare
+is in front or if it's occluded by some objects.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// ########## New Stuff by rIO.Spinning Kids ##########</font>
+bool glCamera::IsOccluded(glPoint p)
+{
+	GLint viewport[4];							<font class="theme">// Space For Viewport Data</font>
+	GLdouble mvmatrix[16], projmatrix[16];					<font class="theme">// Space For Transform Matrix</font>
+	GLdouble winx, winy, winz;						<font class="theme">// Space For Returned Projected Coords</font>
+	GLdouble flareZ;							<font class="theme">// Here We Will Store The Transformed Flare Z</font>
+	GLfloat bufferZ;							<font class="theme">// Here We Will Store The Read Z From The Buffer</font>
+
+	glGetIntegerv (GL_VIEWPORT, viewport);					<font class="theme">// Get Actual Viewport</font>
+	glGetDoublev (GL_MODELVIEW_MATRIX, mvmatrix);				<font class="theme">// Get Actual Model View Matrix</font>
+	glGetDoublev (GL_PROJECTION_MATRIX, projmatrix);			<font class="theme">// Get Actual Projection Matrix</font>
+
+	<font class="theme">// This Asks OGL To Guess The 2D Position Of A 3D Point Inside The Viewport</font>
+	gluProject(p.x, p.y, p.z, mvmatrix, projmatrix, viewport, &amp;winx, &amp;winy, &amp;winz);
+	flareZ = winz;
+
+	<font class="theme">// We Read Back One Pixel From The Depth Buffer (Exactly Where Our Flare Should Be Drawn)</font>
+	glReadPixels(winx, winy,1,1,GL_DEPTH_COMPONENT, GL_FLOAT, &amp;bufferZ);
+
+	<font class="theme">// If The Buffer Z Is Lower Than Our Flare Guessed Z Then Don't Draw</font>
+	<font class="theme">// This Means There Is Something In Front Of Our Flare</font>
+	if (bufferZ &lt; flareZ)
+		return true;
+	else
+		return false;
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Now
+we need to address another problem that we are going to have. Since we
+are creating 3D lens flares if we draw our flares on texture
+mapped quads they may not always be facing the camera. This is bad
+because our flares can appear flat if we are looking at the light
+source
+from the side. Instead of using texture mapped quads we could use point
+sprites. Point sprites are nice because instead of sending OpenGL
+four points with texture coordinates you only have to send a single
+point and you don't have to specify the texture coordinates. Point
+sprites are great for particle engines and they are equally great for
+lens flares. Since we only have to keep up with a single point the
+only thing we have to do is find out where we need to draw the points
+and call the appropriate drawing code. The disadvantage of point
+sprites is they are currently only implemented as an extension
+(GL_NV_point_sprite). To keep the tutorial so everyone can run it I
+will
+again be avoiding extensions here. One way we can make sure all our
+flares are always facing the camera is to simply reverse the rotations
+we used when setting our perspective. This works well but will break
+down if the camera ever gets behind the light source. To avoid this we
+are going to say the camera will never be allowed to get behind the
+light source by continually moving the light source as we move the
+camera. This will give us an extra side effect of making the light
+source appear infinitely far away and also allowing the flares to
+adjust
+a little when moving in a straight line. Enough talk below is the code
+for getting the necessary vectors and points.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	GLfloat Length = 0.0f;
+
+	<font class="theme">// Draw The Flare Only If The Light Source Is In Our Line Of Sight</font>
+	if(SphereInFrustum(m_LightSourcePos, 1.0f) == TRUE)
+	{
+		vLightSourceToCamera = m_Position - m_LightSourcePos;		<font class="theme">// Lets Compute The Vector That Points To</font>
+										<font class="theme">// The Camera From The Light Source.</font>
+
+		Length = vLightSourceToCamera.Magnitude();			<font class="theme">// Save The Length We Will Need It In A Minute</font>
+
+		ptIntersect = m_DirectionVector * Length;			<font class="theme">// Now Lets Find A Point Along The Cameras Direction</font>
+										<font class="theme">// Vector That We Can Use As An Intersection Point</font>
+										<font class="theme">// Lets Translate Down This Vector The Same Distance</font>
+										<font class="theme">// That The Camera Is. Away From The Light Source.</font>
+		ptIntersect += m_Position;
+
+		vLightSourceToIntersect = ptIntersect - m_LightSourcePos;	<font class="theme">// Lets Compute The Vector That Points To The Intersect</font>
+										<font class="theme">// Point From The Light Source</font>
+		Length = vLightSourceToIntersect.Magnitude();			<font class="theme">// Save The Length We Will Need It Later</font>
+		vLightSourceToIntersect.Normalize();				<font class="theme">// Normalize The Vector So Its Unit Length</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">First
+we need to find out the distance between the light source and the
+camera. Next we will need an intersection point along the cameras
+direction vector. The distance between the intersection point and the
+camera needs to be the same distance from the light source to camera.
+Now that we have the intersection point we can now find a vector to
+draw all the lens flares by. Below is a picture representing this.
+<br><br>
+<center><img src="lesson.asp-Dateien/illustration.jpg"></center><br>Now
+that we have a direction vector to draw the lens flares off of all that
+is left is to draw the halos and glows. Below is the code that
+draws the flares along the vector. We create a new point by moving x
+number of units down the vLightSourceToIntersect vector and then add
+that to the Light Sources Position.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		glDisable(GL_DEPTH_TEST);
+		glEnable(GL_TEXTURE_2D);
+
+		<font class="theme">// ########## New Stuff by rIO.Spinning Kids ##########</font>
+
+		if (!IsOccluded(m_LightSourcePos))				<font class="theme">// Check If The Center Of The Flare Is Occluded</font>
+		{
+			<font class="theme">// Render The Large Hazy Glow</font>
+			RenderBigGlow(0.60f, 0.60f, 0.8f, 1.0f, m_LightSourcePos, 16.0f);
+			<font class="theme">// Render The Streaks</font>
+			RenderStreaks(0.60f, 0.60f, 0.8f, 1.0f, m_LightSourcePos, 16.0f);
+			<font class="theme">// Render The Small Glow</font>
+			RenderGlow(0.8f, 0.8f, 1.0f, 0.5f, m_LightSourcePos, 3.5f);
+
+			pt = vLightSourceToIntersect * (Length * 0.1f);		<font class="theme">// Lets Compute A Point That Is 20%</font>
+			pt += m_LightSourcePos;					<font class="theme">// Away From The Light Source In The</font>
+										<font class="theme">// Direction Of The Intersection Point</font>
+		
+			RenderGlow(0.9f, 0.6f, 0.4f, 0.5f, pt, 0.6f);		<font class="theme">// Render The Small Glow</font>
+
+			pt = vLightSourceToIntersect * (Length * 0.15f);	<font class="theme">// Lets Compute A Point That Is 30%</font>
+			pt += m_LightSourcePos;					<font class="theme">// Away From The Light Source In The</font>
+										<font class="theme">// Direction Of The Intersection Point</font>
+		
+			RenderHalo(0.8f, 0.5f, 0.6f, 0.5f, pt, 1.7f);		<font class="theme">// Render The Halo</font>
+		
+			pt = vLightSourceToIntersect * (Length * 0.175f);	<font class="theme">// Lets Compute A Point That Is 35%</font>
+			pt += m_LightSourcePos;					<font class="theme">// Away From The Light Source In The</font>
+										<font class="theme">// Direction Of The Intersection Point</font>
+		
+			RenderHalo(0.9f, 0.2f, 0.1f, 0.5f, pt, 0.83f);		<font class="theme">// Render The Halo</font>
+
+			pt = vLightSourceToIntersect * (Length * 0.285f);	<font class="theme">// Lets Compute A Point That Is 57%</font>
+			pt += m_LightSourcePos;					<font class="theme">// Away From The Light Source In The</font>
+										<font class="theme">// Direction Of The Intersection Point</font>
+		
+			RenderHalo(0.7f, 0.7f, 0.4f, 0.5f, pt, 1.6f);		<font class="theme">// Render The Halo</font>
+		
+			pt = vLightSourceToIntersect * (Length * 0.2755f);	<font class="theme">// Lets Compute A Point That Is 55.1%</font>
+			pt += m_LightSourcePos;					<font class="theme">// Away From The Light Source In The</font>
+										<font class="theme">// Direction Of The Intersection Point</font>
+		
+			RenderGlow(0.9f, 0.9f, 0.2f, 0.5f, pt, 0.8f);		<font class="theme">// Render The Small Glow</font>
+
+			pt = vLightSourceToIntersect * (Length * 0.4775f);	<font class="theme">// Lets Compute A Point That Is 95.5%</font>
+			pt += m_LightSourcePos;					<font class="theme">// Away From The Light Source In The</font>
+										<font class="theme">// Direction Of The Intersection Point</font>
+		
+			RenderGlow(0.93f, 0.82f, 0.73f, 0.5f, pt, 1.0f);	<font class="theme">// Render The Small Glow</font>
+		
+			pt = vLightSourceToIntersect * (Length * 0.49f);	<font class="theme">// Lets Compute A Point That Is 98%</font>
+			pt += m_LightSourcePos;					<font class="theme">// Away From The Light Source In The</font>
+										<font class="theme">// Direction Of The Intersection Point</font>
+		
+			RenderHalo(0.7f, 0.6f, 0.5f, 0.5f, pt, 1.4f);		<font class="theme">// Render The Halo</font>
+
+			pt = vLightSourceToIntersect * (Length * 0.65f);	<font class="theme">// Lets Compute A Point That Is 130%</font>
+			pt += m_LightSourcePos;					<font class="theme">// Away From The Light Source In The</font>
+										<font class="theme">// Direction Of The Intersection Point</font>
+		
+			RenderGlow(0.7f, 0.8f, 0.3f, 0.5f, pt, 1.8f);		<font class="theme">// Render The Small Glow</font>
+		
+			pt = vLightSourceToIntersect * (Length * 0.63f);	<font class="theme">// Lets Compute A Point That Is 126%</font>
+			pt += m_LightSourcePos;					<font class="theme">// Away From The Light Source In The</font>
+										<font class="theme">// Direction Of The Intersection Point</font>
+		
+			RenderGlow(0.4f, 0.3f, 0.2f, 0.5f, pt, 1.4f);		<font class="theme">// Render The Small Glow</font>
+
+			pt = vLightSourceToIntersect * (Length * 0.8f);		<font class="theme">// Lets Compute A Point That Is 160%</font>
+			pt += m_LightSourcePos;					<font class="theme">// Away From The Light Source In The</font>
+										<font class="theme">// Direction Of The Intersection Point</font>
+		
+			RenderHalo(0.7f, 0.5f, 0.5f, 0.5f, pt, 1.4f);		<font class="theme">// Render The Halo</font>
+		
+			pt = vLightSourceToIntersect * (Length * 0.7825f);	<font class="theme">// Lets Compute A Point That Is 156.5%</font>
+			pt += m_LightSourcePos;					<font class="theme">// Away From The Light Source In The</font>
+										<font class="theme">// Direction Of The Intersection Point</font>
+		
+			RenderGlow(0.8f, 0.5f, 0.1f, 0.5f, pt, 0.6f);		<font class="theme">// Render The Small Glow</font>
+
+			pt = vLightSourceToIntersect * (Length * 1.0f);		<font class="theme">// Lets Compute A Point That Is 200%</font>
+			pt += m_LightSourcePos;					<font class="theme">// Away From The Light Source In The</font>
+										<font class="theme">// Direction Of The Intersection Point</font>
+		
+			RenderHalo(0.5f, 0.5f, 0.7f, 0.5f, pt, 1.7f);		<font class="theme">// Render The Halo</font>
+		
+			pt = vLightSourceToIntersect * (Length * 0.975f);	<font class="theme">// Lets Compute A Point That Is 195%</font>
+			pt += m_LightSourcePos;					<font class="theme">// Away From The Light Source In The</font>
+										<font class="theme">// Direction Of The Intersection Point</font>
+		
+			RenderGlow(0.4f, 0.1f, 0.9f, 0.5f, pt, 2.0f);		<font class="theme">// Render The Small Glow</font>
+		}
+
+		glDisable(GL_BLEND );
+		glEnable(GL_DEPTH_TEST);
+		glDisable(GL_TEXTURE_2D);
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Below
+are the RenderBigGlow, RenderStreaks, RenderGlow and RenderHalo
+functions. The functions are identical with the exception of the
+texture they are binding too.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void glCamera::RenderHalo(GLfloat r, GLfloat g, GLfloat b, GLfloat a, glPoint p, GLfloat scale)
+{
+	glPoint q[4];
+
+	<font class="theme">// Basically We Are Just Going To Make A 2D Box</font>
+	<font class="theme">// From Four Points We Don't Need A Z Coord Because</font>
+	<font class="theme">// We Are Rotating The Camera By The Inverse So The </font>
+	<font class="theme">// Texture Mapped Quads Will Always Face Us.</font>
+	q[0].x = (p.x - scale);							<font class="theme">// Set The x Coordinate -scale Units From The Center Point.</font>
+	q[0].y = (p.y - scale);							<font class="theme">// Set The y Coordinate -scale Units From The Center Point.</font>
+	q[1].x = (p.x - scale);							<font class="theme">// Set The x Coordinate -scale Units From The Center Point.</font>
+	q[1].y = (p.y + scale);							<font class="theme">// Set The y Coordinate scale Units From The Center Point.</font>
+	q[2].x = (p.x + scale);							<font class="theme">// Set The x Coordinate scale Units From The Center Point.</font>
+	q[2].y = (p.y - scale);							<font class="theme">// Set The y Coordinate -scale Units From The Center Point.</font>
+	q[3].x = (p.x + scale);							<font class="theme">// Set The x Coordinate scale Units From The Center Point.</font>
+	q[3].y = (p.y + scale);							<font class="theme">// Set The y Coordinate scale Units From The Center Point.</font>
+
+	glPushMatrix();								<font class="theme">// Save The Model View Matrix</font>
+	glTranslatef(p.x, p.y, p.z);						<font class="theme">// Translate To Our Point</font>
+	glRotatef(-m_HeadingDegrees, 0.0f, 1.0f, 0.0f);
+	glRotatef(-m_PitchDegrees, 1.0f, 0.0f, 0.0f);
+	glBindTexture(GL_TEXTURE_2D, m_HaloTexture);				<font class="theme">// Bind To The Big Glow Texture</font>
+	glColor4f(r, g, b, a);							<font class="theme">// Set The Color Since The Texture Is A Gray Scale</font>
+	glBegin(GL_TRIANGLE_STRIP);						<font class="theme">// Draw The Big Glow On A Triangle Strip</font>
+		glTexCoord2f(0.0f, 0.0f);					
+		glVertex2f(q[0].x, q[0].y);
+		glTexCoord2f(0.0f, 1.0f);
+		glVertex2f(q[1].x, q[1].y);
+		glTexCoord2f(1.0f, 0.0f);
+		glVertex2f(q[2].x, q[2].y);
+		glTexCoord2f(1.0f, 1.0f);
+		glVertex2f(q[3].x, q[3].y);
+	glEnd();										
+	glPopMatrix();								<font class="theme">// Restore The Model View Matrix</font>
+}
+
+void glCamera::RenderGlow(GLfloat r, GLfloat g, GLfloat b, GLfloat a, glPoint p, GLfloat scale)
+{
+	glPoint q[4];
+
+	<font class="theme">// Basically We Are Just Going To Make A 2D Box</font>
+	<font class="theme">// From Four Points We Don't Need A Z Coord Because</font>
+	<font class="theme">// We Are Rotating The Camera By The Inverse So The </font>
+	<font class="theme">// Texture Mapped Quads Will Always Face Us.</font>
+	q[0].x = (p.x - scale);							<font class="theme">// Set The x Coordinate -scale Units From The Center Point.</font>
+	q[0].y = (p.y - scale);							<font class="theme">// Set The y Coordinate -scale Units From The Center Point.</font>
+	q[1].x = (p.x - scale);							<font class="theme">// Set The x Coordinate -scale Units From The Center Point.</font>
+	q[1].y = (p.y + scale);							<font class="theme">// Set The y Coordinate scale Units From The Center Point.</font>
+	q[2].x = (p.x + scale);							<font class="theme">// Set The x Coordinate scale Units From The Center Point.</font>
+	q[2].y = (p.y - scale);							<font class="theme">// Set The y Coordinate -scale Units From The Center Point.</font>
+	q[3].x = (p.x + scale);							<font class="theme">// Set The x Coordinate scale Units From The Center Point.</font>
+	q[3].y = (p.y + scale);							<font class="theme">// Set The y Coordinate scale Units From The Center Point.</font>
+
+	glPushMatrix();								<font class="theme">// Save The Model View Matrix</font>
+	glTranslatef(p.x, p.y, p.z);						<font class="theme">// Translate To Our Point</font>
+	glRotatef(-m_HeadingDegrees, 0.0f, 1.0f, 0.0f);
+	glRotatef(-m_PitchDegrees, 1.0f, 0.0f, 0.0f);
+	glBindTexture(GL_TEXTURE_2D, m_GlowTexture);				<font class="theme">// Bind To The Big Glow Texture</font>
+	glColor4f(r, g, b, a);							<font class="theme">// Set The Color Since The Texture Is A Gray Scale</font>
+	glBegin(GL_TRIANGLE_STRIP);						<font class="theme">// Draw The Big Glow On A Triangle Strip</font>
+		glTexCoord2f(0.0f, 0.0f);					
+		glVertex2f(q[0].x, q[0].y);
+		glTexCoord2f(0.0f, 1.0f);
+		glVertex2f(q[1].x, q[1].y);
+		glTexCoord2f(1.0f, 0.0f);
+		glVertex2f(q[2].x, q[2].y);
+		glTexCoord2f(1.0f, 1.0f);
+		glVertex2f(q[3].x, q[3].y);
+	glEnd();										
+	glPopMatrix();								<font class="theme">// Restore The Model View Matrix</font>
+}
+
+void glCamera::RenderBigGlow(GLfloat r, GLfloat g, GLfloat b, GLfloat a, glPoint p, GLfloat scale)
+{
+	glPoint q[4];
+
+	<font class="theme">// Basically We Are Just Going To Make A 2D Box</font>
+	<font class="theme">// From Four Points We Don't Need A Z Coord Because</font>
+	<font class="theme">// We Are Rotating The Camera By The Inverse So The </font>
+	<font class="theme">// Texture Mapped Quads Will Always Face Us.</font>
+	q[0].x = (p.x - scale);							<font class="theme">// Set The x Coordinate -scale Units From The Center Point.</font>
+	q[0].y = (p.y - scale);							<font class="theme">// Set The y Coordinate -scale Units From The Center Point.</font>
+	q[1].x = (p.x - scale);							<font class="theme">// Set The x Coordinate -scale Units From The Center Point.</font>
+	q[1].y = (p.y + scale);							<font class="theme">// Set The y Coordinate scale Units From The Center Point.</font>
+	q[2].x = (p.x + scale);							<font class="theme">// Set The x Coordinate scale Units From The Center Point.</font>
+	q[2].y = (p.y - scale);							<font class="theme">// Set The y Coordinate -scale Units From The Center Point.</font>
+	q[3].x = (p.x + scale);							<font class="theme">// Set The x Coordinate scale Units From The Center Point.</font>
+	q[3].y = (p.y + scale);							<font class="theme">// Set The y Coordinate scale Units From The Center Point.</font>
+
+	glPushMatrix();								<font class="theme">// Save The Model View Matrix</font>
+	glTranslatef(p.x, p.y, p.z);						<font class="theme">// Translate To Our Point</font>
+	glRotatef(-m_HeadingDegrees, 0.0f, 1.0f, 0.0f);
+	glRotatef(-m_PitchDegrees, 1.0f, 0.0f, 0.0f);
+	glBindTexture(GL_TEXTURE_2D, m_BigGlowTexture);				<font class="theme">// Bind To The Big Glow Texture</font>
+	glColor4f(r, g, b, a);							<font class="theme">// Set The Color Since The Texture Is A Gray Scale</font>
+	glBegin(GL_TRIANGLE_STRIP);						<font class="theme">// Draw The Big Glow On A Triangle Strip</font>
+		glTexCoord2f(0.0f, 0.0f);					
+		glVertex2f(q[0].x, q[0].y);
+		glTexCoord2f(0.0f, 1.0f);
+		glVertex2f(q[1].x, q[1].y);
+		glTexCoord2f(1.0f, 0.0f);
+		glVertex2f(q[2].x, q[2].y);
+		glTexCoord2f(1.0f, 1.0f);
+		glVertex2f(q[3].x, q[3].y);
+	glEnd();										
+	glPopMatrix();								<font class="theme">// Restore The Model View Matrix</font>
+}
+
+void glCamera::RenderStreaks(GLfloat r, GLfloat g, GLfloat b, GLfloat a, glPoint p, GLfloat scale)
+{
+	glPoint q[4];
+
+	<font class="theme">// Basically We Are Just Going To Make A 2D Box</font>
+	<font class="theme">// From Four Points We Don't Need A Z Coord Because</font>
+	<font class="theme">// We Are Rotating The Camera By The Inverse So The </font>
+	<font class="theme">// Texture Mapped Quads Will Always Face Us.</font>
+	q[0].x = (p.x - scale);							<font class="theme">// Set The x Coordinate -scale Units From The Center Point.</font>
+	q[0].y = (p.y - scale);							<font class="theme">// Set The y Coordinate -scale Units From The Center Point.</font>
+	q[1].x = (p.x - scale);							<font class="theme">// Set The x Coordinate -scale Units From The Center Point.</font>
+	q[1].y = (p.y + scale);							<font class="theme">// Set The y Coordinate scale Units From The Center Point.</font>
+	q[2].x = (p.x + scale);							<font class="theme">// Set The x Coordinate scale Units From The Center Point.</font>
+	q[2].y = (p.y - scale);							<font class="theme">// Set The y Coordinate -scale Units From The Center Point.</font>
+	q[3].x = (p.x + scale);							<font class="theme">// Set The x Coordinate scale Units From The Center Point.</font>
+	q[3].y = (p.y + scale);							<font class="theme">// Set The y Coordinate scale Units From The Center Point.</font>
+
+	glPushMatrix();								<font class="theme">// Save The Model View Matrix</font>
+	glTranslatef(p.x, p.y, p.z);						<font class="theme">// Translate To Our Point</font>
+	glRotatef(-m_HeadingDegrees, 0.0f, 1.0f, 0.0f);
+	glRotatef(-m_PitchDegrees, 1.0f, 0.0f, 0.0f);
+	glBindTexture(GL_TEXTURE_2D, m_StreakTexture);				<font class="theme">// Bind To The Big Glow Texture</font>
+	glColor4f(r, g, b, a);							<font class="theme">// Set The Color Since The Texture Is A Gray Scale</font>
+	glBegin(GL_TRIANGLE_STRIP);						<font class="theme">// Draw The Big Glow On A Triangle Strip</font>
+		glTexCoord2f(0.0f, 0.0f);					
+		glVertex2f(q[0].x, q[0].y);
+		glTexCoord2f(0.0f, 1.0f);
+		glVertex2f(q[1].x, q[1].y);
+		glTexCoord2f(1.0f, 0.0f);
+		glVertex2f(q[2].x, q[2].y);
+		glTexCoord2f(1.0f, 1.0f);
+		glVertex2f(q[3].x, q[3].y);
+	glEnd();										
+	glPopMatrix();								<font class="theme">// Restore The Model View Matrix</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">You
+can use the 'W', 'S', 'A', and 'D' keys to change the direction the
+camera is pointed in. The '1' and '2' keys will toggle information
+on / off. 'Z' gives the camera a constant forward velocity. 'C' gives
+the camera a constant backward velocity and 'X' will stop the
+camera from moving at all.
+<br><br>That is all for this tutorial. All questions, comments, and
+complaints are welcome. Just click on my name below to email me. Of
+course I'm
+not the first person to do lens flares and below are some links that I
+found helpful when writing this tutorial. Also before closing I need
+to send a thanks to Dave Steere, Cameron Tidwell, Bert Sammons, and
+Brannon Martindale for their feed back and helping me test out the code
+on different hardware. Thanks guys! Hope everyone enjoys the tutorial.
+<br><br>
+Other Resources:<br>
+<a href="http://www.gamedev.net/reference/articles/article874.asp" target="_blank">http://www.gamedev.net/reference/articles/article874.asp</a><br>
+<a href="http://www.gamedev.net/reference/articles/article813.asp" target="_blank">http://www.gamedev.net/reference/articles/article813.asp</a><br>
+<a href="http://www.opengl.org/developers/code/mjktips/lensflare/" target="_blank">http://www.opengl.org/developers/code/mjktips/lensflare/</a><br>
+<a href="http://www.markmorley.com/opengl/frustumculling.html" target="_blank">http://www.markmorley.com/opengl/frustumculling.html</a><br>
+<a href="http://oss.sgi.com/projects/ogl-sample/registry/HP/occlusion_test.txt" target="_blank">http://oss.sgi.com/projects/ogl-sample/registry/HP/occlusion_test.txt</a><br>
+<a href="http://oss.sgi.com/projects/ogl-sample/registry/NV/occlusion_query.txt" target="_blank">http://oss.sgi.com/projects/ogl-sample/registry/NV/occlusion_query.txt</a>
+<br><br>
+- Cheers
+<br><br>
+<b><a href="mailto:vichollis@comcast.netVic">Vic Hollis</a></b>
+<br><br>
+<b><u>NOTES from Dario Corno a.k.a. rIO of Spinning Kids:</u></b>
+<br><br>I've added some test to check for occluders objects in front of
+the lens flare. This way the flare will be switched off when an object
+is
+in front of it.
+<br><br>The new code should be well commented, and it is all marked
+with the # NEW STUFF # string, so if you want to check it out just do a
+search
+for "NEW STUFF" in the program.
+<br><br>
+The modifications are:
+<ul>
+<li>A new function in glCamera class, called IsOccluded, returning a boolean if the parameter point is behind an object</li>
+<li>Some new variables to hold the gluCylinder (used as occluder)</li>
+<li>Some new drawing code in glDraw to draw the occluder object</li>
+<li>Some new unloading code to release the quadric for the cylinder</li>
+</ul>
+That's all, hope you find the modified version interesting!
+<br><br>
+P.S: Left as an home exercise... Would be good to test more than one point near the flare position, to make it fade instead
+of just disappearing.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vc/lesson44.zip">Visual C++</a> Code For This Lesson.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/bcb6/lesson44_bcb6.zip">Borland C++ Builder 6</a> Code For This Lesson. ( Conversion by <a href="mailto:conglth@hotmail.com">Le Thanh Cong</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/delphi/lesson44.zip">Delphi</a> Code For This Lesson. ( Conversion by <a href="mailto:michal_praha@seznam.cz">Michal Tucek</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/devc/lesson44.zip">Dev C++</a> Code For This Lesson. ( Conversion by <a href="mailto:michael@mudsplat.com">Michael Small</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cwarrior/lesson44.zip">Code Warrior 5.3</a> Code For This Lesson. ( Conversion by <a href="mailto:DelusionalBeing@hotmail.com">Scott Lupton</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/python/lesson44.tar.gz">Python</a> Code For This Lesson. ( Conversion by <a href="mailto:bleair@comcast.net">Brian Leair</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vs_net/lesson44.zip">Visual Studio .NET</a> Code For This Lesson. ( Conversion by <a href="mailto:webmaster@joachimrohde.de">Joachim Rohde</a> )<br>
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/extras/lesson44/lesson44_with_extensions.zip">Lesson 44 - With Extension Support</a> (VC++).<br>
+<br><br>
+<table border="0" width="100%">
+<tbody><tr><td align="left" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=43">&lt; Lesson 43</a></font></b></td>
+<td align="right" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=45">Lesson 45 &gt;</a></font></b></td>
+</tr></tbody></table>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table>
+
+</body></html>

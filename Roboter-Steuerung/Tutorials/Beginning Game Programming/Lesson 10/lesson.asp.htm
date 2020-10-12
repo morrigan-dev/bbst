@@ -1,0 +1,385 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+<title>NeHe Productions: OpenGL Lesson #10</title>
+<meta name="author" content="Jeff Molofee">
+<meta name="description" content="OpenGL Tutorials, Demos, Games and More...">
+<meta name="keywords" content="opengl, tutorial, article, demo, game, blend, texturemap, lighting, contest, 3D">
+<link rel="stylesheet" type="text/css" href="lesson.asp-Dateien/rgb.css">
+</head><body bgcolor="black" link="#aaccff" text="white" vlink="#aaccff">
+
+<table border="0" width="100%"><tbody><tr><td align="center">
+<!-- Begin -  Site: GameDev.net Zone: NeHe 728x90 -->
+<script language="javascript" type="text/javascript">
+<!--
+var browName = navigator.appName;
+var SiteID = 1;
+var ZoneID = 4;
+var browDateTime = (new Date()).getTime();
+if (browName=='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;Browser=NETSCAPE4&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+if (browName!='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+// --> 
+</script><script language="javascript" src="lesson.asp-Dateien/a.js"></script><script language="JavaScript">
+var ShockMode = 0;
+if (navigator.mimeTypes && navigator.mimeTypes["application/x-shockwave-flash"] && navigator.mimeTypes["application/x-shockwave-flash"].enabledPlugin) {
+if (navigator.plugins && navigator.plugins["Shockwave Flash"])
+ShockMode = 1;
+}
+else if (navigator.userAgent && navigator.userAgent.indexOf("MSIE")>=0 
+&& (navigator.userAgent.indexOf("Windows 9")>=0 || navigator.userAgent.indexOf("Windows NT")>=0)) {
+document.write('<SCRIPT LANGUAGE=VBScript\> \n');
+document.write('on error resume next \n');
+document.write('ShockMode = (IsObject(CreateObject("ShockwaveFlash.ShockwaveFlash.4"))) ');
+document.write('<\/SCRIPT\> ');
+}
+if ( ShockMode ) {
+document.write('<OBJECT classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"');
+document.write(' codebase="http://active.macromedia.com/flash2/cabs/swflash.cab#version=4,0,0,0"');
+document.write(' ID=banner WIDTH="728" HEIGHT="90" >');
+document.write(' <PARAM NAME=movie VALUE="http://members.gamedev.net/dave/ads/Intel/728x90GameDev_dirt2_Traffic-Driver.swf?url=http%3a%2f%2fwww.gamedev.net%2fbanman%2fa.aspx%3fTask%3dClick%26ZoneID%3d4%26CampaignID%3d715%26AdvertiserID%3d119%26BannerID%3d771%26SiteID%3d1%26RandomNumber%3d371733931%26Keywords%3d"> ');
+document.write(' <param name="wmode" value="transparent"> ');
+document.write(' <PARAM NAME=quality VALUE=autohigh> ');
+document.write('<EMBED SRC="http://members.gamedev.net/dave/ads/Intel/728x90GameDev_dirt2_Traffic-Driver.swf?url=http%3a%2f%2fwww.gamedev.net%2fbanman%2fa.aspx%3fTask%3dClick%26ZoneID%3d4%26CampaignID%3d715%26AdvertiserID%3d119%26BannerID%3d771%26SiteID%3d1%26RandomNumber%3d371733931%26Keywords%3d"');
+document.write(' swLiveConnect=FALSE WIDTH="728" HEIGHT="90"');
+document.write(' QUALITY=autohigh wmode="transparent"');
+document.write(' TYPE="application/x-shockwave-flash" PLUGINSPAGE="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash">');
+document.write('</EMBED>');
+document.write('</OBJECT>');
+} else if (!(navigator.appName && navigator.appName.indexOf("Netscape")>=0 && navigator.appVersion.indexOf("2.")>=0)){
+document.write('<A HREF="http://www.gamedev.net/banman/a.aspx?Task=Click&ZoneID=4&CampaignID=715&AdvertiserID=119&BannerID=771&SiteID=1&RandomNumber=371733931&Keywords=" TARGET="_top"><IMG SRC="http://members.gamedev.net/dave/ads/Intel/728x90GameDev_dirt2_Traffic-Driver_Backup.gif" WIDTH="728" HEIGHT="90" BORDER="0"></A>');
+}
+</script><object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://active.macromedia.com/flash2/cabs/swflash.cab#version=4,0,0,0" id="banner" height="90" width="728"> <param name="movie" value="http://members.gamedev.net/dave/ads/Intel/728x90GameDev_dirt2_Traffic-Driver.swf?url=http%3a%2f%2fwww.gamedev.net%2fbanman%2fa.aspx%3fTask%3dClick%26ZoneID%3d4%26CampaignID%3d715%26AdvertiserID%3d119%26BannerID%3d771%26SiteID%3d1%26RandomNumber%3d371733931%26Keywords%3d">  <param name="wmode" value="transparent">  <param name="quality" value="autohigh"> <embed src="lesson.asp-Dateien/728x90GameDev_dirt2_Traffic-Driver.swf" swliveconnect="FALSE" quality="autohigh" wmode="transparent" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" height="90" width="728"><a class="prnedhmidpgwpzjxwowq" href="http://members.gamedev.net/dave/ads/Intel/728x90GameDev_dirt2_Traffic-Driver.swf?url=http%3a%2f%2fwww.gamedev.net%2fbanman%2fa.aspx%3fTask%3dClick%26ZoneID%3d4%26CampaignID%3d715%26AdvertiserID%3d119%26BannerID%3d771%26SiteID%3d1%26RandomNumber%3d371733931%26Keywords%3d"></a><a class="prnedhmidpgwpzjxwowq" href="http://members.gamedev.net/dave/ads/Intel/728x90GameDev_dirt2_Traffic-Driver.swf?url=http%3a%2f%2fwww.gamedev.net%2fbanman%2fa.aspx%3fTask%3dClick%26ZoneID%3d4%26CampaignID%3d715%26AdvertiserID%3d119%26BannerID%3d771%26SiteID%3d1%26RandomNumber%3d371733931%26Keywords%3d"></a></object>
+<noembed>&lt;A
+HREF="http://www.gamedev.net/banman/a.aspx?Task=Click&amp;ZoneID=4&amp;CampaignID=715&amp;AdvertiserID=119&amp;BannerID=771&amp;SiteID=1&amp;RandomNumber=371733931&amp;Keywords="
+TARGET="_top"&gt;&lt;IMG
+SRC="http://members.gamedev.net/dave/ads/Intel/728x90GameDev_dirt2_Traffic-Driver_Backup.gif"
+WIDTH="728" HEIGHT="90" BORDER="0"&gt;&lt;/A&gt;</noembed>
+<noscript><A
+HREF="http://www.gamedev.net/banman/a.aspx?Task=Click&ZoneID=4&CampaignID=715&AdvertiserID=119&BannerID=771&SiteID=1&RandomNumber=371733931&Keywords="
+TARGET="_top"><IMG
+SRC="http://members.gamedev.net/dave/ads/Intel/728x90GameDev_dirt2_Traffic-Driver_Backup.gif"
+WIDTH="728" HEIGHT="90" BORDER="0"></A></noscript>
+
+<noscript> <a
+href="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Click&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+target="_blank"> <img
+src="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Get&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+width="728" height="90" border="0" alt=""></a>
+</noscript>
+<!-- End -  Site: GameDev.net Zone: NeHe 728x90 --></td></tr></tbody></table><br>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tinylogo" height="130" width="326"><img src="lesson.asp-Dateien/blank.gif" alt="NeHe Productions" height="130" width="326"></td><td class="indexheading" align="center" valign="middle"><font class="text"><font class="theme" size="+3"><b><i>Lesson: 10</i></b></font></font></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">This tutorial was created by Lionel Brits (�etelgeuse).  This lesson only explains the sections of code that have been
+added.  By adding just the lines below, the program will not run.  If you're interested to know where each of the lines
+of code below go, download the source code, and follow through it, as you read the tutorial.
+<br><br>
+Welcome to the infamous Tutorial 10. By now you have a spinning cube or a couple of stars, and you have the
+basic <em>feel for 3D programming. But wait! Don't run off and start to code Quake IV just yet.
+Spinning cubes just aren't going to make cool deathmatch opponents :-) These days you need a large,
+complicated and dynamic 3D world with 6 degrees of freedom and fancy effects like mirrors, portals, warping
+and of course, high framerates. This tutorial explains the basic "structure" of a 3D world, and
+also how to move around in it.
+<br><br>
+<b><u>Data structure</u></b>
+<br><br>
+While it is perfectly alright to code a 3D environment as a long series of numbers, it becomes increasingly
+hard as the complexity of the environment goes up. For this reason, we must catagorize our data into a more
+workable fashion. At the top of our list is the sector. Each 3D world is basically a collection of sectors.
+A sector can be a room, a cube, or any enclosed volume.
+</em></font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>typedef struct tagSECTOR						<font class="theme">// Build Our Sector Structure</font>
+{
+	int numtriangles;						<font class="theme">// Number Of Triangles In Sector</font>
+	TRIANGLE* triangle;						<font class="theme">// Pointer To Array Of Triangles</font>
+} SECTOR;								<font class="theme">// Call It SECTOR</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+A sector holds a series of polygons, so the next catagory will be the triangle (we will stick to triangles
+for now, as they are alot easier to code.)
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>typedef struct tagTRIANGLE						<font class="theme">// Build Our Triangle Structure</font>
+{
+	VERTEX vertex[3];						<font class="theme">// Array Of Three Vertices</font>
+} TRIANGLE;								<font class="theme">// Call It TRIANGLE</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The triangle is basically a polygon made up of vertices (plural of vertex), which brings us to our
+last catagory. The vertex holds the real data that OpenGL is interested in.  We define each point on the
+triangle with it's position in 3D space (x, y, z) as well as it's texture coordinates (u, v).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>typedef struct tagVERTEX						<font class="theme">// Build Our Vertex Structure</font>
+{
+	float x, y, z;							<font class="theme">// 3D Coordinates</font>
+	float u, v;							<font class="theme">// Texture Coordinates</font>
+} VERTEX;								<font class="theme">// Call It VERTEX</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+<b><u>Loading files</u></b>
+<br><br>
+Storing our world data inside our program makes our program quite static and boring.  Loading worlds
+from disk, however, gives us much more flexibility as we can test different worlds without having to
+recompile our program. Another advantage is that the user can interchange worlds and modify them without
+having to know the in's and out's of our program. The type of data file we are going to be using will be
+text. This makes for easy editing, and less code. We will leave binary files for a later date.
+<br><br>
+The question is, how do we get our data from our file. First, we create a new function called
+SetupWorld(). We define our file as filein, and we open it for read-only access. We must
+also close our file when we are done. Let us take a look at the code so far:
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// Previous Declaration: char* worldfile = "data\\world.txt";</font>
+void SetupWorld()							<font class="theme">// Setup Our World</font>
+{
+	FILE *filein;							<font class="theme">// File To Work With</font>
+	filein = fopen(worldfile, "rt");				<font class="theme">// Open Our File</font>
+
+	...
+	(read our data)
+	...
+
+	fclose(filein);							<font class="theme">// Close Our File</font>
+	return;								<font class="theme">// Jump Back</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Our next challenge is to read each individual line of text into a variable. This can be done in a number of
+ways. One problem is that not all lines in the file will contain meaningful information. Blank lines and
+comments shouldn't be read. Let us create a function called readstr(). This function will read one
+meaningful line of text into an initialised string. Here's the code:
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void readstr(FILE *f,char *string)					<font class="theme">// Read In A String</font>
+
+{
+	do								<font class="theme">// Start A Loop</font>
+	{
+		fgets(string, 255, f);					<font class="theme">// Read One Line</font>
+	} while ((string[0] == '/') || (string[0] == '\n'));		<font class="theme">// See If It Is Worthy Of Processing</font>
+	return;								<font class="theme">// Jump Back</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Next, we must read in the sector data. This lesson will deal with one sector only, but it is easy to
+implement a multi-sector engine. Let us turn back to SetupWorld().Our program must know how many
+triangles are in our sector. In our data file, we will define the number of triangles as follows:
+<br><br>
+<b>NUMPOLLIES n</b>
+<br><br>
+Here's the code to read the number of triangles:
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int numtriangles;							<font class="theme">// Number Of Triangles In Sector</font>
+char oneline[255];							<font class="theme">// String To Store Data In</font>
+...
+readstr(filein,oneline);						<font class="theme">// Get Single Line Of Data</font>
+sscanf(oneline, "NUMPOLLIES %d\n", &amp;numtriangles);			<font class="theme">// Read In Number Of Triangles</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The rest of our world-loading process will use the same process. Next, we initialize our sector and read
+some data into it:
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// Previous Declaration: SECTOR sector1;</font>
+char oneline[255];							<font class="theme">// String To Store Data In</font>
+int numtriangles;							<font class="theme">// Number Of Triangles In Sector</font>
+float x, y, z, u, v;							<font class="theme">// 3D And Texture Coordinates</font>
+...
+sector1.triangle = new TRIANGLE[numtriangles];				<font class="theme">// Allocate Memory For numtriangles And Set Pointer</font>
+sector1.numtriangles = numtriangles;					<font class="theme">// Define The Number Of Triangles In Sector 1</font>
+<font class="theme">// Step Through Each Triangle In Sector</font>
+for (int triloop = 0; triloop &lt; numtriangles; triloop++)		<font class="theme">// Loop Through All The Triangles</font>
+{
+	<font class="theme">// Step Through Each Vertex In Triangle</font>
+	for (int vertloop = 0; vertloop &lt; 3; vertloop++)		<font class="theme">// Loop Through All The Vertices</font>
+	{
+		readstr(filein,oneline);				<font class="theme">// Read String To Work With</font>
+		<font class="theme">// Read Data Into Respective Vertex Values</font>
+		sscanf(oneline, "%f %f %f %f %f", &amp;x, &amp;y, &amp;z, &amp;u, &amp;v);
+		<font class="theme">// Store Values Into Respective Vertices</font>
+		sector1.triangle[triloop].vertex[vertloop].x = x;	<font class="theme">// Sector 1, Triangle triloop, Vertice vertloop, x Value=x</font>
+		sector1.triangle[triloop].vertex[vertloop].y = y;	<font class="theme">// Sector 1, Triangle triloop, Vertice vertloop, y Value=y</font>
+		sector1.triangle[triloop].vertex[vertloop].z = z;	<font class="theme">// Sector 1, Triangle triloop, Vertice vertloop, z Value=z</font>
+		sector1.triangle[triloop].vertex[vertloop].u = u;	<font class="theme">// Sector 1, Triangle triloop, Vertice vertloop, u Value=u</font>
+		sector1.triangle[triloop].vertex[vertloop].v = v;	<font class="theme">// Sector 1, Triangle triloop, Vertice vertloop, v Value=v</font>
+	}
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Each triangle in our data file is declared as follows:
+<font size="+1"><pre>X1 Y1 Z1 U1 V1
+X2 Y2 Z2 U2 V2
+X3 Y3 Z3 U3 V3
+</pre></font>
+<b><u>Displaying Worlds</u></b>
+<br><br>
+Now that we can load our sector into memory, we need to display it on screen. So far we have done some
+minor rotations and translations, but our camera was always centered at the origin (0,0,0). Any good 3D
+engine would have the user be able to walk around and explore the world, and so will ours. One way of doing
+this is to move the camera around and draw the 3D environment relative to the camera position. This is slow
+and hard to code. What we will do is this: 
+<ol>
+  <li>Rotate and translate the camera position according to user commands</li>
+  <li>Rotate the world around the origin in the opposite direction of the camera rotation
+    (giving the illusion that the camera has been rotated)</li>
+  <li>Translate the world in the opposite manner that the camera has been translated (again,
+    giving the illusion that the camera has moved)</li>
+</ol>
+This is pretty simple to implement. Let's start with the first stage (Rotation and translation of
+the camera).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>if (keys[VK_RIGHT])							<font class="theme">// Is The Right Arrow Being Pressed?</font>
+{
+	yrot -= 1.5f;							<font class="theme">// Rotate The Scene To The Left</font>
+}
+
+if (keys[VK_LEFT])							<font class="theme">// Is The Left Arrow Being Pressed?</font>
+{
+	yrot += 1.5f;							<font class="theme">// Rotate The Scene To The Right	</font>
+}
+
+if (keys[VK_UP])							<font class="theme">// Is The Up Arrow Being Pressed?</font>
+{
+	xpos -= (float)sin(heading*piover180) * 0.05f;			<font class="theme">// Move On The X-Plane Based On Player Direction</font>
+	zpos -= (float)cos(heading*piover180) * 0.05f;			<font class="theme">// Move On The Z-Plane Based On Player Direction</font>
+	if (walkbiasangle &gt;= 359.0f)					<font class="theme">// Is walkbiasangle&gt;=359?</font>
+	{
+		walkbiasangle = 0.0f;					<font class="theme">// Make walkbiasangle Equal 0</font>
+	}
+	else								<font class="theme">// Otherwise</font>
+	{
+		 walkbiasangle+= 10;					<font class="theme">// If walkbiasangle &lt; 359 Increase It By 10</font>
+	}
+	walkbias = (float)sin(walkbiasangle * piover180)/20.0f;		<font class="theme">// Causes The Player To Bounce</font>
+}
+
+if (keys[VK_DOWN])							<font class="theme">// Is The Down Arrow Being Pressed?</font>
+{
+	xpos += (float)sin(heading*piover180) * 0.05f;			<font class="theme">// Move On The X-Plane Based On Player Direction</font>
+	zpos += (float)cos(heading*piover180) * 0.05f;			<font class="theme">// Move On The Z-Plane Based On Player Direction</font>
+	if (walkbiasangle &lt;= 1.0f)					<font class="theme">// Is walkbiasangle&lt;=1?</font>
+	{
+		walkbiasangle = 359.0f;					<font class="theme">// Make walkbiasangle Equal 359</font>
+	}
+	else								<font class="theme">// Otherwise</font>
+	{
+		walkbiasangle-= 10;					<font class="theme">// If walkbiasangle &gt; 1 Decrease It By 10</font>
+	}
+	walkbias = (float)sin(walkbiasangle * piover180)/20.0f;		<font class="theme">// Causes The Player To Bounce</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+That was fairly simple. When either the left or right cursor key is pressed, the rotation variable
+yrot is incremented or decremented appropriatly. When the forward or backwards cursor key is
+pressed, a new location for the camera is calculated using the sine and cosine calculations (some
+trigonometry required :-). Piover180 is simply a conversion factor for converting between degrees
+and radians.
+<br><br>
+Next you ask me: What is this walkbias? It's a word I invented :-) It's basically an offset that occurs
+when a person walks around (head bobbing up and down like a buoy. It simply adjusts the camera's Y position
+with a sine wave. I had to put this in, as simply moving forwards and backwards didn't look to great.
+<br><br>
+Now that we have these variables down, we can proceed with steps two and three. This will be done in the
+display loop, as our program isn't complicated enough to merit a seperate function.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int DrawGLScene(GLvoid)							<font class="theme">// Draw The OpenGL Scene</font>
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		<font class="theme">// Clear Screen And Depth Buffer</font>
+	glLoadIdentity();						<font class="theme">// Reset The Current Matrix</font>
+	GLfloat x_m, y_m, z_m, u_m, v_m;				<font class="theme">// Floating Point For Temp X, Y, Z, U And V Vertices</font>
+	GLfloat xtrans = -xpos;						<font class="theme">// Used For Player Translation On The X Axis</font>
+	GLfloat ztrans = -zpos;						<font class="theme">// Used For Player Translation On The Z Axis</font>
+	GLfloat ytrans = -walkbias-0.25f;				<font class="theme">// Used For Bouncing Motion Up And Down</font>
+	GLfloat sceneroty = 360.0f - yrot;				<font class="theme">// 360 Degree Angle For Player Direction</font>
+
+	int numtriangles;						<font class="theme">// Integer To Hold The Number Of Triangles</font>
+
+	glRotatef(lookupdown,1.0f,0,0);					<font class="theme">// Rotate Up And Down To Look Up And Down</font>
+	glRotatef(sceneroty,0,1.0f,0);					<font class="theme">// Rotate Depending On Direction Player Is Facing</font>
+	
+	glTranslatef(xtrans, ytrans, ztrans);				<font class="theme">// Translate The Scene Based On Player Position</font>
+	glBindTexture(GL_TEXTURE_2D, texture[filter]);			<font class="theme">// Select A Texture Based On filter</font>
+	
+	numtriangles = sector1.numtriangles;				<font class="theme">// Get The Number Of Triangles In Sector 1</font>
+	
+	<font class="theme">// Process Each Triangle</font>
+	for (int loop_m = 0; loop_m &lt; numtriangles; loop_m++)		<font class="theme">// Loop Through All The Triangles</font>
+	{
+		glBegin(GL_TRIANGLES);					<font class="theme">// Start Drawing Triangles</font>
+			glNormal3f( 0.0f, 0.0f, 1.0f);			<font class="theme">// Normal Pointing Forward</font>
+			x_m = sector1.triangle[loop_m].vertex[0].x;	<font class="theme">// X Vertex Of 1st Point</font>
+			y_m = sector1.triangle[loop_m].vertex[0].y;	<font class="theme">// Y Vertex Of 1st Point</font>
+			z_m = sector1.triangle[loop_m].vertex[0].z;	<font class="theme">// Z Vertex Of 1st Point</font>
+			u_m = sector1.triangle[loop_m].vertex[0].u;	<font class="theme">// U Texture Coord Of 1st Point</font>
+			v_m = sector1.triangle[loop_m].vertex[0].v;	<font class="theme">// V Texture Coord Of 1st Point</font>
+			glTexCoord2f(u_m,v_m); glVertex3f(x_m,y_m,z_m);	<font class="theme">// Set The TexCoord And Vertice</font>
+			
+			x_m = sector1.triangle[loop_m].vertex[1].x;	<font class="theme">// X Vertex Of 2nd Point</font>
+			y_m = sector1.triangle[loop_m].vertex[1].y;	<font class="theme">// Y Vertex Of 2nd Point</font>
+			z_m = sector1.triangle[loop_m].vertex[1].z;	<font class="theme">// Z Vertex Of 2nd Point</font>
+			u_m = sector1.triangle[loop_m].vertex[1].u;	<font class="theme">// U Texture Coord Of 2nd Point</font>
+			v_m = sector1.triangle[loop_m].vertex[1].v;	<font class="theme">// V Texture Coord Of 2nd Point</font>
+			glTexCoord2f(u_m,v_m); glVertex3f(x_m,y_m,z_m);	<font class="theme">// Set The TexCoord And Vertice</font>
+			
+			x_m = sector1.triangle[loop_m].vertex[2].x;	<font class="theme">// X Vertex Of 3rd Point</font>
+			y_m = sector1.triangle[loop_m].vertex[2].y;	<font class="theme">// Y Vertex Of 3rd Point</font>
+			z_m = sector1.triangle[loop_m].vertex[2].z;	<font class="theme">// Z Vertex Of 3rd Point</font>
+			u_m = sector1.triangle[loop_m].vertex[2].u;	<font class="theme">// U Texture Coord Of 3rd Point</font>
+			v_m = sector1.triangle[loop_m].vertex[2].v;	<font class="theme">// V Texture Coord Of 3rd Point</font>
+			glTexCoord2f(u_m,v_m); glVertex3f(x_m,y_m,z_m);	<font class="theme">// Set The TexCoord And Vertice</font>
+		glEnd();						<font class="theme">// Done Drawing Triangles</font>
+	}
+	return TRUE;							<font class="theme">// Jump Back</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+And voila! We have drawn our first frame. This isn't exactly Quake but hey, we aren't exactly Carmack's or
+Abrash's. While running the program, you may want to press F, B, PgUp and PgDown to see added effects.
+PgUp/Down simply tilts the camera up and down (the same process as panning from side to side.) The texture
+included is simply a mud texture with a bumpmap of my school ID picture; that is, if NeHe decided to keep
+it :-).
+<br><br>
+So now you're probably thinking where to go next. Don't even consider using this code to make a full-blown
+3D engine, since that's not what it's designed for. You'll probably want more than one sector in your game,
+especially if you're going to implement portals. You'll also want to have polygons with more than 3
+vertices, again, essential for portal engines.  My current implementation of this code allows for multiple
+sector loading and does backface culling (not drawing polygons that face away from the camera). I'll write
+a tutorial on that soon, but as it uses alot of math, I'm going to write a tutorial on matrices first.
+<br><br>
+<b><u>NeHe (05/01/00):</u></b>
+<br><br>
+I've added FULL comments to each of the lines listed in this tutorial.  Hopefully things make more sense
+now.  Only a few of the lines had comments after them, now they all do :)
+<br><br>
+Please, if you have any problems with the code/tutorial (this is my first tutorial, so my explanations are
+a little vague), don't hesitate to email me <a href="mailto:iam@cadvision.com">(iam@cadvision.com)</a>
+Until next time...
+<br><br>
+<b>Lionel Brits</b> (<b>�etelgeuse</b>)
+<br><br>
+<b>Jeff Molofee</b> (<b>NeHe</b>)
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vc/lesson10.zip">Visual C++</a> Code For This Lesson.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/bcb6/lesson10_bcb6.zip">Borland C++ Builder 6</a> Code For This Lesson. ( Conversion by <a href="mailto:christian@tugzip.com">Christian Kindahl</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/c_sharp/lesson10.zip">C#</a> Code For This Lesson. ( Conversion by <a href="mailto:bholley@unlnotes.unl.edu">Brian Holley</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cwarrior/lesson10.zip">Code Warrior 5.3</a> Code For This Lesson. ( Conversion by <a href="mailto:DelusionalBeing@hotmail.com">Scott Lupton</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cygwin/lesson10.tar.gz">Cygwin</a> Code For This Lesson. ( Conversion by <a href="mailto:stephan@lazyfellow.com">Stephan Ferraro</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/d/lesson10.zip">D Language</a> Code For This Lesson. ( Conversion by <a href="mailto:gpineda2013@yahoo.com.mx">Familia Pineda Garcia</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/delphi/lesson10.zip">Delphi</a> Code For This Lesson. ( Conversion by <a href="mailto:michal_praha@seznam.cz">Michal Tucek</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/devc/lesson10.zip">Dev C++</a> Code For This Lesson. ( Conversion by <a href="mailto:danprogram@hotmail.com">Dan</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/euphoria/lesson10.zip">Euphoria</a> Code For This Lesson. ( Conversion by <a href="mailto:1evan@sbcglobal.net">Evan Marshall</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/gameglut/lesson10.zip">Game GLUT</a> Code For This Lesson. ( Conversion by <a href="mailto:milix_gr@hotmail.com">Milikas Anastasios</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/irix/lesson10.zip">Irix</a> Code For This Lesson. ( Conversion by <a href="mailto:rpf1@york.ac.uk">Rob Fletcher</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/java/lesson10.zip">Java</a> Code For This Lesson. ( Conversion by <a href="mailto:jeff@consunet.com.au">Jeff Kirby</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/jedisdl/lesson10.zip">Jedi-SDL</a> Code For This Lesson. ( Conversion by <a href="mailto:Dominique@SavageSoftware.com.au">Dominique Louis</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/jogl/lesson10.jar">JoGL</a> Code For This Lesson. ( Conversion by <a href="mailto:ncb000gt65@hotmail.com">Nicholas Campbell</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/lccwin32/lccwin32_lesson10.zip">LCC Win32</a> Code For This Lesson. ( Conversion by <a href="mailto:rwishlaw@shaw.ca">Robert Wishlaw</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linux/lesson10.tar.gz">Linux</a> Code For This Lesson. ( Conversion by <a href="mailto:ulmont@bellsouth.net">Richard Campbell</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxglx/lesson10.tar.gz">Linux/GLX</a> Code For This Lesson. ( Conversion by <a href="mailto:Mihael.Vrbanec@stud.uni-karlsruhe.de">Mihael Vrbanec</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxsdl/lesson10.tar.gz">Linux/SDL</a> Code For This Lesson. ( Conversion by <a href="mailto:leggett@eecs.tulane.edu">Ti Leggett</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/lwjgl/lesson10.jar">LWJGL</a> Code For This Lesson. ( Conversion by <a href="mailto:mark.bernard@rogers.com">Mark Bernard</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/mac/lesson10.sit">Mac OS</a> Code For This Lesson. ( Conversion by <a href="mailto:asp@usc.edu">Anthony Parker</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/macosxcocoa/lesson10.zip">Mac OS X/Cocoa</a> Code For This Lesson. ( Conversion by <a href="mailto:blb@pobox.com">Bryan Blackburn</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/masm/lesson10.zip">MASM</a> Code For This Lesson. ( Conversion by <a href="mailto:scalp@bigfoot.com">Nico (Scalp)</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/openil/lesson10.zip">Visual C++ / OpenIL</a> Code For This Lesson. ( Conversion by <a href="mailto:doomwiz@ticnet.com">Denton Woods</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/pbasic/lesson10.zip">Power Basic</a> Code For This Lesson. ( Conversion by <a href="mailto:anguslaw@net.ntl.com">Angus Law</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/pelles_c/lesson10.zip">Pelles C</a> Code For This Lesson. ( Conversion by <a href="mailto:pelle@smorgasbordet.com">Pelle Orinius</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/python/lesson10.tar.gz">Python</a> Code For This Lesson. ( Conversion by <a href="mailto:tankcoder@warpmail.net">Ryan Showalter</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vb/lesson10-2.zip">Visual Basic</a> Code For This Lesson. ( Conversion by <a href="mailto:jcapellman@hotmail.com">Jarred Capellman</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vb/lesson10.zip">Visual Basic</a> Code For This Lesson. ( Conversion by <a href="mailto:rosscogl@email.com">Ross Dawson</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vfortran/lesson10.zip">Visual Fortran</a> Code For This Lesson. ( Conversion by <a href="mailto:Jean-Philippe.Perois@wanadoo.fr">Jean-Philippe Perois</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vs_net/lesson10.zip">Visual Studio .NET</a> Code For This Lesson. ( Conversion by <a href="mailto:ultimatezeus@hotmail.com">Grant James</a> )<br>
+<br><br>
+<br><br>
+<table border="0" width="100%">
+<tbody><tr><td align="left" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=09">&lt; Lesson 09</a></font></b></td>
+<td align="right" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=11">Lesson 11 &gt;</a></font></b></td>
+</tr></tbody></table>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table>
+
+</body></html>

@@ -1,0 +1,69 @@
+Kommandopunkte	41
+Angriffswert	801
+Schilde		315
+Panzerung	418
+Struktur	69
+Wendigkeit	524
+Sprung-Zeit	25
+Angriffs-Zeit	16
+Angriffsenergie	76
+
+http://x-clan.whitestarprogramming.de/?tradeportal&do=bp&venad=Alle%20Module&ship=2&type=5&mods=4,6,2;8,6,2;18,8,3;
+_________________________
+Kommandopunkte	75
+Angriffswert	4391
+Schilde		1087
+Panzerung	2290
+Struktur	177
+Wendigkeit	748
+Sprung-Zeit	53
+Angriffs-Zeit	16
+Angriffsenergie	8
+
+http://x-clan.whitestarprogramming.de/?tradeportal&do=bp&venad=Diego&ship=6&type=5&mods=18,17,2;16,33,9;14,31,2;14,29,3;8,34,3;8,30,1;
+
+http://x-clan.whitestarprogramming.de/?tradeportal&do=bp&venad=Alle%20Module&ship=6&type=5&mods=18,17,2;16,33,8;14,31,3;14,29,3;8,34,3;8,30,1;
+_________________________
+
+Kommandopunkte	75
+Angriffswert	5814
+Schilde		1087
+Panzerung	2585
+Struktur	256
+Wendigkeit	784
+Sprung-Zeit	56
+Angriffs-Zeit	111
+Angriffsenergie	116
+
+http://x-clan.whitestarprogramming.de/?tradeportal&do=bp&venad=Alle%20Module&ship=6&type=5&mods=14,31,2;14,29,1;14,33,1;18,17,2;18,30,10;8,34,4;
+
+http://x-clan.whitestarprogramming.de/?tradeportal&do=bp&venad=Alle%20Module&ship=6&type=5&mods=18,17,2;18,30,11;14,31,2;14,29,2;8,34,3;
+
+Mehr We und 15 LvL Ups:
+http://x-clan.whitestarprogramming.de/?tradeportal&do=bp&venad=Alle%20Module&ship=6&type=5&mods=14,31,3;14,29,1;14,33,1;18,17,2;18,30,10;8,34,3;
+___________________________
+
+Kommandopunkte	75
+Angriffswert	4933
+Schilde		1054
+Panzerung	2375
+Struktur	546
+Wendigkeit	1421
+Sprung-Zeit	56
+Angriffs-Zeit	107
+Angriffsenergie	136
+
+http://x-clan.whitestarprogramming.de/?tradeportal&do=bp&venad=Alle%20Module&ship=6&type=5&mods=14,31,3;14,29,3;18,30,8;18,31,2;8,34,4;
+___________________________
+Kommandopunkte	108
+Angriffswert	9330
+Schilde		1976
+Panzerung	2366
+Struktur	154
+Wendigkeit	1502
+Sprung-Zeit	70
+Angriffs-Zeit	226
+Angriffsenergie	212
+
+http://x-clan.whitestarprogramming.de/?tradeportal&do=bp&venad=Alle%20Module&ship=6&type=37&mods=18,37,3;18,30,17;18,24,1;14,31,3;14,29,2;8,34,4;
+____________________________

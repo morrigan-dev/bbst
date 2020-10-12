@@ -1,0 +1,686 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+<title>NeHe Productions: OpenGL Lesson #29</title>
+<meta name="author" content="Jeff Molofee">
+<meta name="description" content="OpenGL Tutorials, Demos, Games and More...">
+<meta name="keywords" content="opengl, tutorial, article, demo, game, blend, texturemap, lighting, contest, 3D">
+<link rel="stylesheet" type="text/css" href="lesson.asp-Dateien/rgb.css">
+</head><body bgcolor="black" link="#aaccff" text="white" vlink="#aaccff">
+
+<table border="0" width="100%"><tbody><tr><td align="center">
+<!-- Begin -  Site: GameDev.net Zone: NeHe 728x90 -->
+<script language="javascript" type="text/javascript">
+<!--
+var browName = navigator.appName;
+var SiteID = 1;
+var ZoneID = 4;
+var browDateTime = (new Date()).getTime();
+if (browName=='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;Browser=NETSCAPE4&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+if (browName!='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+// --> 
+</script><script language="javascript" src="lesson.asp-Dateien/a.js"></script><a href="http://www.gamedev.net/banman/a.aspx?Task=Click&amp;ZoneID=4&amp;CampaignID=297&amp;AdvertiserID=86&amp;BannerID=393&amp;SiteID=1&amp;RandomNumber=889364829&amp;Keywords=" target="_Blank"><img src="lesson.asp-Dateien/GTBanner_Long.jpg" alt="" align="Center" border="0" height="60" width="468"></a><br>
+<noscript> <a
+href="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Click&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+target="_blank"> <img
+src="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Get&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+width="728" height="90" border="0" alt=""></a>
+</noscript>
+<!-- End -  Site: GameDev.net Zone: NeHe 728x90 --></td></tr></tbody></table><br>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tinylogo" height="130" width="326"><img src="lesson.asp-Dateien/blank.gif" alt="NeHe Productions" height="130" width="326"></td><td class="indexheading" align="center" valign="middle"><font class="text"><font class="theme" size="+3"><b><i>Lesson: 29</i></b></font></font></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">This tutorial was originally written by Andreas L�ffler.  He also wrote all of the original HTML for the tutorial.  A few
+days later Rob Fletcher emailed me an Irix version of lesson 29.  In his version he rewrote most of the code.  So I ported
+Rob's Irix / GLUT code to Visual C++ / Win32.  I then modified the message loop code, and the fullscreen code.  When the
+program is minimized it should use 0% of the CPU (or close to).  When switching to and from fullscreen mode, most of the
+problems should be gone (screen not restoring properly, messed up display, etc).
+<br><br>
+Andreas tutorial is now better than ever.  Unfortunately, the code has been modifed quite a bit, so all of the HTML has
+been rewritten by myself.  Huge Thanks to Andreas for getting the ball rolling, and working his butt off to make a killer
+tutorial.  Thanks to Rob for the modifications!
+<br><br>
+Lets begin... We create a device mode structure called DMsaved.  We will use this structure to store information
+about the users default desktop resolution, color depth, etc., before we switch to fullscreen mode.  More on this later!
+Notice we only allocate enough storage space for one texture (texture[1]).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>#include	&lt;windows.h&gt;								<font class="theme">// Header File For Windows</font>
+#include	&lt;gl\gl.h&gt;								<font class="theme">// Header File For The OpenGL32 Library</font>
+#include	&lt;gl\glu.h&gt;								<font class="theme">// Header File For The GLu32 Library</font>
+#include	&lt;stdio.h&gt;								<font class="theme">// Header File For File Operation Needed</font>
+
+HDC		hDC=NULL;								<font class="theme">// Private GDI Device Context</font>
+HGLRC		hRC=NULL;								<font class="theme">// Permanent Rendering Context</font>
+HWND		hWnd=NULL;								<font class="theme">// Holds Our Window Handle</font>
+HINSTANCE	hInstance = NULL;							<font class="theme">// Holds The Instance Of The Application</font>
+
+bool		keys[256];								<font class="theme">// Array Used For The Keyboard Routine</font>
+bool		active=TRUE;								<font class="theme">// Window Active Flag Set To TRUE By Default</font>
+bool		fullscreen=TRUE;							<font class="theme">// Fullscreen Flag Set To Fullscreen Mode By Default</font>
+
+DEVMODE		DMsaved;								<font class="theme">// Saves The Previous Screen Settings (NEW)</font>
+
+GLfloat		xrot;									<font class="theme">// X Rotation</font>
+GLfloat		yrot;									<font class="theme">// Y Rotation</font>
+GLfloat		zrot;									<font class="theme">// Z Rotation</font>
+
+GLuint		texture[1];								<font class="theme">// Storage For 1 Texture</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now for the fun stuff.  We create a structure called TEXTURE_IMAGE.  The structure contains information about our
+images width, height, and format (bytes per pixel).  data is a pointer to unsigned char.
+Later on data will point to our image data.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>typedef struct Texture_Image
+{
+	int width;									<font class="theme">// Width Of Image In Pixels</font>
+	int height;									<font class="theme">// Height Of Image In Pixels</font>
+	int format;									<font class="theme">// Number Of Bytes Per Pixel</font>
+	unsigned char *data;								<font class="theme">// Texture Data</font>
+} TEXTURE_IMAGE;
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We then create a pointer  called P_TEXTURE_IMAGE to the TEXTURE_IMAGE data type.  The variables t1 and
+t2 are of type P_TEXTURE_IMAGE where P_TEXTURE_IMAGE is a redefined type of pointer to
+TEXTURE_IMAGE.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>typedef TEXTURE_IMAGE *P_TEXTURE_IMAGE;							<font class="theme">// A Pointer To The Texture Image Data Type</font>
+
+P_TEXTURE_IMAGE t1;									<font class="theme">// Pointer To The Texture Image Data Type</font>
+P_TEXTURE_IMAGE t2;									<font class="theme">// Pointer To The Texture Image Data Type</font>
+
+LRESULT	CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);					<font class="theme">// Declaration For WndProc</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Below is the code to allocate memory for a texture.  When we call this code, we pass it the width, height and bytes per
+pixel information of the image we plan to load.  ti is a pointer to our TEXTURE_IMAGE data type.  It's given
+a NULL value.  c is a pointer to unsigned char, it is also set to NULL.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// Allocate An Image Structure And Inside Allocate Its Memory Requirements</font>
+P_TEXTURE_IMAGE AllocateTextureBuffer( GLint w, GLint h, GLint f)
+{
+	P_TEXTURE_IMAGE ti=NULL;							<font class="theme">// Pointer To Image Struct</font>
+	unsigned char *c=NULL;								<font class="theme">// Pointer To Block Memory For Image</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Here is where we allocate the memory for our image structure.  If everything goes well, ti will point to the
+allocated memory.
+<br><br>
+After allocating the memory, and checking to make sure ti is not equal to NULL, we can fill the structure with the
+image attributes.  First we set the width (w), then the height (h) and lastly the format (f).  Keep
+in mind format is bytes per pixel.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	ti = (P_TEXTURE_IMAGE)malloc(sizeof(TEXTURE_IMAGE));				<font class="theme">// One Image Struct Please</font>
+
+	if( ti != NULL ) {
+		ti-&gt;width  = w;								<font class="theme">// Set Width</font>
+		ti-&gt;height = h;								<font class="theme">// Set Height</font>
+		ti-&gt;format = f;								<font class="theme">// Set Format</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we need to allocate memory for the actual image data.  The calculation is easy!  We multiply the width of the image
+(w) by the height of the image (h) then multiply by the format (f - bytes per pixel).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		c = (unsigned char *)malloc( w * h * f);
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We check to see if everything went ok.  If the value in c is not equal to NULL we set the data variable in
+our structure to point to the newly allocated memory.
+<br><br>
+If there was a problem, we pop up an error message on the screen letting the user know that the program was unable to
+allocate memory for the texture buffer.  NULL is returned.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		if ( c != NULL ) {
+			ti-&gt;data = c;
+		}
+		else {
+			MessageBox(NULL,"Could Not Allocate Memory For A Texture Buffer","BUFFER ERROR",MB_OK | MB_ICONINFORMATION);
+			return NULL;
+		}
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+If anything went wrong when we were trying to allocate memory for our image structure, the code below would pop up an
+error message and return NULL.
+<br><br>
+If there were no problems, we return ti which is a pointer to our newly allocated image structure.  Whew...
+Hope that all made sense.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	else
+	{
+		MessageBox(NULL,"Could Not Allocate An Image Structure","IMAGE STRUCTURE ERROR",MB_OK | MB_ICONINFORMATION);
+		return NULL;
+	}
+	return ti;									<font class="theme">// Return Pointer To Image Struct</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+When it comes time to release the memory, the code below will deallocate the texture buffer and then free the image
+structure.  t is a pointer to the TEXTURE_IMAGE data structure we want to deallocate.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// Free Up The Image Data</font>
+void DeallocateTexture( P_TEXTURE_IMAGE t )
+{
+	if(t)
+	{
+		if(t-&gt;data)
+		{
+			free(t-&gt;data);							<font class="theme">// Free Its Image Buffer</font>
+		}
+
+		free(t);								<font class="theme">// Free Itself</font>
+	}
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we read in our .RAW image.  We pass the filename and a pointer to the image structure we want to load the image
+into.  We set up our misc variables, and then calculate the size of a row.  We figure out the size of a row by multiplying
+the width of our image by the format (bytes per pixel).  So if the image was 256 pixels wide and there were
+4 bytes per pixel, the width of a row would be 1024 bytes.  We store the width of a row in stride.
+<br><br>
+We set up a pointer (p), and then attempt to open the file.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// Read A .RAW File In To The Allocated Image Buffer Using data In The Image Structure Header.</font>
+<font class="theme">// Flip The Image Top To Bottom.  Returns 0 For Failure Of Read, Or Number Of Bytes Read.</font>
+int ReadTextureData ( char *filename, P_TEXTURE_IMAGE buffer)
+{
+	FILE *f;
+	int i,j,k,done=0;
+	int stride = buffer-&gt;width * buffer-&gt;format;					<font class="theme">// Size Of A Row (Width * Bytes Per Pixel)</font>
+	unsigned char *p = NULL;
+
+	f = fopen(filename, "rb");							<font class="theme">// Open "filename" For Reading Bytes</font>
+	if( f != NULL )									<font class="theme">// If File Exists</font>
+	{
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+If the file exists, we set up the loops to read in our texture.  i starts at the bottom of the image and moves
+up a line at a time.  We start at the bottom so that the image is flipped the right way.  .RAW images are stored upside
+down.  We have to set our pointer now so that the data is loaded into the proper spot in the image buffer.  Each time we
+move up a line (i is decreased) we set the pointer to the start of the new line.  data is where our image
+buffer starts, and to move an entire line at a time in the buffer, multiply i by stride.  Remember that
+stride is the length of a line in bytes, and i is the current line.  So by multiplying the two, we move an
+entire line at a time.
+<br><br>
+The j loop moves from left (0) to right (width of line in pixels, not bytes).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		for( i = buffer-&gt;height-1; i &gt;= 0 ; i-- )				<font class="theme">// Loop Through Height (Bottoms Up - Flip Image)</font>
+		{
+			p = buffer-&gt;data + (i * stride );
+			for ( j = 0; j &lt; buffer-&gt;width ; j++ )				<font class="theme">// Loop Through Width</font>
+			{
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The k loop reads in our bytes per pixel.  So if format (bytes per pixel) is 4, k loops from 0 to 2
+which is bytes per pixel minus one (format-1).  The reason we subtract one is because most raw images don't have
+an alpha value.  We want to make the 4th byte our alpha value, and we want to set the alpha value manually.
+<br><br>
+Notice in the loop we also increase the pointer (p) and a variable called done.  More about done later.
+<br><br>
+The line inside the loop reads a character from our file and stores it in the texture buffer at our current pointer
+location.  If our image has 4 bytes per pixel, the first 3 bytes will be read from the .RAW file (format-1), and
+the 4th byte will be manually set to 255.  After we set the 4th byte to 255 we increase the pointer location by one so
+that our 4th byte is not overwritten with the next byte in the file.
+<br><br>
+After all of the bytes have been read in per pixel, and all of the pixels have been read in per row, and all of the rows
+have been read in, we are done!  We can close the file.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				for ( k = 0 ; k &lt; buffer-&gt;format-1 ; k++, p++, done++ )
+				{
+					*p = fgetc(f);					<font class="theme">// Read Value From File And Store In Memory</font>
+				}
+				*p = 255; p++;						<font class="theme">// Store 255 In Alpha Channel And Increase Pointer</font>
+			}
+		}
+		fclose(f);								<font class="theme">// Close The File</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+If there was a problem opening the file (does not exist, etc), the code below will pop up a message box letting the user
+know that the file could not be opened.
+<br><br>
+The last thing we do is return done.  If the file couldn't be opened, done will equal 0.  If everything went
+ok, done should equal the number of bytes read from the file.  Remember, we were increasing done every time
+we read a byte in the loop above (k loop).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	else										<font class="theme">// Otherwise</font>
+	{
+		MessageBox(NULL,"Unable To Open Image File","IMAGE ERROR",MB_OK | MB_ICONINFORMATION);
+	}
+	return done;									<font class="theme">// Returns Number Of Bytes Read In</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+This shouldn't need explaining.  By now you should know how to build a texture.  tex is the pointer to the
+TEXTURE_IMAGE structure that we want to use.  We build a linear filtered texture.  In this example, we're building
+mipmaps (smoother looking).  We pass the width, height and data just like we would if we were using
+glaux, but this time we get the information from the selected TEXTURE_IMAGE structure.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void BuildTexture (P_TEXTURE_IMAGE tex)
+{
+	glGenTextures(1, &amp;texture[0]);
+	glBindTexture(GL_TEXTURE_2D, texture[0]);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, tex-&gt;width, tex-&gt;height, GL_RGBA, GL_UNSIGNED_BYTE, tex-&gt;data);
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now for the blitter code :)  The blitter code is very powerful.  It lets you copy any section of a (src) texture and
+paste it into a destination (dst) texture.  You can combine as many textures as you want, you can set the alpha
+value used for blending, and you can select whether the two images blend together or cancel eachother out.
+<br><br>
+src is the TEXTURE_IMAGE structure to use as the source image.  dst is the TEXTURE_IMAGE
+structure to use for the destination image.  src_xstart is where you want to start copying from on the x axis of
+the source image.  src_ystart is where you want to start copying from on the y axis of the source image.
+src_width is the width in pixels of the area you want to copy from the source image.  src_height is the
+height in pixels of the area you want to copy from the source image.  dst_xstart and dst_ystart is where
+you want to place the copied pixels from the source image onto the destination image.  If blend is 1, the two
+images will be blended.  alpha sets how transparent the copied image will be when it mapped onto the destination
+image.  0 is completely clear, and 255 is solid.
+<br><br>
+We set up all our misc loop variables, along with pointers for our source image (s) and destination image (d).
+We check to see if the alpha value is within range.  If not, we clamp it.  We do the same for the blend
+value.  If it's not 0-off or 1-on, we clamp it.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void Blit( P_TEXTURE_IMAGE src, P_TEXTURE_IMAGE dst, int src_xstart, int src_ystart, int src_width, int src_height,
+	   int dst_xstart, int dst_ystart, int blend, int alpha)
+{
+	int i,j,k;
+	unsigned char *s, *d;								<font class="theme">// Source &amp; Destination</font>
+
+	<font class="theme">// Clamp Alpha If Value Is Out Of Range</font>
+	if( alpha &gt; 255 ) alpha = 255;
+	if( alpha &lt; 0 ) alpha = 0;
+
+	<font class="theme">// Check For Incorrect Blend Flag Values</font>
+	if( blend &lt; 0 ) blend = 0;
+	if( blend &gt; 1 ) blend = 1;
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we have to set up the pointers.  The destination pointer is the location of the destination data plus the
+starting location on the destination images y axis (dst_ystart) * the destination images width in pixels
+* the destination images bytes per pixel (format).  This should give us the starting row for our destination image.
+<br><br>
+We do pretty much the same thing for the source pointer.   The source pointer is the location of the source data
+plus the starting location on the source images y axis (src_ystart) * the source images width in pixels
+* the source images bytes per pixel (format).  This should give us the starting row for our source image.
+<br><br>
+i loops from 0 to src_height which is the number of pixels to copy up and down from the source image.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	d = dst-&gt;data + (dst_ystart * dst-&gt;width * dst-&gt;format);  			<font class="theme">// Start Row - dst (Row * Width In Pixels * Bytes Per Pixel)</font>
+	s = src-&gt;data + (src_ystart * src-&gt;width * src-&gt;format);			<font class="theme">// Start Row - src (Row * Width In Pixels * Bytes Per Pixel)</font>
+
+	for (i = 0 ; i &lt; src_height ; i++ )						<font class="theme">// Height Loop</font>
+	{
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We already set the source and destination pointers to the correct rows in each image.  Now we have to move to the correct
+location from left to right in each image before we can start blitting the data.  We increase the location of the source
+pointer (s) by src_xstart which is the starting location on the x axis of the source image times the source
+images bytes per pixel.  This moves the source (s) pointer to the starting pixel location on the x axis (from left
+to right) on the source image.
+<br><br>
+We do the exact same thing for the destination pointer.  We increase the location of the destination pointer (d) by
+dst_xstart which is the starting location on the x axis of the destination image multiplied by the destination
+images bytes per pixel (format).  This moves the destination (d) pointer to the starting pixel location on
+the x axis (from left to right) on the destination image.
+<br><br>
+After we have calculated where in memory we want to grab our pixels from (s) and where we want to move them to
+(d), we start the j loop.  We'll use the j loop to travel from left to right through the source
+image.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		s = s + (src_xstart * src-&gt;format);					<font class="theme">// Move Through Src Data By Bytes Per Pixel</font>
+		d = d + (dst_xstart * dst-&gt;format);					<font class="theme">// Move Through Dst Data By Bytes Per Pixel</font>
+		for (j = 0 ; j &lt; src_width ; j++ )					<font class="theme">// Width Loop</font>
+		{
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The k loop is used to go through all the bytes per pixel.  Notice as k increases, our pointers for the source and
+destination images also increase.
+<br><br>
+Inside the loop we check to see if blending is on or off.  If blend is 1, meaning we should blend, we do some fancy
+math to calculate the color of our blended pixels.  The destination value (d) will equal our source value (s)
+multiplied by our alpha value + our current destination value (d) times 255 minus the alpha value.
+The shift operator (&gt;&gt;8) keeps the value in a 0-255 range.
+<br><br>
+If blending is disabled (0), we copy the data from the source image directly into the destination image.  No blending is
+done and the alpha value is ignored.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>			for( k = 0 ; k &lt; src-&gt;format ; k++, d++, s++)			<font class="theme">// "n" Bytes At A Time</font>
+			{
+				if (blend)						<font class="theme">// If Blending Is On</font>
+				*d = ( (*s * alpha) + (*d * (255-alpha)) ) &gt;&gt; 8;	<font class="theme">// Multiply Src Data*alpha Add Dst Data*(255-alpha)</font>
+				else							<font class="theme">// Keep in 0-255 Range With &gt;&gt; 8</font>
+				*d = *s;						<font class="theme">// No Blending Just Do A Straight Copy</font>
+			}
+		}
+		d = d + (dst-&gt;width - (src_width + dst_xstart))*dst-&gt;format;		<font class="theme">// Add End Of Row</font>
+		s = s + (src-&gt;width - (src_width + src_xstart))*src-&gt;format;		<font class="theme">// Add End Of Row</font>
+	}
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The InitGL() code has changed quite a bit.  All of the code below is new.  We start off by allocating enough memory to
+hold a 256x256x4 Bytes Per Pixel Image.  t1 will point to the allocated ram if everything went well.
+<br><br>
+After allocating memory for our image, we attempt to load the image.  We pass ReadTextureData() the name of the file we
+wish to open, along with a pointer to our Image Structure (t1).
+<br><br>
+If we were unable to load the .RAW image, a message box will pop up on the screen to let the user know there was a problem
+loading the texture.
+<br><br>
+We then do the same thing for t2.  We allocate memory, and attempt to read in our second .RAW image.  If anything
+goes wrong we pop up a message box.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int InitGL(GLvoid)									<font class="theme">// This Will Be Called Right After The GL Window Is Created</font>
+{
+	t1 = AllocateTextureBuffer( 256, 256, 4 );					<font class="theme">// Get An Image Structure</font>
+	if (ReadTextureData("Data/Monitor.raw",t1)==0)					<font class="theme">// Fill The Image Structure With Data</font>
+	{										<font class="theme">// Nothing Read?</font>
+		MessageBox(NULL,"Could Not Read 'Monitor.raw' Image Data","TEXTURE ERROR",MB_OK | MB_ICONINFORMATION);
+		return FALSE;
+	}
+
+	t2 = AllocateTextureBuffer( 256, 256, 4 );					<font class="theme">// Second Image Structure</font>
+	if (ReadTextureData("Data/GL.raw",t2)==0)					<font class="theme">// Fill The Image Structure With Data</font>
+	{										<font class="theme">// Nothing Read?</font>
+		MessageBox(NULL,"Could Not Read 'GL.raw' Image Data","TEXTURE ERROR",MB_OK | MB_ICONINFORMATION);
+		return FALSE;
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+If we got this far, it's safe to assume the memory has been allocated and the images have been loaded.  Now to use our
+Blit() command to merge the two images into one.
+<br><br>
+We start off by passing Blit() t2 and t1, both point to our TEXTURE_IMAGE structures (t2 is the
+second image, t1 is the first image).
+<br><br>
+Then we have to tell blit where to start grabbing data from on the source image.  If you load the source image into Adobe
+Photoshop or any other program capable of loading .RAW images you will see that the entire image is blank except for the
+top right corner.  The top right has a picture of the ball with GL written on it.  The bottom left corner of the image
+is 0,0.  The top right of the image is the width of the image-1 (255), the height of the image-1 (255).  Knowing that we
+only want to copy 1/4 of the src image (top right), we tell Blit() to start grabbing from 127,127 (center of our source
+image).
+<br><br>
+Next we tell blit how many pixels we want to copy from our source point to the right, and from our source point up.
+We want to grab a 1/4 chunk of our image.  Our image is 256x256 pixels, 1/4 of that is 128x128 pixels.  All of the source
+information is done.  Blit() now knows that it should copy from 127 on the x axis to 127+128 (255) on the x axis, and
+from 127 on the y axis to 127+128 (255) on the y axis.
+<br><br>
+So Blit() knows what to copy, and where to get the data from, but it doesn't know where to put the data once it's gotten
+it.  We want to draw the ball with GL written on it in the middle of the monitor image.  You find the center of the
+destination image (256x256) which is 128x128 and subtract half the width and height of the source image (128x128) which
+is 64x64.  So (128-64) x (128-64) gives us a starting location of 64,64.
+<br><br>
+Last thing to do is tell our blitter routine we want to blend the two images (A one means blend, a zero means do not blend),
+and how much to blend the images.  If the last value is 0, we blend the images 0%, meaning anything we copy will replace
+what was already there.  If we use a value of 127, the two images blend together at 50%, and if you use 255, the image
+you are copying will be completely transparent and will not show up at all.
+<br><br>
+The pixels are copied from image2 (t2) to image1 (t1).  The mixed image will be stored in t1.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Image To Blend In, Original Image, Src Start X &amp; Y, Src Width &amp; Height, Dst Location X &amp; Y, Blend Flag, Alpha Value</font>
+	Blit(t2,t1,127,127,128,128,64,64,1,127);					<font class="theme">// Call The Blitter Routine</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+After we have mixed the two images (t1 and t2) together, we build a texture from the combined images
+(t1).
+<br><br>
+After the texture has been created, we can deallocate the memory holding our two TEXTURE_IMAGE structures.
+<br><br>
+The rest of the code is pretty standard.  We enable texture mapping, depth testing, etc.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	BuildTexture (t1);								<font class="theme">// Load The Texture Map Into Texture Memory</font>
+
+	DeallocateTexture( t1 );							<font class="theme">// Clean Up Image Memory Because Texture Is</font>
+	DeallocateTexture( t2 );							<font class="theme">// In GL Texture Memory Now</font>
+
+	glEnable(GL_TEXTURE_2D);							<font class="theme">// Enable Texture Mapping</font>
+
+	glShadeModel(GL_SMOOTH);							<font class="theme">// Enables Smooth Color Shading</font>
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);						<font class="theme">// This Will Clear The Background Color To Black</font>
+	glClearDepth(1.0);								<font class="theme">// Enables Clearing Of The Depth Buffer</font>
+	glEnable(GL_DEPTH_TEST);							<font class="theme">// Enables Depth Testing</font>
+	glDepthFunc(GL_LESS);								<font class="theme">// The Type Of Depth Test To Do</font>
+
+	return TRUE;
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+I shouldn't even have to explain the code below.  We move 5 units into the screen, select our single texture, and draw a
+texture mapped cube.  You should notice that both textures are now combined into one.  We don't have to render everything
+twice to map both textures onto the cube.  The blitter code combined the images for us.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>GLvoid DrawGLScene(GLvoid)
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);				<font class="theme">// Clear The Screen And The Depth Buffer</font>
+	glLoadIdentity();								<font class="theme">// Reset The View</font>
+	glTranslatef(0.0f,0.0f,-5.0f);
+
+	glRotatef(xrot,1.0f,0.0f,0.0f);
+	glRotatef(yrot,0.0f,1.0f,0.0f);
+	glRotatef(zrot,0.0f,0.0f,1.0f);
+
+	glBindTexture(GL_TEXTURE_2D, texture[0]);
+
+	glBegin(GL_QUADS);
+		<font class="theme">// Front Face</font>
+		glNormal3f( 0.0f, 0.0f, 1.0f);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);
+		<font class="theme">// Back Face</font>
+		glNormal3f( 0.0f, 0.0f,-1.0f);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);
+		glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+		<font class="theme">// Top Face</font>
+		glNormal3f( 0.0f, 1.0f, 0.0f);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f,  1.0f,  1.0f);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f,  1.0f,  1.0f);
+		<font class="theme">// Bottom Face</font>
+		glNormal3f( 0.0f,-1.0f, 0.0f);
+		glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
+		<font class="theme">// Right Face</font>
+		glNormal3f( 1.0f, 0.0f, 0.0f);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);
+		glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);
+		<font class="theme">// Left Face</font>
+		glNormal3f(-1.0f, 0.0f, 0.0f);
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);
+	glEnd();
+
+	xrot+=0.3f;
+	yrot+=0.2f;
+	zrot+=0.4f;
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The KillGLWindow() code has a few changes.  You'll notice the code to switch from fullscreen mode back to your desktop
+is now at the top of KillGLWindow().  If the user ran the program in fullscreen mode, the first thing we do when we kill
+the window is try to switch back to the desktop resolution.  If the quick way fails to work, we reset the screen using
+the information stored in DMsaved.  This should restore us to our orignal desktop settings.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>GLvoid KillGLWindow(GLvoid)								<font class="theme">// Properly Kill The Window</font>
+{
+	if (fullscreen)									<font class="theme">// Are We In Fullscreen Mode?</font>
+	{
+		if (!ChangeDisplaySettings(NULL,CDS_TEST)) {				<font class="theme">// If The Shortcut Doesn't Work</font>
+			ChangeDisplaySettings(NULL,CDS_RESET);				<font class="theme">// Do It Anyway (To Get The Values Out Of The Registry)</font>
+			ChangeDisplaySettings(&amp;DMsaved,CDS_RESET);			<font class="theme">// Change Resolution To The Saved Settings</font>
+		}
+		else									<font class="theme">// Not Fullscreen</font>
+		{
+			ChangeDisplaySettings(NULL,CDS_RESET);				<font class="theme">// Do Nothing</font>
+		}
+
+		ShowCursor(TRUE);							<font class="theme">// Show Mouse Pointer</font>
+	}
+
+	if (hRC)									<font class="theme">// Do We Have A Rendering Context?</font>
+	{
+		if (!wglMakeCurrent(NULL,NULL))						<font class="theme">// Are We Able To Release The DC And RC Contexts?</font>
+		{
+			MessageBox(NULL,"Release Of DC And RC Failed.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
+		}
+
+		if (!wglDeleteContext(hRC))						<font class="theme">// Are We Able To Delete The RC?</font>
+		{
+			MessageBox(NULL,"Release Rendering Context Failed.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
+		}
+		hRC=NULL;								<font class="theme">// Set RC To NULL</font>
+	}
+
+	if (hDC &amp;&amp; !ReleaseDC(hWnd,hDC))						<font class="theme">// Are We Able To Release The DC</font>
+	{
+		MessageBox(NULL,"Release Device Context Failed.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
+		hDC=NULL;								<font class="theme">// Set DC To NULL</font>
+	}
+
+	if (hWnd &amp;&amp; !DestroyWindow(hWnd))						<font class="theme">// Are We Able To Destroy The Window?</font>
+	{
+		MessageBox(NULL,"Could Not Release hWnd.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
+		hWnd=NULL;								<font class="theme">// Set hWnd To NULL</font>
+	}
+
+	if (!UnregisterClass("OpenGL",hInstance))					<font class="theme">// Are We Able To Unregister Class</font>
+	{
+		MessageBox(NULL,"Could Not Unregister Class.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
+		hInstance=NULL;								<font class="theme">// Set hInstance To NULL</font>
+	}
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+I've made some changes in CreateGLWindow.  The changes will hopefully elimintate alot of the problems people are having
+when they switch to and from from fullscreen mode.  I've included the first part of CreateGLWindow() so you can easily
+follow through the code.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>BOOL CreateGLWindow(char* title, int width, int height, int bits, bool fullscreenflag)
+{
+	GLuint		PixelFormat;							<font class="theme">// Holds The Results After Searching For A Match</font>
+	WNDCLASS	wc;								<font class="theme">// Windows Class Structure</font>
+	DWORD		dwExStyle;							<font class="theme">// Window Extended Style</font>
+	DWORD		dwStyle;							<font class="theme">// Window Style</font>
+
+	fullscreen=fullscreenflag;							<font class="theme">// Set The Global Fullscreen Flag</font>
+
+	hInstance		= GetModuleHandle(NULL);				<font class="theme">// Grab An Instance For Our Window</font>
+	wc.style		= CS_HREDRAW | CS_VREDRAW | CS_OWNDC;			<font class="theme">// Redraw On Size, And Own DC For Window.</font>
+	wc.lpfnWndProc		= (WNDPROC) WndProc;					<font class="theme">// WndProc Handles Messages</font>
+	wc.cbClsExtra		= 0;							<font class="theme">// No Extra Window Data</font>
+	wc.cbWndExtra		= 0;							<font class="theme">// No Extra Window Data</font>
+	wc.hInstance		= hInstance;						<font class="theme">// Set The Instance</font>
+	wc.hIcon		= LoadIcon(NULL, IDI_WINLOGO);				<font class="theme">// Load The Default Icon</font>
+	wc.hCursor		= LoadCursor(NULL, IDC_ARROW);				<font class="theme">// Load The Arrow Pointer</font>
+	wc.hbrBackground	= NULL;							<font class="theme">// No Background Required For GL</font>
+	wc.lpszMenuName		= NULL;							<font class="theme">// We Don't Want A Menu</font>
+	wc.lpszClassName	= "OpenGL";						<font class="theme">// Set The Class Name</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The big change here is that we now save the current desktop resolution, bit depth, etc. before we switch to fullscreen
+mode.  That way when we exit the program, we can set everything back exactly how it was.  The first line below copies the
+display settings into the DMsaved Device Mode structure.  Nothing else has changed, just one new line of code.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &amp;DMsaved);			<font class="theme">// Save The Current Display State (NEW)</font>
+
+	if (fullscreen)									<font class="theme">// Attempt Fullscreen Mode?</font>
+	{
+		DEVMODE dmScreenSettings;						<font class="theme">// Device Mode</font>
+		memset(&amp;dmScreenSettings,0,sizeof(dmScreenSettings));			<font class="theme">// Makes Sure Memory's Cleared</font>
+		dmScreenSettings.dmSize=sizeof(dmScreenSettings);			<font class="theme">// Size Of The Devmode Structure</font>
+		dmScreenSettings.dmPelsWidth	= width;				<font class="theme">// Selected Screen Width</font>
+		dmScreenSettings.dmPelsHeight	= height;				<font class="theme">// Selected Screen Height</font>
+		dmScreenSettings.dmBitsPerPel	= bits;					<font class="theme">// Selected Bits Per Pixel</font>
+		dmScreenSettings.dmFields=DM_BITSPERPEL|DM_PELSWIDTH|DM_PELSHEIGHT;
+
+		<font class="theme">// Try To Set Selected Mode And Get Results.  NOTE: CDS_FULLSCREEN Gets Rid Of Start Bar.</font>
+		if (ChangeDisplaySettings(&amp;dmScreenSettings,CDS_FULLSCREEN)!=DISP_CHANGE_SUCCESSFUL)
+		{
+			<font class="theme">// If The Mode Fails, Offer Two Options.  Quit Or Use Windowed Mode.</font>
+			if (MessageBox(NULL,"The Requested Fullscreen Mode Is Not Supported By\nYour Video Card. Use Windowed Mode Instead?","NeHe GL",MB_YESNO|MB_ICONEXCLAMATION)==IDYES)
+			{
+				fullscreen=FALSE;					<font class="theme">// Windowed Mode Selected.  Fullscreen = FALSE</font>
+			}
+			else
+			{
+				<font class="theme">// Pop Up A Message Box Letting User Know The Program Is Closing.</font>
+				MessageBox(NULL,"Program Will Now Close.","ERROR",MB_OK|MB_ICONSTOP);
+				return FALSE;						<font class="theme">// Return FALSE</font>
+			}
+		}
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+WinMain() starts out the same as always.  Ask the user if they want fullscreen or not, then start the loop.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int WINAPI WinMain(	HINSTANCE	hInstance,					<font class="theme">// Instance</font>
+			HINSTANCE	hPrevInstance,					<font class="theme">// Previous Instance</font>
+			LPSTR		lpCmdLine,					<font class="theme">// Command Line Parameters</font>
+			int		nCmdShow)					<font class="theme">// Window Show State</font>
+{
+	MSG	msg;									<font class="theme">// Windows Message Structure</font>
+	BOOL	done=FALSE;								<font class="theme">// Bool Variable To Exit Loop</font>
+
+	<font class="theme">// Ask The User Which Screen Mode They Prefer</font>
+	if (MessageBox(NULL,"Would You Like To Run In Fullscreen Mode?", "Start FullScreen?",MB_YESNO|MB_ICONQUESTION)==IDNO)
+	{
+		fullscreen=FALSE;							<font class="theme">// Windowed Mode</font>
+	}
+
+	<font class="theme">// Create Our OpenGL Window</font>
+	if (!CreateGLWindow("Andreas L�ffler, Rob Fletcher &amp; NeHe's Blitter &amp; Raw Image Loading Tutorial", 640, 480, 32, fullscreen))
+	{
+		return 0;								<font class="theme">// Quit If Window Was Not Created</font>
+	}
+
+	while(!done)									<font class="theme">// Loop That Runs While done=FALSE</font>
+	{
+		if (PeekMessage(&amp;msg,NULL,0,0,PM_REMOVE))				<font class="theme">// Is There A Message Waiting?</font>
+		{
+			if (msg.message==WM_QUIT)					<font class="theme">// Have We Received A Quit Message?</font>
+			{
+				done=TRUE;						<font class="theme">// If So done=TRUE</font>
+			}
+			else								<font class="theme">// If Not, Deal With Window Messages</font>
+			{
+				TranslateMessage(&amp;msg);					<font class="theme">// Translate The Message</font>
+				DispatchMessage(&amp;msg);					<font class="theme">// Dispatch The Message</font>
+			}
+		}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+I have made some changes to the code below.  If the program is not active (minimized) we wait for a message with the
+command WaitMessage().  Everything stops until the program receives a message (usually maximizing the window).  What this
+means is that the program no longer hogs the processor while it's minimized.  Thanks to Jim Strong for the suggestion.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		if (!active)								<font class="theme">// Program Inactive?</font>
+		{
+			WaitMessage();							<font class="theme">// Wait For A Message / Do Nothing ( NEW ... Thanks Jim Strong )</font>
+		}
+
+		if (keys[VK_ESCAPE])							<font class="theme">// Was Escape Pressed?</font>
+		{
+			done=TRUE;							<font class="theme">// ESC Signalled A Quit</font>
+		}
+
+		if (keys[VK_F1])							<font class="theme">// Is F1 Being Pressed?</font>
+		{
+			keys[VK_F1]=FALSE;						<font class="theme">// If So Make Key FALSE</font>
+			KillGLWindow();							<font class="theme">// Kill Our Current Window</font>
+			fullscreen=!fullscreen;						<font class="theme">// Toggle Fullscreen / Windowed Mode</font>
+			<font class="theme">// Recreate Our OpenGL Window</font>
+			if (!CreateGLWindow("Andreas L�ffler, Rob Fletcher &amp; NeHe's Blitter &amp; Raw Image Loading Tutorial",640,480,16,fullscreen))
+			{
+				return 0;						<font class="theme">// Quit If Window Was Not Created</font>
+			}
+		}
+
+		DrawGLScene();								<font class="theme">// Draw The Scene</font>
+		SwapBuffers(hDC);							<font class="theme">// Swap Buffers (Double Buffering)</font>
+	}
+
+	<font class="theme">// Shutdown</font>
+	KillGLWindow();									<font class="theme">// Kill The Window</font>
+	return (msg.wParam);								<font class="theme">// Exit The Program</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Well, that�s it! Now the doors are open for creating some very cool blending effects for your games, engines or even
+applications. With texture buffers we used in this tutorial you could do more cool effects like real-time plasma or water.
+When combining these effects all together you�re able to do nearly photo-realistic terrain. If something doesn�t work in
+this tutorial or you have suggestions how to do it better, then please don�t hesitate to E-Mail me.
+Thank you for reading and good luck in creating your own special effects!
+<br><br>
+Some information about Andreas: I�m an 18 years old pupil who is currently studying to be a software engineer.  I�ve
+been programming for nearly 10 years now. I've been programming in OpenGL for about 1.5 years.
+<br><br>
+<b>Andreas L�ffler</b> &amp; <b>Rob Fletcher</b>
+<br><br>
+<b>Jeff Molofee</b> (<b>NeHe</b>)
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vc/lesson29.zip">Visual C++</a> Code For This Lesson.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/bcb6/lesson29_bcb6.zip">Borland C++ Builder 6</a> Code For This Lesson. ( Conversion by <a href="mailto:christian@tugzip.com">Christian Kindahl</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cwarrior/lesson29.zip">Code Warrior 5.3</a> Code For This Lesson. ( Conversion by <a href="mailto:DelusionalBeing@hotmail.com">Scott Lupton</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/delphi/lesson29.zip">Delphi</a> Code For This Lesson. ( Conversion by <a href="mailto:michal_praha@seznam.cz">Michal Tucek</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/devc/lesson29.zip">Dev C++</a> Code For This Lesson. ( Conversion by <a href="mailto:danprogram@hotmail.com">Dan</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/euphoria/lesson29.zip">Euphoria</a> Code For This Lesson. ( Conversion by <a href="mailto:1evan@sbcglobal.net">Evan Marshall</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/lccwin32/lccwin32_lesson29.zip">LCC Win32</a> Code For This Lesson. ( Conversion by <a href="mailto:rwishlaw@shaw.ca">Robert Wishlaw</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxglx/lesson29.tar.gz">Linux/GLX</a> Code For This Lesson. ( Conversion by <a href="mailto:rodolphe.suescun@wanadoo.fr">Rodolphe Suescun</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/lwjgl/lesson29.jar">LWJGL</a> Code For This Lesson. ( Conversion by <a href="mailto:mark.bernard@rogers.com">Mark Bernard</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/macosxcocoa/lesson29.zip">Mac OS X/Cocoa</a> Code For This Lesson. ( Conversion by <a href="mailto:blb@pobox.com">Bryan Blackburn</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vs_net/lesson29.zip">Visual Studio .NET</a> Code For This Lesson. ( Conversion by <a href="mailto:ultimatezeus@hotmail.com">Grant James</a> )<br>
+<br><br>
+<br><br>
+<table border="0" width="100%">
+<tbody><tr><td align="left" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=28">&lt; Lesson 28</a></font></b></td>
+<td align="right" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=30">Lesson 30 &gt;</a></font></b></td>
+</tr></tbody></table>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table>
+
+</body></html>

@@ -1,0 +1,453 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+<title>NeHe Productions: OpenGL Lesson #14</title>
+<meta name="author" content="Jeff Molofee">
+<meta name="description" content="OpenGL Tutorials, Demos, Games and More...">
+<meta name="keywords" content="opengl, tutorial, article, demo, game, blend, texturemap, lighting, contest, 3D">
+<link rel="stylesheet" type="text/css" href="lesson.asp-Dateien/rgb.css">
+</head><body bgcolor="black" link="#aaccff" text="white" vlink="#aaccff">
+
+<table border="0" width="100%"><tbody><tr><td align="center">
+<!-- Begin -  Site: GameDev.net Zone: NeHe 728x90 -->
+<script language="javascript" type="text/javascript">
+<!--
+var browName = navigator.appName;
+var SiteID = 1;
+var ZoneID = 4;
+var browDateTime = (new Date()).getTime();
+if (browName=='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;Browser=NETSCAPE4&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+if (browName!='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+// --> 
+</script><script language="javascript" src="lesson.asp-Dateien/a.js"></script><script language="JavaScript">
+var ShockMode = 0;
+if (navigator.mimeTypes && navigator.mimeTypes["application/x-shockwave-flash"] && navigator.mimeTypes["application/x-shockwave-flash"].enabledPlugin) {
+if (navigator.plugins && navigator.plugins["Shockwave Flash"])
+ShockMode = 1;
+}
+else if (navigator.userAgent && navigator.userAgent.indexOf("MSIE")>=0 
+&& (navigator.userAgent.indexOf("Windows 9")>=0 || navigator.userAgent.indexOf("Windows NT")>=0)) {
+document.write('<SCRIPT LANGUAGE=VBScript\> \n');
+document.write('on error resume next \n');
+document.write('ShockMode = (IsObject(CreateObject("ShockwaveFlash.ShockwaveFlash.4"))) ');
+document.write('<\/SCRIPT\> ');
+}
+if ( ShockMode ) {
+document.write('<OBJECT classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"');
+document.write(' codebase="http://active.macromedia.com/flash2/cabs/swflash.cab#version=4,0,0,0"');
+document.write(' ID=banner WIDTH="728" HEIGHT="90" >');
+document.write(' <PARAM NAME=movie VALUE="http://members.gamedev.net/dave/ads/Intel/728x90GameDev_dirt2_Traffic-Driver.swf?url=http%3a%2f%2fwww.gamedev.net%2fbanman%2fa.aspx%3fTask%3dClick%26ZoneID%3d4%26CampaignID%3d715%26AdvertiserID%3d119%26BannerID%3d771%26SiteID%3d1%26RandomNumber%3d1175416763%26Keywords%3d"> ');
+document.write(' <param name="wmode" value="transparent"> ');
+document.write(' <PARAM NAME=quality VALUE=autohigh> ');
+document.write('<EMBED SRC="http://members.gamedev.net/dave/ads/Intel/728x90GameDev_dirt2_Traffic-Driver.swf?url=http%3a%2f%2fwww.gamedev.net%2fbanman%2fa.aspx%3fTask%3dClick%26ZoneID%3d4%26CampaignID%3d715%26AdvertiserID%3d119%26BannerID%3d771%26SiteID%3d1%26RandomNumber%3d1175416763%26Keywords%3d"');
+document.write(' swLiveConnect=FALSE WIDTH="728" HEIGHT="90"');
+document.write(' QUALITY=autohigh wmode="transparent"');
+document.write(' TYPE="application/x-shockwave-flash" PLUGINSPAGE="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash">');
+document.write('</EMBED>');
+document.write('</OBJECT>');
+} else if (!(navigator.appName && navigator.appName.indexOf("Netscape")>=0 && navigator.appVersion.indexOf("2.")>=0)){
+document.write('<A HREF="http://www.gamedev.net/banman/a.aspx?Task=Click&ZoneID=4&CampaignID=715&AdvertiserID=119&BannerID=771&SiteID=1&RandomNumber=1175416763&Keywords=" TARGET="_top"><IMG SRC="http://members.gamedev.net/dave/ads/Intel/728x90GameDev_dirt2_Traffic-Driver_Backup.gif" WIDTH="728" HEIGHT="90" BORDER="0"></A>');
+}
+</script><object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://active.macromedia.com/flash2/cabs/swflash.cab#version=4,0,0,0" id="banner" height="90" width="728"> <param name="movie" value="http://members.gamedev.net/dave/ads/Intel/728x90GameDev_dirt2_Traffic-Driver.swf?url=http%3a%2f%2fwww.gamedev.net%2fbanman%2fa.aspx%3fTask%3dClick%26ZoneID%3d4%26CampaignID%3d715%26AdvertiserID%3d119%26BannerID%3d771%26SiteID%3d1%26RandomNumber%3d1175416763%26Keywords%3d">  <param name="wmode" value="transparent">  <param name="quality" value="autohigh"> <embed src="lesson.asp-Dateien/728x90GameDev_dirt2_Traffic-Driver.swf" swliveconnect="FALSE" quality="autohigh" wmode="transparent" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash" height="90" width="728"><a class="prnedhmidpgwpzjxwowq" href="http://members.gamedev.net/dave/ads/Intel/728x90GameDev_dirt2_Traffic-Driver.swf?url=http%3a%2f%2fwww.gamedev.net%2fbanman%2fa.aspx%3fTask%3dClick%26ZoneID%3d4%26CampaignID%3d715%26AdvertiserID%3d119%26BannerID%3d771%26SiteID%3d1%26RandomNumber%3d1175416763%26Keywords%3d"></a><a class="prnedhmidpgwpzjxwowq" href="http://members.gamedev.net/dave/ads/Intel/728x90GameDev_dirt2_Traffic-Driver.swf?url=http%3a%2f%2fwww.gamedev.net%2fbanman%2fa.aspx%3fTask%3dClick%26ZoneID%3d4%26CampaignID%3d715%26AdvertiserID%3d119%26BannerID%3d771%26SiteID%3d1%26RandomNumber%3d1175416763%26Keywords%3d"></a></object>
+<noembed>&lt;A
+HREF="http://www.gamedev.net/banman/a.aspx?Task=Click&amp;ZoneID=4&amp;CampaignID=715&amp;AdvertiserID=119&amp;BannerID=771&amp;SiteID=1&amp;RandomNumber=1175416763&amp;Keywords="
+TARGET="_top"&gt;&lt;IMG
+SRC="http://members.gamedev.net/dave/ads/Intel/728x90GameDev_dirt2_Traffic-Driver_Backup.gif"
+WIDTH="728" HEIGHT="90" BORDER="0"&gt;&lt;/A&gt;</noembed>
+<noscript><A
+HREF="http://www.gamedev.net/banman/a.aspx?Task=Click&ZoneID=4&CampaignID=715&AdvertiserID=119&BannerID=771&SiteID=1&RandomNumber=1175416763&Keywords="
+TARGET="_top"><IMG
+SRC="http://members.gamedev.net/dave/ads/Intel/728x90GameDev_dirt2_Traffic-Driver_Backup.gif"
+WIDTH="728" HEIGHT="90" BORDER="0"></A></noscript>
+
+<noscript> <a
+href="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Click&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+target="_blank"> <img
+src="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Get&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+width="728" height="90" border="0" alt=""></a>
+</noscript>
+<!-- End -  Site: GameDev.net Zone: NeHe 728x90 --></td></tr></tbody></table><br>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tinylogo" height="130" width="326"><img src="lesson.asp-Dateien/blank.gif" alt="NeHe Productions" height="130" width="326"></td><td class="indexheading" align="center" valign="middle"><font class="text"><font class="theme" size="+3"><b><i>Lesson: 14</i></b></font></font></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">This tutorial is a sequel to the last tutorial.  In tutorial 13 I taught you how to use Bitmap
+Fonts.  In this tutorial I'll teach you how to use Outline Fonts.
+<br><br>
+The way we create Outline fonts is fairly similar to the way we made the Bitmap font in lesson 13.
+However... Outline fonts are about 100 times more cool!  You can size Outline fonts.  Outline
+font's can move around the screen in 3D, and outline fonts can have thickness!  No more flat 2D
+characters.  With Outline fonts, you can turn any font installed on your computer into a 3D
+font for OpenGL, complete with proper normals so the characters light up really nice when light
+shines on them.
+<br><br>
+A small note, this code is Windows specific.  It uses the wgl functions of Windows to build the
+font.  Apparently Apple has agl support that should do the same thing, and X has glx.
+Unfortunately I can't guarantee this code is portable.  If anyone has platform independant code
+to draw fonts to the screen, send it my way and I'll write another font tutorial.
+<br><br>
+We start off with the typical code from lesson 1.  We'll be adding the stdio.h header file for standard
+input/output operations; the stdarg.h header file to parse the text and convert variables to text,
+and finally the math.h header file so we can move the text around the screen using SIN and COS.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>#include &lt;windows.h&gt;						<font class="theme">// Header File For Windows</font>
+#include &lt;math.h&gt;						<font class="theme">// Header File For Windows Math Library		( ADD )</font>
+#include &lt;stdio.h&gt;						<font class="theme">// Header File For Standard Input/Output	( ADD )</font>
+#include &lt;stdarg.h&gt;						<font class="theme">// Header File For Variable Argument Routines	( ADD )</font>
+#include &lt;gl\gl.h&gt;						<font class="theme">// Header File For The OpenGL32 Library</font>
+#include &lt;gl\glu.h&gt;						<font class="theme">// Header File For The GLu32 Library</font>
+#include &lt;gl\glaux.h&gt;						<font class="theme">// Header File For The GLaux Library</font>
+
+HDC		hDC=NULL;					<font class="theme">// Private GDI Device Context</font>
+HGLRC		hRC=NULL;					<font class="theme">// Permanent Rendering Context</font>
+HWND		hWnd=NULL;					<font class="theme">// Holds Our Window Handle</font>
+HINSTANCE	hInstance;					<font class="theme">// Holds The Instance Of The Application</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We're going to add 2 new variables.  base will hold the number of the first display
+list we create.  Each character requires it's own display list.  The character 'A' is 65 in
+the display list, 'B' is 66, 'C' is 67, etc.  So 'A' would be stored in display list base+65.
+<br><br>
+Next we add a variable called rot.  rot will be used to spin the text around on the screen
+using both SIN and COS.  It will also be used to pulse the colors.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>GLuint	base;							<font class="theme">// Base Display List For The Font Set	( ADD )</font>
+GLfloat	rot;							<font class="theme">// Used To Rotate The Text		( ADD )</font>
+
+bool	keys[256];						<font class="theme">// Array Used For The Keyboard Routine</font>
+bool	active=TRUE;						<font class="theme">// Window Active Flag Set To TRUE By Default</font>
+bool	fullscreen=TRUE;					<font class="theme">// Fullscreen Flag Set To Fullscreen Mode By Default</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+GLYPHMETRICSFLOAT gmf[256] will hold information about the placement and orientation for each of
+our 256 outline font display lists.  We select a letter by using gmf[num].  num is
+the number of the display list we want to know something about.  Later in the code I'll show you
+how to find out the width of each character so that you can automatically center the text on the
+screen.  Keep in mind that each character can be a different width.  glyphmetrics will make our
+lives a whole lot easier.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>GLYPHMETRICSFLOAT gmf[256];					<font class="theme">// Storage For Information About Our Font</font>
+
+LRESULT	CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);		<font class="theme">// Declaration For WndProc</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The following section of code builds the actual font similar to the way we made our Bitmap font.
+Just like in lesson 13, this section of code was the hardest part for me to figure out.
+<br><br>
+'HFONT font' will hold our Windows font ID.
+<br><br>
+Next we define base.  We do this by creating a group of 256 display lists using glGenLists(256).
+After the display lists are created, the variable base will hold the number of the first list.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>GLvoid BuildFont(GLvoid)					<font class="theme">// Build Our Bitmap Font</font>
+{
+	HFONT	font;						<font class="theme">// Windows Font ID</font>
+
+	base = glGenLists(256);					<font class="theme">// Storage For 256 Characters</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+More fun stuff.  We're going to create our Outline font.  We start off by specifying the size
+of the font.  You'll notice it's a negative number.  By putting a minus, we're telling windows
+to find us a font based on the CHARACTER height.  If we use a positive number we match the font
+based on the CELL height.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	font = CreateFont(	-12,				<font class="theme">// Height Of Font</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Then we specify the cell width.  You'll notice I have it set to 0.  By setting values to 0,
+windows will use the default value.  You can play around with this value if you want.  Make
+the font wide, etc.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				0,				<font class="theme">// Width Of Font</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Angle of Escapement will rotate the font.  Orientation Angle quoted from MSDN help Specifies
+the angle, in tenths of degrees, between each character's base line and the x-axis of the
+device.  Unfortunately I have no idea what that means :(
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				0,				<font class="theme">// Angle Of Escapement</font>
+				0,				<font class="theme">// Orientation Angle</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Font weight is a great parameter.  You can put a number from 0 - 1000 or you can use one of
+the predefined values.  FW_DONTCARE is 0, FW_NORMAL is 400, FW_BOLD is 700 and FW_BLACK is 900.
+There are alot more predefined values, but those 4 give some good variety.  The higher the
+value, the thicker the font (more bold).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				FW_BOLD,			<font class="theme">// Font Weight</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Italic, Underline and Strikeout can be either TRUE or FALSE.  Basically if underline is TRUE,
+the font will be underlined.  If it's FALSE it wont be.  Pretty simple :)
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				FALSE,				<font class="theme">// Italic</font>
+				FALSE,				<font class="theme">// Underline</font>
+				FALSE,				<font class="theme">// Strikeout</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Character set Identifier describes the type of Character set you wish to use.  There are too
+many types to explain.  CHINESEBIG5_CHARSET, GREEK_CHARSET, RUSSIAN_CHARSET, DEFAULT_CHARSET,
+etc.  ANSI is the one I use, although DEFAULT would probably work just as well.
+<br><br>
+If you're interested in using a font such as Webdings or Wingdings, you need to use
+SYMBOL_CHARSET instead of ANSI_CHARSET.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				ANSI_CHARSET,			<font class="theme">// Character Set Identifier</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Output Precision is very important.  It tells Windows what type of character set to use if
+there is more than one type available.  OUT_TT_PRECIS tells Windows that if there is more than
+one type of font to choose from with the same name, select the TRUETYPE version of the font.
+Truetype fonts always look better, especially when you make them large.  You can also use
+OUT_TT_ONLY_PRECIS, which ALWAYS trys to use a TRUETYPE Font.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				OUT_TT_PRECIS,			<font class="theme">// Output Precision</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Clipping Precision is the type of clipping to do on the font if it goes outside the clipping
+region.  Not much to say about this, just leave it set to default.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				CLIP_DEFAULT_PRECIS,		<font class="theme">// Clipping Precision</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Output Quality is very important.you can have PROOF, DRAFT, NONANTIALIASED, DEFAULT or
+ANTIALIASED.  We all know that ANTIALIASED fonts look good :)  Antialiasing a font is the
+same effect you get when you turn on font smoothing in Windows.  It makes everything look less
+jagged.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				ANTIALIASED_QUALITY,		<font class="theme">// Output Quality</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Next we have the Family and Pitch settings.  For pitch you can have DEFAULT_PITCH,
+FIXED_PITCH and VARIABLE_PITCH, and for family you can have FF_DECORATIVE, FF_MODERN,
+FF_ROMAN, FF_SCRIPT, FF_SWISS, FF_DONTCARE.  Play around with them to find out what they do.
+I just set them both to default.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				FF_DONTCARE|DEFAULT_PITCH,	<font class="theme">// Family And Pitch</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Finally... We have the actual name of the font.  Boot up Microsoft Word or some other text
+editor.  Click on the font drop down menu, and find a font you like.  To use the font,
+replace 'Comic Sans MS' with the name of the font you'd rather use.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				"Comic Sans MS");		<font class="theme">// Font Name</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we select the font by relating it to our DC.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	SelectObject(hDC, font);				<font class="theme">// Selects The Font We Created</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now for the new code.  We build our Outline font using a new command wglUseFontOutlines.  We
+select our DC, the starting character, the number of characters to create and the 'base'
+display list value.  All very similar to the way we built our Bitmap font.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	wglUseFontOutlines(	hDC,				<font class="theme">// Select The Current DC</font>
+				0,				<font class="theme">// Starting Character</font>
+				255,				<font class="theme">// Number Of Display Lists To Build</font>
+				base,				<font class="theme">// Starting Display Lists</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+That's not all however.  We then set the deviation level.  The closer to 0.0f, the smooth the
+font will look.  After we set the deviation, we get to set the font thickness.  This describes
+how thick the font is on the Z axis.  0.0f will produce a flat 2D looking font and 1.0f will
+produce a font with some depth.
+<br><br>
+The parameter WGL_FONT_POLYGONS tells OpenGL to create a solid font using polygons.  If we use
+WGL_FONT_LINES instead, the font will be wireframe (made of lines).  It's also important to note
+that if you use GL_FONT_LINES, normals will not be generated so lighting will not work properly.
+<br><br>
+The last parameter gmf points to the address buffer for the display list data.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				0.0f,				<font class="theme">// Deviation From The True Outlines</font>
+				0.2f,				<font class="theme">// Font Thickness In The Z Direction</font>
+				WGL_FONT_POLYGONS,		<font class="theme">// Use Polygons, Not Lines</font>
+				gmf);				<font class="theme">// Address Of Buffer To Recieve Data</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The following code is pretty simple.  It deletes the 256 display lists from memory starting at
+the first list specified by base.  I'm not sure if Windows would do this for you, but it's
+better to be safe than sorry :)
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>GLvoid KillFont(GLvoid)						<font class="theme">// Delete The Font</font>
+{
+ 	glDeleteLists(base, 256);				<font class="theme">// Delete All 256 Characters</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now for my handy dandy GL text routine.  You call this section of code with the command
+glPrint("message goes here").  Exactly the same way you drew Bitmap fonts to the screen in
+lesson 13.  The text is stored in the char string fmt.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>GLvoid glPrint(const char *fmt, ...)				<font class="theme">// Custom GL "Print" Routine</font>
+{
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The first line below sets up a variable called length.  We'll use this variable to find out
+how our string of text is.  The second line creates storage space for a 256 character string.
+text is the string we will end up printing to the screen.  The third line creates a pointer
+that points to the list of arguments we pass along with the string.  If we send any variables
+along with the text, this pointer will point to them.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	float		length=0;				<font class="theme">// Used To Find The Length Of The Text</font>
+	char		text[256];				<font class="theme">// Holds Our String</font>
+	va_list		ap;					<font class="theme">// Pointer To List Of Arguments</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The next two lines of code check to see if there's anything to display?  If there's no text, fmt
+will equal nothing (NULL), and nothing will be drawn to the screen.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	if (fmt == NULL)					<font class="theme">// If There's No Text</font>
+		return;						<font class="theme">// Do Nothing</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The following three lines of code convert any symbols in the text to the actual numbers the symbols represent.
+The final text and any converted symbols are then stored in the character string called "text".  I'll explain
+symbols in more detail down below.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	va_start(ap, fmt);					<font class="theme">// Parses The String For Variables</font>
+	    vsprintf(text, fmt, ap);				<font class="theme">// And Converts Symbols To Actual Numbers</font>
+	va_end(ap);						<font class="theme">// Results Are Stored In Text</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Thanks to Jim Williams for suggesting the code below.  I was centering the text manually.  His method
+works alot better :)
+<br><br>
+We start off by making a loop that goes through all the text character by character.
+strlen(text) gives us the length of our text.  After we've set up the loop, we will
+increase the value of length by the width of each
+character.  When we are done the value stored in length will be the width of our entire
+string.  So if we were printing "hello" and by some fluke each character was exactly 10 units wide,
+we'd increase the value of length by the width of the first letter 10.  Then we'd check the
+width of the second letter.  The width would also be 10, so length would become 10+10 (20).
+By the time we were done checking all 5 letters length would equal 50 (5*10).
+<br><br>
+The code that gives us the width of each character is gmf[text[loop]].gmfCellIncX.  Remember that
+gmf stores information out each display list.  If loop is equal to 0 text[loop] will
+be the first character in our string.  If loop is equal to 1 text[loop] will be the
+second character in our string.  gmfCellIncX tells us how wide the selected character is.
+gmfCellIncX is actually the distance that our display moves to the right after the character has
+been drawn so that each character isn't drawn on top of eachother.  Just so happens that distance
+is our width :)  You can also find out the character height with the command gmfCellIncY.  This
+might come in handy if you're drawing text vertically on the screen instead of horizontally.
+<br><br>
+NOTE:  Curt Werline adds - When you calculate the dimensions of the text string, you are using gmfCellIncX for
+the width and you suggest using gmfCellIncY for the height.  These values are offsets and not true dimensions.
+To get the true dimensions you should use gmfBlackBoxX and gmfBlackBoxY.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	for (unsigned int loop=0;loop&lt;(strlen(text));loop++)	<font class="theme">// Loop To Find Text Length</font>
+	{
+		length+=gmf[text[loop]].gmfCellIncX;		<font class="theme">// Increase Length By Each Characters Width</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Finally we take the length that we calculate and make it a negative number (because we have to
+move left of center to center our text).  We then divide the length by 2.  We don't want all the
+text to move left of center, just half the text!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glTranslatef(-length/2,0.0f,0.0f);			<font class="theme">// Center Our Text On The Screen</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We then push the GL_LIST_BIT, this prevents glListBase from affecting any other display lists we may be using
+in our program.
+<br><br>
+The command glListBase(base) tells OpenGL where to find the proper display list for each
+character.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glPushAttrib(GL_LIST_BIT);				<font class="theme">// Pushes The Display List Bits</font>
+	glListBase(base);					<font class="theme">// Sets The Base Character to 0</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now that OpenGL knows where the characters are located, we can tell it to write the text to the
+screen.  glCallLists writes the entire string of text to the screen at once by making multiple
+display list calls for you.
+<br><br>
+The line below does the following.  First it tells OpenGL we're going to be displaying lists
+to the screen.  strlen(text) finds out how many letters we're going to send to the screen.
+Next it needs to know what the largest list number were sending to it is going to be.  We're
+still not sending any more than 255 characters.  So we can use an UNSIGNED_BYTE.  (a byte
+represents a number from 0 - 255 which is exactly what we need).  Finally we tell it what to
+display by passing the string text.
+<br><br>
+In case you're wondering why the letters don't pile on top of eachother.  Each display list
+for each character knows where the right side of the character is.  After the letter is drawn
+to the screen, OpenGL translates to the right side of the drawn letter.  The next letter or
+object drawn will be drawn starting at the last location GL translated to, which is to the
+right of the last letter.
+<br><br>
+Finally we pop the GL_LIST_BIT setting GL back to how it was before we set our base setting
+using glListBase(base).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glCallLists(strlen(text), GL_UNSIGNED_BYTE, text);	<font class="theme">// Draws The Display List Text</font>
+	glPopAttrib();						<font class="theme">// Pops The Display List Bits</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Resizing code is exactly the same as the code in Lesson 1 so we'll skip over it.
+<br><br>
+There are a few new lines at the end of the InitGL code.  The line BuildFont() from lesson 13
+is still there, along with new code to do quick and dirty lighting.  Light0 is predefined on most
+video cards and will light up the scene nicely with no effort on my part :)
+<br><br>
+I've also added the command glEnable(GL_Color_Material).  Because the characters are 3D objects
+you need to enable Material Coloring, otherwise changing the color with glColor3f(r,g,b) will
+not change the color of the text.  If you're drawing shapes of your own to the screen while you
+write text enable material coloring before you write the text, and disable it after you've
+drawn the text, otherwise all the object on your screen will be colored.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int InitGL(GLvoid)						<font class="theme">// All Setup For OpenGL Goes Here</font>
+{
+	glShadeModel(GL_SMOOTH);				<font class="theme">// Enable Smooth Shading</font>
+	glClearColor(0.0f, 0.0f, 0.0f, 0.5f);			<font class="theme">// Black Background</font>
+	glClearDepth(1.0f);					<font class="theme">// Depth Buffer Setup</font>
+	glEnable(GL_DEPTH_TEST);				<font class="theme">// Enables Depth Testing</font>
+	glDepthFunc(GL_LEQUAL);					<font class="theme">// The Type Of Depth Testing To Do</font>
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);	<font class="theme">// Really Nice Perspective Calculations</font>
+	glEnable(GL_LIGHT0);					<font class="theme">// Enable Default Light (Quick And Dirty)	( NEW )</font>
+	glEnable(GL_LIGHTING);					<font class="theme">// Enable Lighting				( NEW )</font>
+	glEnable(GL_COLOR_MATERIAL);				<font class="theme">// Enable Coloring Of Material			( NEW )</font>
+
+	BuildFont();						<font class="theme">// Build The Font				( ADD )</font>
+
+	return TRUE;						<font class="theme">// Initialization Went OK</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now for the drawing code.  We start off by clearing the screen and the depth buffer.  We call
+glLoadIdentity() to reset everything.  Then we translate ten units into the screen.  Outline
+fonts look great in perspective mode.  The further into the screen you translate, the smaller
+the font becomes.  The closer you translate, the larger the font becomes.
+<br><br>
+Outline fonts can also be manipulated by using the glScalef(x,y,z) command.  If you want the
+font 2 times taller, use glScalef(1.0f,2.0f,1.0f).  the 2.0f is on the y axis, which tells OpenGL
+to draw the list twice as tall.  If the 2.0f was on the x axis, the character would be twice
+as wide.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int DrawGLScene(GLvoid)						<font class="theme">// Here's Where We Do All The Drawing</font>
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	<font class="theme">// Clear The Screen And The Depth Buffer</font>
+	glLoadIdentity();					<font class="theme">// Reset The View</font>
+	glTranslatef(0.0f,0.0f,-10.0f);				<font class="theme">// Move Ten Units Into The Screen</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+After we've translated into the screen, we want the text to spin.  The next 3 lines rotate the
+screen on all three axes.  I multiply rot by different numbers to make each rotation happen at
+a different speed.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glRotatef(rot,1.0f,0.0f,0.0f);				<font class="theme">// Rotate On The X Axis</font>
+	glRotatef(rot*1.5f,0.0f,1.0f,0.0f);			<font class="theme">// Rotate On The Y Axis</font>
+	glRotatef(rot*1.4f,0.0f,0.0f,1.0f);			<font class="theme">// Rotate On The Z Axis</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now for the crazy color cycling.  As usual, I make use of the only variable that counts up (rot).
+The colors pulse up and down using COS and SIN.  I divide the value of rot by different numbers
+so that each color isn't increasing at the same speed.  The final results are nice.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Pulsing Colors Based On The Rotation</font>
+	glColor3f(1.0f*float(cos(rot/20.0f)),1.0f*float(sin(rot/25.0f)),1.0f-0.5f*float(cos(rot/17.0f)));
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+My favorite part... Writing the text to the screen.  I've used the same command we used to write
+Bitmap fonts to the screen.  All you have to do to write the text to the screen is glPrint("{any
+text you want}").  It's that easy!
+<br><br>
+In the code below we'll print NeHe, a space, a dash, a space, and then whatever number is stored
+in rot divided by 50 (to slow down the counter a bit).  If the number is larger that 999.99
+the 4th digit to the left will be cut off (we're requesting only 3 digits to the left of the
+decimal place).  Only 2 digits will be displayed after the decimal place.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre> 	glPrint("NeHe - %3.2f",rot/50);				<font class="theme">// Print GL Text To The Screen</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Then we increase the rotation variable so the colors pulse and the text spins.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	rot+=0.5f;						<font class="theme">// Increase The Rotation Variable</font>
+	return TRUE;						<font class="theme">// Everything Went OK</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The last thing to do is add KillFont() to the end of KillGLWindow() just like I'm showing below.  It's important to
+add this line.  It cleans things up before we exit our program.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	if (!UnregisterClass("OpenGL",hInstance))		<font class="theme">// Are We Able To Unregister Class</font>
+	{
+		MessageBox(NULL,"Could Not Unregister Class.","SHUTDOWN ERROR",MB_OK | MB_ICONINFORMATION);
+		hInstance=NULL;					<font class="theme">// Set hInstance To NULL</font>
+	}
+
+	KillFont();						<font class="theme">// Destroy The Font</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+At the end of this tutorial you should be able to use Outline Fonts in your own OpenGL projects.
+Just like lesson 13, I've searched the net looking for a tutorial similar to this one, and have
+found nothing.  Could my site be the first to cover this topic in great detail while explaining
+everything in easy to understand C code?  Enjoy the tutorial, and happy coding!
+<br><br>
+<b>Jeff Molofee</b> (<b>NeHe</b>)
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vc/lesson14.zip">Visual C++</a> Code For This Lesson.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/bcb6/lesson14_bcb6.zip">Borland C++ Builder 6</a> Code For This Lesson. ( Conversion by <a href="mailto:christian@tugzip.com">Christian Kindahl</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cwarrior/lesson14.zip">Code Warrior 5.3</a> Code For This Lesson. ( Conversion by <a href="mailto:DelusionalBeing@hotmail.com">Scott Lupton</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cygwin/lesson14.tar.gz">Cygwin</a> Code For This Lesson. ( Conversion by <a href="mailto:jjolly@sfcn.org">John Jolly</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/delphi/lesson14.zip">Delphi</a> Code For This Lesson. ( Conversion by <a href="mailto:michal_praha@seznam.cz">Michal Tucek</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/devc/lesson14.zip">Dev C++</a> Code For This Lesson. ( Conversion by <a href="mailto:danprogram@hotmail.com">Dan</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/euphoria/lesson14.zip">Euphoria</a> Code For This Lesson. ( Conversion by <a href="mailto:1evan@sbcglobal.net">Evan Marshall</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/gameglut/lesson14.zip">Game GLUT</a> Code For This Lesson. ( Conversion by <a href="mailto:milix_gr@hotmail.com">Milikas Anastasios</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/java/lesson14.zip">Java</a> Code For This Lesson. ( Conversion by <a href="mailto:jeff@consunet.com.au">Jeff Kirby</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/jogl/lesson14.jar">JoGL</a> Code For This Lesson. ( Conversion by <a href="mailto:pepijn.vaneeckhoudt@luciad.com">Pepijn Van Eeckhoudt</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/lccwin32/lccwin32_lesson14.zip">LCC Win32</a> Code For This Lesson. ( Conversion by <a href="mailto:rwishlaw@shaw.ca">Robert Wishlaw</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/mac/lesson14.sit">Mac OS</a> Code For This Lesson. ( Conversion by <a href="mailto:asp@usc.edu">Anthony Parker</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/masm/lesson14.zip">MASM</a> Code For This Lesson. ( Conversion by <a href="mailto:greg@ozducati.com">Greg Helps</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/pelles_c/lesson14.zip">Pelles C</a> Code For This Lesson. ( Conversion by <a href="mailto:pelle@smorgasbordet.com">Pelle Orinius</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vb/lesson14.zip">Visual Basic</a> Code For This Lesson. ( Conversion by <a href="mailto:rosscogl@email.com">Ross Dawson</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vb/lesson14-2.zip">Visual Basic</a> Code For This Lesson. ( Conversion by <a href="mailto:fredo@studenten.net">Edo</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vs_net/lesson14.zip">Visual Studio .NET</a> Code For This Lesson. ( Conversion by <a href="mailto:ultimatezeus@hotmail.com">Grant James</a> )<br>
+<br><br>
+<br><br>
+<table border="0" width="100%">
+<tbody><tr><td align="left" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=13">&lt; Lesson 13</a></font></b></td>
+<td align="right" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=15">Lesson 15 &gt;</a></font></b></td>
+</tr></tbody></table>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table>
+
+</body></html>

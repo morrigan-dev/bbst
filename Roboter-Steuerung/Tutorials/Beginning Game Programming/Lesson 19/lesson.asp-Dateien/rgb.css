@@ -1,0 +1,248 @@
+A:active
+{
+    BACKGROUND: none;
+    COLOR: #bbccff;
+    TEXT-DECORATION: none
+}
+A:link
+{
+    BACKGROUND: none;
+    COLOR: #bbccff;
+    TEXT-DECORATION: none
+}
+A:visited
+{
+    BACKGROUND: none;
+    COLOR: #bbccff;
+    TEXT-DECORATION: none
+}
+A:hover
+{
+    BACKGROUND: none;
+    COLOR: #ffda6a;
+    TEXT-DECORATION: none
+}
+BODY
+{
+    BACKGROUND: #000000;
+    COLOR: #ffffff
+}
+TD IMG
+{
+    DISPLAY: block
+}
+.back
+{
+    BACKGROUND: #000022;
+    COLOR: #ffffff
+}
+.back2
+{
+    BACKGROUND: #000000;
+    COLOR: #ffffff
+}
+.back3
+{
+    BACKGROUND: #000022;
+    COLOR: #ffffff
+}
+.copy
+{
+    FONT-SIZE: 11px;
+    FONT-STYLE: normal;
+    FONT-FAMILY: Tahoma, Verdana, sans-serif;
+    FONT-VARIANT: normal;
+    LINE-HEIGHT: normal;
+    TEXT-DECORATION: none
+}
+.head
+{
+    FONT: bold 13px Tahoma, Verdana, sans-serif;
+    TEXT-DECORATION: none
+}
+.link
+{
+    FONT-SIZE: 12px;
+    FONT-STYLE: normal;
+    FONT-FAMILY: Tahoma, Verdana, sans-serif;
+    FONT-VARIANT: normal;
+    LINE-HEIGHT: normal;
+    TEXT-DECORATION: none
+}
+.menu
+{
+    FONT: bold 17px Tahoma, Verdana, sans-serif;
+    TEXT-DECORATION: none
+}
+.news
+{
+    BACKGROUND: #00008b;
+    COLOR: #ffffff
+}
+.lpad
+{
+    PADDING-LEFT: 28px
+}
+.rpad
+{
+    PADDING-RIGHT: 33px
+}
+.text
+{
+    FONT-SIZE: 12px;
+    FONT-STYLE: normal;
+    FONT-FAMILY: Tahoma, Verdana, sans-serif;
+    FONT-VARIANT: normal;
+    LINE-HEIGHT: normal;
+    TEXT-DECORATION: none
+}
+.theme
+{
+    BACKGROUND: none;
+    COLOR: #bbccff
+}
+
+.dotted
+{
+    BORDER-BOTTOM: #00008b 2px dotted;
+    BORDER-LEFT: #00008b 2px dotted;
+    BORDER-RIGHT: #00008b 2px dotted;
+    BORDER-TOP: #00008b 2px dotted
+}
+.solid
+{
+    BORDER-BOTTOM: #ffffff 1px solid;
+    BORDER-LEFT: #ffffff 1px solid;
+    BORDER-RIGHT: #ffffff 1px solid;
+    BORDER-TOP: #ffffff 1px solid
+}
+
+.logo
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/logo.jpg)
+}
+.menubg
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/menubg.jpg)
+}
+.l_menubar
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/menubar.jpg)
+}
+.l_menutop
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/menuheading.jpg)
+}
+.l_menuheading
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/menuheading.jpg)
+}
+.l_menubottom
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/menuheading.jpg)
+}
+.r_menubar
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/menubar.jpg)
+}
+.r_menutop
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/menuheading.jpg)
+}
+.r_menuheading
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/menuheading.jpg)
+}
+.r_menubottom
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/menuheading.jpg)
+}
+.nehebutton
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/nehebutton.jpg)
+}
+.newslogo
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/newslogo.jpg)
+}
+.tinylogo
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/border/tinylogo.jpg)
+}
+
+.bc
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/border/bc.jpg)
+}
+.bl
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/border/bl.jpg)
+}
+.br
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/border/br.jpg)
+}
+.c
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/border/c.jpg)
+}
+.l
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/border/l.jpg)
+}
+.lc
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/border/lc.jpg)
+}
+.r
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/border/r.jpg)
+}
+.rc
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/border/rc.jpg)
+}
+.tc
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/border/tc.jpg)
+}
+.tl
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/border/tl.jpg)
+}
+.tr
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/border/tr.jpg)
+}
+.l2
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/centerbar/l2.jpg)
+}
+.r2
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/centerbar/r2.jpg)
+}
+.lct
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/centerbar/lc.jpg)
+}
+.ct
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/centerbar/c.jpg)
+}
+.rct
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/centerbar/rc.jpg)
+}
+.lcb
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/centerbar/lc.jpg)
+}
+.cb
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/centerbar/c.jpg)
+}
+.rcb
+{
+    BACKGROUND-IMAGE: url(/graphics/rgb/centerbar/rc.jpg)
+}

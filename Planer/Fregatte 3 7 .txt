@@ -1,0 +1,39 @@
+Schiffstyp: Fregatte (Typ 3)
+Techlevel: 3
+Module: 7
+Kommandopunkte: 27
+Angriffswert: 666
+Schilde: 419
+Panzerung: 441
+Struktur: 58
+Wendigkeit: 452
+Reaktor: 116
+Laderaum: 0
+Sensor: 3
+Tarnung: 8
+Min Crew: 39
+Max Crew: 50
+Sprung Sektor: 8
+Sprung-Zeit: 23
+Angriffs-Zeit: 18
+Angriffsenergie: 31
+
+Verwendete Forschungen: 
+3x Molekülstrukturen (Lvl 4)
+4x Antimaterie (Lvl 8)
+
+Baukosten: 
+Iso: 0
+Eg: 40
+Es: 9
+Rad: 0
+Em: 150
+Sm: 191
+Lm: 15
+Fe: 15
+Syn: 60
+Org: 0
+Erz: 0
+Rek: 0
+Nrg: 1246
+Cr: 2353

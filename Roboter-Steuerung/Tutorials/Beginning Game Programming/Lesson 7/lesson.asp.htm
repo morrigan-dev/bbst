@@ -1,0 +1,548 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+<title>NeHe Productions: OpenGL Lesson #07</title>
+<meta name="author" content="Jeff Molofee">
+<meta name="description" content="OpenGL Tutorials, Demos, Games and More...">
+<meta name="keywords" content="opengl, tutorial, article, demo, game, blend, texturemap, lighting, contest, 3D">
+<link rel="stylesheet" type="text/css" href="lesson.asp-Dateien/rgb.css">
+</head><body bgcolor="black" link="#aaccff" text="white" vlink="#aaccff">
+
+<table border="0" width="100%"><tbody><tr><td align="center">
+<!-- Begin -  Site: GameDev.net Zone: NeHe 728x90 -->
+<script language="javascript" type="text/javascript">
+<!--
+var browName = navigator.appName;
+var SiteID = 1;
+var ZoneID = 4;
+var browDateTime = (new Date()).getTime();
+if (browName=='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;Browser=NETSCAPE4&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+if (browName!='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+// --> 
+</script><script language="javascript" src="lesson.asp-Dateien/a.js"></script><a href="http://www.gamedev.net/banman/a.aspx?Task=Click&amp;ZoneID=4&amp;CampaignID=609&amp;AdvertiserID=11&amp;BannerID=673&amp;SiteID=1&amp;RandomNumber=745393459&amp;Keywords=" target="_Blank"><img src="lesson.asp-Dateien/BGPleader.png" alt="" align="Center" border="0" height="90" width="728"></a><br>
+<noscript> <a
+href="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Click&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+target="_blank"> <img
+src="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Get&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+width="728" height="90" border="0" alt=""></a>
+</noscript>
+<!-- End -  Site: GameDev.net Zone: NeHe 728x90 --></td></tr></tbody></table><br>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tinylogo" height="130" width="326"><img src="lesson.asp-Dateien/blank.gif" alt="NeHe Productions" height="130" width="326"></td><td class="indexheading" align="center" valign="middle"><font class="text"><font class="theme" size="+3"><b><i>Lesson: 07</i></b></font></font></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">In this tutorial I'll teach you how to use three different texture filters.  I'll teach you how to move an object using
+keys on the keyboard, and I'll also teach you how to apply simple lighting to your OpenGL scene.  Lots covered in this
+tutorial, so if the previous tutorials are giving you problems, go back and review.  It's important to have a good
+understanding of the basics before you jump into the following code.
+<br><br>
+We're going to be modifying the code from lesson one again.  As usual, if there are any major changes, I will write out
+the entire section of code that has been modified.  We'll start off by adding a few new variables to the program.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>#include	&lt;windows.h&gt;							<font class="theme">// Header File For Windows</font>
+#include	&lt;stdio.h&gt;							<font class="theme">// Header File For Standard Input/Output ( ADD )</font>
+#include	&lt;gl\gl.h&gt;							<font class="theme">// Header File For The OpenGL32 Library</font>
+#include	&lt;gl\glu.h&gt;							<font class="theme">// Header File For The GLu32 Library</font>
+#include	&lt;gl\glaux.h&gt;							<font class="theme">// Header File For The GLaux Library</font>
+
+HDC		hDC=NULL;							<font class="theme">// Private GDI Device Context</font>
+HGLRC		hRC=NULL;							<font class="theme">// Permanent Rendering Context</font>
+HWND		hWnd=NULL;							<font class="theme">// Holds Our Window Handle</font>
+HINSTANCE	hInstance;							<font class="theme">// Holds The Instance Of The Application</font>
+
+bool		keys[256];							<font class="theme">// Array Used For The Keyboard Routine</font>
+bool		active=TRUE;							<font class="theme">// Window Active Flag</font>
+bool		fullscreen=TRUE;						<font class="theme">// Fullscreen Flag</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The lines below are new.  We're going to add three boolean variables.  BOOL means the variable can only be TRUE or
+FALSE.  We create a variable called light to keep track of whether or not the lighting is on or off.  The
+variables lp and fp are used to store whether or not the 'L' or 'F' key has been pressed.  I'll explain
+why we need these variables later on in the code.  For now, just know that they are important.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>BOOL	light;									<font class="theme">// Lighting ON / OFF</font>
+BOOL	lp;									<font class="theme">// L Pressed?</font>
+BOOL	fp;									<font class="theme">// F Pressed?</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we're going to set up five variables that will control the angle on the x axis (xrot), the angle on the y
+axis (yrot), the speed the crate is spinning at on the x axis (xspeed), and the speed the crate is
+spinning at on the y axis (yspeed).  We'll also create a variable called z that will control how deep into the
+screen (on the z axis) the crate is.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>GLfloat	xrot;									<font class="theme">// X Rotation</font>
+GLfloat	yrot;									<font class="theme">// Y Rotation</font>
+GLfloat xspeed;									<font class="theme">// X Rotation Speed</font>
+GLfloat yspeed;									<font class="theme">// Y Rotation Speed</font>
+GLfloat	z=-5.0f;								<font class="theme">// Depth Into The Screen</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we set up the arrays that will be used to create the lighting.  We'll use two different types of light.  The first
+type of light is called ambient light.  Ambient light is light that doesn't come from any particular direction.  All
+the objects in your scene will be lit up by the ambient light.  The second type of light is called diffuse light.
+Diffuse light is created by your light source and is reflected off the surface of an object in your scene.  Any surface
+of an object that the light hits directly will be very bright, and areas the light barely gets to will be darker.  This
+creates a nice shading effect on the sides of our crate.
+<br><br>
+Light is created the same way color is created.  If the first number is 1.0f, and the next two are 0.0f, we will end up
+with a bright red light.  If the third number is 1.0f, and the first two are 0.0f, we will have a bright blue light.  The
+last number is an alpha value.  We'll leave it at 1.0f for now.
+<br><br>
+So in the line below, we are storing the values for a white ambient light at half intensity (0.5f).  Because all the
+numbers are 0.5f, we will end up with a light that's halfway between off (black) and full brightness (white).  Red, blue
+and green mixed at the same value will create a shade from black(0.0f) to white(1.0f).  Without an ambient light, spots
+where there is no diffuse light will appear very dark.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>GLfloat LightAmbient[]= { 0.5f, 0.5f, 0.5f, 1.0f }; 				<font class="theme">// Ambient Light Values ( NEW )</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+In the next line we're storing the values for a super bright, full intensity diffuse light.  All the values are 1.0f.
+This means the light is as bright as we can get it.  A diffuse light this bright lights up the front of the crate nicely.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>GLfloat LightDiffuse[]= { 1.0f, 1.0f, 1.0f, 1.0f };				 <font class="theme">// Diffuse Light Values ( NEW )</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Finally we store the position of the light.  The first three numbers are the same as glTranslate's three numbers.  The
+first number is for moving left and right on the x plane, the second number is for moving up and down on the y plane,
+and the third number is for moving into and out of the screen on the z plane.  Because we want our light hitting directly
+on the front of the crate, we don't move left or right so the first value is 0.0f (no movement on x), we don't want to move
+up and down, so the second value is 0.0f as well.  For the third value we want to make sure the light is always in front of
+the crate.  So we'll position the light off the screen, towards the viewer.  Lets say the glass on your monitor is at 0.0f
+on the z plane.  We'll position the light at 2.0f on the z plane.  If you could actually see the light, it would be
+floating in front of the glass on your monitor.  By doing this, the only way the light would be behind the crate is if the
+crate was also in front of the glass on your monitor.  Of course if the crate was no longer behind the glass on your
+monitor, you would no longer see the crate, so it doesn't matter where the light is.  Does that make sense?
+<br><br>
+There's no real easy way to explain the third parameter.  You should know that -2.0f is going to be closer to you than
+-5.0f.  and -100.0f would be WAY into the screen.  Once you get to 0.0f, the image is so big, it fills the entire monitor.
+Once you start going into positive values, the image no longer appears on the screen cause it has "gone past the screen".
+That's what I mean when I say out of the screen.  The object is still there, you just can't see it anymore.
+<br><br>
+Leave the last number at 1.0f.  This tells OpenGL the designated coordinates are the position of the light source.  More
+about this in a later tutorial.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>GLfloat LightPosition[]= { 0.0f, 0.0f, 2.0f, 1.0f };				 <font class="theme">// Light Position ( NEW )</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The filter variable below is to keep track of which texture to display.  The first texture (texture 0) is made
+using gl_nearest (no smoothing).  The second texture (texture 1) uses gl_linear filtering which smooths the image out
+quite a bit.  The third texture (texture 2) uses mipmapped textures, creating a very nice looking texture.  The
+variable filter will equal 0, 1 or 2 depending on the texture we want to use.  We start off with the first texture.
+<br><br>
+GLuint texture[3] creates storage space for the three different textures.  The textures will be stored at texture[0],
+texture[1] and texture[2].
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>GLuint	filter;									<font class="theme">// Which Filter To Use</font>
+GLuint	texture[3];								<font class="theme">// Storage for 3 textures</font>
+
+LRESULT	CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);				<font class="theme">// Declaration For WndProc</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we load in a bitmap, and create three different textures from it.  This tutorial uses the glaux library to load in the
+bitmap, so make sure you have the glaux library included before you try compiling the code.  I know Delphi, and Visual C++
+both have glaux libraries.  I'm not sure about other languages.  I'm only going to explain what the new lines of code do,
+if you see a line I haven't commented on, and you're wondering what it does, check tutorial six.  It explains loading, and
+building texture maps from bitmap images in great detail.
+<br><br>
+Immediately after the above code, and before ReSizeGLScene(), we want to add the following section of code.  This is
+the same code we used in lesson 6 to load in a bitmap file.  Nothing has changed.  If you're not sure what any of the
+following lines do, read tutorial six.  It explains the code below in detail.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>AUX_RGBImageRec *LoadBMP(char *Filename)					<font class="theme">// Loads A Bitmap Image</font>
+{
+	FILE *File=NULL;							<font class="theme">// File Handle</font>
+
+	if (!Filename)								<font class="theme">// Make Sure A Filename Was Given</font>
+	{
+		return NULL;							<font class="theme">// If Not Return NULL</font>
+	}
+
+	File=fopen(Filename,"r");						<font class="theme">// Check To See If The File Exists</font>
+
+	if (File)								<font class="theme">// Does The File Exist?</font>
+	{
+		fclose(File);							<font class="theme">// Close The Handle</font>
+		return auxDIBImageLoad(Filename);				<font class="theme">// Load The Bitmap And Return A Pointer</font>
+	}
+	return NULL;								<font class="theme">// If Load Failed Return NULL</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+This is the section of code that loads the bitmap (calling the code above) and converts it into 3 textures.  Status
+is used to keep track of whether or not the texture was loaded and created.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int LoadGLTextures()								<font class="theme">// Load Bitmaps And Convert To Textures</font>
+{
+	int Status=FALSE;							<font class="theme">// Status Indicator</font>
+
+	AUX_RGBImageRec *TextureImage[1];					<font class="theme">// Create Storage Space For The Texture</font>
+
+	memset(TextureImage,0,sizeof(void *)*1);				<font class="theme">// Set The Pointer To NULL</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we load the bitmap and convert it to a texture.  TextureImage[0]=LoadBMP("Data/Crate.bmp") will jump to our LoadBMP()
+code.  The file named Crate.bmp in the Data directory will be loaded.  If everything goes well, the image data is stored
+in TextureImage[0], Status is set to TRUE, and we start to build our texture.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Load The Bitmap, Check For Errors, If Bitmap's Not Found Quit</font>
+	if (TextureImage[0]=LoadBMP("Data/Crate.bmp"))
+	{
+		Status=TRUE;							<font class="theme">// Set The Status To TRUE</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now that we've loaded the image data into TextureImage[0], we'll use the data to build 3 textures.  The line below
+tells OpenGL we want to build three textures, and we want the texture to be stored in texture[0], texture[1] and
+texture[2].
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		glGenTextures(3, &amp;texture[0]);					<font class="theme">// Create Three Textures</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+In tutorial six, we used linear filtered texture maps.  They require a hefty amount of processing power, but they look
+real nice.  The first type of texture we're going to create in this tutorial uses GL_NEAREST.  Basically this type of
+texture has no filtering at all.  It takes very little processing power, and it looks real bad.  If you've ever played a
+game where the textures look all blocky, it's probably using this type of texture.  The only benefit of this type of
+texture is that projects made using this type of texture will usually run pretty good on slow computers.
+<br><br>
+You'll notice we're using GL_NEAREST for both the MIN and MAG.  You can mix GL_NEAREST with GL_LINEAR, and the texture
+will look a bit better, but we're intested in speed, so we'll use low quality for both.  The MIN_FILTER is the filter
+used when an image is drawn smaller than the original texture size.  The MAG_FILTER is used when the image is bigger
+than the original texture size.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		<font class="theme">// Create Nearest Filtered Texture</font>
+		glBindTexture(GL_TEXTURE_2D, texture[0]);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST); <font class="theme">// ( NEW )</font>
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST); <font class="theme">// ( NEW )</font>
+		glTexImage2D(GL_TEXTURE_2D, 0, 3, TextureImage[0]-&gt;sizeX, TextureImage[0]-&gt;sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, TextureImage[0]-&gt;data);
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The next texture we build is the same type of texture we used in tutorial six.  Linear filtered.  The only thing that
+has changed is that we are storing this texture in texture[1] instead of texture[0] because it's our second texture.
+If we stored it in texture[0] like above, it would overwrite the GL_NEAREST texture (the first texture).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		<font class="theme">// Create Linear Filtered Texture</font>
+		glBindTexture(GL_TEXTURE_2D, texture[1]);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+		glTexImage2D(GL_TEXTURE_2D, 0, 3, TextureImage[0]-&gt;sizeX, TextureImage[0]-&gt;sizeY, 0, GL_RGB, GL_UNSIGNED_BYTE, TextureImage[0]-&gt;data);
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now for a new way to make textures.  Mipmapping!  You may have noticed that when you make an image very tiny on the screen,
+alot of the fine details disappear.  Patterns that used to look nice start looking real bad.  When you tell OpenGL to
+build a mipmapped texture OpenGL tries to build different sized high quality textures.  When you draw a mipmapped texture
+to the screen OpenGL will select the BEST looking texture from the ones it built (texture with the most detail) and
+draw it to the screen instead of resizing the original image (which causes detail loss).
+<br><br>
+I had said in tutorial six there was a way around the 64,128,256,etc limit that OpenGL puts on texture width and height.
+gluBuild2DMipmaps is it.  From what I've found, you can use any bitmap image you want (any width and height) when building
+mipmapped textures.  OpenGL will automatically size it to the proper width and height.
+<br><br>
+Because this is texture number three, we're going to store this texture in texture[2].  So now we have texture[0] which
+has no filtering, texture[1] which uses linear filtering, and texture[2] which uses mipmapped textures.  We're done
+building the textures for this tutorial.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		<font class="theme">// Create MipMapped Texture</font>
+		glBindTexture(GL_TEXTURE_2D, texture[2]);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST); <font class="theme">// ( NEW )</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">The
+following line builds the mipmapped texture. We're creating a 2D
+texture using three colors (red, green, blue).
+TextureImage[0]-&gt;sizeX is the bitmaps width,
+TextureImage[0]-&gt;sizeY is the bitmaps height, GL_RGB means we're
+using Red, Green,
+Blue colors in that order. GL_UNSIGNED_BYTE means the data that makes
+the texture is made up of bytes, and TextureImage[0]-&gt;data
+points to the bitmap data that we're building the texture from.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		gluBuild2DMipmaps(GL_TEXTURE_2D, 3, TextureImage[0]-&gt;sizeX, TextureImage[0]-&gt;sizeY, GL_RGB, GL_UNSIGNED_BYTE, TextureImage[0]-&gt;data); <font class="theme">// ( NEW )</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we free up any ram that we may have used to store the bitmap data.  We check to see if the bitmap data was stored
+in TextureImage[0].  If it was we check to see if the data has been stored.  If data was stored, we erase it. Then we
+free the image structure making sure any used memory is freed up.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	if (TextureImage[0])							<font class="theme">// If Texture Exists</font>
+	{
+		if (TextureImage[0]-&gt;data)					<font class="theme">// If Texture Image Exists</font>
+		{
+			free(TextureImage[0]-&gt;data);				<font class="theme">// Free The Texture Image Memory</font>
+		}
+
+		free(TextureImage[0]);						<font class="theme">// Free The Image Structure</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Finally we return the status.  If everything went OK, the variable Status will be TRUE.  If anything went wrong,
+Status will be FALSE.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	return Status;								<font class="theme">// Return The Status</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we load the textures, and initialize the OpenGL settings.  The first line of InitGL loads the textures using the code
+above.  After the textures have been created, we enable 2D texture mapping with glEnable(GL_TEXTURE_2D).  The shade
+mode is set to smooth shading, The background color is set to black, we enable depth testing, then we enable nice
+perspective calculations.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int InitGL(GLvoid)								<font class="theme">// All Setup For OpenGL Goes Here</font>
+{
+	if (!LoadGLTextures())							<font class="theme">// Jump To Texture Loading Routine</font>
+	{
+		return FALSE;							<font class="theme">// If Texture Didn't Load Return FALSE</font>
+	}
+
+	glEnable(GL_TEXTURE_2D);						<font class="theme">// Enable Texture Mapping</font>
+	glShadeModel(GL_SMOOTH);						<font class="theme">// Enable Smooth Shading</font>
+	glClearColor(0.0f, 0.0f, 0.0f, 0.5f);					<font class="theme">// Black Background</font>
+	glClearDepth(1.0f);							<font class="theme">// Depth Buffer Setup</font>
+	glEnable(GL_DEPTH_TEST);						<font class="theme">// Enables Depth Testing</font>
+	glDepthFunc(GL_LEQUAL);							<font class="theme">// The Type Of Depth Testing To Do</font>
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);			<font class="theme">// Really Nice Perspective Calculations</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we set up the lighting.  The line below will set the amount of ambient light that light1 will give off.  At the
+beginning of this tutorial we stored the amount of ambient light in LightAmbient.  The values we stored in the array
+will be used (half intensity ambient light).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glLightfv(GL_LIGHT1, GL_AMBIENT, LightAmbient);				<font class="theme">// Setup The Ambient Light</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Next we set up the amount of diffuse light that light number one will give off.  We stored the amount of diffuse light
+in LightDiffuse.  The values we stored in this array will be used (full intensity white light).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuse);				<font class="theme">// Setup The Diffuse Light</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we set the position of the light.  We stored the position in LightPosition.  The values we stored in this array will
+be used (right in the center of the front face, 0.0f on x, 0.0f on y, and 2 unit towards the viewer {coming out of the
+screen} on the z plane).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glLightfv(GL_LIGHT1, GL_POSITION,LightPosition);			<font class="theme">// Position The Light</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Finally, we enable light number one.  We haven't enabled GL_LIGHTING though, so you wont see any lighting just yet.
+The light is set up, and positioned, it's even enabled, but until we enable GL_LIGHTING, the light will not work.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glEnable(GL_LIGHT1);							<font class="theme">// Enable Light One</font>
+	return TRUE;								<font class="theme">// Initialization Went OK</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+In the next section of code, we're going to draw the texture mapped cube.  I will comment a few of the line only because
+they are new.  If you're not sure what the uncommented lines do, check tutorial number six.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int DrawGLScene(GLvoid)								<font class="theme">// Here's Where We Do All The Drawing</font>
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);			<font class="theme">// Clear The Screen And The Depth Buffer</font>
+	glLoadIdentity();							<font class="theme">// Reset The View</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The next three lines of code position and rotate the texture mapped cube.  glTranslatef(0.0f,0.0f,z) moves the cube to
+the value of z on the z plane (away from and towards the viewer).  glRotatef(xrot,1.0f,0.0f,0.0f) uses the
+variable xrot to rotate the cube on the x axis. glRotatef(yrot,0.0f,1.0f,0.0f) uses the variable yrot to
+rotate the cube on the y axis.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glTranslatef(0.0f,0.0f,z);						<font class="theme">// Translate Into/Out Of The Screen By z</font>
+
+	glRotatef(xrot,1.0f,0.0f,0.0f);						<font class="theme">// Rotate On The X Axis By xrot</font>
+	glRotatef(yrot,0.0f,1.0f,0.0f);						<font class="theme">// Rotate On The Y Axis By yrot</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The next line is similar to the line we used in tutorial six, but instead of binding texture[0], we are binding
+texture[filter].  Any time we press the 'F' key, the value in filter will increase.  If this value is higher than two,
+the variable filter is set back to zero.  When the program starts the filter will be set to zero.  This is the same
+as saying glBindTexture(GL_TEXTURE_2D, texture[0]).  If we press 'F' once more, the variable filter will equal one, which
+is the same as saying glBindTexture(GL_TEXTURE_2D, texture[1]).  By using the variable filter we can select any of the
+three textures we've made.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glBindTexture(GL_TEXTURE_2D, texture[filter]);				<font class="theme">// Select A Texture Based On filter</font>
+
+	glBegin(GL_QUADS);							<font class="theme">// Start Drawing Quads</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+glNormal3f is new to my tutorials.  A normal is a line pointing straight out of the middle of a polygon at a 90 degree
+angle.  When you use lighting, you need to specify a normal.  The normal tells OpenGL which direction the polygon is
+facing... which way is up.  If you don't specify normals, all kinds of weird things happen.  Faces that shouldn't light
+up will light up, the wrong side of a polygon will light up, etc.  The normal should point outwards from the polygon.
+<br><br>
+Looking at the front face you'll notice that the normal is positive on the z axis.  This means the normal is pointing at
+the viewer.  Exactly the direction we want it pointing.  On the back face, the normal is pointing away from the viewer,
+into the screen.  Again exactly what we want.  If the cube is spun 180 degrees on either the x or y axis, the front will
+be facing into the screen and the back will be facing towards the viewer.  No matter what face is facing the viewer, the
+normal of that face will also be pointing towards the viewer.  Because the light is close to the viewer, any time the
+normal is pointing towards the viewer it's also pointing towards the light.  When it does, the face will light up.  The
+more a normal points towards the light, the brighter that face is.  If you move into the center of the cube you'll notice
+it's dark.  The normals are point out, not in, so there's no light inside the box, exactly as it should be.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		<font class="theme">// Front Face</font>
+		glNormal3f( 0.0f, 0.0f, 1.0f);					<font class="theme">// Normal Pointing Towards Viewer</font>
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);	<font class="theme">// Point 1 (Front)</font>
+		glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);	<font class="theme">// Point 2 (Front)</font>
+		glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);	<font class="theme">// Point 3 (Front)</font>
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);	<font class="theme">// Point 4 (Front)</font>
+		<font class="theme">// Back Face</font>
+		glNormal3f( 0.0f, 0.0f,-1.0f);					<font class="theme">// Normal Pointing Away From Viewer</font>
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);	<font class="theme">// Point 1 (Back)</font>
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);	<font class="theme">// Point 2 (Back)</font>
+		glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);	<font class="theme">// Point 3 (Back)</font>
+		glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);	<font class="theme">// Point 4 (Back)</font>
+		<font class="theme">// Top Face</font>
+		glNormal3f( 0.0f, 1.0f, 0.0f);					<font class="theme">// Normal Pointing Up</font>
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);	<font class="theme">// Point 1 (Top)</font>
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f,  1.0f,  1.0f);	<font class="theme">// Point 2 (Top)</font>
+		glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f,  1.0f,  1.0f);	<font class="theme">// Point 3 (Top)</font>
+		glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);	<font class="theme">// Point 4 (Top)</font>
+		<font class="theme">// Bottom Face</font>
+		glNormal3f( 0.0f,-1.0f, 0.0f);					<font class="theme">// Normal Pointing Down</font>
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f, -1.0f, -1.0f);	<font class="theme">// Point 1 (Bottom)</font>
+		glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f, -1.0f, -1.0f);	<font class="theme">// Point 2 (Bottom)</font>
+		glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);	<font class="theme">// Point 3 (Bottom)</font>
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);	<font class="theme">// Point 4 (Bottom)</font>
+		<font class="theme">// Right face</font>
+		glNormal3f( 1.0f, 0.0f, 0.0f);					<font class="theme">// Normal Pointing Right</font>
+		glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f, -1.0f);	<font class="theme">// Point 1 (Right)</font>
+		glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, -1.0f);	<font class="theme">// Point 2 (Right)</font>
+		glTexCoord2f(0.0f, 1.0f); glVertex3f( 1.0f,  1.0f,  1.0f);	<font class="theme">// Point 3 (Right)</font>
+		glTexCoord2f(0.0f, 0.0f); glVertex3f( 1.0f, -1.0f,  1.0f);	<font class="theme">// Point 4 (Right)</font>
+		<font class="theme">// Left Face</font>
+		glNormal3f(-1.0f, 0.0f, 0.0f);					<font class="theme">// Normal Pointing Left</font>
+		glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, -1.0f);	<font class="theme">// Point 1 (Left)</font>
+		glTexCoord2f(1.0f, 0.0f); glVertex3f(-1.0f, -1.0f,  1.0f);	<font class="theme">// Point 2 (Left)</font>
+		glTexCoord2f(1.0f, 1.0f); glVertex3f(-1.0f,  1.0f,  1.0f);	<font class="theme">// Point 3 (Left)</font>
+		glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, -1.0f);	<font class="theme">// Point 4 (Left)</font>
+	glEnd();								<font class="theme">// Done Drawing Quads</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The next two lines increase xrot and yrot by the amount stored in xspeed, and yspeed.  If
+the value in xspeed or yspeed is high, xrot and yrot will increase quickly.  The faster
+xrot, or yrot increases, the faster the cube spins on that axis.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	xrot+=xspeed;								<font class="theme">// Add xspeed To xrot</font>
+	yrot+=yspeed;								<font class="theme">// Add yspeed To yrot</font>
+	return TRUE;								<font class="theme">// Keep Going</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we move down to WinMain().  Were going to add code to turn lighting on and off, spin the crate, change the
+filter and move the crate into and out of the screen.  Closer to the bottom of WinMain() you will see the command
+SwapBuffers(hDC).  Immediately after this line, add the following code.
+<br><br>
+This code checks to see if the letter 'L' has been pressed on the keyboard.  The first line checks to see if
+'L' is being pressed.  If 'L' is being pressed, but lp isn't false, meaning 'L' has already been pressed once
+or it's being held down, nothing will happen.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				SwapBuffers(hDC);				<font class="theme">// Swap Buffers (Double Buffering)</font>
+				if (keys['L'] &amp;&amp; !lp)				<font class="theme">// L Key Being Pressed Not Held?</font>
+				{
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+If lp was false, meaning the 'L' key hasn't been pressed yet, or it's been released, lp becomes true.
+This forces the person to let go of the 'L' key before this code will run again.  If we didn't check to see if the
+key was being held down, the lighting would flicker off and on over and over, because the program would think you
+were pressing the 'L' key over and over again each time it came to this section of code.
+<br><br>
+Once lp has been set to true, telling the computer that 'L' is being held down, we toggle lighting off and
+on.  The variable light can only be true of false.  So if we say light=!light, what we are
+actually saying is light equals NOT light.  Which in english translates to if light equals true make
+light not true (false), and if light equals false, make light not false (true).  So if light
+was true, it becomes false, and if light was false it becomes true.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>					lp=TRUE;				<font class="theme">// lp Becomes TRUE</font>
+					light=!light;				<font class="theme">// Toggle Light TRUE/FALSE</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we check to see what light ended up being.  The first line translated to english means:  If light
+equals false.  So if you put it all together, the lines do the following:  If light equals false, disable
+lighting.  This turns all lighting off.  The command 'else' translates to: if it wasn't false.  So if light
+wasn't false, it must have been true, so we turn lighting on. 
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>					if (!light)				<font class="theme">// If Not Light</font>
+					{
+						glDisable(GL_LIGHTING);		<font class="theme">// Disable Lighting</font>
+					}
+					else					<font class="theme">// Otherwise</font>
+					{
+						glEnable(GL_LIGHTING);		<font class="theme">// Enable Lighting</font>
+					}
+				}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The following line checks to see if we stopped pressing the 'L' key.  If we did, it makes the variable lp equal
+false, meaning the 'L' key isn't pressed.  If we didn't check to see if the key was released, we'd be able to turn
+lighting on once, but because the computer would always think 'L' was being held down so it wouldn't let us turn it
+back off.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				if (!keys['L'])					<font class="theme">// Has L Key Been Released?</font>
+				{
+					lp=FALSE;				<font class="theme">// If So, lp Becomes FALSE</font>
+				}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now we do something similar with the 'F' key. If the key is being pressed, and it's not being held down or it's never
+been pressed before, it will make the variable fp equal true meaning the key is now being held down.  It will
+then increase the variable called filter.  If filter is greater than 2 (which would be texture[3], and
+that texture doesn't exist), we reset the variable filter back to zero.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				if (keys['F'] &amp;&amp; !fp)				<font class="theme">// Is F Key Being Pressed?</font>
+				{
+					fp=TRUE;				<font class="theme">// fp Becomes TRUE</font>
+					filter+=1;				<font class="theme">// filter Value Increases By One</font>
+					if (filter&gt;2)				<font class="theme">// Is Value Greater Than 2?</font>
+					{
+						filter=0;			<font class="theme">// If So, Set filter To 0</font>
+					}
+				}
+				if (!keys['F'])					<font class="theme">// Has F Key Been Released?</font>
+				{
+					fp=FALSE;				<font class="theme">// If So, fp Becomes FALSE</font>
+				}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The next four lines check to see if we are pressing the 'Page Up' key.  If we are it decreases the variable z.
+If this variable decreases, the cube will move into the distance because of the glTranslatef(0.0f,0.0f,z) command
+used in the DrawGLScene procedure.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				if (keys[VK_PRIOR])				<font class="theme">// Is Page Up Being Pressed?</font>
+				{
+					z-=0.02f;				<font class="theme">// If So, Move Into The Screen</font>
+				}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+These four lines check to see if we are pressing the 'Page Down' key.  If we are it increases the variable z and
+moves the cube towards the viewer because of the glTranslatef(0.0f,0.0f,z) command used in the DrawGLScene procedure.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				if (keys[VK_NEXT])				<font class="theme">// Is Page Down Being Pressed?</font>
+				{
+					z+=0.02f;				<font class="theme">// If So, Move Towards The Viewer</font>
+				}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now all we have to check for is the arrow keys.  By pressing left or right, xspeed is increased or decreased.
+By pressing up or down, yspeed is increased or decreased.  Remember further up in the tutorial I said that if
+the value in xspeed or yspeed was high, the cube would spin faster.  The longer you hold down an arrow
+key, the faster the cube will spin in that direction.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				if (keys[VK_UP])				<font class="theme">// Is Up Arrow Being Pressed?</font>
+				{
+					xspeed-=0.01f;				<font class="theme">// If So, Decrease xspeed</font>
+				}
+				if (keys[VK_DOWN])				<font class="theme">// Is Down Arrow Being Pressed?</font>
+				{
+					xspeed+=0.01f;				<font class="theme">// If So, Increase xspeed</font>
+				}
+				if (keys[VK_RIGHT])				<font class="theme">// Is Right Arrow Being Pressed?</font>
+				{
+					yspeed+=0.01f;				<font class="theme">// If So, Increase yspeed</font>
+				}
+				if (keys[VK_LEFT])				<font class="theme">// Is Left Arrow Being Pressed?</font>
+				{
+					yspeed-=0.01f;				<font class="theme">// If So, Decrease yspeed</font>
+				}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Like all the previous tutorials, make sure the title at the top of the window is correct.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>				if (keys[VK_F1])				<font class="theme">// Is F1 Being Pressed?</font>
+				{
+					keys[VK_F1]=FALSE;			<font class="theme">// If So Make Key FALSE</font>
+					KillGLWindow();				<font class="theme">// Kill Our Current Window</font>
+					fullscreen=!fullscreen;			<font class="theme">// Toggle Fullscreen / Windowed Mode</font>
+					<font class="theme">// Recreate Our OpenGL Window</font>
+					if (!CreateGLWindow("NeHe's Textures, Lighting &amp; Keyboard Tutorial",640,480,16,fullscreen))
+					{
+						return 0;			<font class="theme">// Quit If Window Was Not Created</font>
+					}
+				}
+			}
+		}
+	}
+
+	<font class="theme">// Shutdown</font>
+	KillGLWindow();								<font class="theme">// Kill The Window</font>
+	return (msg.wParam);							<font class="theme">// Exit The Program</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+By the end of this tutorial you should be able to create and interact with high quality, realistic looking, textured mapped
+objects made up of quads.  You should understand the benefits of each of the three filters used in this tutorial.  By pressing
+specific keys on the keyboard you should be able to interact with the object(s) on the screen, and finally, you should know
+how to apply simple lighting to a scene making the scene appear more realistic.
+<br><br>
+<b>Jeff Molofee</b> (<b>NeHe</b>)
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vc/lesson07.zip">Visual C++</a> Code For This Lesson.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/bcb6/lesson07_bcb6.zip">Borland C++ Builder 6</a> Code For This Lesson. ( Conversion by <a href="mailto:christian@tugzip.com">Christian Kindahl</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/c_sharp/lesson07.zip">C#</a> Code For This Lesson. ( Conversion by <a href="mailto:bholley@unlnotes.unl.edu">Brian Holley</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cwarrior/lesson07.zip">Code Warrior 5.3</a> Code For This Lesson. ( Conversion by <a href="mailto:DelusionalBeing@hotmail.com">Scott Lupton</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cygwin/lesson07.tar.gz">Cygwin</a> Code For This Lesson. ( Conversion by <a href="mailto:stephan@lazyfellow.com">Stephan Ferraro</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/d/lesson07.zip">D Language</a> Code For This Lesson. ( Conversion by <a href="mailto:gpineda2013@yahoo.com.mx">Familia Pineda Garcia</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/delphi/lesson07.zip">Delphi</a> Code For This Lesson. ( Conversion by <a href="mailto:michal_praha@seznam.cz">Michal Tucek</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/devc/lesson07.zip">Dev C++</a> Code For This Lesson. ( Conversion by <a href="mailto:danprogram@hotmail.com">Dan</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/euphoria/lesson07.zip">Euphoria</a> Code For This Lesson. ( Conversion by <a href="mailto:1evan@sbcglobal.net">Evan Marshall</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/gameglut/lesson07.zip">Game GLUT</a> Code For This Lesson. ( Conversion by <a href="mailto:milix_gr@hotmail.com">Milikas Anastasios</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/glut/lesson07.zip">GLUT</a> Code For This Lesson. ( Conversion by <a href="mailto:lordrustad@hotmail.com">Andy Restad</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/irix/lesson07.zip">Irix</a> Code For This Lesson. ( Conversion by <a href="mailto:lakmal@gunasekara.de">Lakmal Gunasekara</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/java/lesson07.zip">Java</a> Code For This Lesson. ( Conversion by <a href="mailto:jeff@consunet.com.au">Jeff Kirby</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/jedisdl/lesson07.zip">Jedi-SDL</a> Code For This Lesson. ( Conversion by <a href="mailto:Dominique@SavageSoftware.com.au">Dominique Louis</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/jogl/lesson07.jar">JoGL</a> Code For This Lesson. ( Conversion by <a href="mailto:jattier@hotmail.com">Kevin J. Duling</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/lccwin32/lccwin32_lesson07.zip">LCC Win32</a> Code For This Lesson. ( Conversion by <a href="mailto:rwishlaw@shaw.ca">Robert Wishlaw</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linux/lesson07.tar.gz">Linux</a> Code For This Lesson. ( Conversion by <a href="mailto:ulmont@bellsouth.net">Richard Campbell</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxglx/lesson07.tar.gz">Linux/GLX</a> Code For This Lesson. ( Conversion by <a href="mailto:Mihael.Vrbanec@stud.uni-karlsruhe.de">Mihael Vrbanec</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxsdl/lesson07.tar.gz">Linux/SDL</a> Code For This Lesson. ( Conversion by <a href="mailto:leggett@eecs.tulane.edu">Ti Leggett</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/lwjgl/lesson07.jar">LWJGL</a> Code For This Lesson. ( Conversion by <a href="mailto:mark.bernard@rogers.com">Mark Bernard</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/mac/lesson07.sit">Mac OS</a> Code For This Lesson. ( Conversion by <a href="mailto:asp@usc.edu">Anthony Parker</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/macosxcocoa/lesson07.zip">Mac OS X/Cocoa</a> Code For This Lesson. ( Conversion by <a href="mailto:blb@pobox.com">Bryan Blackburn</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/masm/lesson07.zip">MASM</a> Code For This Lesson. ( Conversion by <a href="mailto:scalp@bigfoot.com">Nico (Scalp)</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/openil/lesson07.zip">Visual C++ / OpenIL</a> Code For This Lesson. ( Conversion by <a href="mailto:doomwiz@ticnet.com">Denton Woods</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/pbasic/lesson07.zip">Power Basic</a> Code For This Lesson. ( Conversion by <a href="mailto:anguslaw@net.ntl.com">Angus Law</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/pelles_c/lesson07.zip">Pelles C</a> Code For This Lesson. ( Conversion by <a href="mailto:pelle@smorgasbordet.com">Pelle Orinius</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/scheme/lesson07.zip">Scheme</a> Code For This Lesson. ( Conversion by <a href="mailto:bburns@cs.umass.edu">Brendan Burns</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/solaris/lesson07.zip">Solaris</a> Code For This Lesson. ( Conversion by <a href="mailto:lakmal@gunasekara.de">Lakmal Gunasekara</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vb/lesson07.zip">Visual Basic</a> Code For This Lesson. ( Conversion by <a href="mailto:pdetagyos@cox.net">Peter De Tagyos</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vfortran/lesson07.zip">Visual Fortran</a> Code For This Lesson. ( Conversion by <a href="mailto:Jean-Philippe.Perois@wanadoo.fr">Jean-Philippe Perois</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vs_net/lesson07.zip">Visual Studio .NET</a> Code For This Lesson. ( Conversion by <a href="mailto:ultimatezeus@hotmail.com">Grant James</a> )<br>
+<br><br>
+<br><br>
+<table border="0" width="100%">
+<tbody><tr><td align="left" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=06">&lt; Lesson 06</a></font></b></td>
+<td align="right" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=08">Lesson 08 &gt;</a></font></b></td>
+</tr></tbody></table>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table>
+
+</body></html>

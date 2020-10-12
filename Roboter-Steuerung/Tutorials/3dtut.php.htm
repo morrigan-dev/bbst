@@ -1,0 +1,347 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xml:lang="de" xmlns="http://www.w3.org/1999/xhtml" lang="de"><head profile="http://gmpg.org/xfn/11">
+
+
+	<title>mel.melaxis.com - 3D-Programmierung - Tutorial</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<meta name="author" content="Pablo Hoch">
+	<meta name="owner" content="Pablo Hoch">
+	<meta name="DC.Title" content="3D-Programmierung - Tutorial">
+	<meta name="DC.Creator" content="Pablo Hoch">
+	<meta name="DC.Format" content="text/html">
+	<meta name="DC.Language" content="de">
+	<meta name="robots" content="index,follow">
+	<meta name="revisit-after" content="2 days">
+	<meta name="ICBM" content="50.1822, 8.4706">
+	<meta name="geo.position" content="50.1822;8.4706">
+	<meta name="geo.placename" content="Königstein im Taunus">
+	<meta name="geo.region" content="DE-HE">
+	<link rel="stylesheet" type="text/css" href="3dtut.php-Dateien/slimspring.css">
+	<style type="text/css">
+.smallbold {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+}
+.small {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: normal;
+
+}
+.tiny {
+
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	font-weight: normal;
+}
+.tinybold {
+
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	font-weight: bold;
+}
+</style>
+	<script src="3dtut.php-Dateien/urchin.js" type="text/javascript"></script>
+	<script type="text/javascript">
+	_uacct = "UA-75960-1";
+	urchinTracker();
+	</script>
+</head><body>
+<div align="center">
+<div id="bigbox">
+	<div id="topbox"><a href="http://mel.melaxis.com/"><img src="3dtut.php-Dateien/slimspring-header.jpg" alt="mel.melaxis.com"></a></div>
+	<div id="outer">
+	<div id="inner">
+		<div id="leftbox">
+		<div class="content">
+			<ul>
+				<li class="submenu">Blog
+					<ul>
+					<li><a href="http://mel.melaxis.com/blog.php">Aktuelles</a> (<a href="http://mel.melaxis.com/rss20.php">RSS</a>)(<a href="http://mel.melaxis.com/atom.php">Atom</a>)</li>
+					<li><a href="http://mel.melaxis.com/blogarchive.php">Archiv</a></li>
+					<li><a href="http://mel.melaxis.com/blogsearch.php">Suche</a></li>
+					<li><a href="http://mel.melaxis.com/devblog/">Development Blog</a></li>
+					</ul>
+				</li>
+				<li class="submenu">Tutorials
+					<ul>
+					<li><a href="http://mel.melaxis.com/3dtut.php">3D-Programmierung</a></li>
+					<li><a href="http://mel.melaxis.com/multiwp.php">Mehrere Blogs mit WordPress</a></li>
+					</ul>
+				</li>
+				<li class="submenu">Grafiken
+					<ul>
+					<li><a href="http://mel.melaxis.com/povray.php">POV-Ray</a></li>
+					</ul>
+				</li>
+				<li class="submenu">Photos
+					<ul>
+					<li><a href="http://mel.melaxis.com/phalbum.php">Alben</a></li>
+					<li><a href="http://mel.melaxis.com/phtop.php">Top (nach Hits)</a></li>
+					<!--<li><a href="http://www.flickr.com/photos/15974145@N00/" target="_blank">Flickr</a></li>-->
+					</ul>
+				</li>
+				<li class="submenu">Software
+					<ul>
+					<li><a href="http://mel.melaxis.com/3dmodels.php">3D Model Viewer</a></li>
+					<li><a href="http://www.melaxis.com/floomp/" target="_blank">Floomp</a></li>
+					<li><a href="http://mel.melaxis.com/devblog/2005/08/07/a-flexible-caching-system-for-net-melcache/">MelCache</a></li>
+					<li><a href="http://mel.melaxis.com/sources.php">Quelltexte</a></li>
+					</ul>
+				</li>
+				<li class="submenu">Links
+					<ul>
+					<li><a href="http://del.icio.us/melaxis" target="_blank">del.icio.us</a></li>
+					<li><a href="http://www.bloglines.com/public/melaxis?Lang=german">Blogroll</a></li>
+					<li><a href="http://mel.melaxis.com/links.php">Verschiedenes</a></li>
+					</ul>
+				</li>
+				<li class="submenu">Quicklinks
+					<ul>
+					<li><a href="http://www.melaxis.com/" target="_blank">melaxis.com</a></li>
+					<li><a href="http://www.keeptalking.de/" target="_blank">KeepTalking</a></li>
+					<li><a href="http://blumenlexikon.melaxis.com/" target="_blank">Blumenlexikon</a></li>
+					</ul>
+				</li>
+				<li class="submenu">Info
+					<ul>
+					<li><a href="http://mel.melaxis.com/impressum.php">Impressum</a></li>
+					<li><a href="http://mel.melaxis.com/kontakt.php">Kontakt</a></li>
+					<li><a href="http://mel.melaxis.com/guestbook.php">Gästebuch</a></li>
+					</ul>
+				</li>
+				<li class="submenu">Style ändern<ul><li><a href="http://mel.melaxis.com/3dtut.php?slixstyle=slimblue">Himmelblau</a></li>
+<li><a href="http://mel.melaxis.com/3dtut.php?slixstyle=slimautumn">Herbstlich</a></li>
+<li>Marienkäfer (aktiv)</li>
+</ul></li>
+			</ul>
+		<div class="quickpoll"><p><strong>Dein Lieblingsbrowser?</strong></p><form name="quickpollform" action="poll.php" method="post"><input name="poll" value="2" type="hidden"><input name="page" value="/3dtut.php" type="hidden"><input name="answer" value="11" type="radio">Mozilla Firefox<br><input name="answer" value="16" type="radio">Mozilla-basiert<br><input name="answer" value="14" type="radio">Opera<br><input name="answer" value="15" type="radio">Safari<br><input name="answer" value="18" type="radio">Anderer<br><input name="answer" value="12" type="radio">Mozilla<br><input name="answer" value="17" type="radio">IE-basiert<br><input name="answer" value="13" type="radio">Internet Explorer<br><input name="ok" value="Abstimmen!" class="pollbutton" type="submit"><br></form><p align="center"><a href="http://mel.melaxis.com/poll.php?poll=2&amp;page=%2F3dtut.php">Ergebnis anzeigen</a></p></div><div id="adsense-button">
+				<script type="text/javascript"><!--
+				google_ad_client = "pub-6722431982008737";
+				google_ad_width = 120;
+				google_ad_height = 60;
+				google_ad_format = "120x60_as_rimg";
+				google_cpa_choice = "CAAQpeGbzgEaCBNm5xUda_PTKNXA93M";
+				//--></script>
+				<script type="text/javascript" src="3dtut.php-Dateien/show_ads.js">
+				</script>
+				
+				<script type="text/javascript"><!--
+				google_ad_client = "pub-6722431982008737";
+				google_ad_width = 125;
+				google_ad_height = 125;
+				google_ad_format = "125x125_as_rimg";
+				google_cpa_choice = "CAAQmc_nzwEaCPw7w5wuT5e_KIG093M";
+				//--></script>
+				<script type="text/javascript" src="3dtut.php-Dateien/show_ads.js">
+				</script>
+			</div>
+		
+			<!--<div id="menubuttons">
+				<a href="http://validator.w3.org/check/referer" target="_blank"><img src="img/8015/xhtml.gif" alt="XHTML 1.0" width="80" height="15" border="0" /></a>
+				<a href="rss20.php" target="_blank"><img src="img/8015/rss2.gif" alt="RSS 2.0" width="80" height="15" border="0" /></a>
+				<a href="atom.php" target="_blank"><img src="img/8015/atom03.gif" alt="Atom 0.3" width="80" height="15" border="0" /></a>
+				<a href="http://www.spreadfirefox.com/?q=affiliates&amp;id=1006&amp;t=68" target="_blank"><img src="http://sfx-images.mozilla.org/affiliates/Buttons/80x15/firefox_80x15.png" alt="Firefox" width="80" height="15" border="0" /></a>
+				<a href="http://de.wikipedia.org/" target="_blank"><img src="img/8015/wikipedia.png" alt="Wikipedia" width="80" height="15" border="0" /></a>
+			</div>-->
+		</div>
+		</div>
+		<div id="rightbox">
+		<div class="content">
+	<div id="location"><a href="http://mel.melaxis.com/">Home</a> &gt; Texte &gt; <a href="http://mel.melaxis.com/3dtut.php">3D-Programmierung</a></div>
+  <h2>3D-Programmierung</h2>
+  <p class="small">Copyright 2003 Pablo Hoch (mel@melaxis.com), alle Rechte vorbehalten.<br>
+    Vervielfältigung/Veröffentlichung etc. nur mit schriftlicher Genehmigung
+  des Autors!</p>
+  <p align="center"><script type="text/javascript"><!--
+google_ad_client = "pub-6722431982008737";
+google_alternate_ad_url = "http://mel.melaxis.com/google_adsense_script.html";
+google_ad_width = 468;
+google_ad_height = 60;
+google_ad_format = "468x60_as";
+google_ad_type = "text_image";
+google_ad_channel ="8200944730";
+google_color_border = "619400";
+google_color_bg = "B3D377";
+google_color_link = "304A00";
+google_color_url = "2D328B";
+google_color_text = "6F6F6F";
+//--></script>
+<script type="text/javascript" src="3dtut.php-Dateien/show_ads.js">
+</script></p>
+    <span class="smallbold">  <font size="3">Vorwort</font></span>
+  <p class="small">Im Internet existieren bereits viele Tutorials für die
+    Verwendung von DirectX und OpenGL. Anleitungen, wie man ohne Verwendung solcher
+    Bibliotheken
+    simple 3-dimensionale Grafiken zeichnet, finden sich nicht so leicht. Ich
+    möchte mit diesem Tutorial einen Einstieg in die 3D-Programmierung geben.
+    Das hier vorgestellte Konzept ist nur für Wireframe-Darstellungen brauchbar,
+    da wir keine Oberflächen definieren werden. Besuchen Sie die Seiten
+    am Ende des Tutorials, um mehr über dieses Thema zu erfahren. Es sei
+    jedoch gesagt, dass komplexe Modelle in Java ohne Hardwarebeschleunigung
+    nicht effizient
+    schattiert werden können, daher ist davon abzuraten. Beachten Sie bitte
+    auch das Glossar am Ende des Tutorials!</p>
+
+  <p class="small"><span class="smallbold"><font size="3">Das 3-dimensionale
+  Koordinatensystem</font></span></p>
+  <p class="small">Das 2-dimensionale Koordinatensystem ist uns allen bekannt.
+    Es besteht aus 2 Achsen, der x-Achse, die von links nach rechts verläuft,
+    und der y-Achse, die nach oben zeigt. Punkte werden durch die x- und y-Werte
+    angeben: P(1,2). Für räumliche Objekte brauchen wir eine weitere Dimension.
+    Normalerweise verwendet man dazu das Linkshänder-Koordinatensystem. Dabei
+    lassen wir die x- und y-Achse so wie sie sind und fügen eine 3. Achse, die
+    z-Achse hinzu, die in den Bildschirm zeigt. Die Punkte werden hier ähnlich
+    angegeben, mit den x-, y- und z-Koordinaten: P(1,2,3).</p>
+
+  <p class="small"><span class="smallbold"><font size="3">3D-Modelle</font></span></p>
+  <p class="small">3D-Modelle bestehen zu erst einmal aus Punkten, manchmal auch
+    Scheitelpunkte genannt. Zeichnet man Wireframe-Modelle, so werden diese Punkte
+    durch simple Linien verbunden. Bei schattierten oder texturierten Modellen,
+    benötigt man Flächen. Flächen sind im Normalfall Polygone mit 3 Punkten,
+    also Dreiecke. 3D-Modellierungssoftware erstellt auch Punkte und Flächen.
+    Wir verwenden hier jedoch Punkte und Linien - da wir nur Wireframe-Modelle
+    zeichnen wollen. Wir werden die Dreiecke daher in 3 einzelne Linien umwandeln.
+    Die Oberfläche geht dabei verloren, das Modell ist daher durchsichtig.</p>
+
+  <p class="small"><span class="smallbold"><font size="3">Projektion</font></span></p>
+  <p class="small">Nun stellt sich die Frage, wie wir unser Model auf den Bildschirm
+    bringen, da wir eine neue Dimension haben. Wir müssen unsere 3D-Koordinaten
+    in 2D-Bildschirmkoordinaten umwandeln, um sie zeichnen zu können. Wir wir
+    alle wissen, erscheinen uns Objekte, die weiter weg sind kleiner. Es würde
+    also Sinn machen, die X- und Y-Koordinaten durch die Z-Koordinate zu divieren,
+    so würden die Ergebnisse mit zunehmender Entfernung kleiner. Damit das ganz
+    aber nicht zu klein wird, multiplizieren wir mit einem Zoom-Faktor. Wir kommen
+    zur folgenden Umrechnung:</p>
+  <p class="small">Bildschirm X = 3D X * Zoom / 3D Z<br>
+    Bildschirm Y = 3D Y * Zoom / 3D Z</p>
+  <p class="small">Als Zoom-Wert kann eine beliebige Größe gewählt werden, je
+    nach Größe und Abstand der Modelle - wir werden hier 300 verwenden. Linien
+    zeichnen wir genau wie im 2-dimensionalen Koordinatensystem auch - wir verbinden
+    zwei Punkte. Wir müssen also lediglich Start- und Endpunkt der Linie umrechnen
+    und dann ganz normal verbinden.</p>
+
+  <p class="small"><span class="smallbold"><font size="3">Skalierung</font></span></p>
+  <p class="small">Ein 3-dimensionales Objekt zu skalieren ist einfach. Um es
+    gleichmäßig zu skalieren, multiplizieren wir einfach die x-, y- und z-Koordinaten
+    jedes Punktes mit einem Faktor s:</p>
+  <p class="small">X neu = X * s<br>
+    Y neu = Y * s<br>
+    Z neu = Z * s
+</p>
+  <p class="small">Für ungleichmäßige Skalierung, multiplizieren wir nur einen
+    oder zwei Koordinaten mit dem Faktor s.</p>
+
+  <p class="small"><span class="smallbold"><font size="3">Verschiebung</font></span></p>
+  <p class="small">Das Verschieben eines Objekts ist genauso einfach. Hier addieren
+    bzw. subtrahieren wir unseren Wert von einem oder mehreren Koordinaten.</p>
+
+  <p class="small"><span class="smallbold"><font size="3">Rotation</font></span></p>
+  <p class="small">Wenn wir ein Objekt drehen wollen, wirds schon komplizierter.
+    Man kann hier zwar auch die 2D-Rotationsformeln übertragen, aber die sind
+    schon etwas komplizierter als das, was bis jetzt kam. Wir benötigen hierzu
+    Sinus und Cosinus. Stellen wir uns zuerst einmal ein relativ einfaches Objekt
+    vor, zum Beispiel einen Bleistift. Durch den Bleistift geht seiner Länge
+    nach die z-Achse. Wenn wir direkt von vorne drauf schauen, sehen wir nur
+    einen Kreis - in der Mitte des Kreises liegt der Ursprung (0,0,0). Zum Drehen
+    verändern wir nur die Werte der x- und y-Koordinaten:</p>
+  <p class="small">X neu = cos(a) * X + sin(a) * Y<br>
+    Y neu = cos(a) * Y - sin(a) * X</p>
+  <p class="small">Wollen wir um eine andere Achse drehen, müssen wir natürlich
+    die Koordinaten abändern. Verallgemeinern wir die Formel auf:</p>
+  <p class="small">K1 neu = cos(a) * K1 + sin(a) * K2<br>
+    K2 neu = cos(a) * K2 - sin(a) * K1</p>
+  <p class="small">...dann können wir folgende Werte für K1 und K2 einsetzen:</p>
+  <p class="small">Rotation um X-Achse: K1=Y, K2=Z<br>
+    Rotation um Y-Achse: K1=Z, K2=X<br>
+  Rotation um Z-Achse: K1=X, K2=Y</p>
+  <p class="small">Nun gibt es dabei noch einige Dinge zu beachten. Erstens benötigen
+    wir eine temporäre Variable, da wir in der 2. Zeile mit dem originalen K1
+    weiter rechnen, nicht mit K1 neu. Das darf also nicht verwechselt werden.
+    Zweitens wird das Objekt um den Ursprung rotiert. Damit sich das Objekt um
+    sich selbst dreht, muss der Mittelpunkt des Objekts am Ursprung, also bei
+    (0,0,0) sein. Ist das nicht der Fall, wird das Objekt um die Achse rotiert.
+    Man kann sich das so vorstellen: Die Achse ist eine Stange, das Objekt ist
+    daran mit einer Schnur befestigt und dreht sich folglich um die Stange, nicht
+    um sich selbst. Was, wenn wir unser Objekt nun um sich selbst drehen wollen,
+    es aber nicht am Ursprung ist? Wir sollten jedes Modell am Ursprung modellieren,
+    dann drehen und erst zum Schluss verschieben.</p>
+
+  <p class="small"><span class="smallbold"><font size="3">Fazit</font></span></p>
+  <p class="small">Wir haben nun das nötige Grundwissen, um ein Programm
+    zu schreiben, was Modelle lädt, im Wireframe- oder Punkte-Modus anzeigt,
+    verschiebt, skaliert und rotiert. Ich möchte jetzt noch <em>kurz</em> auf
+    ein paar fortgeschrittenere Themen eingehen. Diese habe ich mir selbst ausgedacht,
+    möglicherweise gibt es bessere Lösungen.</p>
+
+  <p class="small"><span class="smallbold"><font size="3">Vertex Shader</font></span></p>
+  <p class="small">Man möchte vielleicht die Punkte in unterschiedlichen Farben/Größen
+    zeichnen, je nach dem wie weit sie entfernt sind. Man kann hierzu die Z-Koordinate
+    verwenden. Damit vordere Vertices nicht von hinteren übermalt werden, müssen
+    die Vertices zuerst anhand der Z-Koordinate sortiert werden. Empfehlenswert
+    ist hier der QuickSort-Algorithmus.</p>
+
+  <p class="small"><span class="smallbold"><font size="3">Explosion</font></span></p>
+  <p class="small">Für die Explosion verwende ich ausschliesslich den Punktmodus,
+    zeichne also keine Linien. Ich addiere/subtrahiere dabei bei jedem Schritt
+    a² * Zufallswert von 0-1 auf die verschiedenen Achsen, je nach Effekt. Das
+    Objekt wird in 4 Quadranten unterteilt, die die Explosionsrichtung bestimmen,
+    so dass das Objekt stets nach aussen explodiert. Überschreiten die Punkte
+    einen bestimmten Bereich, werden sie ausgeblendet.</p>
+
+  <p class="small"><span class="smallbold"><font size="3">Glossar</font></span></p>
+  <p class="small">Vertex, Vertices: Punkt, Punkte<br>
+    Face: Fläche, gewöhnlich Dreiecke</p>
+
+  <p class="small"><span class="smallbold"><font size="3">Links</font></span></p>
+  <p class="small">3D mit Java, Modellierung, Projektion, Transformation, Schattierung
+    (englisch): <a href="http://www.javaworld.com/javaworld/jw-05-1997/jw-05-howto.html" target="_blank">Teil
+  1</a>, <a href="http://www.javaworld.com/jw-06-1997/jw-06-howto.html" target="_blank">Teil
+  2</a>, <a href="http://www.javaworld.com/javaworld/jw-07-1997/jw-07-howto.html" target="_blank">Teil
+  3</a><br>
+  3D mit Java, Projektion, Transformation, Schattierung (englisch): <a href="http://www.gis.net/%7Egeorgea/smfa-java/lect8.html" target="_blank">Teil
+  1</a>, <a href="http://www.gis.net/%7Egeorgea/smfa-java/lect9.html" target="_blank">Teil
+  2</a>, <a href="http://www.gis.net/%7Egeorgea/smfa-java/lect10.html" target="_blank">Teil
+  3</a><br>
+  3D mit Java, Projektion, Transformation, Schattierung (deutsch): <a href="http://www-public.tu-bs.de:8080/%7Ey0005571/3dtutorial/1.htm" target="_blank">Teil
+  1</a>, <a href="http://www-public.tu-bs.de:8080/%7Ey0005571/3dtutorial/2.htm" target="_blank">Teil
+  2</a><br>
+  2D und 3D Transformation, Projektion (englisch): <a href="http://www.daimi.au.dk/%7Embl/cgcourse/wiki/3d_transformations.html" target="_blank">Teil 1</a></p>
+  <p align="center"><script type="text/javascript"><!--
+google_ad_client = "pub-6722431982008737";
+google_alternate_ad_url = "http://mel.melaxis.com/google_adsense_script.html";
+google_ad_width = 336;
+google_ad_height = 280;
+google_ad_format = "336x280_as";
+google_ad_type = "text_image";
+google_ad_channel ="8200944730";
+google_color_border = "619400";
+google_color_bg = "B3D377";
+google_color_link = "304A00";
+google_color_url = "2D328B";
+google_color_text = "6F6F6F";
+//--></script>
+<script type="text/javascript" src="3dtut.php-Dateien/show_ads.js">
+</script></p>
+</div>
+		</div>
+		<div class="clr"></div>
+	</div>
+	</div>
+	<div class="clr"></div>
+	<div id="footer">
+		<address>Copyright 2004-2005 Pablo Hoch. Alle Rechte vorbehalten.</address>
+	</div>
+	<div id="buttons">
+		<a href="http://validator.w3.org/check/referer" target="_blank"><img src="3dtut.php-Dateien/valid-xhtml10.png" alt="Valid XHTML 1.0!" height="31" width="88"></a>
+		<a href="http://jigsaw.w3.org/css-validator/check/referer" target="_blank"><img src="3dtut.php-Dateien/vcss.gif" alt="Valid CSS!" height="31" width="88"></a>
+		<a href="http://www.spreadfirefox.com/?q=affiliates&amp;id=1006&amp;t=68" target="_blank"><img alt="Get Firefox!" title="Get Firefox!" src="3dtut.php-Dateien/take.gif" border="0" height="31" width="88"></a>
+		<a href="http://my.opera.com/melaxis/affiliate/" title="Download Opera"><img src="3dtut.php-Dateien/opera88x31.gif" alt="Download Opera" height="31" width="88"></a>
+		<!--<br />
+		<a href="http://www.body-language.org/alizee" target="_blank"><img border="0" alt="Alizée Fanlisting" src="img/fanl-alizee.gif" width="50" height="50" /></a>
+		<a href="http://www.darkness-falls.org/matrix" target="_blank"><img border="0" alt="The Matrix Fanlisting" src="img/fanl-matrix.gif" width="50" height="50" /></a>-->
+	</div>
+</div>
+</div>
+</body></html>

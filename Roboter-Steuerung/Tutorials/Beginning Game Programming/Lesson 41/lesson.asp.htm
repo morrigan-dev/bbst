@@ -1,0 +1,732 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+<title>NeHe Productions: OpenGL Lesson #41</title>
+<meta name="author" content="Jeff Molofee">
+<meta name="description" content="OpenGL Tutorials, Demos, Games and More...">
+<meta name="keywords" content="opengl, tutorial, article, demo, game, blend, texturemap, lighting, contest, 3D">
+<link rel="stylesheet" type="text/css" href="lesson.asp-Dateien/rgb.css">
+</head><body bgcolor="black" link="#aaccff" text="white" vlink="#aaccff">
+
+<table border="0" width="100%"><tbody><tr><td align="center">
+<!-- Begin -  Site: GameDev.net Zone: NeHe 728x90 -->
+<script language="javascript" type="text/javascript">
+<!--
+var browName = navigator.appName;
+var SiteID = 1;
+var ZoneID = 4;
+var browDateTime = (new Date()).getTime();
+if (browName=='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;Browser=NETSCAPE4&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+if (browName!='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+// --> 
+</script><script language="javascript" src="lesson.asp-Dateien/a.js"></script><script type="text/javascript"><!--
+google_ad_client = "pub-3167291168602081";
+google_alternate_ad_url = "http://www.gamedev.net/banman/banman.asp?ZoneID=21&Task=Get";
+google_ad_width = 728;
+google_ad_height = 90;
+google_ad_format = "728x90_as";
+google_ad_type = "text_image";
+google_ad_channel ="";
+google_color_border = "336699";
+google_color_bg = "FFFFFF";
+google_color_link = "0000FF";
+google_color_url = "008000";
+google_color_text = "000000";
+//--></script>
+<script type="text/javascript" src="lesson.asp-Dateien/show_ads.js">
+</script>
+<noscript> <a
+href="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Click&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+target="_blank"> <img
+src="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Get&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+width="728" height="90" border="0" alt=""></a>
+</noscript>
+<!-- End -  Site: GameDev.net Zone: NeHe 728x90 --></td></tr></tbody></table><br>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tinylogo" height="130" width="326"><img src="lesson.asp-Dateien/blank.gif" alt="NeHe Productions" height="130" width="326"></td><td class="indexheading" align="center" valign="middle"><font class="text"><font class="theme" size="+3"><b><i>Lesson: 41</i></b></font></font></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Welcome
+to another fun filled tutorial. This time I will attempt to explain
+Volumetric Fog using the glFogCoordf Extension. In order to run this
+demo, your video card must support the "GL_EXT_fog_coord" extension. If
+you are not sure if your card supports this extension, you have
+two options... 1) download the VC++ source code, and see if it runs. 2)
+download lesson 24, and scroll through the list of extensions supported
+by
+your video card.
+<br><br>This tutorial will introduce you to the NeHe IPicture code
+which is capable of loading BMP, EMF, GIF, ICO, JPG and WMF files from
+your computer or
+a web page. You will also learn how to use the "GL_EXT_fog_coord"
+extension to create some really cool looking Volumetric Fog
+(fog that can float in a confined space without affecting the rest of
+the scene).
+<br><br>If this tutorial does not work on your machine, the first
+thing you should do is check to make sure you have the latest video
+driver installed.
+If you have the latest driver and the demo still does not work... you
+might want to purchase a new video card. A low end GeForce 2 will work
+just
+fine, and should not cost all that much. If your card doesn't support
+the fog extension, who's to say what other extensions it will not
+support?
+<br><br>For those of you that can't run the demo, and feel excluded...
+keep the following in mind: Every single day I get at least 1 email
+requesting a
+new tutorial. Many of the tutorials requested are already online!
+People don't bother reading what is already online and end up skipping
+over
+the topic they are most interested in. Other tutorials are too complex
+and would require weeks worth of programming on my end. Finally, there
+are
+the tutorials that I could write, but usually avoid because I know they
+will not run on all cards. Now that cards such as the GeForce are cheap
+enough that anyone with an allowance could afford one, I can no longer
+justify not writing the tutorials. Truthfully, if your video card only
+supports basic extensions, you are missing out! And if I continue to
+skip over topics such as Extensions, the tutorials will lag behind!
+<br><br>
+With that said... lets attack some code!!!
+<br><br>The code starts off very similar to the old basecode, and
+almost identical to the new NeHeGL basecode. The only difference is the
+extra line
+of code to include the OLECTL header file. This header must be included
+if you want the IPICTURE code to function. If you exclude this line,
+you will get errors when trying to use IPicture, OleLoadPicturePath and
+IID_IPicture.
+<br><br>Just like the NeHeGL basecode, we use #pragma comment ( lib,
+... ) to automatically include the required library files! Notice we no
+longer need
+to include the glaux library (I'm sure many of you are cheering right
+now).
+<br><br>The next three lines of code check to see if CDS_FULLSCREEN is
+defined. If it is not (which it isn't in most compilers), we give it a
+value
+of 4. I know many of you have emailed me to ask why you get errors when
+trying to compile code using CDS_FULLSCREEN in DEV C++. Include these
+three lines and you will not get the error!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>#include &lt;windows.h&gt;								<font class="theme">// Header File For Windows</font>
+#include &lt;gl\gl.h&gt;								<font class="theme">// Header File For The OpenGL32 Library</font>
+#include &lt;gl\glu.h&gt;								<font class="theme">// Header File For The GLu32 Library</font>
+#include &lt;olectl.h&gt;								<font class="theme">// Header File For The OLE Controls Library	(Used In BuildTexture)</font>
+#include &lt;math.h&gt;								<font class="theme">// Header File For The Math Library		(Used In BuildTexture)</font>
+
+#include "NeHeGL.h"								<font class="theme">// Header File For NeHeGL</font>
+
+#pragma comment( lib, "opengl32.lib" )						<font class="theme">// Search For OpenGL32.lib While Linking</font>
+#pragma comment( lib, "glu32.lib" )						<font class="theme">// Search For GLu32.lib While Linking</font>
+
+#ifndef CDS_FULLSCREEN								<font class="theme">// CDS_FULLSCREEN Is Not Defined By Some</font>
+#define CDS_FULLSCREEN 4							<font class="theme">// Compilers. By Defining It This Way,</font>
+#endif										<font class="theme">// We Can Avoid Errors</font>
+
+GL_Window*	g_window;							<font class="theme">// Window Structure</font>
+Keys*		g_keys;								<font class="theme">// Keyboard</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">In
+the following code, we set the color of our fog. In this case we want
+it to be a dark orange color. A little red (0.6f) mixed with even
+less green (0.3f) will give us the color we desire.
+<br><br>The floating point variable camz will be used later in the
+code to position our camera inside a long and dark hallway! We will
+move forwards and
+backwards through the hallway by translating on the Z-Axis before we
+draw the hallway.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// User Defined Variables</font>
+GLfloat	fogColor[4] = {0.6f, 0.3f, 0.0f, 1.0f};					<font class="theme">// Fog Colour </font>
+GLfloat camz;									<font class="theme">// Camera Z Depth</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Just
+like CDS_FULLSCREEN has a predefined value of 4... the variables
+GL_FOG_COORDINATE_SOURCE_EXT and GL_FOG_COORDINATE_EXT also have
+predefined
+values. As mentioned in the comments, the values were taken from the
+GLEXT header file. A file that is freely available on the net. Huge
+thanks to Lev Povalahev for creating such a valuable header file! These
+values must be set if you want the code to compile! The end result
+is that we have two new enumerants available to us
+(GL_FOG_COORDINATE_SOURCE_EXT &amp; GL_FOG_COORDINATE_EXT).
+<br><br>To use the function glFogCoordfExt we need to declare a
+function prototype typedef that match the extension�s entry point.
+Sounds complex, but it
+is not all that bad. In English... we need to tell our program the
+number of parameters and the the type of each parameter accepted by the
+function
+glFogCoordfEXT. In this case... we are passing one parameter to this
+function and it is a floating point value (a coordinate).
+<br><br>Next we have to declare a global variable of the type of the
+function prototype typedef. In this case PFNGLFOGCOORDFEXTPROC. This is
+the first
+step to creating our new function (glFogCoordfEXT). It is global so
+that we can use the command anywhere in our code. The name we use
+should
+match the actual extension name exactly. The actual extension name is
+glFogCoordfEXT and the name we use is also glFogCoordfEXT.
+<br><br>Once we use wglGetProcAddress to assign the function variable
+the address of the OpenGL driver�s extension function, we can call
+glFogCoordfEXT
+as if it was a normal function. More on this later!
+<br><br>
+The last line prepares things for our single texture.
+<br><br>
+So what we have so far...
+<br><br>
+We know that PFNGLFOGCOORDFEXTPROC takes one floating point value (GLfloat coord)
+<br><br>Because glFogCoordfEXT is type PFNGLFOGCOORDFEXTPROC it's safe
+to say glFogCoordfEXT takes one floating point value... Leaving us with
+glFogCoordfEXT(GLfloat coord).
+<br><br>Our function is defined, but will not do anything because
+glFogCoordfEXT is NULL at the moment (we still need to attach
+glFogCoordfEXT to the Address
+of the OpenGL driver's extension function).
+<br><br>Really hope that all makes sense... it's very simple when you
+already know how it works... but describing it is extremely difficult
+(at least for
+me it is). If anyone would like to rewrite this section of text using
+simple / non complicated wording, please send me an email! The only way
+I could explain it better is through images, and at the moment I am in
+a rush to get this tutorial online!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// Variables Necessary For FogCoordfEXT</font>
+#define GL_FOG_COORDINATE_SOURCE_EXT	0x8450					<font class="theme">// Value Taken From GLEXT.H</font>
+#define GL_FOG_COORDINATE_EXT		0x8451					<font class="theme">// Value Taken From GLEXT.H</font>
+
+typedef void (APIENTRY * PFNGLFOGCOORDFEXTPROC) (GLfloat coord);		<font class="theme">// Declare Function Prototype</font>
+
+PFNGLFOGCOORDFEXTPROC glFogCoordfEXT = NULL;					<font class="theme">// Our glFogCoordfEXT Function</font>
+
+GLuint	texture[1];								<font class="theme">// One Texture (For The Walls)</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now for the fun stuff... the actual code that turns an image into a texture using the magic of IPicture :)
+<br><br>This function requires a pathname (path to the actual image we
+want to load... either a filename or a Web URL) and a texture ID (for
+example
+... texture[0]).
+<br><br>We need to create a device context for our temporary bitmap.
+We also need a place to store the bitmap data (hbmpTemp), a connection
+to the
+IPicture Interface, variables to store the path (file or URL). 2
+variables to store the image width, and 2 variables to store the image
+height. lwidth and lheight store the actual image width and height.
+lwidthpixels and lheightpixels stores the width and height in pixels
+adjusted to fit the video cards maximum texture size. The maximum
+texture size will be stored in glMaxTexDim.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int BuildTexture(char *szPathName, GLuint &amp;texid)				<font class="theme">// Load Image And Convert To A Texture</font>
+{
+	HDC		hdcTemp;						<font class="theme">// The DC To Hold Our Bitmap</font>
+	HBITMAP		hbmpTemp;						<font class="theme">// Holds The Bitmap Temporarily</font>
+	IPicture	*pPicture;						<font class="theme">// IPicture Interface</font>
+	OLECHAR		wszPath[MAX_PATH+1];					<font class="theme">// Full Path To Picture (WCHAR)</font>
+	char		szPath[MAX_PATH+1];					<font class="theme">// Full Path To Picture</font>
+	long		lWidth;							<font class="theme">// Width In Logical Units</font>
+	long		lHeight;						<font class="theme">// Height In Logical Units</font>
+	long		lWidthPixels;						<font class="theme">// Width In Pixels</font>
+	long		lHeightPixels;						<font class="theme">// Height In Pixels</font>
+	GLint		glMaxTexDim ;						<font class="theme">// Holds Maximum Texture Size</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">The
+next section of code takes the filename and checks to see if it's a web
+URL or a file path. We do this by checking to see if the
+filename contains http://. If the filename is a web URL, we copy the
+name to szPath.
+<br><br>If the filename does not contain a URL, we get the working
+directory. If you had the demo saved to C:\wow\lesson41 and you
+tried to load data\wall.bmp the program needs to know the full path to
+the wall.bmp file not just that the bmp file is saved in
+a folder called data. GetCurrentDirectory will find the current path.
+The location that has both the .EXE and the 'data' folder.
+<br><br>
+If the .exe was stored at "c:\wow\lesson41"...  The working directory would return "c:\wow\lesson41".  We need to add
+"\\" to the end of the working directory along with "data\wall.bmp".  The "\\" represents a single "\".
+So if we put it all together we end up with "c:\wow\lesson41" + "\" + "data\wall.bmp"... or
+"c:\wow\lesson41\data\wall.bmp".  Make sense?
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	if (strstr(szPathName, "http://"))					<font class="theme">// If PathName Contains http:// Then...</font>
+	{
+		strcpy(szPath, szPathName);					<font class="theme">// Append The PathName To szPath</font>
+	}
+	else									<font class="theme">// Otherwise... We Are Loading From A File</font>
+	{
+		GetCurrentDirectory(MAX_PATH, szPath);				<font class="theme">// Get Our Working Directory</font>
+		strcat(szPath, "\\");						<font class="theme">// Append "\" After The Working Directory</font>
+		strcat(szPath, szPathName);					<font class="theme">// Append The PathName</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">So
+we have the full pathname stored in szPath. Now we need to convert the
+pathname from ASCII to Unicode so that OleLoadPicturePath
+understands the path name. The first line of code below does this for
+us. The result is stored in wszPath.
+<br><br>CP_ACP means ANSI Codepage. The second parameter specifies the
+handling of unmapped characters (in the code below we ignore this
+parameter). szPath is the wide-character string to be converted. The
+4th parameter is the width of the wide-character string. If
+this value is set to -1, the string is assumed to be NULL terminated
+(which it is). wszPath is where the translated string
+will be stored and MAX_PATH is the maximum size of our file path (256
+characters).
+<br><br>
+After converting the path to Unicode, we attempt to load the image using OleLoadPicturePath.  If everything goes well,
+pPicture will point to the image data and the result code will be stored in hr.
+<br><br>
+If loading fails, the program will exit.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	MultiByteToWideChar(CP_ACP, 0, szPath, -1, wszPath, MAX_PATH);		<font class="theme">// Convert From ASCII To Unicode</font>
+	HRESULT hr = OleLoadPicturePath(wszPath, 0, 0, 0, IID_IPicture, (void**)&amp;pPicture);
+
+	if(FAILED(hr))								<font class="theme">// If Loading Failed</font>
+		return FALSE;							<font class="theme">// Return False</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Now
+we need to create a temporary device context. If all goes well, hdcTemp
+will hold the compatible device context. If the program
+is unable to get a compatible device context pPicture is released, and
+the program exits.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	hdcTemp = CreateCompatibleDC(GetDC(0));					<font class="theme">// Create The Windows Compatible Device Context</font>
+	if(!hdcTemp)								<font class="theme">// Did Creation Fail?</font>
+	{
+		pPicture-&gt;Release();						<font class="theme">// Decrements IPicture Reference Count</font>
+		return FALSE;							<font class="theme">// Return False (Failure)</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Now
+it's time to query the video card and find out what the maximum texture
+dimension supported is. This code is important because
+it will attempt to make the image look good on all video cards. Not
+only will it resize the image to a power of 2 for you. It will
+make the image fit in your video cards memory. This allows you to load
+images with any width or height. The only drawback is that
+users with bad video cards will loose alot of detail when trying to
+view high resolution images.
+<br><br>On to the code... we use glGetIntegerv(...) to get the maximum
+texture dimension (256, 512, 1024, etc) supported by the users video
+card. We then check to see what the actual image width is.
+pPicture-&gt;get_width(&amp;lwidth) is the images width.
+<br><br>
+We use some fancy math to convert the image width to pixels.  The result is stored in lWidthPixels.  We do the same for the
+height.  We get the image height from pPicture and store the pixel value in lHeightPixels.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &amp;glMaxTexDim);			<font class="theme">// Get Maximum Texture Size Supported</font>
+	
+	pPicture-&gt;get_Width(&amp;lWidth);						<font class="theme">// Get IPicture Width (Convert To Pixels)</font>
+	lWidthPixels	= MulDiv(lWidth, GetDeviceCaps(hdcTemp, LOGPIXELSX), 2540);
+	pPicture-&gt;get_Height(&amp;lHeight);						<font class="theme">// Get IPicture Height (Convert To Pixels)</font>
+	lHeightPixels	= MulDiv(lHeight, GetDeviceCaps(hdcTemp, LOGPIXELSY), 2540);
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Next we check to see if the image width in pixels is less than the maximum width supported by the video card.
+<br><br>If the image width in pixels is less than the maximum width
+supported, we resize the image to a power of two based on the current
+image width in pixels. We add 0.5f so that the image is always made
+bigger if it's closer to the next size up. For example...
+If our image width was 400 and the video card supported a maximum width
+of 512... it would be better to make the width 512. If
+we made the width 256, the image would loose alot of it's detail.
+<br><br>
+If the image size is larger than the maximum width supported by the video card, we set the image width to the maximum texture
+size supported.
+<br><br>
+We do the same for the image height.  The final image width and height will be stored in lWidthPixels and lHeightPixels.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Resize Image To Closest Power Of Two</font>
+	if (lWidthPixels &lt;= glMaxTexDim)					<font class="theme">// Is Image Width Less Than Or Equal To Cards Limit</font>
+		lWidthPixels = 1 &lt;&lt; (int)floor((log((double)lWidthPixels)/log(2.0f)) + 0.5f); 
+	else									<font class="theme">// Otherwise  Set Width To "Max Power Of Two" That The Card Can Handle</font>
+		lWidthPixels = glMaxTexDim;
+ 
+	if (lHeightPixels &lt;= glMaxTexDim)					<font class="theme">// Is Image Height Greater Than Cards Limit</font>
+		lHeightPixels = 1 &lt;&lt; (int)floor((log((double)lHeightPixels)/log(2.0f)) + 0.5f);
+	else									<font class="theme">// Otherwise  Set Height To "Max Power Of Two" That The Card Can Handle</font>
+		lHeightPixels = glMaxTexDim;
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Now
+that we have the image data loaded and we know the height and width we
+want to make the image, we need to create a temporary bitmap.
+bi will hold our bitmap header information and pBits will hold the
+actual image data. We want the bitmap we create to be a 32 bit bitmap
+with a width of lWidthPixels and a height of lHeightPixels. We want the
+image encoding to be RGB and the image will have just one bitplane.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Create A Temporary Bitmap</font>
+	BITMAPINFO	bi = {0};						<font class="theme">// The Type Of Bitmap We Request</font>
+	DWORD		*pBits = 0;						<font class="theme">// Pointer To The Bitmap Bits</font>
+
+	bi.bmiHeader.biSize		= sizeof(BITMAPINFOHEADER);		<font class="theme">// Set Structure Size</font>
+	bi.bmiHeader.biBitCount		= 32;					<font class="theme">// 32 Bit</font>
+	bi.bmiHeader.biWidth		= lWidthPixels;				<font class="theme">// Power Of Two Width</font>
+	bi.bmiHeader.biHeight		= lHeightPixels;			<font class="theme">// Make Image Top Up (Positive Y-Axis)</font>
+	bi.bmiHeader.biCompression	= BI_RGB;				<font class="theme">// RGB Encoding</font>
+	bi.bmiHeader.biPlanes		= 1;					<font class="theme">// 1 Bitplane</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Taken
+from the MSDN: The CreateDIBSection function creates a DIB that
+applications can write to directly. The function gives you a pointer
+to the location of the bitmap's bit values. You can let the system
+allocate the memory for the bitmap.
+<br><br>
+hdcTemp is our temporary device context.  bi is our Bitmap Info data (header information).  DIB_RGB_COLORS tells our program
+that we want to store RGB data, not indexes into a logical palette (each pixel will have a red, green and blue value).
+<br><br>
+pBits is where the image data will be stored (points to the image data).  the last two parameters can be ignored.
+<br><br>If for any reason the program was unable to create a temporary
+bitmap, we clean things up and return false (which exits the program).
+<br><br>
+If things go as planned, we end up with a temporary bitmap.  We use SelectObject to attach the bitmap to the temporary
+device context.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Creating A Bitmap This Way Allows Us To Specify Color Depth And Gives Us Imediate Access To The Bits</font>
+	hbmpTemp = CreateDIBSection(hdcTemp, &amp;bi, DIB_RGB_COLORS, (void**)&amp;pBits, 0, 0);
+	
+	if(!hbmpTemp)								<font class="theme">// Did Creation Fail?</font>
+	{
+		DeleteDC(hdcTemp);						<font class="theme">// Delete The Device Context</font>
+		pPicture-&gt;Release();						<font class="theme">// Decrements IPicture Reference Count</font>
+		return FALSE;							<font class="theme">// Return False (Failure)</font>
+	}
+
+	SelectObject(hdcTemp, hbmpTemp);					<font class="theme">// Select Handle To Our Temp DC And Our Temp Bitmap Object</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Now
+we need to fill our temporary bitmap with data from our image.
+pPicture-&gt;Render will do this for us. It will also resize the
+image to any size we want (in this case... lWidthPixels by
+lHeightPixels).
+<br><br>hdcTemp is our temporary device context. The first two
+parameters after hdcTemp are the horizontal and vertical offset (the
+number of blank
+pixels to the left and from the top). We want the image to fill the
+entire bitmap, so we select 0 for the horizontal offset and
+0 for the vertical offset.
+<br><br>
+The fourth parameter is the horizontal dimension of destination bitmap and the fifth parameter is the vertical dimension.  These
+parameters control how much the image is stretched or compressed to fit the dimensions we want.
+<br><br>The next parameter (0) is the horizontal offset we want to read
+the source data from. We draw from left to right so the offset is 0.
+This will make sense once you see what we do with the vertical offset
+(hopefully).
+<br><br>The lHeight parameter is the vertical offset. We want to read
+the data from the bottom of the source image to the top. By using
+an offset of lHeight, we move to the very bottom of the source image.
+<br><br>lWidth is the amount to copy in the source picture. We want to
+copy all of the data horizontally in the source image. lWidth covers
+all the data from left to right.
+<br><br>The second last parameter is a little different. It's a
+negative value. Negative lHeight to be exact. What this means is that
+we
+want to copy all of the data vertically, but we want to start copying
+from the bottom to the top. That way the image is flipped
+as it's copied to the destination bitmap.
+<br><br>
+The last parameter is not used.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Render The IPicture On To The Bitmap</font>
+	pPicture-&gt;Render(hdcTemp, 0, 0, lWidthPixels, lHeightPixels, 0, lHeight, lWidth, -lHeight, 0);
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">So
+now we have a new bitmap with a width of lWidthPixels and a height of
+lHeightPixels. The new bitmap has been flipped right side up.
+<br><br>
+Unfortunately the data is stored in BGR format.  So we need to swap the Red and Blue pixels to make the bitmap an RGB image.
+At the same time, we set the alpha value to 255.  You can change this value to anything you want.  This demo does not use alpha
+so it has no effect in this tutorial!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Convert From BGR To RGB Format And Add An Alpha Value Of 255</font>
+	for(long i = 0; i &lt; lWidthPixels * lHeightPixels; i++)			<font class="theme">// Loop Through All Of The Pixels</font>
+	{
+		BYTE* pPixel	= (BYTE*)(&amp;pBits[i]);				<font class="theme">// Grab The Current Pixel</font>
+		BYTE  temp	= pPixel[0];					<font class="theme">// Store 1st Color In Temp Variable (Blue)</font>
+		pPixel[0]	= pPixel[2];					<font class="theme">// Move Red Value To Correct Position (1st)</font>
+		pPixel[2]	= temp;						<font class="theme">// Move Temp Value To Correct Blue Position (3rd)</font>
+		pPixel[3]	= 255;						<font class="theme">// Set The Alpha Value To 255</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Finally,
+after all of that work, we have a bitmap image that can be used as a
+texture. We bind to texid, and generate the texture.
+We want to use linear filtering for both the min and mag (max) filters
+(looks nice).
+<br><br>We get the image data from pBits. When generating the texture,
+we use lWidthPixels and lHeightPixels one last time to set the texture
+width and height.
+<br><br>
+After the 2D texture has been generated, we can clean things up.  We no longer need the temporary bitmap or the temporary
+device context.  Both of these are deleted.  We can also release pPicture... YAY!!!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glGenTextures(1, &amp;texid);						<font class="theme">// Create The Texture</font>
+
+	<font class="theme">// Typical Texture Generation Using Data From The Bitmap</font>
+	glBindTexture(GL_TEXTURE_2D, texid);					<font class="theme">// Bind To The Texture ID</font>
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);		<font class="theme">// (Modify This For The Type Of Filtering You Want)</font>
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);		<font class="theme">// (Modify This For The Type Of Filtering You Want)</font>
+
+	<font class="theme">// (Modify This If You Want Mipmaps)	</font>
+	glTexImage2D(GL_TEXTURE_2D, 0, 3, lWidthPixels, lHeightPixels, 0, GL_RGBA, GL_UNSIGNED_BYTE, pBits);
+
+	DeleteObject(hbmpTemp);							<font class="theme">// Delete The Object</font>
+	DeleteDC(hdcTemp);							<font class="theme">// Delete The Device Context</font>
+
+	pPicture-&gt;Release();							<font class="theme">// Decrements IPicture Reference Count</font>
+
+	return TRUE;								<font class="theme">// Return True (All Good)</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The following code checks to see if the users video card support the EXT_fog_coord extension.  This code can ONLY be called
+after your OpenGL program has a Rendering Context.  If you try to call it before you set up the window, you will get errors.
+<br><br>
+The first thing we do is create a string with the name of our extension.
+<br><br>
+We then allocate enough memory to hold the list of OpenGL extensions supported by the users video card.  The list of supported
+extensions is retreived with the command glGetString(GL_EXTENSIONS).  The information returned is copied into glextstring.
+<br><br>
+Once we have the list of supported extensions we use strstr to see if our extension (Extension_Name) is in the list of
+supported extensions (glextstring).
+<br><br>
+If the extension is not supported, FALSE is returned and the program ends.  If everything goes ok, we free glextstring
+(we no longer need the list of supported extensions).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>int Extension_Init()
+{
+	char Extension_Name[] = "EXT_fog_coord";
+
+	<font class="theme">// Allocate Memory For Our Extension String</font>
+	char* glextstring=(char *)malloc(strlen((char *)glGetString(GL_EXTENSIONS))+1);
+	strcpy (glextstring,(char *)glGetString(GL_EXTENSIONS));		<font class="theme">// Grab The Extension List, Store In glextstring</font>
+
+	if (!strstr(glextstring,Extension_Name))				<font class="theme">// Check To See If The Extension Is Supported</font>
+		return FALSE;							<font class="theme">// If Not, Return FALSE</font>
+
+	free(glextstring);							<font class="theme">// Free Allocated Memory</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+At the very top of this program we defined glFogCoordfEXT.  However, the command will not work until we attach the function
+to the actual OpenGL extension.  We do this by giving glFogCoordfEXT the address of the OpenGL Fog Extension.  When we call
+glFogCoordfEXT, the actual extension code will run, and will receive the parameter passed to glFogCoordfEXT.
+<br><br>
+Sorry, this is one of them bits of code that is very hard to explain in simple terms (at least for me).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Setup And Enable glFogCoordEXT</font>
+	glFogCoordfEXT = (PFNGLFOGCOORDFEXTPROC) wglGetProcAddress("glFogCoordfEXT");
+
+	return TRUE;
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+This section of code is where we call the routine to check if the extension is supported, load our texture, and set up OpenGL.
+<br><br>By the time we get to this section of code, our program has an
+RC (rendering context). This is important because you need to have a
+rendering context before you can check if an extension is supported by
+the users video card.
+<br><br>
+So we call Extension_Init( ) to see if the card supports the extension.  If the extension is not supported, Extension_Init( )
+returns false and the check fails.  This will cause the program to end.  If you wanted to display some type of message box
+you could.  Currently the program will just fail to run.
+<br><br>If the extension is supported, we attempt to load our wall.bmp
+texture. The ID for this texture will be texture[0]. If for some
+reason the texture does not load, the program will end.
+<br><br>Initialization is simple. We enable 2D texture mapping. We set
+the clear color to black. The clear depth to 1.0f. We set depth
+testing to less than or equal to and enable depth testing. The
+shademodel is set to smooth shading, and we select nicest
+for our perspective correction.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>BOOL Initialize (GL_Window* window, Keys* keys)					<font class="theme">// Any GL Init Code &amp; User Initialiazation Goes Here</font>
+{
+	g_window	= window;						<font class="theme">// Window Values</font>
+	g_keys		= keys;							<font class="theme">// Key Values</font>
+
+	<font class="theme">// Start Of User Initialization</font>
+	if (!Extension_Init())							<font class="theme">// Check And Enable Fog Extension If Available</font>
+		return FALSE;							<font class="theme">// Return False If Extension Not Supported</font>
+
+	if (!BuildTexture("data/wall.bmp", texture[0]))				<font class="theme">// Load The Wall Texture</font>
+		return FALSE;							<font class="theme">// Return False If Loading Failed</font>
+
+	glEnable(GL_TEXTURE_2D);						<font class="theme">// Enable Texture Mapping</font>
+	glClearColor (0.0f, 0.0f, 0.0f, 0.5f);					<font class="theme">// Black Background</font>
+	glClearDepth (1.0f);							<font class="theme">// Depth Buffer Setup</font>
+	glDepthFunc (GL_LEQUAL);						<font class="theme">// The Type Of Depth Testing</font>
+	glEnable (GL_DEPTH_TEST);						<font class="theme">// Enable Depth Testing</font>
+	glShadeModel (GL_SMOOTH);						<font class="theme">// Select Smooth Shading</font>
+	glHint (GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);			<font class="theme">// Set Perspective Calculations To Most Accurate</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Now
+for the fun stuff. We need to set up the fog. We start off by enabling
+fog. The rendering mode we use is linear (nice looking).
+The fog color is set to fogColor (orange).
+<br><br>
+We then need to set the fog start position.  This is the least dense section of fog.  To make things simple, we will use
+1.0f as the least dense value (FOG_START).  We will use 0.0f as the most dense area of fog (FOG_END).
+<br><br>
+According to all of the documentation I have read, setting the fog hint to GL_NICEST causes the fog to be rendered
+per pixel.  Using GL_FASTEST will render the fog per vertex.  I personally do not see a difference.
+<br><br>
+The last glFogi(...) command tells OpenGL that we want to set our fog based on vertice coordinates.  This allows us to
+position the fog anywhere in our scene without affecting the entire scene (cool!).
+<br><br>
+We set the starting camz value to -19.0f.  The actual hallways is 30 units in length.  So -19.0f moves us almost the
+beginning of the hallway (the hallway is rendered from -15.0f to +15.0f on the Z axis).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Set Up Fog </font>
+	glEnable(GL_FOG);							<font class="theme">// Enable Fog</font>
+	glFogi(GL_FOG_MODE, GL_LINEAR);						<font class="theme">// Fog Fade Is Linear</font>
+	glFogfv(GL_FOG_COLOR, fogColor);					<font class="theme">// Set The Fog Color</font>
+	glFogf(GL_FOG_START,  0.0f);						<font class="theme">// Set The Fog Start (Least Dense)</font>
+	glFogf(GL_FOG_END,    1.0f);						<font class="theme">// Set The Fog End (Most Dense)</font>
+	glHint(GL_FOG_HINT, GL_NICEST);						<font class="theme">// Per-Pixel Fog Calculation</font>
+	glFogi(GL_FOG_COORDINATE_SOURCE_EXT, GL_FOG_COORDINATE_EXT);		<font class="theme">// Set Fog Based On Vertice Coordinates</font>
+
+	camz =	-19.0f;								<font class="theme">// Set Camera Z Position To -19.0f</font>
+
+	return TRUE;								<font class="theme">// Return TRUE (Initialization Successful)</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">This
+section of code is called whenever a user exits the program. There is
+nothing to clean up so this section of code remains empty!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void Deinitialize (void)							<font class="theme">// Any User DeInitialization Goes Here</font>
+{
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Here is where we handle the keyboard interaction.  Like all previous tutorials, we check to see if the ESC key is pressed.
+If it is, the application is terminated.
+<br><br>
+If the F1 key is pressed, we toggle from fullscreen to windowed mode or from windowed mode to fullscreen.
+<br><br>
+The other two keys we check for are the up and down arrow keys.  If the UP key is pressed and the value of camz is less than
+14.0f we increase camz.  This will move the hallway towards the viewer.  If we went past 14.0f, we would go right through the
+back wall.  We don't want this to happen :)
+<br><br>
+If the DOWN key is pressed and the value of camz is greater than -19.0f we decrease camz.  This will move the hallway away
+from the viewer.  If we went past -19.0f, the hallway would be too far into the screen and you would see the entrance to the
+hallway.  Again... this wouldn't be good!
+<br><br>
+The value of camz is increased and decreased based on the number of milliseconds that have passed divided by 100.0f.  This
+should force the program to run at the same speed on all types of processors.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void Update (DWORD milliseconds)						<font class="theme">// Perform Motion Updates Here</font>
+{
+	if (g_keys-&gt;keyDown [VK_ESCAPE])					<font class="theme">// Is ESC Being Pressed?</font>
+		TerminateApplication (g_window);				<font class="theme">// Terminate The Program</font>
+
+	if (g_keys-&gt;keyDown [VK_F1])						<font class="theme">// Is F1 Being Pressed?</font>
+		ToggleFullscreen (g_window);					<font class="theme">// Toggle Fullscreen Mode</font>
+
+	if (g_keys-&gt;keyDown [VK_UP] &amp;&amp; camz&lt;14.0f)				<font class="theme">// Is UP Arrow Being Pressed?</font>
+		camz+=(float)(milliseconds)/100.0f;				<font class="theme">// Move Object Closer (Move Forwards Through Hallway)</font>
+
+	if (g_keys-&gt;keyDown [VK_DOWN] &amp;&amp; camz&gt;-19.0f)				<font class="theme">// Is DOWN Arrow Being Pressed?</font>
+		camz-=(float)(milliseconds)/100.0f;				<font class="theme">// Move Object Further (Move Backwards Through Hallway)</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">I'm
+sure you are dying to get the rendering, but we still have a few things
+to do before we draw the hallway. First off we need to
+clear the screen and the depth buffer. We reset the modelview matrix
+and translate into the screen based on the value stored in
+camz.
+<br><br>
+By increasing or decreasing the value of camz, the hallway will move closer or further away from the viewer.  This will give
+the impression that the viewer is moving forward or backward through the hall... Simple but effective!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void Draw (void)
+{
+	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);			<font class="theme">// Clear Screen And Depth Buffer</font>
+	glLoadIdentity ();							<font class="theme">// Reset The Modelview Matrix</font>
+
+	glTranslatef(0.0f, 0.0f, camz);						<font class="theme">// Move To Our Camera Z Position</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The camera is positioned, so now it is time to render the first quad.  This will be the BACK wall (the wall
+at the end of the hallway).
+<br><br>
+We want this wall to be in the thickest of the fog.  If you look at the Init section of code, you will see that
+GL_FOG_END is the most dense section of fog... and it has a value of 1.0f.
+<br><br>Fog is applied the same way you apply texture coordinates.
+GL_FOG_END has the most fog, and has a value of 1.0f. So for our first
+vertex we pass glFogCoordfEXT a value of 1.0f. This will give the
+bottom (-2.5f on the Y-Axis)
+left (-2.5f on the X-Axis) vertex of the furthest wall (wall you will
+see at the end of the tunnel) the most dense fog (1.0f).
+<br><br>
+We assign 1.0f to the other 3 glFogCoordfEXT vertices as well.  We want all 4 points (way in the distance) to be in dense fog.
+<br><br>
+Hopefully by now you understand texture mapping coordinates and glVertex coordinates.  I should not have to explain these :)
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glBegin(GL_QUADS);							<font class="theme">// Back Wall</font>
+	 	glFogCoordfEXT(1.0f); glTexCoord2f(0.0f, 0.0f); glVertex3f(-2.5f,-2.5f,-15.0f);
+		glFogCoordfEXT(1.0f); glTexCoord2f(1.0f, 0.0f); glVertex3f( 2.5f,-2.5f,-15.0f);
+		glFogCoordfEXT(1.0f); glTexCoord2f(1.0f, 1.0f); glVertex3f( 2.5f, 2.5f,-15.0f);
+		glFogCoordfEXT(1.0f); glTexCoord2f(0.0f, 1.0f); glVertex3f(-2.5f, 2.5f,-15.0f);
+	glEnd();
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+So we have a texture mapped back wall in very dense fog.  Now we will draw the floor.  It's a little different, but once you
+spot the pattern it will all become very clear to you!
+<br><br>
+Like all quads, the floor has 4 points.  The Y value is always -2.5f.  The left vertex is -2.5f, the right vertex
+is 2.5f, and the floor runs from -15.0f on the Z-Axis to +15.0f on the Z-Axis.
+<br><br>
+We want the section of floor way in the distance to have the most fog.  So once again we give these glFogCoordfEXT vertices
+a value of 1.0f.  Notice that any vertex drawn at -15.0f has a glFogCoordfEXT value of 1.0f...?
+<br><br>
+The sections of floor closest the viewer (+15.0f) will have the least amount of fog.  GL_START_FOG is the least dense fog
+and has a value of 0.0f.  So for these points we will pass a value of 0.0f to glFogCoordfEXT.
+<br><br>
+What you should see if you run the program is really dense fog on the floor near the back and light fog up close.  The fog
+is not dense enough to fill the entire hallway.  It actually dies out halfway down the hall, even though GL_START_FOG is 0.0f.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glBegin(GL_QUADS);							<font class="theme">// Floor</font>
+	 	glFogCoordfEXT(1.0f); glTexCoord2f(0.0f, 0.0f); glVertex3f(-2.5f,-2.5f,-15.0f);
+		glFogCoordfEXT(1.0f); glTexCoord2f(1.0f, 0.0f); glVertex3f( 2.5f,-2.5f,-15.0f);
+		glFogCoordfEXT(0.0f); glTexCoord2f(1.0f, 1.0f); glVertex3f( 2.5f,-2.5f, 15.0f);
+		glFogCoordfEXT(0.0f); glTexCoord2f(0.0f, 1.0f); glVertex3f(-2.5f,-2.5f, 15.0f);
+	glEnd();
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The roof is drawn exactly the same way the floor was drawn, with the only difference being that the roof is drawn on the Y-Axis
+at 2.5f.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glBegin(GL_QUADS);							<font class="theme">// Roof</font>
+		glFogCoordfEXT(1.0f); glTexCoord2f(0.0f, 0.0f); glVertex3f(-2.5f, 2.5f,-15.0f);
+		glFogCoordfEXT(1.0f); glTexCoord2f(1.0f, 0.0f); glVertex3f( 2.5f, 2.5f,-15.0f);
+		glFogCoordfEXT(0.0f); glTexCoord2f(1.0f, 1.0f); glVertex3f( 2.5f, 2.5f, 15.0f);
+		glFogCoordfEXT(0.0f); glTexCoord2f(0.0f, 1.0f); glVertex3f(-2.5f, 2.5f, 15.0f);
+	glEnd();
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The right wall is also drawn the same way.  Except the X-Axis is always 2.5f.  The furthest points on the Z-Axis are still
+set to glFogCoordfEXT(1.0f) and the closest points on the z-Axis are still set to glFogCoordfEXT(0.0f).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glBegin(GL_QUADS);							<font class="theme">// Right Wall</font>
+		glFogCoordfEXT(0.0f); glTexCoord2f(0.0f, 0.0f); glVertex3f( 2.5f,-2.5f, 15.0f);
+		glFogCoordfEXT(0.0f); glTexCoord2f(0.0f, 1.0f); glVertex3f( 2.5f, 2.5f, 15.0f);
+		glFogCoordfEXT(1.0f); glTexCoord2f(1.0f, 1.0f); glVertex3f( 2.5f, 2.5f,-15.0f);
+		glFogCoordfEXT(1.0f); glTexCoord2f(1.0f, 0.0f); glVertex3f( 2.5f,-2.5f,-15.0f);
+	glEnd();
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Hopefully by now you understand how things work.  Anything in the distance will have more fog, and should be set to a value
+of 1.0f.  Anything up close should be set to 0.0f.
+<br><br>
+Of course you can always play around with the GL_FOG_START and GL_FOG_END values to see how they affect the scene.
+<br><br>
+The effect does not look convincing if you swap the start and end values.  The illusion is created by the back wall being
+completely orange!  The effect looks best in dead ends or tight corners where the player can not face away from the fog!
+<br><br>
+This type of fog effect works best when the player can see into the room that has fog, but can not actually go into
+the room.  A good example would be a deep pit covered with some type of grate.  The player could look down into the pit,
+but would not be able to get in to the pit.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glBegin(GL_QUADS);							<font class="theme">// Left Wall</font>
+	 	glFogCoordfEXT(0.0f); glTexCoord2f(0.0f, 0.0f); glVertex3f(-2.5f,-2.5f, 15.0f);
+		glFogCoordfEXT(0.0f); glTexCoord2f(0.0f, 1.0f); glVertex3f(-2.5f, 2.5f, 15.0f);
+		glFogCoordfEXT(1.0f); glTexCoord2f(1.0f, 1.0f); glVertex3f(-2.5f, 2.5f,-15.0f);
+		glFogCoordfEXT(1.0f); glTexCoord2f(1.0f, 0.0f); glVertex3f(-2.5f,-2.5f,-15.0f);
+	glEnd();
+ 
+	glFlush ();								<font class="theme">// Flush The GL Rendering Pipeline</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+I really hope you enjoy this tutorial.  It was created over a period of 3 days... 4 hours a day.  Most of the time
+was spent writing the text you are currently reading.
+<br><br>
+I wanted to make a 3D room with fog in one corner of the room.  Unfortunately, I had very little time to work on the code.
+<br><br>
+Even though the hallway in this tutorial is very simple, the actual fog effect is quite cool!  Modifying the code
+for use in projects of your own should take very little effort.
+<br><br>
+This tutorials shows you how to use the glFogCoordfEXT.  It's fast, looks great and is very easy to use!
+It is important to note that this is just ONE of many different ways to create volumetric fog.  The
+same effect can be created using blending, particles, masks, etc.
+<br><br>
+As always... if you find mistakes in this tutorial let me know.  If you think you can describe a section of
+code better (my wording is not always clear), send me an email!
+<br><br>
+A lot of the text was written late at night, and although it's not an excuse, my typing gets a little worse as I get
+more sleepy.  Please email me if you find duplicate words, spelling mistakes, etc.
+<br><br>
+The original idea for this tutorial was sent to me a long time ago.  Since then I have lost the original email.
+To the person that sent this idea in... Thank You!
+<br><br>
+<b>Jeff Molofee</b> (<b>NeHe</b>)
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vc/lesson41.zip">Visual C++</a> Code For This Lesson.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/bcb6/lesson41_bcb6.zip">Borland C++ Builder 6</a> Code For This Lesson. ( Conversion by <a href="mailto:conglth@hotmail.com">Le Thanh Cong</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cwarrior/lesson41.zip">Code Warrior 5.3</a> Code For This Lesson. ( Conversion by <a href="mailto:DelusionalBeing@hotmail.com">Scott Lupton</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/delphi/lesson41.zip">Delphi</a> Code For This Lesson. ( Conversion by <a href="mailto:michal_praha@seznam.cz">Michal Tucek</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/devc/lesson41.zip">Dev C++</a> Code For This Lesson. ( Conversion by <a href="mailto:rdieffenbach@chello.nl">Rob Dieffenbach</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxsdl/lesson41.tar.gz">Linux/SDL</a> Code For This Lesson. ( Conversion by <a href="mailto:ant@solace.mh.se">Anthony Whitehead</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/python/lesson41.tar.gz">Python</a> Code For This Lesson. ( Conversion by <a href="mailto:bleair@comcast.net">Brian Leair</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vs_net/lesson41.zip">Visual Studio .NET</a> Code For This Lesson. ( Conversion by <a href="mailto:webmaster@joachimrohde.de">Joachim Rohde</a> )<br>
+<br><br>
+<table border="0" width="100%">
+<tbody><tr><td align="left" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=40">&lt; Lesson 40</a></font></b></td>
+<td align="right" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=42">Lesson 42 &gt;</a></font></b></td>
+</tr></tbody></table>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table>
+
+</body></html>

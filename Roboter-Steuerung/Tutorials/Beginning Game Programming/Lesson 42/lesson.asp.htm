@@ -1,0 +1,876 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+<title>NeHe Productions: OpenGL Lesson #42</title>
+<meta name="author" content="Jeff Molofee">
+<meta name="description" content="OpenGL Tutorials, Demos, Games and More...">
+<meta name="keywords" content="opengl, tutorial, article, demo, game, blend, texturemap, lighting, contest, 3D">
+<link rel="stylesheet" type="text/css" href="lesson.asp-Dateien/rgb.css">
+</head><body bgcolor="black" link="#aaccff" text="white" vlink="#aaccff">
+
+<table border="0" width="100%"><tbody><tr><td align="center">
+<!-- Begin -  Site: GameDev.net Zone: NeHe 728x90 -->
+<script language="javascript" type="text/javascript">
+<!--
+var browName = navigator.appName;
+var SiteID = 1;
+var ZoneID = 4;
+var browDateTime = (new Date()).getTime();
+if (browName=='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;Browser=NETSCAPE4&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+if (browName!='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+// --> 
+</script><script language="javascript" src="lesson.asp-Dateien/a.js"></script><iframe class=" uvzqlqxrluylsowwolzs" src="lesson.asp-Dateien/B3794521.htm" marginwidth="0" marginheight="0" hspace="0" vspace="0" bordercolor="#000000" frameborder="0" height="90" scrolling="no" width="728">
+&lt;SCRIPT language='JavaScript1.1'
+SRC="http://ad.doubleclick.net/adj/N5621.gamedev.com/B3794521.5;abr=!ie;sz=728x90;ord=1581723546?"&gt;
+&lt;/SCRIPT&gt;
+&lt;NOSCRIPT&gt;
+&lt;A
+HREF="http://www.gamedev.net/banman/a.aspx?Task=Click&amp;ZoneID=4&amp;CampaignID=727&amp;AdvertiserID=123&amp;BannerID=783&amp;SiteID=1&amp;RandomNumber=1581723546&amp;Keywords="&gt;
+&lt;IMG
+SRC="http://ad.doubleclick.net/ad/N5621.gamedev.com/B3794521.5;abr=!ie4;abr=!ie5;sz=728x90;ord=1581723546?"
+BORDER=0 WIDTH=728 HEIGHT=90 ALT="Click Here"&gt;&lt;/A&gt;
+&lt;/NOSCRIPT&gt;
+</iframe>
+<noscript> <a
+href="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Click&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+target="_blank"> <img
+src="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Get&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+width="728" height="90" border="0" alt=""></a>
+</noscript>
+<!-- End -  Site: GameDev.net Zone: NeHe 728x90 --></td></tr></tbody></table><br>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tinylogo" height="130" width="326"><img src="lesson.asp-Dateien/blank.gif" alt="NeHe Productions" height="130" width="326"></td><td class="indexheading" align="center" valign="middle"><font class="text"><font class="theme" size="+3"><b><i>Lesson: 42</i></b></font></font></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Welcome
+to another fun filled tutorial. This time I will show you how to
+display multiple viewports in a single window. The viewports will
+resize
+correctly in windowed mode. Two of the windows use lighting. One of the
+windows is Ortho and three are Perspective. To keep the tutorial
+exciting,
+you will also learn about the maze code used in this demo, how
+rendering to a texture (yet again) and how to get the current windows
+dimensions.
+<br><br>Once you understand this tutorial, making split screen games
+or 3D applications with multiple views should be a snap! With that
+said, let dive into
+the code!!!
+<br><br>You can use either the latest NeHeGL code or the IPicture code
+as the main basecode. The first file we need to look at is the
+NeHeGL.cpp file.
+Three sections of code have been modified. I will list just the
+sections of code that have changed.
+<br><br>The first and most important thing that has changed is
+ReshapeGL( ). This is where we used to set up the screen dimensions
+(our main viewport).
+All of the main viewport setup is done in our main drawing loop now. So
+all we do here is set up the main window.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void ReshapeGL (int width, int height)								<font class="theme">// Reshape The Window When It's Moved Or Resized</font>
+{
+	glViewport (0, 0, (GLsizei)(width), (GLsizei)(height));					<font class="theme">// Reset The Current Viewport</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Next
+we add some code to watch for the Window Message Erase Background
+(WM_ERASEBKGND). If it's called, we intercept it and return 0. This
+prevents
+the background from being erased, and allows us to resize our main
+window without all the annoying flicker you would usually see. If you
+are not
+sure what I mean, remove: case WM_ERASEBKGND: and return 0; and you can
+compare for yourself.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// Process Window Message Callbacks</font>
+LRESULT CALLBACK WindowProc (HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	DWORD		tickCount;								<font class="theme">// Holds Current Tick Count</font>
+	__int64		timer;									<font class="theme">// Used For The Tick Counter</font>
+
+	<font class="theme">// Get The Window Context</font>
+	GL_Window* window = (GL_Window*)(GetWindowLong (hWnd, GWL_USERDATA));
+
+	switch (uMsg)										<font class="theme">// Evaluate Window Message</font>
+	{
+		case WM_ERASEBKGND:								<font class="theme">// Check To See If Windows Is Trying To Erase The Background</font>
+			return 0;								<font class="theme">// Return 0 (Prevents Flickering While Resizing A Window)</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">In
+WinMain we need to modify the window title and crank the resolution up
+to 1024x768. If your monitor for some reason will not support 1024x768,
+you can drop down to a lower resolution and sacrifice some of the
+detail.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// Program Entry (WinMain)</font>
+int WINAPI WinMain (HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+{
+	Application			application;						<font class="theme">// Application Structure</font>
+	GL_Window			window;							<font class="theme">// Window Structure</font>
+	Keys				keys;							<font class="theme">// Key Structure</font>
+	BOOL				isMessagePumpActive;					<font class="theme">// Message Pump Active?</font>
+	MSG				msg;							<font class="theme">// Window Message Structure</font>
+
+	<font class="theme">// Fill Out Application Data</font>
+	application.className = "OpenGL";							<font class="theme">// Application Class Name</font>
+	application.hInstance = hInstance;							<font class="theme">// Application Instance</font>
+
+	<font class="theme">// Fill Out Window</font>
+	ZeroMemory (&amp;window, sizeof (GL_Window));						<font class="theme">// Make Sure Memory Is Zeroed</font>
+	window.keys			= &amp;keys;						<font class="theme">// Window Key Structure</font>
+	window.init.application		= &amp;application;						<font class="theme">// Window Application</font>
+
+	<font class="theme">// Window Title</font>
+	window.init.title		= "Lesson 42: Multiple Viewports... 2003 NeHe Productions... Building Maze!";
+
+	window.init.width		= 1024;							<font class="theme">// Window Width</font>
+	window.init.height		= 768;							<font class="theme">// Window Height</font>
+	window.init.bitsPerPixel	= 32;							<font class="theme">// Bits Per Pixel</font>
+	window.init.isFullScreen	= TRUE;							<font class="theme">// Fullscreen? (Set To TRUE)</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now it's time to modify lesson42.cpp (the main code)...
+<br><br>
+We start off by including the standard list of header and library files.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>#include &lt;windows.h&gt;										<font class="theme">// Header File For Windows</font>
+#include &lt;gl\gl.h&gt;										<font class="theme">// Header File For The OpenGL32 Library</font>
+#include &lt;gl\glu.h&gt;										<font class="theme">// Header File For The GLu32 Library</font>
+
+#include "NeHeGL.h"										<font class="theme">// Header File For NeHeGL</font>
+
+#pragma comment( lib, "opengl32.lib" )								<font class="theme">// Search For OpenGL32.lib While Linking</font>
+#pragma comment( lib, "glu32.lib" )								<font class="theme">// Search For GLu32.lib While Linking</font>
+
+GL_Window*	g_window;									<font class="theme">// Window Structure</font>
+Keys*		g_keys;										<font class="theme">// Keyboard</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+We then set up any global variables that we intend to use throughout the program.
+<br><br>mx and my keep track of which room in the maze we are currently
+in. Each room is separated by a wall (so rooms are 2 units apart).
+<br><br>width and height are used to build our texture. It is also the
+width and height of the maze. The reason we make the maze and the
+texture the
+same size is so that each pixel drawn in the maze is one pixel in the
+texture. I like width and height set to 256, although it takes longer
+to
+build the maze.
+<br><br>If your video card can handle large textures, try increasing
+the values by a power of 2 (256, 512, 1024). Make sure you do not
+increase the values
+too much. If the main window is 1024 pixels wide, and each viewport is
+half the size of the main window, the widest you should make your
+texture
+is: Width Of The Window / 2. If you make your texture 1024 pixels wide,
+but your viewport size is only 512, every second pixel will overlap
+because
+there is not enough room to fit all the pixels of the texture in the
+viewport. The same goes for the texture height. It should be: Height Of
+The
+Window / 2. Of course you have to round down to the nearest power of 2.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// User Defined Variables</font>
+int	mx,my;											<font class="theme">// General Loops (Used For Seeking)</font>
+
+const	width	= 128;										<font class="theme">// Maze Width  (Must Be A Power Of 2)</font>
+const	height	= 128;										<font class="theme">// Maze Height (Must Be A Power Of 2)</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+done will be used to keep track of when the maze has been completed.  More about this later.
+<br><br>sp is used to check if the spacebar is being held down. By
+pressing space, the maze is reset, and the program starts drawing a new
+maze. If we
+don't check to see if the spacebar is being held, the maze resets many
+times during the split second that the spacebar is pressed. This
+variable
+makes sure that the maze is only reset once.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>BOOL	done;											<font class="theme">// Flag To Let Us Know When It's Done</font>
+BOOL	sp;											<font class="theme">// Spacebar Pressed?</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">r[4]
+will hold 4 random values for red, g[4] will hold 4 random values for
+green and b[4] will hold 4 random values for blue. These values will
+be used to assign a different color to each viewport. The first
+viewports color will be r[0],g[0],b[0]. Take note that each color will
+be a byte
+value and not a float value like most of you are used to using. The
+reason I use a byte is because it's easier to assign a random value
+from 0
+to 255 than it is a value from 0.0f to 1.0f.
+<br><br>
+tex_data points to our texture data.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>BYTE	r[4], g[4], b[4];									<font class="theme">// Random Colors (4 Red, 4 Green, 4 Blue)</font>
+BYTE	*tex_data;										<font class="theme">// Holds Our Texture Data</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+xrot, yrot and zrot will be used to rotate our 3D objects.
+<br><br>Finally, we set up a quadric object so we can draw a cylinder
+and sphere using gluCylinder and gluSphere. Much easier than drawing
+the objects
+manually.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>GLfloat	xrot, yrot, zrot;									<font class="theme">// Use For Rotation Of Objects</font>
+
+GLUquadricObj *quadric;										<font class="theme">// The Quadric Object</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">The
+following bit of code will set a pixel in our texture at location dmx,
+dmy to bright white. tex_data is the pointer to our texture data.
+Each pixel is made up of 3 bytes (1 for red, 1 for green and 1 for
+blue). The offset for red is 0. And the location of the pixel we want
+to
+modify is dmx (the x position) plus dmy (the y position) multiplied by
+the width of our texture, with the end result multiplied by 3 (3 bytes
+per
+pixel).
+<br><br>The first line below sets the red (0) color to 255. The second
+line sets the green (1) color to 255 and the last line sets the blue
+(2) color
+to 255. The end result is a bright white pixel at dmx,dmy.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void UpdateTex(int dmx, int dmy)								<font class="theme">// Update Pixel dmx, dmy On The Texture</font>
+{
+	tex_data[0+((dmx+(width*dmy))*3)]=255;							<font class="theme">// Set Red Pixel To Full Bright</font>
+	tex_data[1+((dmx+(width*dmy))*3)]=255;							<font class="theme">// Set Green Pixel To Full Bright</font>
+	tex_data[2+((dmx+(width*dmy))*3)]=255;							<font class="theme">// Set Blue Pixel To Full Bright</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Reset
+has quite a few jobs. It clears our texture, assigns some random colors
+to each viewport, resets all the walls in the maze and assigns
+a new random starting point for the maze generation.
+<br><br>The first line of code does the clearing. tex_data points to
+our texture data. We need to clear width (width of our texture)
+multiplied by
+height (height of our texture) multiplied by 3 (red, green, blue).
+Clearing this memory sets all all bytes to 0. If all 3 color values are
+set
+to 0, our texture will be completely black!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void Reset (void)										<font class="theme">// Reset The Maze, Colors, Start Point, Etc</font>
+{
+	ZeroMemory(tex_data, width * height *3);						<font class="theme">// Clear Out The Texture Memory With 0's</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">No
+we need to assign a random color to each view port. For those of you
+that do not already know this, random is not really all that random!
+If you made a simple program to print 10 random digits. Each time you
+ran the program, you would get the exact same digits. In order to make
+things more random (to appear more random) we can set the random seed.
+Again, if we set the seed to 1, we would always get the same numbers.
+However, if we set srand to our current tick count (which could be any
+number), we end up getting different numbers every time the program is
+run.
+<br><br>We have 4 viewports, so we need to make a loop from 0 to 3. We
+assign each color (red, green, blue) a random value from 128 to 255.
+The reason
+I add 128 is because I want bright colors. With a min value of 0 and a
+max value of 255, 128 is roughly 50% brightness.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	srand(GetTickCount());									<font class="theme">// Try To Get More Randomness</font>
+
+	for (int loop=0; loop&lt;4; loop++)							<font class="theme">// Loop So We Can Assign 4 Random Colors</font>
+	{
+		r[loop]=rand()%128+128;								<font class="theme">// Pick A Random Red Color (Bright)</font>
+		g[loop]=rand()%128+128;								<font class="theme">// Pick A Random Green Color (Bright)</font>
+		b[loop]=rand()%128+128;								<font class="theme">// Pick A Random Blue Color (Bright)</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Next
+we assign a random starting point. We must start in a room. Every
+second pixel in the texture is a room. To make sure we start in a room
+and not on a wall, we pick a random number from 0 to half the width of
+the texture and multiply it by 2. That way the only numbers we can get
+are
+0, 2, 4, 6, 8, etc. Which means we will always get a random room and
+never end up landing on a wall which would be 1, 3, 5, 7, 9, etc.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	mx=int(rand()%(width/2))*2;								<font class="theme">// Pick A New Random X Position</font>
+	my=int(rand()%(height/2))*2;								<font class="theme">// Pick A New Random Y Position</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">The
+first line of initialization is very important. It allocates enough
+memory to hold our text (width*height*3). If you do not allocate
+memory,
+you will more than likely crash your system!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>BOOL Initialize (GL_Window* window, Keys* keys)							<font class="theme">// Any GL Init Code &amp; User Initialiazation Goes Here</font>
+{
+	tex_data=new BYTE[width*height*3];							<font class="theme">// Allocate Space For Our Texture</font>
+
+	g_window	= window;								<font class="theme">// Window Values</font>
+	g_keys		= keys;									<font class="theme">// Key Values</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Right
+after we allocate memory for our texture, we call Reset( ). Reset will
+clear the texture, set up our colors, and pick a random starting
+point for our maze.
+<br><br>Once everything has been reset, we need to create our initial
+texture. The first 2 texture parameters CLAMP our texture to the range
+[0,1]. This
+prevents wrapping artifacts when mapping a single image onto an object.
+To see why it's important to clamp the texture, try removing the 2
+lines
+of code. Without clamping, you will notice a thin line at the top of
+the texture and on the right side of the texture. The lines appear
+because
+linear filtering tries to smooth the entire texture, including the
+borders. If pixels is drawn to close to a border, a line appears on the
+opposite
+side of the texture.
+<br><br>We are going to use linear filtering to make things look a
+little smoother. It's up to you what type of filtering you use. If it
+runs really
+slow, try changing the filtering to GL_NEAREST.
+<br><br>
+Finally, we build an RGB 2D texture using tex_data (the alpha channel is not used).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	Reset();										<font class="theme">// Call Reset To Build Our Initial Texture, Etc.</font>
+
+	<font class="theme">// Start Of User Initialization</font>
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); 
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, tex_data);
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">We
+set our clear color to black and the clear depth to 1.0f. We set our
+depth function to less than or equal to, and then enable depth testing.
+<br><br>Enabling GL_COLOR MATERIAL let's you color your objects, with
+glColor, when lighting is enabled. This method is called color
+tracking, and is
+often used instead of performance-draining calls to glMaterial. I get
+alot of emails asking how to change the color of an object... hope the
+information is useful! For those of you that have emailed me asking why
+textures in your projects are weird colors or tinted with the current
+glColor( )... Make sure you do not have GL_COLOR_MATERIAL enabled!
+<br><br>
+* Thanks to James Trotter for the correct explanation on how GL_COLOR_MATERIAL works.  I had said it lets you color your
+textures... However, it actually lets you color objects.
+<br><br>
+Finally we enable 2D texture mapping.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glClearColor (0.0f, 0.0f, 0.0f, 0.0f);							<font class="theme">// Black Background</font>
+	glClearDepth (1.0f);									<font class="theme">// Depth Buffer Setup</font>
+
+	glDepthFunc (GL_LEQUAL);								<font class="theme">// The Type Of Depth Testing</font>
+	glEnable (GL_DEPTH_TEST);								<font class="theme">// Enable Depth Testing</font>
+
+	glEnable(GL_COLOR_MATERIAL);								<font class="theme">// Enable Color Material (Allows Us To Tint Textures)</font>
+
+	glEnable(GL_TEXTURE_2D);								<font class="theme">// Enable Texture Mapping</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">The
+following code creates a pointer to our quadric object. Once we have
+the pointer we set the Normals to smooth, and we ask for texture
+coordinates. By doing this, lighting will work properly, and our
+texture will be mapped to any quadric object automatically!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	quadric=gluNewQuadric();								<font class="theme">// Create A Pointer To The Quadric Object</font>
+	gluQuadricNormals(quadric, GLU_SMOOTH);							<font class="theme">// Create Smooth Normals </font>
+	gluQuadricTexture(quadric, GL_TRUE);							<font class="theme">// Create Texture Coords</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Light
+0 is enabled, however it will not do anything until we enable lighting.
+Light 0 for those of you that do not already know is a predefined
+light that points directly into the screen. Handy if you don't feel
+like setting the light up yourself.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glEnable(GL_LIGHT0);									<font class="theme">// Enable Light0 (Default GL Light)</font>
+
+	return TRUE;										<font class="theme">// Return TRUE (Initialization Successful)</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Whenever
+you allocate memory, it's important to deallocate it. The line of code
+below deletes the memory whenever you toggle fullscreen / windowed
+mode or whenever the program exits.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void Deinitialize (void)									<font class="theme">// Any User DeInitialization Goes Here</font>
+{
+	delete [] tex_data;									<font class="theme">// Delete Our Texture Data (Freeing Up Memory)</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Update( ) is where most of the maze creation is done, along with watching for keypresses, rotation, etc.
+<br><br>
+We need to set up a variable called dir.  We will use this variable to randomly travel up, right, down or left.
+<br><br>We watch to see if the spacebar is pressed. If it is, and it's
+not being held down, we reset the maze. If the keyboard is released, we
+set
+sp to FALSE so that our program knows it is no longer being held down.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void Update (float milliseconds)								<font class="theme">// Perform Motion Updates Here</font>
+{
+	int	dir;										<font class="theme">// Will Hold Current Direction</font>
+
+	if (g_keys-&gt;keyDown [VK_ESCAPE])							<font class="theme">// Is ESC Being Pressed?</font>
+		TerminateApplication (g_window);						<font class="theme">// Terminate The Program</font>
+
+	if (g_keys-&gt;keyDown [VK_F1])								<font class="theme">// Is F1 Being Pressed?</font>
+		ToggleFullscreen (g_window);							<font class="theme">// Toggle Fullscreen Mode</font>
+
+	if (g_keys-&gt;keyDown [' '] &amp;&amp; !sp)							<font class="theme">// Check To See If Spacebar Is Pressed</font>
+	{
+		sp=TRUE;									<font class="theme">// If So, Set sp To TRUE (Spacebar Pressed)</font>
+		Reset();									<font class="theme">// If So, Call Reset And Start A New Maze</font>
+	}
+
+	if (!g_keys-&gt;keyDown [' '])								<font class="theme">// Check To See If Spacebar Has Been Released</font>
+		sp=FALSE;									<font class="theme">// If So, Set sp To FALSE (Spacebar Released)</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">xrot,
+yrot and zrot are increased by the number of milliseconds that have
+passed multiplied by some small floating point number. This allows us
+to rotate objects on the x-axis, y-axis and z-axis. Each variable
+increases by a different amount to make the rotation a little nicer to
+watch.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	xrot+=(float)(milliseconds)*0.02f;							<font class="theme">// Increase Rotation On The X-Axis</font>
+	yrot+=(float)(milliseconds)*0.03f;							<font class="theme">// Increase Rotation On The Y-Axis</font>
+	zrot+=(float)(milliseconds)*0.015f;							<font class="theme">// Increase Rotation On The Z-Axis</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">The
+code below checks to see if we are done drawing the maze. We start off
+by setting done to TRUE. We then loop through every single room
+to see if any of the rooms still need a wall knocked out. If any of the
+rooms have not been visited we set done to FALSE.
+<br><br>If tex_data[((x+(width*y))*3)] equals zero, we know that room
+has not been visited yet, and does not have a pixel drawn in it yet. If
+there was
+a pixel, the value would be 255. We only check the red pixel value,
+because we know the red value will either be 0 (empty) or 255
+(updated).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	done=TRUE;										<font class="theme">// Set done To True</font>
+	for (int x=0; x&lt;width; x+=2)								<font class="theme">// Loop Through All The Rooms</font>
+	{
+		for (int y=0; y&lt;height; y+=2)							<font class="theme">// On X And Y Axis</font>
+		{
+			if (tex_data[((x+(width*y))*3)]==0)					<font class="theme">// If Current Texture Pixel (Room) Is Blank</font>
+				done=FALSE;							<font class="theme">// We Have To Set done To False (Not Finished Yet)</font>
+		}
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">After
+checking all of the rooms, if done is still TRUE, we know that the maze
+is complete. SetWindowsText will change the title of a window.
+We change the title so that it says "Maze Complete!". We then pause for
+5000 milliseconds so that the person watching the demo has time to
+read the title bar (or if they are in fullscreen, they see that the
+animation has stopped). After 5000 milliseconds, we change the title
+back
+so that it says "Building Maze!" and we reset the maze (starting the
+entire process over).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	if (done)										<font class="theme">// If done Is True Then There Were No Unvisited Rooms</font>
+	{
+		<font class="theme">// Display A Message At The Top Of The Window, Pause For A Bit And Then Start Building A New Maze!</font>
+		SetWindowText(g_window-&gt;hWnd,"Lesson 42: Multiple Viewports... 2003 NeHe Productions... Maze Complete!");
+		Sleep(5000);
+		SetWindowText(g_window-&gt;hWnd,"Lesson 42: Multiple Viewports... 2003 NeHe Productions... Building Maze!");
+		Reset();
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">The
+following code might look confusing but it's really not that hard to
+understand. We check to see if the room to the right of the current
+room
+has been visited or if our current location is too close to the far
+right side of the maze (there are no more rooms to the right). We check
+if the
+room to the left has been visited or we are to close to the left size
+of the maze (no more rooms to the left). We check if the room below us
+has
+been visited or if we are too far down (no more rooms below us) and
+finally we check to see if the room above us has been visited or if we
+are to
+close to the top (no more rooms above).
+<br><br>If the red pixel value of a room equals 255 we know that room
+has been visited (because it has been updated with UpdateTex). If mx
+(current x
+position) is less than 2 we know that we are almost to the far left of
+the screen and can not go any further left.
+<br><br>If we are trapped or we are to close to a border, we give mx
+and my random values. We then check to see if the pixel at that
+location is has already
+been visited. If it has not, we grab new random mx, my values until we
+find a cell that has already been visited. We want new paths to branch
+off
+old paths which is why we need to keep searching until we find an old
+path to launch from.
+<br><br>To keep the code to a minimum, I don't bother checking if mx-2
+is less than 0. If you want 100% error checking, you can modify this
+section of
+code to prevent checking memory that does not belong to the current
+texture.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Check To Make Sure We Are Not Trapped (Nowhere Else To Move)</font>
+	if (((mx&gt;(width-4) || tex_data[(((mx+2)+(width*my))*3)]==255)) &amp;&amp; ((mx&lt;2 || tex_data[(((mx-2)+(width*my))*3)]==255)) &amp;&amp;
+		((my&gt;(height-4) || tex_data[((mx+(width*(my+2)))*3)]==255)) &amp;&amp; ((my&lt;2 || tex_data[((mx+(width*(my-2)))*3)]==255)))
+	{
+		do										<font class="theme">// If We Are Trapped</font>
+		{
+			mx=int(rand()%(width/2))*2;						<font class="theme">// Pick A New Random X Position</font>
+			my=int(rand()%(height/2))*2;						<font class="theme">// Pick A New Random Y Position</font>
+		}
+		while (tex_data[((mx+(width*my))*3)]==0);					<font class="theme">// Keep Picking A Random Position Until We Find</font>
+	}											<font class="theme">// One That Has Already Been Tagged (Safe Starting Point)</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">The
+first line below assigns dir with a random value from 0 to 3. We will
+use this value to tell our maze to draw right, up, left, down.
+<br><br>after we get a random direction, we check to see if the value
+of dir is equal to 0 (move right). if it is and we are not already at
+the far right
+side of the maze, we check the room to the right of the current room.
+If the room to the right has not been visited, we knock out the wall
+between
+the two room with UpdateTex(mx+1,my) and then we move to the new room
+by increasing mx by 2.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	dir=int(rand()%4);									<font class="theme">// Pick A Random Direction</font>
+
+	if ((dir==0) &amp;&amp; (mx&lt;=(width-4)))							<font class="theme">// If The Direction Is 0 (Right) And We Are Not At The Far Right</font>
+	{
+		if (tex_data[(((mx+2)+(width*my))*3)]==0)					<font class="theme">// And If The Room To The Right Has Not Already Been Visited</font>
+		{
+			UpdateTex(mx+1,my);							<font class="theme">// Update The Texture To Show Path Cut Out Between Rooms</font>
+			mx+=2;									<font class="theme">// Move To The Right (Room To The Right)</font>
+		}
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">If
+the value of dir is 1 (down) and we are not at the very bottom, we
+check to see if the room below has been visited. If it has not been
+visited,
+we knock out the wall between the two rooms (current room and room
+below it) and then move to the new room by increasing my by 2.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	if ((dir==1) &amp;&amp; (my&lt;=(height-4)))							<font class="theme">// If The Direction Is 1 (Down) And We Are Not At The Bottom</font>
+	{
+		if (tex_data[((mx+(width*(my+2)))*3)]==0)					<font class="theme">// And If The Room Below Has Not Already Been Visited</font>
+		{
+			UpdateTex(mx,my+1);							<font class="theme">// Update The Texture To Show Path Cut Out Between Rooms</font>
+			my+=2;									<font class="theme">// Move Down (Room Below)</font>
+		}
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">If
+the value of dir is 2 (left) and we are not at the far left, we check
+to see if the room to the left has been visited. If it has not been
+visited, we knock out the wall between the two rooms (current room and
+room to the left) and then move to the new room by decreasing mx by 2.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	if ((dir==2) &amp;&amp; (mx&gt;=2))								<font class="theme">// If The Direction Is 2 (Left) And We Are Not At The Far Left</font>
+	{
+		if (tex_data[(((mx-2)+(width*my))*3)]==0)					<font class="theme">// And If The Room To The Left Has Not Already Been Visited</font>
+		{
+			UpdateTex(mx-1,my);							<font class="theme">// Update The Texture To Show Path Cut Out Between Rooms</font>
+			mx-=2;									<font class="theme">// Move To The Left (Room To The Left)</font>
+		}
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">If
+the value of dir is 3 (up) and we are not at the very top, we check to
+see if the room above has been visited. If it has not been visited,
+we knock out the wall between the two rooms (current room and room
+above it) and then move to the new room by decreasing my by 2.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	if ((dir==3) &amp;&amp; (my&gt;=2))								<font class="theme">// If The Direction Is 3 (Up) And We Are Not At The Top</font>
+	{
+		if (tex_data[((mx+(width*(my-2)))*3)]==0)					<font class="theme">// And If The Room Above Has Not Already Been Visited</font>
+		{
+			UpdateTex(mx,my-1);							<font class="theme">// Update The Texture To Show Path Cut Out Between Rooms</font>
+			my-=2;									<font class="theme">// Move Up (Room Above)</font>
+		}
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">After
+moving to the new room, we need to mark it as being visited. We do this
+by calling UpdateTex( ) with the current mx, my position.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	UpdateTex(mx,my);									<font class="theme">// Update Current Room</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">We
+will start this section of code off with something new... We need to
+know how large the current window is in order to resize the viewports
+correctly. To get the current window width and height, we need to grab
+the left value of the window, the right value of the window, the top
+of the window and the bottom of the window. After we have these values
+we can calculate the width by subtracting the left value of the window
+from the right value. We can get the height by subtracting the top of
+the window from the bottom of the window.
+<br><br>We can get the left, right, top and bottom values by using
+RECT. RECT holds the coordinates of a rectangle. The left, right, top
+and bottom
+coordinates to be exact.
+<br><br>To grab the coordinates for our screen, we use GetClientRect(
+). The first parameter we pass is our current window handle. The second
+parameter is the structure that will hold the information returned
+(rect).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>void Draw (void)										<font class="theme">// Our Drawing Routine</font>
+{
+	RECT	rect;										<font class="theme">// Holds Coordinates Of A Rectangle</font>
+
+	GetClientRect(g_window-&gt;hWnd, &amp;rect);							<font class="theme">// Get Window Dimensions</font>
+	int window_width=rect.right-rect.left;							<font class="theme">// Calculate The Width (Right Side-Left Side)</font>
+	int window_height=rect.bottom-rect.top;							<font class="theme">// Calculate The Height (Bottom-Top)</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">We
+need to update the texture every frame and we want it updated before we
+draw the textured scenes. The fastest way to update a texture is to
+use the command glTexSubImage2D( ). glTexSubImage2D will map all or
+part of a texture in memory to an object on the screen. In the code
+below
+we tell it we are using a 2D texture. The level of detail number is 0,
+we do not want an x (0) or y (0) offset. We want to use the entire
+width
+of the texture and the entire height. The data is GL_RGB format, and
+it's type is GL_UNSIGNED_BYTE. tex_data is the data we want to map.
+<br><br>This is a very fast way to use updated texture data without
+having to rebuild the texture. It's also important to note that this
+command will not
+BUILD a texture. You have to create a texture before you can use this
+command to update it!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Update Our Texture... This Is The Key To The Programs Speed... Much Faster Than Rebuilding The Texture Each Time</font>
+	glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, tex_data);
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">This
+line of code is very important. It will clear the entire screen.
+Because we only want to clear the screen BEFORE ALL 4 viewports are
+drawn,
+and before each viewport is drawn, we need to clear before the main
+loop that draws the 4 viewports! Also notice that we are not clearing
+the
+depth buffer at the moment. It will be cleared on it's own before
+drawing each scene! It's VERY important that you clear the screen once,
+and
+then clear the depth buffer before drawing each viewport.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glClear (GL_COLOR_BUFFER_BIT);								<font class="theme">// Clear Screen</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now for the main drawing loop.  We want to draw 4 different viewports, so we create a loop from 0 to 3.
+<br><br>The first thing we do is set the color of the current viewport
+using glColor3ub(r,g,b). This may be new to a few of you. It just like
+glColor3f(r,g,b) but it uses unsigned bytes instead of floating point
+values. Remember earlier that I said it was easier to assign a random
+value from 0 to 255 as a color. Well now that we have such large values
+for each color this is the command we need to use to set the colors
+properly.
+<br><br>glColor3f(0.5f,0.5f,0.5f) is 50% brightness for red, green and
+blue. glColor3ub(127,127,127) is also 50% brightness for red, green,
+blue.
+<br><br>If loop is 0, we would be selecting r[0],g[0],b[0]. If loop is
+1, we would be selecting the colors stored in r[1],g[1],b[1]. That way,
+each
+scene has it's own random color.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	for (int loop=0; loop&lt;4; loop++)							<font class="theme">// Loop To Draw Our 4 Views</font>
+	{
+		glColor3ub(r[loop],g[loop],b[loop]);						<font class="theme">// Assign Color To Current View</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">The
+first thing we need to do before we can draw anything is set up the
+current viewport. If loop equals 0, we are drawing the first viewport.
+We want this viewport on the left half of the screen (0), and halfway
+up the screen (window_height/2). We want the width of the viewport to
+be
+half the width of the main window (window_width/2) and we want the
+height to be half the height of the main window (window_height/2).
+<br><br>
+If the main window is 1024x768, we would end up with a viewport at 0,384 with a width of 512 and a height of 384.
+<br><br>
+This viewport would look like this:
+<br><br>
+<img src="lesson.asp-Dateien/viewport1.jpg" border="0">
+<br><br>After setting up the viewport, we select the projection matrix,
+reset it and then set up our 2D Ortho view. We want the Ortho view to
+fill the
+entire viewport. So we give it a left value of 0 and a right value of
+window_width/2 (same width as the viewport). We also assign it a bottom
+value of window_height/2 and a top value of 0. This gives us the same
+height as the viewport.
+<br><br>
+The top left of our Ortho view will be 0,0.  The bottom right of our Ortho view will be window_width/2, window_height/2.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		if (loop==0)									<font class="theme">// If We Are Drawing The First Scene</font>
+		{
+			<font class="theme">// Set The Viewport To The Top Left.  It Will Take Up Half The Screen Width And Height</font>
+			glViewport (0, window_height/2, window_width/2, window_height/2);
+			glMatrixMode (GL_PROJECTION);						<font class="theme">// Select The Projection Matrix</font>
+			glLoadIdentity ();							<font class="theme">// Reset The Projection Matrix</font>
+			<font class="theme">// Set Up Ortho Mode To Fit 1/4 The Screen (Size Of A Viewport)</font>
+			gluOrtho2D(0, window_width/2, window_height/2, 0);
+		}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">If
+loop equals 1, we are drawing the second viewport. It will be on the
+right half of the screen, and halfway up the screen (main window).
+The width and height will be the same as the first viewport. The only
+thing different is the first parameter of glViewport( ) is
+window_width/2. This tells our program that we want the viewport to
+start halfway from the left side of the main window.
+<br><br>
+The second viewport would look like this:
+<br><br>
+<img src="lesson.asp-Dateien/viewport2.jpg" border="0">
+<br><br>Again, we select the projection matrix and reset it, but this
+time we set up a perspective view with a 45 degree field of view and
+near value
+of 0.1f and a far value of 500.0f.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		if (loop==1)									<font class="theme">// If We Are Drawing The Second Scene</font>
+		{
+			<font class="theme">// Set The Viewport To The Top Right.  It Will Take Up Half The Screen Width And Height</font>
+			glViewport (window_width/2, window_height/2, window_width/2, window_height/2);
+			glMatrixMode (GL_PROJECTION);						<font class="theme">// Select The Projection Matrix</font>
+			glLoadIdentity ();							<font class="theme">// Reset The Projection Matrix</font>
+			<font class="theme">// Set Up Perspective Mode To Fit 1/4 The Screen (Size Of A Viewport)</font>
+			gluPerspective( 45.0, (GLfloat)(width)/(GLfloat)(height), 0.1f, 500.0 ); 
+		}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">If
+loop equals 2, we are drawing the third viewport. It will be on the
+bottom right half of the main window. The width and height will be the
+same as the first and second viewports. The only thing different from
+the second viewport is the second parameter of glViewport( ) is now 0.
+This tells our program that we want the viewport to start at the bottom
+right half of the main window.
+<br><br>
+The third viewport would look like this:
+<br><br>
+<img src="lesson.asp-Dateien/viewport3.jpg" border="0">
+<br><br>
+We set up a perspective view exactly the same way we did for the second viewport.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		if (loop==2)									<font class="theme">// If We Are Drawing The Third Scene</font>
+		{
+			<font class="theme">// Set The Viewport To The Bottom Right.  It Will Take Up Half The Screen Width And Height</font>
+			glViewport (window_width/2, 0, window_width/2, window_height/2);
+			glMatrixMode (GL_PROJECTION);						<font class="theme">// Select The Projection Matrix</font>
+			glLoadIdentity ();							<font class="theme">// Reset The Projection Matrix</font>
+			<font class="theme">// Set Up Perspective Mode To Fit 1/4 The Screen (Size Of A Viewport)</font>
+			gluPerspective( 45.0, (GLfloat)(width)/(GLfloat)(height), 0.1f, 500.0 ); 
+		}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">If
+loop equals 3, we are drawing the last viewport (viewport 4). It will
+be on the bottom left half of the main window. The width and height
+will
+be the same as the first, second and third viewports. The only thing
+different from the third viewport is the first parameter of glViewport(
+) is
+now 0. This tells our program that we want the viewport to start at the
+bottom left half of the main window.
+<br><br>
+The fourth viewport would look like this:
+<br><br>
+<img src="lesson.asp-Dateien/viewport4.jpg" border="0">
+<br><br>
+We set up a perspective view exactly the same way we did for the second viewport.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		if (loop==3)									<font class="theme">// If We Are Drawing The Fourth Scene</font>
+		{
+			<font class="theme">// Set The Viewport To The Bottom Left.  It Will Take Up Half The Screen Width And Height</font>
+			glViewport (0, 0, window_width/2, window_height/2);
+			glMatrixMode (GL_PROJECTION);						<font class="theme">// Select The Projection Matrix</font>
+			glLoadIdentity ();							<font class="theme">// Reset The Projection Matrix</font>
+			<font class="theme">// Set Up Perspective Mode To Fit 1/4 The Screen (Size Of A Viewport)</font>
+			gluPerspective( 45.0, (GLfloat)(width)/(GLfloat)(height), 0.1f, 500.0 ); 
+		}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">The
+following code selects the modelview matrix, resets it, then clears the
+depth buffer. We clear the depth buffer for each viewport drawn.
+Notice we are not clearing the screen color. Just the Depth Buffer! If
+you do not clear the depth buffer, you will see portions of objects
+disappear, etc. Definitely not pretty!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		glMatrixMode (GL_MODELVIEW);							<font class="theme">// Select The Modelview Matrix</font>
+		glLoadIdentity ();								<font class="theme">// Reset The Modelview Matrix</font>
+
+		glClear (GL_DEPTH_BUFFER_BIT);							<font class="theme">// Clear Depth Buffer</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">The
+first image we draw is a flat 2D textured quad. The quad is drawn in
+ortho mode, and will fill the entire viewport. Because we are using
+ortho mode, there is no 3rd dimension, so there is no need to translate
+on the z-axis.
+<br><br>Remember that the top left of the first viewport is 0,0 and
+the bottom right is window_width/2, window_height/2. So that means that
+the top
+right of our quad is at window_width/2, 0. The top left is at 0,0, the
+bottom left is at 0, window_height/2 and the bottom right is at
+window_width/2, window_height/2. Notice in ortho mode, we can actually
+work with pixels rather than units (depending on how we set the
+viewport
+up).
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		if (loop==0)									<font class="theme">// Are We Drawing The First Image?  (Original Texture... Ortho)</font>
+		{
+			glBegin(GL_QUADS);							<font class="theme">// Begin Drawing A Single Quad</font>
+				<font class="theme">// We Fill The Entire 1/4 Section With A Single Textured Quad.</font>
+				glTexCoord2f(1.0f, 0.0f); glVertex2i(window_width/2, 0              );
+				glTexCoord2f(0.0f, 0.0f); glVertex2i(0,              0              );
+				glTexCoord2f(0.0f, 1.0f); glVertex2i(0,              window_height/2);
+				glTexCoord2f(1.0f, 1.0f); glVertex2i(window_width/2, window_height/2);
+			glEnd();								<font class="theme">// Done Drawing The Textured Quad</font>
+		}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">The
+second image we draw is a smooth sphere with lighting. The second
+viewport is perspective, so the first thing we need to do is move into
+the screen 14 units. We then rotate our object on the x-axis, y-axis
+and z-axis.
+<br><br>We enable lighting, draw our sphere and then disable lighting.
+The sphere has a radius of 4 units with 32 slices and 32 stacks. If you
+feel like
+playing around, try changing the number of stacks or slices to a lower
+number. By reducing the number of stacks / slices, you reduce the
+smoothness
+of the sphere.
+<br><br>
+Texture coordinates are automatically generated!
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		if (loop==1)									<font class="theme">// Are We Drawing The Second Image?  (3D Texture Mapped Sphere... Perspective)</font>
+		{
+			glTranslatef(0.0f,0.0f,-14.0f);						<font class="theme">// Move 14 Units Into The Screen</font>
+
+			glRotatef(xrot,1.0f,0.0f,0.0f);						<font class="theme">// Rotate By xrot On The X-Axis</font>
+			glRotatef(yrot,0.0f,1.0f,0.0f);						<font class="theme">// Rotate By yrot On The Y-Axis</font>
+			glRotatef(zrot,0.0f,0.0f,1.0f);						<font class="theme">// Rotate By zrot On The Z-Axis</font>
+
+			glEnable(GL_LIGHTING);							<font class="theme">// Enable Lighting</font>
+			gluSphere(quadric,4.0f,32,32);						<font class="theme">// Draw A Sphere</font>
+			glDisable(GL_LIGHTING);							<font class="theme">// Disable Lighting</font>
+		}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">The
+third image drawn is the same as the first image, but it's drawn with
+perspective, It's tilted at an angle and it rotates (oh yay!).
+<br><br>We move 2 units into the screen and then tilt the quad back 45
+degrees. This makes the top of the quad further away from us, and the
+bottom of
+the quad closer towards us!
+<br><br>
+We then rotate on the z-axis to get the quad spinning and draw the quad.  We need to set the texture coordinates manually.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		if (loop==2)									<font class="theme">// Are We Drawing The Third Image?  (Texture At An Angle... Perspective)</font>
+		{
+			glTranslatef(0.0f,0.0f,-2.0f);						<font class="theme">// Move 2 Units Into The Screen</font>
+			glRotatef(-45.0f,1.0f,0.0f,0.0f);					<font class="theme">// Tilt The Quad Below Back 45 Degrees.</font>
+			glRotatef(zrot/1.5f,0.0f,0.0f,1.0f);					<font class="theme">// Rotate By zrot/1.5 On The Z-Axis</font>
+
+			glBegin(GL_QUADS);							<font class="theme">// Begin Drawing A Single Quad</font>
+				glTexCoord2f(1.0f, 1.0f); glVertex3f( 1.0f,  1.0f, 0.0f);
+				glTexCoord2f(0.0f, 1.0f); glVertex3f(-1.0f,  1.0f, 0.0f);
+				glTexCoord2f(0.0f, 0.0f); glVertex3f(-1.0f, -1.0f, 0.0f);
+				glTexCoord2f(1.0f, 0.0f); glVertex3f( 1.0f, -1.0f, 0.0f);
+			glEnd();								<font class="theme">// Done Drawing The Textured Quad</font>
+		}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+If we are drawing the 4th image, we move 7 units into the screen.  We then rotate the object on the x-axis, y-axis and z-axis.
+<br><br>We enable lighting to give the object some nice shading and
+then we translate -2 units on the z-axis. The reason we do this is so
+that our object
+rotates around it's center point rather than rotating around one of the
+ends. The cylinder is 1.5 units wide on one end, 1.5 unit wide on the
+other end, it has a length of 4 units and is made up of 32 slices
+(panels around) and 16 stacks (length panels).
+<br><br>
+In order to rotate around the center we need to translate half the length.  Half of 4 is 2!
+<br><br>
+After translating, rotating and then translating some more, we draw the cylinder and then disable lighting.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>		if (loop==3)									<font class="theme">// Are We Drawing The Fourth Image?  (3D Texture Mapped Cylinder... Perspective)</font>
+		{
+			glTranslatef(0.0f,0.0f,-7.0f);						<font class="theme">// Move 7 Units Into The Screen</font>
+			glRotatef(-xrot/2,1.0f,0.0f,0.0f);					<font class="theme">// Rotate By -xrot/2 On The X-Axis</font>
+			glRotatef(-yrot/2,0.0f,1.0f,0.0f);					<font class="theme">// Rotate By -yrot/2 On The Y-Axis</font>
+			glRotatef(-zrot/2,0.0f,0.0f,1.0f);					<font class="theme">// Rotate By -zrot/2 On The Z-Axis</font>
+
+			glEnable(GL_LIGHTING);							<font class="theme">// Enable Lighting</font>
+			glTranslatef(0.0f,0.0f,-2.0f);						<font class="theme">// Translate -2 On The Z-Axis (To Rotate Cylinder Around The Center, Not An End)</font>
+			gluCylinder(quadric,1.5f,1.5f,4.0f,32,16);				<font class="theme">// Draw A Cylinder</font>
+			glDisable(GL_LIGHTING);							<font class="theme">// Disable Lighting</font>
+		}
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The last thing we do is flush the rendering pipeline.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	glFlush ();										<font class="theme">// Flush The GL Rendering Pipeline</font>
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Hopefully
+this tutorial answers any questions you may have had about multiple
+viewports. The code is not all that hard to understand. The code is
+almost identical to the standard basecode. The only thing that has
+really changed is the viewport setup is now done in the main drawing
+loop, the
+screen is cleared once before the viewports are drawn, and the depth
+buffer is cleared on it's own.
+<br><br>You can use the code to display a variety of images all
+running in their own viewport, or you could use the code to display
+multiple views of a
+certain object. What you do with this code is up to you.
+<br><br>I hope you guys enjoy the tutorial... If you find any mistakes
+in the code, or you feel you can make this tutorial even better, let me
+know.
+<br><br>
+<b>Jeff Molofee</b> (<b>NeHe</b>)
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vc/lesson42.zip">Visual C++</a> Code For This Lesson.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/bcb6/lesson42_bcb6.zip">Borland C++ Builder 6</a> Code For This Lesson. ( Conversion by <a href="mailto:conglth@hotmail.com">Le Thanh Cong</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cwarrior/lesson42.zip">Code Warrior 5.3</a> Code For This Lesson. ( Conversion by <a href="mailto:DelusionalBeing@hotmail.com">Scott Lupton</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/delphi/lesson42.zip">Delphi</a> Code For This Lesson. ( Conversion by <a href="mailto:michal_praha@seznam.cz">Michal Tucek</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/devc/lesson42.zip">Dev C++</a> Code For This Lesson. ( Conversion by <a href="mailto:robohog_64@hotmail.com">Victor Andr�e</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/euphoria/lesson42.zip">Euphoria</a> Code For This Lesson. ( Conversion by <a href="mailto:1evan@sbcglobal.net">Evan Marshall</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/linuxsdl/lesson42.tar.gz">Linux/SDL</a> Code For This Lesson. ( Conversion by <a href="mailto:evik@chaos.hu">Evik</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/macosxcocoa/lesson42.zip">Mac OS X/Cocoa</a> Code For This Lesson. ( Conversion by <a href="mailto:bholley@unlnotes.unl.edu">Brian Holley</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/python/lesson42.tar.gz">Python</a> Code For This Lesson. ( Conversion by <a href="mailto:bleair@comcast.net">Brian Leair</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vs_net/lesson42.zip">Visual Studio .NET</a> Code For This Lesson. ( Conversion by <a href="mailto:webmaster@joachimrohde.de">Joachim Rohde</a> )<br>
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/extras/lesson42/lesson42_dual_window.zip">Lesson 42 - Multi Window</a> Code For This Lesson
+by Marcel Laverdet<br>
+<br><br>
+<table border="0" width="100%">
+<tbody><tr><td align="left" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=41">&lt; Lesson 41</a></font></b></td>
+<td align="right" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=43">Lesson 43 &gt;</a></font></b></td>
+</tr></tbody></table>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table>
+
+</body></html>

@@ -1,0 +1,327 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+
+
+<title>NeHe Productions: OpenGL Lesson #46</title>
+<meta name="author" content="Jeff Molofee">
+<meta name="description" content="OpenGL Tutorials, Demos, Games and More...">
+<meta name="keywords" content="opengl, tutorial, article, demo, game, blend, texturemap, lighting, contest, 3D">
+<link rel="stylesheet" type="text/css" href="lesson.asp-Dateien/rgb.css">
+</head><body bgcolor="black" link="#aaccff" text="white" vlink="#aaccff">
+
+<table border="0" width="100%"><tbody><tr><td align="center">
+<!-- Begin -  Site: GameDev.net Zone: NeHe 728x90 -->
+<script language="javascript" type="text/javascript">
+<!--
+var browName = navigator.appName;
+var SiteID = 1;
+var ZoneID = 4;
+var browDateTime = (new Date()).getTime();
+if (browName=='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;Browser=NETSCAPE4&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+if (browName!='Netscape')
+{
+document.write('<s'+'cript lang' + 'uage="jav' + 'ascript" src="http://www.gamedev.net/banman/a.aspx?ZoneID=' + ZoneID + '&amp;Task=Get&amp;IFR=False&amp;PageID=61252&amp;SiteID=' + SiteID + '&amp;Random=' + browDateTime + '">'); document.write('</'+'scr'+'ipt>');
+}
+// --> 
+</script><script language="javascript" src="lesson.asp-Dateien/a.js"></script><a href="http://www.gamedev.net/banman/a.aspx?Task=Click&amp;ZoneID=4&amp;CampaignID=609&amp;AdvertiserID=11&amp;BannerID=677&amp;SiteID=1&amp;RandomNumber=137330378&amp;Keywords=" target="_Blank"><img src="lesson.asp-Dateien/BPleader.png" alt="" align="Center" border="0" height="90" width="728"></a><br>
+<noscript> <a
+href="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Click&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+target="_blank"> <img
+src="http://www.gamedev.net/banman/a.aspx?ZoneID=4&amp;Task=Get&amp;Mode=HTML&amp;SiteID=1&amp;PageID=70554"
+width="728" height="90" border="0" alt=""></a>
+</noscript>
+<!-- End -  Site: GameDev.net Zone: NeHe 728x90 --></td></tr></tbody></table><br>
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tinylogo" height="130" width="326"><img src="lesson.asp-Dateien/blank.gif" alt="NeHe Productions" height="130" width="326"></td><td class="indexheading" align="center" valign="middle"><font class="text"><font class="theme" size="+3"><b><i>Lesson: 46</i></b></font></font></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">Howdy all, the Friendly Neighborhood Roach here with an interesting tutorial that will help you get your apps top notch.
+In the realm of getting your OpenGL programs to look better, a big problem we all run into is aliasing. That is, the
+square edged "jaggies" that exist on diagonal lines in relation to the square pixels that exist on your screen. Ie,
+Bad Mojo. The answer, termed Anti-Aliasing, is used to smudge those "jaggies" in order to create a smoother edge for
+objects. One process used to achieve anti-aliasing is called "Multisampling."  The idea is that for each pixel, we sample
+the pixels around it to determine if this edge needs to be anti-aliased, basically, we discard the jaggies by "smudging"
+the pixel itself.
+<br><br>
+Fullscreen AntiAliasing is something that non-realtime rendering programs have always had an advantage in. However, with
+current hardware, we're able to pull off the same effect real time.  The ARB_MULTISAMPLE extension allows us to do this.
+Essentially, each pixel is sampled by it's neighbors to find out the optimal antialias to perform. This comes at a cost
+however, and can slow down performance.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	Vid_mem = sizeof(Front_buffer) + sizeof(Back_buffer) + num_samples
+		* (sizeof(Front_buffer) +sizeof(ZS_buffer))
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">For
+more specific information on anti-aliasing, as well as the information
+I'm about to present, please check out the following links:
+<br><br>
+<a href="http://developer.nvidia.com/attach/3464">GDC2002 -- OpenGL Multisample</a><br>
+<a href="http://developer.nvidia.com/attach/2064">OpenGL Pixel Formats and Multisample Antialiasing</a>
+<br><br>
+With that being said, a brief overview of how our process is going to work. Unlike other extensions, which relate to
+OpenGL rendering, the ARB_MULTISAMPLE extension must be dealt with during the creation of your rendering window.  Our
+process shall go as follows:
+<ol>
+<li>Create our Window as normal</li>
+<li>Query the possible Multisample pixel values (InitMultisample)</li>
+<li>If Multisampling is available, destroy this Window and recreate it with our NEW pixelFormat</li>
+<li>For parts we want to antialias, simply call glEnable(GL_ARB_MULTISAMPLE);</li>
+</ol>
+Let's start off from the top, and talk about our source file arbMultiSample.cpp.  We start off with the standard includes
+for gl.h &amp; glu.h, as well as windows.h, we'll talk about arb_multisample.h later.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>#include &lt;windows.h&gt;
+#include &lt;gl/gl.h&gt;
+#include &lt;gl/glu.h&gt;
+#include "arb_multisample.h"
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The two lines below define our access points into the WGL string listing. We'll use these in accessing the pixel format
+attributes to test for our sample format. The other two variables are used other places in the program to access our data.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre><font class="theme">// Declarations We'll Use</font>
+#define WGL_SAMPLE_BUFFERS_ARB	0x2041
+#define WGL_SAMPLES_ARB		0x2042
+
+bool	arbMultisampleSupported	= false;
+int	arbMultisampleFormat	= 0;
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The next function we're going to talk about is WGLisExtensionSupported, which will be used to query the WGL extensions listing
+to verify if a given format is supported on the system.  We'll provide the description of the code as we walk through it,
+because it's easier to do that then all the html back and forth jumping....
+<br><br>
+<b>NOTE:</b> The code below was rewritten by Henry Goffin.  His update adds: Better parsing of the supported GL Extensions and
+fixes a problem with the fallback code if the first check was to fail.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>bool WGLisExtensionSupported(const char *extension)
+{
+	const size_t extlen = strlen(extension);
+	const char *supported = NULL;
+
+	<font class="theme">// Try To Use wglGetExtensionStringARB On Current DC, If Possible</font>
+	PROC wglGetExtString = wglGetProcAddress("wglGetExtensionsStringARB");
+
+	if (wglGetExtString)
+		supported = ((char*(__stdcall*)(HDC))wglGetExtString)(wglGetCurrentDC());
+
+	<font class="theme">// If That Failed, Try Standard Opengl Extensions String</font>
+	if (supported == NULL)
+		supported = (char*)glGetString(GL_EXTENSIONS);
+
+	<font class="theme">// If That Failed Too, Must Be No Extensions Supported</font>
+	if (supported == NULL)
+		return false;
+
+	<font class="theme">// Begin Examination At Start Of String, Increment By 1 On False Match</font>
+	for (const char* p = supported; ; p++)
+	{
+		<font class="theme">// Advance p Up To The Next Possible Match</font>
+		p = strstr(p, extension);
+
+		if (p == NULL)
+			return false;						<font class="theme">// No Match</font>
+
+		<font class="theme">// Make Sure That Match Is At The Start Of The String Or That</font>
+		<font class="theme">// The Previous Char Is A Space, Or Else We Could Accidentally</font>
+		<font class="theme">// Match "wglFunkywglExtension" With "wglExtension"</font>
+
+		<font class="theme">// Also, Make Sure That The Following Character Is Space Or NULL</font>
+		<font class="theme">// Or Else "wglExtensionTwo" Might Match "wglExtension"</font>
+		if ((p==supported || p[-1]==' ') &amp;&amp; (p[extlen]=='\0' || p[extlen]==' '))
+			return true;						<font class="theme">// Match</font>
+	}
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+The next function is the gist of the program itself. Basically, we're going to query if our arb extention is supported on
+the system. From there, we'll move on to querying our device context to find out the scope of our multisample. Again...
+let's just jump into the code.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>bool InitMultisample(HINSTANCE hInstance,HWND hWnd,PIXELFORMATDESCRIPTOR pfd)
+{  
+	<font class="theme">// See If The String Exists In WGL!</font>
+	if (!WGLisExtensionSupported("WGL_ARB_multisample"))
+	{
+		arbMultisampleSupported=false;
+		return false;
+	}
+
+	<font class="theme">// Get Our Pixel Format</font>
+	PFNWGLCHOOSEPIXELFORMATARBPROC wglChoosePixelFormatARB =
+		(PFNWGLCHOOSEPIXELFORMATARBPROC)wglGetProcAddress("wglChoosePixelFormatARB");
+
+	if (!wglChoosePixelFormatARB)
+	{
+		<font class="theme">// We Didn't Find Support For Multisampling, Set Our Flag And Exit Out.</font>
+		arbMultisampleSupported=false;
+		return false;
+	}
+
+	<font class="theme">// Get Our Current Device Context. We Need This In Order To Ask The OpenGL Window What Attributes We Have</font>
+	HDC hDC = GetDC(hWnd);
+
+	int pixelFormat;
+	bool valid;
+	UINT numFormats;
+	float fAttributes[] = {0,0};
+
+	<font class="theme">// These Attributes Are The Bits We Want To Test For In Our Sample</font>
+	<font class="theme">// Everything Is Pretty Standard, The Only One We Want To </font>
+	<font class="theme">// Really Focus On Is The SAMPLE BUFFERS ARB And WGL SAMPLES</font>
+	<font class="theme">// These Two Are Going To Do The Main Testing For Whether Or Not</font>
+	<font class="theme">// We Support Multisampling On This Hardware</font>
+	int iAttributes[] = { WGL_DRAW_TO_WINDOW_ARB,GL_TRUE,
+		WGL_SUPPORT_OPENGL_ARB,GL_TRUE,
+		WGL_ACCELERATION_ARB,WGL_FULL_ACCELERATION_ARB,
+		WGL_COLOR_BITS_ARB,24,
+		WGL_ALPHA_BITS_ARB,8,
+		WGL_DEPTH_BITS_ARB,16,
+		WGL_STENCIL_BITS_ARB,0,
+		WGL_DOUBLE_BUFFER_ARB,GL_TRUE,
+		WGL_SAMPLE_BUFFERS_ARB,GL_TRUE,
+		WGL_SAMPLES_ARB, 4 ,						<font class="theme">// Check For 4x Multisampling</font>
+		0,0};
+
+	<font class="theme">// First We Check To See If We Can Get A Pixel Format For 4 Samples</font>
+	valid = wglChoosePixelFormatARB(hDC,iAttributes,fAttributes,1,&amp;pixelFormat,&amp;numFormats);
+ 
+	<font class="theme">// if We Returned True, And Our Format Count Is Greater Than 1</font>
+	if (valid &amp;&amp; numFormats &gt;= 1)
+	{
+		arbMultisampleSupported	= true;
+		arbMultisampleFormat	= pixelFormat;	
+		return arbMultisampleSupported;
+	}
+
+	<font class="theme">// Our Pixel Format With 4 Samples Failed, Test For 2 Samples</font>
+	iAttributes[19] = 2;
+	valid = wglChoosePixelFormatARB(hDC,iAttributes,fAttributes,1,&amp;pixelFormat,&amp;numFormats);
+	if (valid &amp;&amp; numFormats &gt;= 1)
+	{
+		arbMultisampleSupported	= true;
+		arbMultisampleFormat	= pixelFormat;	 
+		return arbMultisampleSupported;
+	}
+	  
+	<font class="theme">// Return The Valid Format</font>
+	return  arbMultisampleSupported;
+}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now that we've gotten our query code done, we have to modify how our window creation works. First, we have to include our
+arb_multisample.h file, along with moving the destroywindow and createwindow prototypes up to the top of the file.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>#include &lt;windows.h&gt;								<font class="theme">// Header File For The Windows Library</font>
+#include &lt;gl/gl.h&gt;								<font class="theme">// Header File For The OpenGL32 Library</font>
+#include &lt;gl/glu.h&gt;								<font class="theme">// Header File For The GLu32 Library</font>
+#include "NeHeGL.h"	<font class="theme">// Header File For The NeHeGL Basecode</font>
+
+<font class="theme">// ROACH</font>
+#include "ARB_MULTISAMPLE.h"
+
+BOOL DestroyWindowGL (GL_Window* window);
+BOOL CreateWindowGL (GL_Window* window);
+<font class="theme">// ENDROACH</font>
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+This next bit needs to be added inside the CreateWindowGL function, the original code is left, with where you need to make
+modifications.  Basically, we're doing a bit of overkill to get the job done. We can't request the pixel format (to query the
+multisampling) until we've created a window. But we can't create a FSAA screen, unless we know the pixel format will support
+it. Kinda the chicken and the egg thing. So, what I've done, is a little 2 pass system; We create the window, query the
+pixelFormat, then destroy/remake the window if multisampling is supported. Kinda nifty...
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	window-&gt;hDC = GetDC (window-&gt;hWnd);					<font class="theme">// Grab A Device Context For This Window</font>
+	if (window-&gt;hDC == 0)							<font class="theme">// Did We Get A Device Context?</font>
+	{
+		<font class="theme">// Failed</font>
+		DestroyWindow (window-&gt;hWnd);					<font class="theme">// Destroy The Window</font>
+		window-&gt;hWnd = 0;						<font class="theme">// Zero The Window Handle</font>
+		return FALSE;							<font class="theme">// Return False</font>
+	}
+
+<font class="theme">// ROACH</font>
+	<font class="theme">// Our First Pass, Multisampling Hasn't Been Created Yet, So We Create A Window Normally</font>
+	<font class="theme">// If It Is Supported, Then We're On Our Second Pass</font>
+	<font class="theme">// That Means We Want To Use Our Pixel Format For Sampling</font>
+	<font class="theme">// So Set PixelFormat To arbMultiSampleformat Instead</font>
+	if(!arbMultisampleSupported)
+	{
+		PixelFormat = ChoosePixelFormat (window-&gt;hDC, &amp;pfd);		<font class="theme">// Find A Compatible Pixel Format</font>
+		if (PixelFormat == 0)						<font class="theme">// Did We Find A Compatible Format?</font>
+		{
+			<font class="theme">// Failed</font>
+			ReleaseDC (window-&gt;hWnd, window-&gt;hDC);			<font class="theme">// Release Our Device Context</font>
+			window-&gt;hDC = 0;					<font class="theme">// Zero The Device Context</font>
+			DestroyWindow (window-&gt;hWnd);				<font class="theme">// Destroy The Window</font>
+			window-&gt;hWnd = 0;					<font class="theme">// Zero The Window Handle</font>
+			return FALSE;						<font class="theme">// Return False</font>
+		}
+	}
+	else
+	{
+		PixelFormat = arbMultisampleFormat;
+	}
+//ENDROACH
+
+	if (SetPixelFormat (window-&gt;hDC, PixelFormat, &amp;pfd) == FALSE)		<font class="theme">// Try To Set The Pixel Format</font>
+	{
+		<font class="theme">// Failed</font>
+		ReleaseDC (window-&gt;hWnd, window-&gt;hDC);				<font class="theme">// Release Our Device Context</font>
+		window-&gt;hDC = 0;						<font class="theme">// Zero The Device Context</font>
+		DestroyWindow (window-&gt;hWnd);					<font class="theme">// Destroy The Window</font>
+		window-&gt;hWnd = 0;						<font class="theme">// Zero The Window Handle</font>
+		return FALSE;							<font class="theme">// Return False</font>
+	}
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+Now, the window has been created, so we have a valid handle to query for Multisample support. If we find it's supported, we
+destroy this window, and call CreateWindowGL again, but with the new pixel format.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>	<font class="theme">// Make The Rendering Context Our Current Rendering Context</font>
+	if (wglMakeCurrent (window-&gt;hDC, window-&gt;hRC) == FALSE)
+	{
+		<font class="theme">// Failed</font>
+		wglDeleteContext (window-&gt;hRC);					<font class="theme">// Delete The Rendering Context</font>
+		window-&gt;hRC = 0;						<font class="theme">// Zero The Rendering Context</font>
+		ReleaseDC (window-&gt;hWnd, window-&gt;hDC);				<font class="theme">// Release Our Device Context</font>
+		window-&gt;hDC = 0;						<font class="theme">// Zero The Device Context</font>
+		DestroyWindow (window-&gt;hWnd);					<font class="theme">// Destroy The Window</font>
+		window-&gt;hWnd = 0;						<font class="theme">// Zero The Window Handle</font>
+		return FALSE;							<font class="theme">// Return False</font>
+	}
+
+	
+<font class="theme">// ROACH</font>
+	<font class="theme">// Now That Our Window Is Created, We Want To Query What Samples Are Available</font>
+	<font class="theme">// We Call Our InitMultiSample Window</font>
+	<font class="theme">// if We Return A Valid Context, We Want To Destroy Our Current Window</font>
+	<font class="theme">// And Create A New One Using The Multisample Interface.</font>
+	if(!arbMultisampleSupported &amp;&amp; CHECK_FOR_MULTISAMPLE)
+	{
+		if(InitMultisample(window-&gt;init.application-&gt;hInstance,window-&gt;hWnd,pfd))
+		{
+			DestroyWindowGL (window);
+			return CreateWindowGL(window);
+		}
+	}
+<font class="theme">// ENDROACH</font>
+
+	ShowWindow (window-&gt;hWnd, SW_NORMAL);					<font class="theme">// Make The Window Visible</font>
+	window-&gt;isVisible = TRUE;				
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+OK, so setup is now complete! We've setup our screen to allow proper depth for multi sampling. Now comes the fun part, actually
+doing it! Luckily, ARB decided to make multisampling dynamic, so that allows us to turn it on and off with a glEnable
+/ glDisable call.
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><pre>glEnable(GL_MULTISAMPLE_ARB);
+
+<font class="theme">// Render The Scene</font>
+
+glDisable(GL_MULTISAMPLE_ARB);
+</pre><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="tl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="tc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="100%"></td><td class="tr"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="l"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="back3" valign="top" width="100%"><font class="text">
+And that's it! As far as the other code for the demo goes, it's a simple rotating effect to show off how nifty this method
+works. ENJOY!
+<br><br>
+<a href="mailto:duhroach@hotmail.com">Colt "MainRoach" McAnlis</a>
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vc/lesson46.zip">Visual C++</a> Code For This Lesson.
+<br><br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/bcb6/lesson46_bcb6.zip">Borland C++ Builder 6</a> Code For This Lesson. ( Conversion by <a href="mailto:conglth@hotmail.com">Le Thanh Cong</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/cwarrior/lesson46.zip">Code Warrior 5.3</a> Code For This Lesson. ( Conversion by <a href="mailto:DelusionalBeing@hotmail.com">Scott Lupton</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/delphi/lesson46.zip">Delphi</a> Code For This Lesson. ( Conversion by <a href="mailto:michal_praha@seznam.cz">Michal Tucek</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/devc/lesson46.zip">Dev C++</a> Code For This Lesson. ( Conversion by <a href="mailto:royn@cogeco.ca">Neil Roy</a> )<br>
+* DOWNLOAD <a href="http://nehe.gamedev.net/data/lessons/vs_net/lesson46.zip">Visual Studio .NET</a> Code For This Lesson. ( Conversion by <a href="mailto:webmaster@joachimrohde.de">Joachim Rohde</a> )<br>
+<br><br>
+<table border="0" width="100%">
+<tbody><tr><td align="left" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=45">&lt; Lesson 45</a></font></b></td>
+<td align="right" width="50%"><b><font size="-1"><a href="http://nehe.gamedev.net/data/lessons/lesson.asp?lesson=47">Lesson 47 &gt;</a></font></b></td>
+</tr></tbody></table>
+</font></td><td class="r"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table><table border="0" cellpadding="0" cellspacing="0" width="100%"><tbody><tr><td class="bl"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="bc" width="100%"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td><td class="br"><img src="lesson.asp-Dateien/blank.gif" alt="" height="28" width="28"></td></tr></tbody></table>
+
+</body></html>

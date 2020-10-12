@@ -1,0 +1,116 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title>Unit unitRoboterarmPanel - Roboterarm Simulation - JADD - Just Another DelphiDoc</title>
+  <meta name="keywords" content="unitRoboterarmPanel">
+  <meta name="Generator" content="JADD - Just Another DelphiDoc">
+  <link rel="stylesheet" type="text/css" href="DelphiDoc.css" title="Style">
+</head>
+<body>
+<table width="100%" class="headerlinks"><tbody><tr>
+<td align="center"><a href="index.html">Index</a></td>
+<td align="center"><a href="FileList.html">Files</a></td>
+<td align="center"><a href="RecordList.html">Records</a></td>
+<td align="center"><a href="ObjectList.html">Objects</a></td>
+<td align="center"><a href="ClassList.html">Classes</a></td>
+<td align="center"><a href="InterfaceList.html">Interfaces</a></td>
+<td align="center"><a href="DispInterfaceList.html">Dispatch-Interfaces</a></td>
+</tr></tbody></table>
+<hr>
+<h1 class="file">Unit unitRoboterarmPanel</h1>
+<h2 class="file">Used Units:</h2>
+<strong class="usedfilessub">Used in interface:</strong> 
+System, SysInit, Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms, Dialogs, DGLOpenGL, ExtCtrls, StdCtrls, <a href="File_uniTServo.html">uniTServo</a>, <a href="File_unitElement.html">unitElement</a>, <a href="File_unitIOpenGL.html">unitIOpenGL</a>, glBMP<br>
+<strong class="usedfilessub">Used in implementation:</strong> 
+<em>None</em>
+
+<h2 class="usingfiles">Used by:</h2>
+<strong class="usingfilessub">Programs:</strong> <b class="resword">program</b> <a href="File_dprRoboterarm.html">dprRoboterarm</a><br>
+<strong class="usingfilessub">In Interface of Units:</strong> <a href="File_unitRegler.html">unitRegler</a><br>
+<hr>
+<h2 class="filecomment">Description:</h2>
+
+
+<hr>
+<h2 class="identslist">List of Variables:</h2>
+  <b class="identsscope">Global Variables:</b> <a href="#I_obj">obj</a>, <a href="#I_texture">texture</a><br>
+  <b class="identsscope">File-Local Variables:</b> <em>None</em><br>
+<hr>
+<h2 class="identslist">List of Constants:</h2>
+  <b class="identsscope">Global Constants:</b> <a href="#I_FAR_CLIPPING">FAR_CLIPPING</a>, <a href="#I_NEAR_CLIPPING">NEAR_CLIPPING</a>, <a href="#I_RENDERER_TIMER">RENDERER_TIMER</a><br>
+  <b class="identsscope">File-Local Constants:</b> <em>None</em><br>
+<hr>
+<h2 class="identslist">List of Records:</h2>
+  <b class="identsscope">Global Records:</b> <a href="Record_TConfig.html">TConfig</a><br>
+  <b class="identsscope">File-Local Records:</b> <em>None</em><br>
+<hr>
+<h2 class="identslist">List of Classes:</h2>
+  <b class="identsscope">Global Classes:</b> <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a><br>
+  <b class="identsscope">File-Local Classes:</b> <em>None</em><br>
+<hr>
+<h2 class="identslist">List of Functions:</h2>
+  <b class="identsscope">Global Functions:</b> <dl class="funclist">
+  <dt><img src="unitinterface.gif" alt="unit interface" title="unit interface"> <b class="resword">procedure</b> <a href="#I_Register">Register</a></dt>
+  <dd>Registriert diese Klasse als Komponente in der Palette Schule.</dd>
+</dl>
+  <b class="identsscope">File-Local Functions:</b> <em>None</em><br>
+<hr>
+<h2 class="idents"><a name="Variables">Variables:</a></h2>
+<dl class="idents">
+
+  <dt class="ident"><br>
+<a name="I_obj"><img src="unitinterface.gif" alt="unit interface" title="unit interface"></a> obj: PGLUQuadric</dt>
+  <dd class="ident">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_destroyOGL">destroyOGL</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_initOGL">initOGL</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderElement0">RenderElement0</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderElement1">RenderElement1</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderElement2">RenderElement2</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderElement3">RenderElement3</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderElement4">RenderElement4</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo0">RenderServo0</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo12">RenderServo12</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo3">RenderServo3</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo4">RenderServo4</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo5">RenderServo5</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo6">RenderServo6</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo7">RenderServo7</a></dd>
+</dl>
+  </dd>
+
+  <dt class="ident"><br>
+<a name="I_texture"><img src="unitinterface.gif" alt="unit interface" title="unit interface"></a> texture: <b class="resword">array</b> <b class="resword">of</b> tglBMP</dt>
+  <dd class="ident">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_destroyOGL">destroyOGL</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_initOGL">initOGL</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderElement0">RenderElement0</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderElement1">RenderElement1</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderElement2">RenderElement2</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderElement3">RenderElement3</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderElement4">RenderElement4</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo0">RenderServo0</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo12">RenderServo12</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo3">RenderServo3</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo4">RenderServo4</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo5">RenderServo5</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo6">RenderServo6</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_RenderServo7">RenderServo7</a></dd>
+</dl>
+  </dd>
+</dl>
+<hr>
+<h2 class="idents"><a name="Constants">Constants:</a></h2>
+<dl class="idents">
+
+  <dt class="ident"><br>
+<a name="I_FAR_CLIPPING"><img src="unitinterface.gif" alt="unit interface" title="unit interface"></a> FAR_CLIPPING =  1000</dt>
+  <dd class="ident">
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_Render">Render</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_updateViewport">updateViewport</a></dd>
+</dl>
+  </dd>
+
+  <dt class="ident"><br>
+<a name="I_NEAR_CLIPPING"><img src="unitinterface.gif" alt="unit interface" title="unit interface"></a> NEAR_CLIPPING =  1</dt>
+  <dd class="ident">Diese Konstanten werden für das OpenGL benutzt
+<dl><dt class="used"><strong>Used in</strong></dt><dd class="used"><a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_Render">Render</a>, <a href="Class_TRoboterarmPanel.html">TRoboterarmPanel</a>.<a href="Class_TRoboterarmPanel.html#I_updateViewport">updateViewport</a></dd>
+</dl>
+  </dd>
+
+  <dt class="ident"><br>
+<a name="I_RENDERER_TIMER"><img src="unitinterface.gif" alt="unit interface" title="unit interface"></a> RENDERER_TIMER =  30</dt>
+  <dd class="ident">
+  </dd>
+</dl>
+<hr>
+<h2 class="idents"><a name="Functions">Functions:</a></h2>
+<dl class="idents">
+
+  <dt class="ident"><br>
+<a name="I_Register"><img src="unitinterface.gif" alt="unit interface" title="unit interface"></a> <b class="resword">procedure</b> Register</dt>
+  <dd class="ident">Registriert diese Klasse als Komponente in der Palette Schule.
+<dl><dt class="author"><strong>Author:</strong></dt>
+<dd class="author"><ul>Thomas Gattinger</ul></dd>
+<dt class="version"><strong>Version:</strong></dt>
+<dd class="version"><ul>1.0</ul></dd>
+</dl>
+  </dd>
+</dl>
+<hr>
+</body>
+</html>
